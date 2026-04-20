@@ -1,0 +1,24 @@
+.DS_Store
+.vscode
+__pycache__
+*.pyc
+
+# Project-local Claude state (keep settings.json + hooks/ tracked)
+.claude/.last-test-time
+.claude/settings.local.json
+
+# Python / uv
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+
+# Quarto
+*_files/
+*.html
+Makefile
+justfile
+config.yaml
+__pycache__/

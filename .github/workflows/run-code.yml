@@ -1,0 +1,24 @@
+name: Milestone 02
+on: [push, pull_request, fork]
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required files exist
+        run: |
+          missing=0
+          for f in \
+            "m01_process_documentation.pdf" \
+            "m01_genai_integration_strategy.pdf" \
+            "m01_user_stories.pdf" \
+            "m01_genai_data_requirements.pdf" \
+            "m01_process_ai_integration.pptx"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $missing
