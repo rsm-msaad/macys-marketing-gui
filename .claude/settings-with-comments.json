@@ -1,8 +1,11 @@
 {
   "permissions": {
     "allow": [
+      // File creation / editing
       "Write",
       "Edit",
+
+      // File reading / inspection
       "Bash(cat:*)",
       "Bash(ls:*)",
       "Bash(pwd)",
@@ -13,8 +16,12 @@
       "Bash(find:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
+
+      // Network fetches (read-only downloads)
       "Bash(curl:*)",
       "Bash(wget:*)",
+
+      // Git — read-only / safe write (no push, reset, rebase, merge, force)
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -26,6 +33,8 @@
       "Bash(git commit:*)",
       "Bash(git stash:*)",
       "Bash(git restore:*)",
+
+      // uv — environment + package management
       "Bash(uv venv:*)",
       "Bash(uv add:*)",
       "Bash(uv remove:*)",
@@ -35,11 +44,14 @@
       "Bash(uv tree:*)",
       "Bash(uv python:*)",
       "Bash(uv tool:*)",
+
+      // Activate venv before `uv run` to silence global VIRTUAL_ENV mismatch warning
       "Bash(source .venv/bin/activate && uv run:*)",
       "Bash(source .venv/bin/activate)",
       "Bash(deactivate)"
     ],
     "deny": [
+      // Enforce uv add for package management — never pip
       "Bash(pip:*)",
       "Bash(pip3:*)",
       "Bash(python -m pip:*)",
@@ -48,11 +60,16 @@
       "Bash(uv pip uninstall:*)"
     ],
     "ask": [
+      // File/directory deletion — always prompt
       "Bash(rm:*)",
       "Bash(rmdir:*)",
+
+      // Remote shell / file transfer — always prompt
       "Bash(ssh:*)",
       "Bash(scp:*)",
       "Bash(sftp:*)",
+
+      // Destructive git — always prompt so students can pause and think
       "Bash(git push:*)",
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
@@ -60,9 +77,12 @@
       "Bash(git cherry-pick:*)",
       "Bash(git clean:*)"
     ],
+    // Show each permission prompt instead of silently accepting edits — teaches
+    // students what Claude is doing on their behalf.
     "defaultMode": "default"
   },
   "hooks": {
+    // Log every student prompt into .claude/usage-log/ (instructor review)
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -74,6 +94,7 @@
       }
     ],
     "PreToolUse": [
+      // Log every tool call (name + short summary; never tool results)
       {
         "matcher": ".*",
         "hooks": [
@@ -83,6 +104,7 @@
           }
         ]
       },
+      // Before every git commit: auto-stage the usage log, then scan staged files for secrets
       {
         "matcher": "Bash",
         "hooks": [
@@ -100,6 +122,7 @@
       }
     ],
     "PostToolUse": [
+      // Record when pytest was last run (project-scoped timestamp)
       {
         "matcher": "Bash",
         "hooks": [
@@ -120,6 +143,7 @@
           }
         ]
       },
+      // Auto-format Python files with ruff after Claude writes or edits them
       {
         "matcher": "Write|Edit",
         "hooks": [
@@ -131,6 +155,7 @@
       }
     ],
     "Stop": [
+      // Soft reminder on Stop if Python files changed since last pytest run
       {
         "hooks": [
           {
@@ -139,6 +164,7 @@
           }
         ]
       },
+      // Surface ruff lint findings on Stop (no-op if project has no Python yet)
       {
         "hooks": [
           {

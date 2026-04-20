@@ -6,6 +6,7 @@ __pycache__
 # Project-local Claude state (keep settings.json + hooks/ tracked)
 .claude/.last-test-time
 .claude/settings.local.json
+.claude/usage-log/.github-user
 
 # Python / uv
 .venv/
