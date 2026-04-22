@@ -10,6 +10,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_common.sh"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 LOG_DIR="$PROJECT_DIR/usage-log"
 mkdir -p "$LOG_DIR"
@@ -35,22 +37,22 @@ else
 fi
 
 input=$(cat)
-session=$(echo "$input" | jq -r '.session_id // "unknown"')
+session=$(echo "$input" | "$JQ" -r '.session_id // "unknown"')
 # Sanitize session id for filename use
 session_safe=$(echo "$session" | tr -c 'A-Za-z0-9_-' '_')
 ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 date_tag=$(date -u +%Y%m%d)
 LOG_FILE="$LOG_DIR/${gh_user}-session-${date_tag}-${session_safe}.jsonl"
 
-tool=$(echo "$input" | jq -r '.tool_name // empty')
-prompt=$(echo "$input" | jq -r '.prompt // empty')
+tool=$(echo "$input" | "$JQ" -r '.tool_name // empty')
+prompt=$(echo "$input" | "$JQ" -r '.prompt // empty')
 
 if [ -n "$prompt" ]; then
-  echo "$input" | jq -c --arg ts "$ts" --arg session "$session" \
+  echo "$input" | "$JQ" -c --arg ts "$ts" --arg session "$session" \
     '{ts: $ts, session: $session, event: "prompt", text: (.prompt | .[0:2000])}' \
     >> "$LOG_FILE"
 elif [ -n "$tool" ]; then
-  echo "$input" | jq -c --arg ts "$ts" --arg session "$session" '
+  echo "$input" | "$JQ" -c --arg ts "$ts" --arg session "$session" '
     .tool_input as $i |
     {
       ts: $ts,
