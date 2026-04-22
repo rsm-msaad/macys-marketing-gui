@@ -4,6 +4,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_common.sh"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT_ROOT="$(dirname "$PROJECT_DIR")"
 
@@ -16,5 +18,5 @@ done
 output=$(uvx --quiet ruff check --no-cache --output-format=concise "${SEARCH_DIRS[@]}" 2>&1 || true)
 
 if echo "$output" | grep -qE ':[0-9]+:[0-9]+: [A-Z][0-9]+'; then
-  jq -n --arg out "$output" '{systemMessage: ("ruff found lint issues:\n\n" + $out + "\n\nFix suggestion: uv run ruff check --fix")}'
+  "$JQ" -n --arg out "$output" '{systemMessage: ("ruff found lint issues:\n\n" + $out + "\n\nFix suggestion: uv run ruff check --fix")}'
 fi

@@ -35,7 +35,10 @@ def calculate_clv(
 ) -> float:
     """Return the Customer Lifetime Value over `time_horizon` months.
 
-    `churn_assumption` = "optimistic" → churn at end of month (keep this month's revenue). `discount_assumption` = "optimistic" → paid at start of month (no discount applied to month 0).
+    `churn_assumption` = "optimistic" → churn at end of month
+    (keep this month's revenue). `discount_assumption` =
+    "optimistic" → paid at start of month (no discount applied
+    to month 0).
     """
     monthly_cost = service_cost * transaction_frequency
     monthly_profit = monthly_revenue - monthly_cost

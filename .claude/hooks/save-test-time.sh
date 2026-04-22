@@ -4,7 +4,10 @@
 # tests in another project does not affect the stale-test reminder here.
 set -euo pipefail
 
-cmd=$(jq -r '.tool_input.command // empty')
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+cmd=$("$JQ" -r '.tool_input.command // empty')
 [ -z "$cmd" ] && exit 0
 
 if echo "$cmd" | grep -qE '(^|[[:space:];&|])pytest([[:space:]]|$)'; then

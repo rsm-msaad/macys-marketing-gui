@@ -14,6 +14,7 @@ dependencies = [
     "ipykernel>=6.29",
     "ipython>=8.0",
     "requests>=2.32",
+    "pyarrow>=17",
 ]
 
 [dependency-groups]
@@ -30,7 +31,7 @@ markers = [
 addopts = "-m 'not integration'"
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]

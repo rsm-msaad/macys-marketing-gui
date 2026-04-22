@@ -6,7 +6,10 @@
 # Runs only for git-commit commands; a no-op for everything else.
 set -euo pipefail
 
-cmd=$(jq -r '.tool_input.command // empty')
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+cmd=$("$JQ" -r '.tool_input.command // empty')
 [ -z "$cmd" ] && exit 0
 
 # Only inspect `git commit` (allow for chained commands, e.g. `git add . && git commit ...`)
@@ -39,5 +42,5 @@ if [ -n "$findings" ]; then
 
 $findings
 Review the files. If these are false positives, explicitly acknowledge and re-run the commit."
-  jq -n --arg r "$reason" '{hookSpecificOutput: {hookEventName: "PreToolUse", permissionDecision: "ask", permissionDecisionReason: $r}}'
+  "$JQ" -n --arg r "$reason" '{hookSpecificOutput: {hookEventName: "PreToolUse", permissionDecision: "ask", permissionDecisionReason: $r}}'
 fi

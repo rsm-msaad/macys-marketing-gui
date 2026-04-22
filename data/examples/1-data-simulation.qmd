@@ -166,7 +166,7 @@ for product in ["laptop", "headphones", "coffee maker"]:
     for sentiment in ["positive", "negative", "neutral"]:
         review = ask(
             review_prompt(product, sentiment),
-            model="oauth-gpt",
+            model=MODEL,
             system=role,
             temperature=0.7,
         )

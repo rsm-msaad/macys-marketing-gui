@@ -10,6 +10,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/_common.sh"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT_ROOT="$(dirname "$PROJECT_DIR")"
 TIMESTAMP_FILE="$PROJECT_DIR/.last-test-time"
@@ -25,6 +27,6 @@ done
 stale=$(find "${SEARCH_DIRS[@]}" -type f -name '*.py' -newer "$TIMESTAMP_FILE" -print -quit 2>/dev/null)
 
 if [ -n "$stale" ]; then
-  jq -n --arg msg "Python files have changed since the last pytest run. Consider running: uv run pytest" \
+  "$JQ" -n --arg msg "Python files have changed since the last pytest run. Consider running: uv run pytest" \
     '{systemMessage: $msg}'
 fi
