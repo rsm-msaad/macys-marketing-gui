@@ -1,0 +1,101 @@
+asset_id,filename,asset_type,tags,associated_skus,season,brand,created_date,last_used_date,file_size_mb,resolution,usage_rights,degradation_flag
+1,product_00001_purpose-brother-ago.jpg,product,"[""flatlay"", ""home"", ""studio"", ""fragrance""]","[1973, 695]",Spring,Nike,2022-09-30,2023-03-12,42.29,1920x1080,free,clean
+2,banner_00002_face-election-dog.jpg,banner,"[""mothers-day"", ""beauty"", ""womens"", ""sale"", ""kids""]",[],Winter,INC,2023-01-07,2023-06-02,26.85,2560x1440,free,clean
+3,product_00003_since-blue-require.jpg,product,"[""outerwear"", ""home"", ""outdoor"", ""fall"", ""winter""]",[],Spring,Macy's House,2023-07-10,2025-12-04,5.78,1920x1080,restricted,orphaned
+4,lifestyle_00004_wait-offer-begin.jpg,lifestyle,"[""everyday"", ""denim""]","[1492, 879, 1674]",Fall,UGG,2024-01-15,2025-08-02,41.87,800x600,free,lowres
+5,product_00005_knowledge-almost.jpg,product,"[""luxury"", ""spring"", ""everyday""]","[617, 478, 665]",Fall,Polo Ralph Lauren,2024-09-08,2026-01-30,26.06,3840x2160,restricted,clean
+6,lifestyle_00006_better-discover.jpg,lifestyle,"[""outdoor"", ""outerwear""]","[1855, 395, 1276]",Spring,Tommy Hilfiger,2022-09-04,2026-03-25,5.81,2560x1440,free,clean
+7,product_00007_mouth-play.jpg,product,"[""kids"", ""womens"", ""dresses"", ""beauty"", ""outdoor"", ""fall""]","[1543, 1734]",Summer,Tommy Hilfiger,2024-10-08,2025-01-19,45.93,1920x1080,free,clean
+8,product_00008_option-decide-sense.jpg,product,"[""mothers-day"", ""model""]","[1874, 571, 130]",Summer,Style & Co,2022-09-15,2024-04-03,8.35,3840x2160,free,clean
+9,product_00009_science-offer-kind.jpg,product,"[""denim"", ""mens""]",[],Spring,UGG,2022-10-18,2025-06-06,24.66,1920x1080,free,clean
+10,product_00010_list-perform-fall.jpg,product,"[""winter"", ""fragrance"", ""lifestyle"", ""outerwear"", ""holiday"", ""accessories""]",[],Fall,INC,2024-02-17,2024-08-19,30.41,1920x1080,expired,clean
+11,banner_00011_true-according-song.jpg,banner,"[""outerwear"", ""sale"", ""fragrance"", ""luxury"", ""lunar-new-year"", ""valentines""]",[],Summer,Nike,2025-08-30,2026-04-22,40.63,3840x2160,expired,expired
+12,social_00012_collection-save.jpg,social,"[""indoor"", ""studio"", ""back-to-school"", ""home"", ""mens""]",[],Fall,UGG,2025-05-12,2025-12-21,3.63,1920x1080,free,clean
+13,social_00013_grow-fall-clearly.jpg,social,"[""sale"", ""home""]",[],Winter,Michael Kors,2022-09-22,2024-01-02,41.69,1920x1080,restricted,clean
+14,lifestyle_00014_source-great-blue.jpg,lifestyle,"[""dresses"", ""skincare"", ""spring""]",[1132],Summer,INC,2026-03-20,2026-03-25,14.75,1280x720,free,clean
+15,social_00015_husband-bill-her.jpg,social,"[""kids"", ""summer"", ""womens"", ""indoor"", ""accessories"", ""lunar-new-year""]",[],Summer,Steve Madden,2024-10-17,2025-04-16,25.16,2560x1440,restricted,clean
+16,product_00016_guy-pm-everything.jpg,product,"[""studio"", ""everyday"", ""fragrance"", ""holiday""]","[1454, 1113]",All,Clinique,2025-08-04,2025-11-26,42.0,3840x2160,expired,clean
+17,banner_00017_animal-show-machine.jpg,banner,"[""sale"", ""outerwear""]",[],Fall,Macy's House,2025-01-09,2026-03-16,44.39,640x480,free,lowres
+18,hero_00018_capital-win-human.jpg,hero,"[""spring"", ""back-to-school"", ""fall""]",[],Spring,Macy's House,2026-03-09,2026-04-13,37.53,2560x1440,free,clean
+19,social_00019_old-finally.jpg,social,"[""everyday"", ""shoes"", ""skincare""]",[],Summer,INC,2025-07-21,2025-11-18,19.41,2560x1440,free,clean
+20,lifestyle_00020_production-present.jpg,lifestyle,"[""back-to-school"", ""fragrance""]","[1784, 600]",Summer,Tommy Hilfiger,2024-04-07,2024-09-07,5.56,3840x2160,free,clean
+21,product_00021_training-high.jpg,product,"[""luxury"", ""sale"", ""spring"", ""outerwear"", ""denim""]","[1205, 93]",Fall,Tommy Hilfiger,2025-07-30,2025-12-12,49.14,1280x720,expired,clean
+22,product_00022_dark-sea-available.jpg,product,"[""indoor"", ""holiday"", ""mens""]",[418],All,Michael Kors,2025-03-10,2025-04-12,26.83,1920x1080,free,clean
+23,lifestyle_00023_recently-drive.jpg,lifestyle,"[""black-friday"", ""mens"", ""back-to-school""]",[1511],Summer,Steve Madden,2025-12-04,2025-12-31,3.74,800x600,free,clean
+24,banner_00024_figure-base-top.jpg,banner,"[""kids"", ""fall"", ""sale""]",[],Spring,Macy's House,2026-02-05,2026-03-21,19.87,800x600,free,duplicate
+25,hero_00025_trial-blood-husband.jpg,hero,"[""mens"", ""lifestyle"", ""spring"", ""indoor"", ""holiday""]",[],Spring,Michael Kors,2024-12-01,2025-02-05,15.43,800x600,free,lowres
+26,product_00026_long-prove-they-his.jpg,product,"[""accessories"", ""indoor""]",[1651],Winter,Tommy Hilfiger,2024-06-09,2026-02-22,15.17,800x600,free,clean
+27,banner_00027_hospital-hear.jpg,banner,"[""spring"", ""flatlay"", ""beauty""]",[],Fall,UGG,2022-06-07,2022-06-15,42.89,1280x720,free,duplicate
+28,lifestyle_00028_religious-example.jpg,lifestyle,"[""dresses"", ""denim"", ""new-arrival"", ""indoor"", ""lunar-new-year"", ""outdoor""]",[863],All,Nike,2023-02-17,2024-10-23,36.2,1920x1080,free,clean
+29,product_00029_write-result-raise.jpg,product,"[""fragrance"", ""outerwear"", ""womens"", ""accessories"", ""mothers-day"", ""winter""]","[947, 1703, 1283]",Fall,UGG,2024-03-25,2025-02-08,26.4,800x600,restricted,lowres
+30,lifestyle_00030_politics-prove.jpg,lifestyle,"[""womens"", ""spring"", ""model"", ""flatlay"", ""winter""]","[1378, 1602]",All,Michael Kors,2022-06-29,2022-09-19,12.97,2560x1440,free,clean
+31,hero_00031_none-shoulder.jpg,hero,"[""mothers-day"", ""holiday"", ""shoes"", ""accessories"", ""skincare""]",[],Fall,Clinique,2024-11-17,2025-07-31,29.24,2560x1440,expired,expired
+32,product_00032_common-maintain.jpg,product,"[""black-friday"", ""mothers-day""]",[639],Spring,Tommy Hilfiger,2025-08-23,2025-11-15,23.64,1280x720,expired,clean
+33,lifestyle_00033_expect-wish-push.jpg,lifestyle,"[""indoor"", ""flatlay"", ""mens"", ""mothers-day""]",[],Summer,Coach,2025-08-29,2025-11-14,25.62,3840x2160,free,clean
+34,lifestyle_00034_onto-discuss-reveal.jpg,lifestyle,"[""home"", ""black-friday"", ""shoes"", ""womens"", ""spring""]",[672],All,Steve Madden,2022-08-26,2026-03-30,5.16,800x600,free,lowres
+35,lifestyle_00035_threat-special.jpg,lifestyle,"[""new-arrival"", ""model"", ""indoor""]","[38, 1930]",Spring,Polo Ralph Lauren,2026-03-21,2026-03-23,2.3,2560x1440,free,mislabeled
+36,product_00036_arrive-drop-term.jpg,product,"[""outerwear"", ""holiday"", ""new-arrival"", ""winter"", ""model"", ""mothers-day""]","[1703, 393, 1763]",All,Macy's House,2022-08-18,2025-01-11,48.32,1920x1080,free,clean
+37,product_00037_support-four.jpg,product,"[""fragrance"", ""accessories"", ""summer""]","[1388, 1316]",Fall,Style & Co,2026-01-15,2026-02-14,44.84,1280x720,expired,clean
+38,product_00038_executive-attorney.jpg,product,"[""winter"", ""lifestyle"", ""accessories"", ""kids""]","[148, 1166, 1126]",Spring,UGG,2024-08-16,2025-07-11,9.41,3840x2160,restricted,orphaned
+39,lifestyle_00039_white-yes-our-under.jpg,lifestyle,"[""new-arrival"", ""model"", ""sale"", ""luxury"", ""holiday""]","[446, 1109, 1275]",Summer,Clinique,2024-12-08,2026-02-13,22.58,3840x2160,free,duplicate
+40,social_00040_forward-difference.jpg,social,"[""everyday"", ""model""]",[],All,Estee Lauder,2025-02-24,2025-05-13,43.61,3840x2160,restricted,clean
+41,product_00041_money-individual.jpg,product,"[""dresses"", ""beauty"", ""skincare"", ""back-to-school"", ""luxury""]","[204, 1969]",Summer,Polo Ralph Lauren,2022-10-27,2024-07-13,7.79,800x600,free,clean
+42,product_00042_who-question-low.jpg,product,"[""skincare"", ""accessories"", ""spring"", ""luxury""]","[1880, 695]",Fall,Style & Co,2025-10-04,2026-03-21,1.64,1920x1080,free,clean
+43,lifestyle_00043_evidence-chair.jpg,lifestyle,[],"[333, 1339]",Spring,Tommy Hilfiger,2024-05-23,2024-12-03,14.31,640x480,expired,lowres
+44,social_00044_size-option-nothing.jpg,social,"[""fall"", ""lunar-new-year"", ""flatlay"", ""luxury"", ""model"", ""spring""]",[],Winter,Estee Lauder,2024-07-16,2026-03-24,38.94,640x480,restricted,lowres
+45,banner_00045_skin-pattern-later.jpg,banner,"[""valentines"", ""outerwear"", ""lunar-new-year""]",[],Summer,INC,2025-10-24,2026-02-15,41.66,1920x1080,free,clean
+46,banner_00046_past-inside-high.jpg,banner,"[""back-to-school"", ""fragrance""]",[],Winter,INC,2022-11-06,2023-06-04,40.52,1920x1080,free,clean
+47,banner_00047_certainly-mr-minute.jpg,banner,"[""kids"", ""mens""]",[],Spring,Clinique,2023-01-25,2025-08-19,32.44,1920x1080,free,clean
+48,social_00048_someone-anyone.jpg,social,"[""winter"", ""skincare"", ""indoor""]",[],All,INC,2026-01-08,2026-04-06,40.29,1280x720,restricted,clean
+49,social_00049_break-claim-product.jpg,social,"[""lifestyle"", ""flatlay""]",[],Spring,Estee Lauder,2026-03-16,2026-03-17,21.53,1920x1080,free,clean
+50,product_00050_structure-response.jpg,product,"[""shoes"", ""fall"", ""model""]",[1387],Spring,Estee Lauder,2023-02-10,2023-04-02,39.17,1920x1080,free,mislabeled
+51,product_00051_pick-attack-image-i.jpg,product,"[""kids"", ""everyday""]",[1213],Spring,Steve Madden,2023-06-22,2026-03-16,44.16,1920x1080,free,clean
+52,product_00052_management.jpg,product,"[""holiday"", ""home"", ""lunar-new-year"", ""fragrance"", ""flatlay""]","[437, 894, 625]",Fall,Polo Ralph Lauren,2022-08-25,2024-04-24,38.46,1280x720,free,clean
+53,banner_00053_enter-on.jpg,banner,"[""lunar-new-year"", ""home"", ""model"", ""spring"", ""flatlay""]",[],Spring,Macy's House,2023-08-15,2024-10-12,38.61,1920x1080,free,orphaned
+54,product_00054_yes-activity.jpg,product,"[""accessories"", ""outdoor""]",[257],Winter,UGG,2023-11-24,2025-07-15,43.94,1920x1080,free,duplicate
+55,lifestyle_00055_set-building-rest.jpg,lifestyle,"[""fall"", ""home"", ""lunar-new-year"", ""model"", ""holiday""]",[],Summer,Coach,2022-05-03,2022-07-19,30.04,2560x1440,free,duplicate
+56,product_00056_not-social-example.jpg,product,"[""holiday"", ""valentines"", ""new-arrival"", ""mothers-day""]","[836, 608, 1796]",All,Michael Kors,2022-10-08,2023-05-13,31.34,800x600,restricted,clean
+57,banner_00057_put-grow-brother.jpg,banner,"[""summer"", ""everyday"", ""beauty"", ""indoor""]",[],Winter,INC,2026-03-24,2026-04-18,34.14,3840x2160,free,clean
+58,social_00058_learn-coach-long.jpg,social,"[""back-to-school"", ""indoor"", ""winter""]",[],Summer,Clinique,2023-11-24,2024-04-17,43.98,3840x2160,expired,expired
+59,product_00059_seven-type-serve.jpg,product,[],"[1156, 1286, 1637]",All,INC,2023-04-12,2023-11-27,34.68,640x480,restricted,lowres
+60,hero_00060_month-sound-could.jpg,hero,"[""everyday"", ""shoes"", ""mens""]",[],Winter,Michael Kors,2025-10-29,2026-03-08,3.31,1920x1080,free,clean
+61,lifestyle_00061_while-born-truth.jpg,lifestyle,"[""valentines"", ""beauty"", ""flatlay"", ""kids"", ""skincare"", ""lunar-new-year""]",[1161],Fall,Polo Ralph Lauren,2025-01-21,2025-05-29,37.09,2560x1440,restricted,clean
+62,product_00062_fire-thought.jpg,product,"[""outdoor"", ""flatlay""]",[1988],Fall,Nike,2022-12-25,2023-02-09,25.76,2560x1440,free,clean
+63,banner_00063_movement-politics.jpg,banner,"[""sale"", ""flatlay""]",[],Fall,Steve Madden,2022-06-12,2024-09-04,33.75,800x600,free,lowres
+64,lifestyle_00064_claim-hour-sound.jpg,lifestyle,"[""lifestyle"", ""fall"", ""mens"", ""back-to-school""]","[163, 788, 182]",All,Estee Lauder,2026-04-29,2026-04-29,32.18,1920x1080,free,orphaned
+65,lifestyle_00065_notice-start-win.jpg,lifestyle,"[""kids"", ""holiday""]",[1278],All,Steve Madden,2023-11-29,2026-03-02,36.92,3840x2160,restricted,clean
+66,lifestyle_00066_why-a-place-game.jpg,lifestyle,"[""denim"", ""skincare"", ""luxury"", ""lunar-new-year"", ""mens""]","[787, 561, 137]",Spring,Tommy Hilfiger,2024-01-07,2026-01-20,47.46,1920x1080,restricted,clean
+67,banner_00067_after-brother-woman.jpg,banner,"[""new-arrival"", ""indoor""]",[],Winter,UGG,2024-09-02,2026-02-27,20.72,800x600,restricted,mislabeled
+68,social_00068_unit-theory-surface.jpg,social,"[""indoor"", ""lunar-new-year"", ""womens"", ""fragrance"", ""model"", ""outerwear""]",[],Spring,INC,2024-02-29,2025-11-11,21.18,3840x2160,restricted,clean
+69,social_00069_education-article.jpg,social,"[""fall"", ""indoor""]",[],All,Macy's House,2023-07-03,2024-06-03,11.73,1920x1080,restricted,clean
+70,product_00070_unit-our-your-bar.jpg,product,[],"[946, 580]",All,Nike,2025-04-05,2025-11-08,29.52,2560x1440,expired,expired
+71,product_00071_sign-mention-team.jpg,product,"[""outerwear"", ""beauty"", ""fragrance"", ""accessories"", ""new-arrival""]","[20, 627]",Winter,Tommy Hilfiger,2025-11-22,2026-03-03,39.12,640x480,free,duplicate
+72,social_00072_soon-no-space-car.jpg,social,"[""valentines"", ""studio"", ""flatlay"", ""fragrance"", ""fall"", ""skincare""]",[],All,Polo Ralph Lauren,2025-12-08,2026-03-11,39.91,2560x1440,free,clean
+73,banner_00073_receive-may-your.jpg,banner,[],[],Summer,INC,2025-04-25,2026-03-25,45.96,2560x1440,expired,expired
+74,product_00074_company-evidence.jpg,product,"[""mothers-day"", ""sale"", ""beauty"", ""fall"", ""flatlay"", ""lifestyle""]","[163, 1666, 1188]",All,Tommy Hilfiger,2025-06-06,2026-02-12,38.32,3840x2160,expired,expired
+75,banner_00075_turn-policy-land.jpg,banner,"[""winter"", ""holiday"", ""spring"", ""back-to-school""]",[],Summer,INC,2024-07-02,2025-04-27,39.09,2560x1440,free,clean
+76,lifestyle_00076_woman-notice.jpg,lifestyle,"[""kids"", ""fall"", ""studio"", ""flatlay""]","[1866, 1551]",All,Clinique,2023-05-31,2024-10-05,15.09,1920x1080,free,clean
+77,hero_00077_show-road-deep-sell.jpg,hero,"[""outdoor"", ""sale"", ""beauty"", ""studio"", ""new-arrival"", ""summer""]",[],Spring,Polo Ralph Lauren,2023-01-15,2024-12-30,22.84,1920x1080,free,clean
+78,product_00078_inside-remain-rate.jpg,product,"[""black-friday"", ""everyday"", ""dresses""]",[1237],Summer,Coach,2022-06-15,2025-07-26,10.18,1920x1080,restricted,clean
+79,product_00079_left-we-nation-live.jpg,product,"[""flatlay"", ""back-to-school"", ""lunar-new-year"", ""womens""]",[1876],Winter,Nike,2023-04-21,2023-06-26,17.02,2560x1440,free,clean
+80,social_00080_end-down-attack.jpg,social,"[""valentines"", ""studio"", ""new-arrival"", ""shoes"", ""accessories""]",[],Fall,Estee Lauder,2024-10-18,2026-03-25,6.3,1280x720,restricted,clean
+81,social_00081_against-per-once.jpg,social,"[""flatlay"", ""winter"", ""skincare""]",[],Fall,Style & Co,2026-04-15,2026-04-28,41.8,3840x2160,free,clean
+82,lifestyle_00082_per-discussion.jpg,lifestyle,"[""outdoor"", ""accessories""]",[1865],Summer,Estee Lauder,2024-04-29,2025-05-07,2.51,2560x1440,free,clean
+83,product_00083_avoid-second.jpg,product,"[""fall"", ""mothers-day"", ""mens"", ""sale""]",[595],Fall,Estee Lauder,2023-02-21,2025-04-10,46.21,2560x1440,free,clean
+84,product_00084_artist-drop-author.jpg,product,"[""valentines"", ""mens"", ""kids""]",[1663],Summer,Tommy Hilfiger,2022-09-02,2022-09-19,39.56,2560x1440,free,clean
+85,product_00085_almost-trade-give.jpg,product,"[""summer"", ""home"", ""shoes"", ""studio"", ""mothers-day""]",[318],Winter,Nike,2025-04-26,2026-04-23,49.45,640x480,expired,lowres
+86,social_00086_my-economy-family.jpg,social,"[""back-to-school"", ""outerwear""]",[],Spring,Polo Ralph Lauren,2025-12-22,2026-04-28,43.44,1920x1080,free,clean
+87,product_00087_mention-difficult.jpg,product,"[""fragrance"", ""spring"", ""shoes"", ""flatlay"", ""model""]","[1834, 241, 565]",Winter,UGG,2024-12-20,2025-04-02,46.01,640x480,expired,lowres
+88,lifestyle_00088_cause-several-worry.jpg,lifestyle,"[""fragrance"", ""lifestyle"", ""spring"", ""accessories"", ""fall""]","[644, 411]",All,Nike,2025-04-05,2026-04-13,47.56,1920x1080,restricted,orphaned
+89,banner_00089_own-part-material.jpg,banner,"[""womens"", ""back-to-school""]",[],Summer,Nike,2024-08-28,2026-02-02,46.96,1920x1080,free,clean
+90,lifestyle_00090_still-material.jpg,lifestyle,[],[54],Winter,INC,2026-02-08,2026-04-23,35.25,1920x1080,free,clean
+91,banner_00091_investment-customer.jpg,banner,"[""back-to-school"", ""new-arrival"", ""accessories"", ""fall"", ""indoor"", ""model""]",[],Spring,Steve Madden,2024-07-01,2025-02-25,39.95,800x600,free,clean
+92,product_00092_bill-reason-lawyer.jpg,product,"[""beauty"", ""mothers-day"", ""shoes""]","[208, 1288]",Summer,Nike,2026-01-05,2026-03-12,19.11,1280x720,free,clean
+93,banner_00093_land-item-manage.jpg,banner,"[""lunar-new-year"", ""outdoor""]",[],All,Style & Co,2024-12-04,2025-07-19,27.25,2560x1440,free,clean
+94,banner_00094_shoulder-arm-report.jpg,banner,"[""black-friday"", ""lifestyle"", ""lunar-new-year"", ""indoor"", ""studio"", ""outdoor""]",[],All,Michael Kors,2025-01-26,2025-08-12,7.95,2560x1440,expired,clean
+95,product_00095_race-billion-ask.jpg,product,"[""new-arrival"", ""black-friday""]","[650, 934]",Spring,UGG,2022-10-05,2026-02-02,7.36,2560x1440,restricted,clean
+96,lifestyle_00096_should-group-such.jpg,lifestyle,[],[],Spring,Tommy Hilfiger,2022-05-20,2024-09-29,27.31,2560x1440,expired,orphaned
+97,product_00097_boy-energy-dark.jpg,product,"[""new-arrival"", ""lifestyle"", ""back-to-school"", ""studio"", ""kids"", ""outdoor""]",[],Spring,Style & Co,2024-07-21,2026-01-21,36.07,2560x1440,free,clean
+98,product_00098_not-list-challenge.jpg,product,"[""dresses"", ""denim"", ""fall"", ""flatlay"", ""lifestyle""]","[1554, 1732]",Summer,Coach,2023-12-30,2024-10-01,48.67,1920x1080,free,clean
+99,hero_00099_cover-family.jpg,hero,"[""indoor"", ""mothers-day"", ""accessories""]",[],Winter,Clinique,2023-11-27,2024-12-16,5.95,1920x1080,free,clean
+100,banner_00100_enjoy-two-wind-bag.jpg,banner,"[""spring"", ""sale"", ""studio"", ""lunar-new-year"", ""womens"", ""back-to-school""]",[],All,Polo Ralph Lauren,2022-11-19,2024-06-25,13.82,2560x1440,free,clean
