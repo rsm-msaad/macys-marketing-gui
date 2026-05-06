@@ -6,6 +6,29 @@ Push all deliverables to GitHub before the start of class on **May 7th**. Make s
 - `data/` Contains data and code for data preparation
 - `skill/` Contains the _skills_ you create for your project
 
+## Human in the Loop Architecture
+
+Our project follows the architecture Vincent laid out on Piazza. Skills are markdown first, with Python scripts handling every calculation. The LLM never computes results. It reads the brief, picks the right script to run, and surfaces the output for review. Humans stay in the loop at every strategic decision point.
+
+Each of the four skills we shipped pairs AI work with a specific human owner who makes the final call:
+
+| Skill | Workflow Step | AI Does | Human Decides |
+|-------|---------------|---------|---------------|
+| Audience Segment Builder | Step 2: Segmentation | Generates 3 ranked segment options using RFM clustering | Sarah picks which segment to target based on business context |
+| DAM Asset Finder | Steps 4 to 5: Creative Production | Filters degraded assets, ranks clean ones by relevance | Priya picks the final hero photos for the campaign |
+| Localization Generator | Step 7: Localization | Generates 40 regional variants with pricing and copy substitutions | Diego reviews variants, flags edge cases, approves the batch |
+| Campaign Performance Analyzer | Step 9: Monitoring | Pulls data, runs attribution, forecasts next campaign | Anna adds business context to the auto-generated readout before sending to leadership |
+
+### Deterministic automations (not skills)
+
+Other pieces of the workflow are pure automation. They run on a schedule, they make no business judgment, and they get no benefit from an LLM in the loop:
+
+- Star Rewards data export (daily customer data sync, cron job)
+- File format conversion (PSD to JPG, PNG, MP4, deterministic)
+- Regional pricing sync (data join across systems, no judgment needed)
+
+These are intentionally not skills. They run as scheduled scripts because they don't benefit from AI judgment. This is the deterministic automation improvement path Vincent mentioned in his Piazza clarification.
+
 ## Claude usage logging
 
 > **Heads up:** Your Claude Code usage in this repo is logged. Prompts you submit and the tools Claude runs are written to `.claude/usage-log/<username>-session-*.jsonl` and auto-staged on every `git commit`, so they end up on GitHub alongside your code. This repo lives in a **private GitHub organization** — only you, your teammates, and the instructional team can see it. The instructor uses these logs to see how the class is using the tool — please work normally and know that **file contents and command output are not captured**, only prompts and tool names/arguments. Details in [`.claude/usage-log/README.md`](.claude/usage-log/README.md).
