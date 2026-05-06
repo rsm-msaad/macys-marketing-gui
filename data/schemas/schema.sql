@@ -17,7 +17,8 @@ CREATE TABLE customers (
     star_rewards_points  INTEGER,
     preferred_channel    TEXT,
     opt_in_email         INTEGER,
-    opt_in_sms           INTEGER
+    opt_in_sms           INTEGER,
+    category_preference  TEXT
 );
 
 DROP TABLE IF EXISTS transactions;

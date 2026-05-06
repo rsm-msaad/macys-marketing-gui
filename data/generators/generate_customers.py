@@ -36,6 +36,17 @@ PREFERRED_CHANNELS = ["email", "app", "sms"]
 GENDERS = ["F", "M", "Nonbinary", "Unspecified"]
 GENDER_WEIGHTS = [0.55, 0.40, 0.03, 0.02]
 
+# Each customer gets one preferred product category. Distribution roughly
+# matches retail interest patterns: Apparel still dominates but the long tail
+# is meaningful enough to differentiate behavioral segments.
+CATEGORY_PREFERENCES = ["Apparel", "Beauty", "Home", "Accessories", "Shoes"]
+CATEGORY_PREFERENCE_WEIGHTS = [0.35, 0.25, 0.20, 0.15, 0.05]
+
+# Share of a customer's transactions that fall in their preferred category.
+# The remainder is sampled across the other categories. Tuning this is the
+# main lever on per-segment category lift in the Audience Segment Builder.
+PREFERENCE_FOLLOW_RATE = 0.60
+
 
 def generate_customers(seed: int = SEED, n: int = N_CUSTOMERS) -> pd.DataFrame:
     random.seed(seed)
@@ -49,6 +60,12 @@ def generate_customers(seed: int = SEED, n: int = N_CUSTOMERS) -> pd.DataFrame:
         [t for t, _ in TIER_DISTRIBUTION],
         size=n,
         p=[p for _, p in TIER_DISTRIBUTION],
+    )
+
+    category_prefs = np.random.choice(
+        CATEGORY_PREFERENCES,
+        size=n,
+        p=CATEGORY_PREFERENCE_WEIGHTS,
     )
 
     rows = []
@@ -82,6 +99,7 @@ def generate_customers(seed: int = SEED, n: int = N_CUSTOMERS) -> pd.DataFrame:
                 "preferred_channel": np.random.choice(PREFERRED_CHANNELS, p=[0.6, 0.25, 0.15]),
                 "opt_in_email": int(np.random.rand() < 0.85),
                 "opt_in_sms": int(np.random.rand() < 0.45),
+                "category_preference": str(category_prefs[i]),
             }
         )
 
@@ -98,6 +116,12 @@ def generate_transactions(
 
     Per customer transaction frequency scales with loyalty tier:
     Bronze x1, Silver x2, Gold x3.5, Platinum x5.
+
+    Each customer's transactions tilt toward their `category_preference`:
+    `PREFERENCE_FOLLOW_RATE` (default 60 percent) of a customer's
+    transactions are sampled uniformly within their preferred category, the
+    remainder are sampled uniformly across the other categories. This is
+    what drives meaningful per segment category lift downstream.
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -110,11 +134,37 @@ def generate_transactions(
 
     total = int(counts.sum())
     customer_ids = np.repeat(customers["customer_id"].to_numpy(), counts)
-
-    sku_ids = skus["sku_id"].to_numpy()
     base_prices = skus.set_index("sku_id")["base_price"].to_dict()
 
-    chosen_skus = np.random.choice(sku_ids, size=total)
+    # Build per-category SKU pools and the "everything except this category"
+    # pool, both keyed by category name.
+    cat_to_skus: dict[str, np.ndarray] = {
+        cat: skus.loc[skus["category"] == cat, "sku_id"].to_numpy()
+        for cat in skus["category"].unique()
+    }
+    all_categories = list(cat_to_skus.keys())
+    not_in_cat: dict[str, np.ndarray] = {
+        cat: np.concatenate([cat_to_skus[c] for c in all_categories if c != cat])
+        for cat in all_categories
+    }
+
+    # Per-transaction preferred category, repeated by transaction count.
+    cust_pref = customers.set_index("customer_id")["category_preference"].to_dict()
+    trans_pref = np.array([cust_pref[int(c)] for c in customer_ids])
+
+    follows_pref = np.random.rand(total) < PREFERENCE_FOLLOW_RATE
+
+    # Vectorized per (preferred category, follows_pref) bucket: at most
+    # len(categories) * 2 calls to np.random.choice instead of one per row.
+    chosen_skus = np.empty(total, dtype=np.int64)
+    for cat in all_categories:
+        for follow in (True, False):
+            mask = (trans_pref == cat) & (follows_pref == follow)
+            n_in_bucket = int(mask.sum())
+            if n_in_bucket == 0:
+                continue
+            pool = cat_to_skus[cat] if follow else not_in_cat[cat]
+            chosen_skus[mask] = np.random.choice(pool, size=n_in_bucket)
 
     today = date.today()
     day_offsets = np.random.randint(0, 24 * 30, size=total)

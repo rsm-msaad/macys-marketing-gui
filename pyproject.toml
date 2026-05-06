@@ -16,6 +16,8 @@ dependencies = [
     "requests>=2.32",
     "pyarrow>=17",
     "scikit-learn>=1.8.0",
+    "faker>=40.15.0",
+    "pandas>=3.0.2",
 ]
 
 [dependency-groups]

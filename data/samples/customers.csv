@@ -1,101 +1,101 @@
-customer_id,first_name,last_name,email,age,gender,city,state,zip,signup_date,loyalty_tier,star_rewards_points,preferred_channel,opt_in_email,opt_in_sms
-1,Danielle,Johnson,danielle.johnson8728@example.com,18,M,Johnberg,WA,13935,2018-06-05,Bronze,264,email,1,0
-2,Erica,Mcclain,erica.mcclain6234@example.com,37,M,New Roberttown,CO,29158,2025-06-19,Gold,4862,email,1,0
-3,Jesse,Guzman,jesse.guzman4044@example.com,69,M,Lake Debra,ND,55488,2022-06-08,Silver,1497,email,1,0
-4,Jeffrey,Lawrence,jeffrey.lawrence3521@example.com,57,M,Port Lindachester,MA,36922,2023-01-08,Bronze,483,email,1,1
-5,Eric,Bernard,eric.bernard8088@example.com,56,M,Curtisfurt,CT,47553,2022-03-04,Bronze,205,sms,1,1
-6,Melanie,Munoz,melanie.munoz6440@example.com,66,M,Lake Stephenville,MS,10829,2024-05-30,Bronze,137,email,0,0
-7,Andrea,Calderon,andrea.calderon1383@example.com,45,F,Barbaraland,AZ,87174,2020-02-17,Bronze,451,sms,1,1
-8,Jeremy,Roberts,jeremy.roberts2366@example.com,40,F,Port Jesseville,MS,36935,2020-07-04,Gold,5028,email,1,1
-9,Shawn,Flowers,shawn.flowers1246@example.com,24,F,West Michael,TN,35494,2022-01-31,Silver,824,sms,1,0
-10,Jacqueline,Sutton,jacqueline.sutton8958@example.com,62,M,New Cynthiaside,VA,32588,2021-06-21,Silver,2032,email,1,1
-11,Frank,Gray,frank.gray8012@example.com,75,F,Lake Mark,WI,07832,2020-09-03,Bronze,316,sms,1,0
-12,Jeremy,Johnson,jeremy.johnson7258@example.com,57,F,Richardland,IL,74842,2022-04-06,Gold,2731,app,1,1
-13,Nancy,Edwards,nancy.edwards7604@example.com,68,F,Fostermouth,FL,35219,2022-06-24,Silver,2046,sms,1,1
-14,Donald,Mcgee,donald.mcgee5654@example.com,21,F,Juliechester,MH,76985,2021-09-19,Bronze,296,email,0,1
-15,Reginald,Robinson,reginald.robinson6884@example.com,46,F,New Trevor,WV,06676,2024-08-17,Bronze,465,app,0,1
-16,Michelle,Hernandez,michelle.hernandez7410@example.com,19,F,Port Erin,PA,08827,2024-10-11,Bronze,92,email,1,0
-17,Paul,Carlson,,48,F,Riceside,VI,02005,2021-03-01,Bronze,127,app,1,1
-18,Erin,Wilson,erin.wilson897@example.com,39,F,Kaylamouth,DE,38970,2024-11-27,Bronze,380,email,1,0
-19,Ryan,Chavez,ryan.chavez1920@example.com,50,F,Teresaburgh,NY,14448,2020-10-31,Bronze,247,email,1,0
-20,Monica,Evans,monica.evans9000@example.com,40,M,East Nathaniel,GA,71198,2022-01-30,Bronze,303,app,1,1
-21,Stephanie,Nielsen,stephanie.nielsen7843@example.com,57,F,New Mariotown,DE,48077,2022-09-21,Silver,1292,sms,0,0
-22,Natasha,Decker,natasha.decker7887@example.com,20,F,Johnbury,FM,74865,2022-12-05,Bronze,256,email,1,0
-23,Stacey,Miller,stacey.miller9788@example.com,41,F,Cabreraside,WI,16984,2018-07-03,Bronze,359,email,1,1
-24,David,Alvarez,david.alvarez5930@example.com,65,M,West Allison,PA,55962,2023-01-28,Bronze,393,email,1,0
-25,Tamara,Hickman,tamara.hickman965@example.com,54,M,Lake Larry,TN,85681,2024-07-09,Bronze,151,app,1,1
-26,Nathaniel,Lam,nathaniel.lam3507@example.com,54,F,Martinezbury,CA,44814,2023-12-11,Silver,596,app,1,1
-27,Andrew,Spencer,andrew.spencer5735@example.com,28,F,North Chad,SC,08217,2019-06-19,Bronze,496,email,1,1
-28,Jeremy,Whitehead,jeremy.whitehead7663@example.com,71,F,Chadbury,KY,88185,2024-11-29,Bronze,147,app,1,0
-29,Todd,Ryan,todd.ryan5491@example.com,68,F,Sanchezfort,AS,53855,2018-05-21,Bronze,479,email,0,1
-30,James,Davis,james.davis2226@example.com,53,F,Gomezchester,NH,96062,2022-06-10,Bronze,440,app,1,1
-31,Brian,Valdez,brian.valdez8934@example.com,36,Unspecified,North Richardmouth,AS,14823,2020-11-10,Silver,1166,email,1,0
-32,John,Lee,john.lee9363@example.com,77,F,Taylorburgh,KY,61138,2021-08-05,Bronze,168,email,0,0
-33,John,Leblanc,john.leblanc6134@example.com,34,M,Mortonside,CT,07131,2021-05-26,Bronze,294,email,1,0
-34,Denise,Fernandez,denise.fernandez2001@example.com,37,M,North Sarabury,GA,53770,2021-03-30,Gold,6101,sms,1,0
-35,Todd,Lewis,todd.lewis1799@example.com,59,M,Barreraburgh,MS,00783,2018-10-18,Gold,9933,app,0,1
-36,Tricia,Baker,tricia.baker7786@example.com,21,F,Mitchellside,TN,94664,2020-07-23,Silver,1817,sms,1,1
-37,Tommy,Lee,tommy.lee7152@example.com,72,F,North Beth,ND,08490,2022-09-22,Bronze,279,email,1,0
-38,Julie,Brown,julie.brown8482@example.com,78,F,Shawhaven,GA,07956,2021-03-21,Bronze,419,email,1,1
-39,Susan,Miller,susan.miller3535@example.com,61,M,North Brooke,TX,31329,2020-05-17,Silver,1299,email,1,0
-40,Richard,David,richard.david6290@example.com,30,M,New Brooke,RI,11246,2019-08-03,Bronze,100,email,1,1
-41,Robert,Silva,robert.silva6768@example.com,61,F,Sarahborough,TN,94373,2024-12-27,Bronze,357,app,1,1
-42,Leon,Baker,leon.baker3149@example.com,44,F,Lake Debbie,NH,41942,2018-08-19,Bronze,6,email,1,1
-43,Sarah,Walls,sarah.walls8088@example.com,39,F,South Christineshire,CT,10103,2019-08-01,Bronze,113,app,1,1
-44,Amanda,Wagner,amanda.wagner8532@example.com,79,F,West Nicole,FM,32519,2023-11-09,Gold,5037,email,0,0
-45,Mike,Moore,mike.moore168@example.com,29,F,Cherylhaven,AL,88039,2022-08-21,Bronze,30,email,0,0
-46,Lisa,Evans,lisa.evans888@example.com,49,M,East Josephville,WA,73013,2024-01-04,Silver,1071,email,1,1
-47,Eric,Campbell,eric.campbell6180@example.com,37,F,Lake Matthew,TX,83631,2022-08-07,Bronze,383,email,1,0
-48,Melissa,Wagner,melissa.wagner5488@example.com,73,Nonbinary,Rebeccaton,CO,83637,2019-10-27,Bronze,297,email,1,0
-49,Rodney,Hill,rodney.hill5275@example.com,63,F,West Kellieview,GA,97655,2020-01-01,Bronze,361,email,1,0
-50,Scott,Thornton,scott.thornton9920@example.com,78,F,North Charlesberg,ND,05223,2018-10-03,Bronze,1,app,1,1
-51,Mary,Aguilar,mary.aguilar9635@example.com,37,F,South David,ME,48296,2018-10-29,Gold,4367,sms,1,0
-52,Rachel,Flynn,rachel.flynn4618@example.com,46,M,West Jasonbury,TN,13974,2023-09-17,Silver,1553,sms,1,1
-53,Michael,Castro,michael.castro4743@example.com,23,M,Dicksonberg,IA,21800,2024-03-14,Gold,4071,email,1,1
-54,Theresa,Cochran,theresa.cochran1277@example.com,20,M,Johnsonmouth,WY,54465,2022-12-14,Gold,8642,sms,1,1
-55,Leah,Shields,leah.shields9649@example.com,56,F,West Erik,UT,14669,2021-06-27,Bronze,461,email,1,0
-56,Patrick,Williams,patrick.williams121@example.com,26,F,Walkermouth,MI,40502,2025-03-14,Gold,6802,email,1,0
-57,Lori,Savage,lori.savage4241@example.com,63,F,North Donna,MO,43526,2018-12-10,Bronze,397,sms,1,0
-58,Joshua,Jones,joshua.jones6091@example.com,75,F,Michaelhaven,MO,89566,2024-03-05,Bronze,236,email,1,1
-59,Tina,Herrera,tina.herrera6116@example.com,62,F,North Natalieview,HI,76600,2024-07-13,Bronze,103,app,1,1
-60,Sydney,Baker,sydney.baker6986@example.com,47,F,New Ryanmouth,NE,79958,2025-12-02,Bronze,432,sms,1,0
-61,Tracey,Wilson,tracey.wilson6504@example.com,51,F,West Bradley,NE,00722,2018-10-12,Bronze,112,email,1,1
-62,April,Drake,april.drake5504@example.com,49,F,West Ryan,TN,43780,2021-11-15,Bronze,207,email,1,0
-63,Cindy,Alvarado,cindy.alvarado6887@example.com,31,F,Lake Rachelhaven,ME,87911,2023-06-07,Silver,958,app,1,1
-64,Ricky,Powell,ricky.powell8563@example.com,49,F,Angelaborough,MT,87654,2025-04-21,Bronze,28,email,1,1
-65,Shelby,Byrd,shelby.byrd300@example.com,57,M,New Ashley,MO,72320,2023-12-11,Bronze,316,app,1,1
-66,Martha,Torres,martha.torres2266@example.com,61,F,South Kristi,PA,86314,2018-08-13,Bronze,464,email,1,1
-67,Marco,Ramos,marco.ramos816@example.com,50,Nonbinary,New Thomas,MH,96964,2023-10-05,Bronze,247,app,1,1
-68,Gene,Miller,gene.miller9994@example.com,46,M,Clarencebury,TX,41188,2020-10-16,Silver,783,app,1,1
-69,Jeffrey,Gonzalez,jeffrey.gonzalez2452@example.com,52,M,North Johnfort,RI,10046,2019-01-02,Bronze,131,email,1,1
-70,Stanley,Mercado,stanley.mercado9542@example.com,71,F,Lake Heather,NM,52884,2019-12-15,Platinum,18343,email,1,1
-71,John,Douglas,john.douglas7507@example.com,76,M,Port Michelleville,WI,56225,2019-04-25,Silver,1980,email,1,1
-72,Jeffery,Brock,jeffery.brock6640@example.com,47,F,Williamsbury,PW,16407,2020-11-24,Bronze,404,app,1,1
-73,Stephen,Solis,stephen.solis1646@example.com,41,F,Stephaniemouth,RI,94777,2020-11-27,Bronze,491,app,1,1
-74,Patricia,Simmons,patricia.simmons3300@example.com,22,M,Merrittfort,NV,34473,2023-02-13,Silver,797,app,1,0
-75,Karen,Larsen,karen.larsen9633@example.com,42,F,Katiehaven,NM,82650,2023-11-04,Silver,650,email,1,0
-76,John,Gonzales,john.gonzales2370@example.com,68,M,Jimmymouth,MD,71299,2021-01-15,Silver,2447,sms,1,1
-77,Christopher,Hernandez,christopher.hernandez844@example.com,47,M,Bensonborough,CA,54878,2022-06-19,Silver,921,sms,1,0
-78,Rick,Daniels,rick.daniels5448@example.com,62,F,Brownchester,MS,77057,2022-01-19,Bronze,323,app,1,0
-79,Sophia,Smith,sophia.smith6971@example.com,44,F,Woodsstad,ME,99260,2023-12-09,Bronze,480,email,1,0
-80,Peter,Snow,peter.snow8566@example.com,56,M,Medinaside,AS,79570,2021-03-31,Bronze,264,app,1,0
-81,Rachael,Freeman,rachael.freeman5856@example.com,27,M,Ryantown,MS,44558,2020-12-24,Gold,4512,app,1,0
-82,Elizabeth,Yates,elizabeth.yates1632@example.com,55,M,Port Tanner,DC,82061,2022-07-20,Silver,2077,email,1,1
-83,Amanda,Meadows,amanda.meadows6194@example.com,36,M,North Dawnberg,VI,61016,2020-04-23,Bronze,438,email,1,0
-84,Hunter,Green,hunter.green23@example.com,44,Unspecified,Jasonmouth,MA,50193,2025-04-19,Bronze,398,email,1,1
-85,Joshua,Bean,,77,M,Kingland,NJ,03041,2020-10-09,Bronze,473,sms,1,1
-86,Kaitlyn,Williams,kaitlyn.williams2230@example.com,22,F,Jeffreyland,WI,85927,2024-04-23,Bronze,221,email,0,1
-87,Billy,Johnson,billy.johnson6898@example.com,57,M,East Mary,RI,20474,2023-07-28,Silver,1992,email,1,1
-88,John,Wells,john.wells4982@example.com,64,F,New Staciemouth,UT,34087,2021-10-18,Silver,905,sms,1,0
-89,Katie,Jackson,katie.jackson3853@example.com,20,M,Port Loriport,CT,76350,2018-12-31,Gold,4602,app,1,1
-90,Anthony,Collins,anthony.collins4520@example.com,38,F,Sandersborough,CA,78108,2023-02-04,Bronze,168,email,1,1
-91,Hannah,Burton,hannah.burton7609@example.com,36,F,Lake Kendraville,WY,74678,2020-04-02,Bronze,88,email,0,1
-92,Kimberly,Reed,kimberly.reed5508@example.com,19,M,Stanleyland,NY,85375,2025-03-17,Silver,2326,app,1,0
-93,Matthew,Atkinson,matthew.atkinson209@example.com,63,F,Garciastad,SC,60759,2020-11-09,Silver,551,app,1,0
-94,Jasmine,Graham,jasmine.graham4093@example.com,34,F,Christinaside,WI,63873,2019-10-23,Bronze,190,email,1,0
-95,Steven,Petersen,steven.petersen6586@example.com,57,M,Marcusbury,MP,11860,2023-11-27,Silver,830,sms,0,0
-96,Joshua,Hayes,joshua.hayes8469@example.com,53,Nonbinary,Hudsonfurt,MA,04262,2024-06-20,Bronze,419,app,1,0
-97,Troy,Nguyen,troy.nguyen9178@example.com,40,F,Lewisview,MA,37156,2022-09-08,Bronze,229,email,1,0
-98,Nicole,Haynes,nicole.haynes849@example.com,49,M,Angelahaven,ID,11722,2020-10-03,Bronze,33,sms,1,0
-99,John,Russell,john.russell8611@example.com,70,M,Lake Thomas,VT,64833,2021-05-19,Bronze,395,email,1,0
-100,Shane,Smith,shane.smith5529@example.com,64,F,Jeffreybury,ME,87527,2022-10-31,Bronze,322,app,1,1
+customer_id,first_name,last_name,email,age,gender,city,state,zip,signup_date,loyalty_tier,star_rewards_points,preferred_channel,opt_in_email,opt_in_sms,category_preference
+1,Danielle,Johnson,danielle.johnson7486@example.com,34,F,Johnberg,WA,13935,2023-09-12,Bronze,353,email,1,0,Accessories
+2,Erica,Mcclain,,79,F,New Roberttown,CO,29158,2022-06-03,Gold,5028,sms,1,1,Beauty
+3,Jesse,Guzman,jesse.guzman1528@example.com,65,F,Lake Debra,ND,55488,2022-07-12,Silver,1479,email,1,0,Apparel
+4,Jeffrey,Lawrence,jeffrey.lawrence1@example.com,40,F,Port Lindachester,MA,36922,2025-02-01,Bronze,13,email,1,0,Home
+5,Eric,Bernard,eric.bernard4343@example.com,70,M,Curtisfurt,CT,47553,2024-05-14,Bronze,287,email,1,1,Beauty
+6,Melanie,Munoz,melanie.munoz3155@example.com,62,M,Lake Stephenville,MS,10829,2025-04-12,Bronze,56,email,1,1,Beauty
+7,Andrea,Calderon,andrea.calderon8892@example.com,39,F,Barbaraland,AZ,87174,2022-06-06,Bronze,129,email,1,1,Apparel
+8,Jeremy,Roberts,jeremy.roberts1902@example.com,57,F,Port Jesseville,MS,36935,2022-09-05,Gold,8068,sms,1,1,Home
+9,Shawn,Flowers,shawn.flowers4116@example.com,73,Nonbinary,West Michael,TN,35494,2024-02-16,Silver,1917,email,1,0,Beauty
+10,Jacqueline,Sutton,jacqueline.sutton2851@example.com,63,M,New Cynthiaside,VA,32588,2025-03-16,Silver,675,email,1,0,Apparel
+11,Frank,Gray,frank.gray2364@example.com,30,M,Lake Mark,WI,07832,2019-02-19,Bronze,457,email,1,1,Shoes
+12,Jeremy,Johnson,jeremy.johnson6329@example.com,73,F,Richardland,IL,74842,2023-03-24,Gold,3707,email,1,0,Beauty
+13,Nancy,Edwards,nancy.edwards5550@example.com,37,Unspecified,Fostermouth,FL,35219,2020-04-19,Silver,2239,email,1,0,Home
+14,Donald,Mcgee,donald.mcgee7317@example.com,70,F,Juliechester,MH,76985,2020-12-23,Bronze,48,app,1,1,Home
+15,Reginald,Robinson,reginald.robinson2285@example.com,25,F,New Trevor,WV,06676,2020-08-16,Bronze,80,email,1,1,Apparel
+16,Michelle,Hernandez,michelle.hernandez7303@example.com,25,M,Port Erin,PA,08827,2019-01-12,Bronze,11,email,0,0,Home
+17,Paul,Carlson,paul.carlson8587@example.com,49,F,Riceside,VI,02005,2021-01-07,Bronze,371,email,1,1,Apparel
+18,Erin,Wilson,erin.wilson3269@example.com,20,Nonbinary,Kaylamouth,DE,38970,2025-01-01,Bronze,392,app,1,1,Home
+19,Ryan,Chavez,ryan.chavez8940@example.com,62,M,Teresaburgh,NY,14448,2025-08-11,Bronze,369,email,1,1,Home
+20,Monica,Evans,monica.evans8280@example.com,64,M,East Nathaniel,GA,71198,2022-10-30,Bronze,187,email,1,1,Apparel
+21,Stephanie,Nielsen,stephanie.nielsen7932@example.com,62,F,New Mariotown,DE,48077,2019-05-17,Silver,1287,email,1,0,Beauty
+22,Natasha,Decker,natasha.decker2411@example.com,24,M,Johnbury,FM,74865,2024-10-13,Bronze,464,email,1,0,Home
+23,Stacey,Miller,stacey.miller772@example.com,59,M,Cabreraside,WI,16984,2019-04-14,Bronze,420,email,1,1,Beauty
+24,David,Alvarez,david.alvarez6303@example.com,33,Nonbinary,West Allison,PA,55962,2018-11-11,Bronze,456,email,1,1,Home
+25,Tamara,Hickman,tamara.hickman2377@example.com,33,F,Lake Larry,TN,85681,2022-06-14,Bronze,291,email,1,0,Apparel
+26,Nathaniel,Lam,nathaniel.lam8097@example.com,60,F,Martinezbury,CA,44814,2025-11-20,Silver,529,sms,1,1,Home
+27,Andrew,Spencer,andrew.spencer8539@example.com,18,F,North Chad,SC,08217,2023-12-10,Bronze,323,email,1,0,Apparel
+28,Jeremy,Whitehead,jeremy.whitehead5651@example.com,59,F,Chadbury,KY,88185,2019-12-23,Bronze,304,app,0,1,Home
+29,Todd,Ryan,todd.ryan8971@example.com,45,F,Sanchezfort,AS,53855,2019-06-25,Bronze,453,email,1,0,Apparel
+30,James,Davis,james.davis6247@example.com,35,M,Gomezchester,NH,96062,2020-02-27,Bronze,142,email,1,0,Apparel
+31,Brian,Valdez,brian.valdez8557@example.com,52,M,North Richardmouth,AS,14823,2020-06-02,Silver,1285,email,1,0,Home
+32,John,Lee,john.lee5930@example.com,74,F,Taylorburgh,KY,61138,2024-01-18,Bronze,103,sms,1,0,Apparel
+33,John,Leblanc,john.leblanc6075@example.com,50,F,Mortonside,CT,07131,2023-04-30,Bronze,368,email,0,1,Accessories
+34,Denise,Fernandez,denise.fernandez3392@example.com,33,F,North Sarabury,GA,53770,2021-09-27,Gold,4345,app,1,0,Home
+35,Todd,Lewis,todd.lewis8972@example.com,72,F,Barreraburgh,MS,00783,2023-04-25,Gold,7373,email,1,0,Accessories
+36,Tricia,Baker,tricia.baker2647@example.com,46,M,Mitchellside,TN,94664,2022-11-03,Silver,2293,email,1,0,Beauty
+37,Tommy,Lee,tommy.lee1401@example.com,39,M,North Beth,ND,08490,2024-03-24,Bronze,131,email,1,1,Apparel
+38,Julie,Brown,julie.brown8020@example.com,67,F,Shawhaven,GA,07956,2024-05-23,Bronze,105,app,1,0,Beauty
+39,Susan,Miller,susan.miller4306@example.com,24,M,North Brooke,TX,31329,2024-01-28,Silver,1921,email,1,1,Apparel
+40,Richard,David,richard.david384@example.com,18,M,New Brooke,RI,11246,2022-11-13,Bronze,195,email,1,1,Beauty
+41,Robert,Silva,robert.silva8824@example.com,28,F,Sarahborough,TN,94373,2024-09-16,Bronze,54,email,1,1,Home
+42,Leon,Baker,leon.baker8029@example.com,41,M,Lake Debbie,NH,41942,2020-11-23,Bronze,276,email,1,1,Home
+43,Sarah,Walls,sarah.walls459@example.com,63,M,South Christineshire,CT,10103,2023-03-09,Bronze,104,email,1,1,Apparel
+44,Amanda,Wagner,amanda.wagner2122@example.com,28,F,West Nicole,FM,32519,2023-06-02,Gold,7802,app,1,0,Home
+45,Mike,Moore,mike.moore7893@example.com,38,F,Cherylhaven,AL,88039,2019-07-04,Bronze,446,email,1,0,Beauty
+46,Lisa,Evans,lisa.evans2770@example.com,56,F,East Josephville,WA,73013,2021-01-30,Silver,1505,app,0,0,Beauty
+47,Eric,Campbell,eric.campbell2130@example.com,22,M,Lake Matthew,TX,83631,2023-06-19,Bronze,273,email,1,0,Apparel
+48,Melissa,Wagner,melissa.wagner9767@example.com,51,M,Rebeccaton,CO,83637,2023-05-09,Bronze,345,email,0,0,Beauty
+49,Rodney,Hill,rodney.hill9443@example.com,38,M,West Kellieview,GA,97655,2019-04-07,Bronze,211,email,1,0,Home
+50,Scott,Thornton,scott.thornton6798@example.com,56,F,North Charlesberg,ND,05223,2024-11-20,Bronze,375,email,1,1,Home
+51,Mary,Aguilar,mary.aguilar9844@example.com,43,F,South David,ME,48296,2023-10-16,Gold,6477,sms,1,0,Beauty
+52,Rachel,Flynn,,41,M,West Jasonbury,TN,13974,2020-07-06,Silver,654,email,1,1,Home
+53,Michael,Castro,michael.castro7842@example.com,44,F,Dicksonberg,IA,21800,2025-01-17,Gold,8301,email,1,1,Apparel
+54,Theresa,Cochran,theresa.cochran5420@example.com,66,M,Johnsonmouth,WY,54465,2021-09-29,Gold,4824,email,0,1,Accessories
+55,Leah,Shields,leah.shields6688@example.com,35,M,West Erik,UT,14669,2022-02-15,Bronze,249,sms,1,0,Home
+56,Patrick,Williams,patrick.williams6829@example.com,69,Nonbinary,Walkermouth,MI,40502,2024-05-31,Gold,7765,email,1,1,Home
+57,Lori,Savage,lori.savage9652@example.com,61,M,North Donna,MO,43526,2026-04-21,Bronze,393,email,1,0,Beauty
+58,Joshua,Jones,joshua.jones9897@example.com,29,F,Michaelhaven,MO,89566,2024-07-11,Bronze,471,app,1,1,Apparel
+59,Tina,Herrera,tina.herrera5281@example.com,73,M,North Natalieview,HI,76600,2018-09-27,Bronze,458,app,1,1,Beauty
+60,Sydney,Baker,sydney.baker2893@example.com,57,M,New Ryanmouth,NE,79958,2019-07-06,Bronze,247,sms,1,0,Beauty
+61,Tracey,Wilson,tracey.wilson8729@example.com,57,M,West Bradley,NE,00722,2024-12-15,Bronze,426,app,1,1,Apparel
+62,April,Drake,april.drake6769@example.com,45,M,West Ryan,TN,43780,2025-08-27,Bronze,179,email,1,1,Apparel
+63,Cindy,Alvarado,cindy.alvarado6328@example.com,70,F,Lake Rachelhaven,ME,87911,2019-08-26,Silver,2228,email,1,0,Home
+64,Ricky,Powell,ricky.powell739@example.com,35,M,Angelaborough,MT,87654,2022-07-11,Bronze,65,email,1,1,Apparel
+65,Shelby,Byrd,shelby.byrd320@example.com,38,F,New Ashley,MO,72320,2019-01-17,Bronze,379,sms,1,0,Accessories
+66,Martha,Torres,martha.torres9339@example.com,19,Unspecified,South Kristi,PA,86314,2021-09-28,Bronze,376,email,1,1,Apparel
+67,Marco,Ramos,marco.ramos6337@example.com,51,F,New Thomas,MH,96964,2019-12-02,Bronze,450,email,1,1,Shoes
+68,Gene,Miller,gene.miller5998@example.com,35,F,Clarencebury,TX,41188,2022-10-04,Silver,1728,app,1,1,Shoes
+69,Jeffrey,Gonzalez,jeffrey.gonzalez810@example.com,77,F,North Johnfort,RI,10046,2024-03-10,Bronze,324,sms,1,1,Beauty
+70,Stanley,Mercado,stanley.mercado6081@example.com,58,M,Lake Heather,NM,52884,2025-05-27,Platinum,46369,email,1,0,Shoes
+71,John,Douglas,john.douglas5720@example.com,43,F,Port Michelleville,WI,56225,2025-01-05,Silver,2164,app,1,0,Accessories
+72,Jeffery,Brock,jeffery.brock5114@example.com,73,M,Williamsbury,PW,16407,2018-05-17,Bronze,125,email,1,1,Apparel
+73,Stephen,Solis,stephen.solis2866@example.com,42,F,Stephaniemouth,RI,94777,2020-06-09,Bronze,466,email,0,0,Accessories
+74,Patricia,Simmons,patricia.simmons1025@example.com,57,F,Merrittfort,NV,34473,2024-07-31,Silver,1850,email,1,0,Apparel
+75,Karen,Larsen,karen.larsen3399@example.com,62,Unspecified,Katiehaven,NM,82650,2023-02-02,Silver,1058,email,1,0,Apparel
+76,John,Gonzales,john.gonzales8387@example.com,56,M,Jimmymouth,MD,71299,2020-10-26,Silver,1059,sms,1,1,Beauty
+77,Christopher,Hernandez,christopher.hernandez9569@example.com,51,M,Bensonborough,CA,54878,2025-04-08,Silver,1101,sms,1,0,Apparel
+78,Rick,Daniels,rick.daniels4533@example.com,18,F,Brownchester,MS,77057,2020-05-07,Bronze,101,email,1,1,Apparel
+79,Sophia,Smith,,42,M,Woodsstad,ME,99260,2025-04-11,Bronze,464,sms,1,1,Shoes
+80,Peter,Snow,peter.snow2156@example.com,78,F,Medinaside,AS,79570,2025-01-03,Bronze,133,sms,1,0,Shoes
+81,Rachael,Freeman,rachael.freeman5254@example.com,65,F,Ryantown,MS,44558,2023-05-24,Gold,9537,email,1,0,Home
+82,Elizabeth,Yates,elizabeth.yates8289@example.com,57,F,Port Tanner,DC,82061,2019-02-08,Silver,935,email,1,0,Beauty
+83,Amanda,Meadows,amanda.meadows3745@example.com,23,F,North Dawnberg,VI,61016,2025-01-22,Bronze,442,email,1,1,Accessories
+84,Hunter,Green,hunter.green6760@example.com,63,F,Jasonmouth,MA,50193,2018-09-17,Bronze,447,email,1,0,Apparel
+85,Joshua,Bean,joshua.bean7387@example.com,28,F,Kingland,NJ,03041,2018-12-09,Bronze,157,app,1,0,Accessories
+86,Kaitlyn,Williams,kaitlyn.williams5199@example.com,26,F,Jeffreyland,WI,85927,2023-07-30,Bronze,457,sms,1,1,Beauty
+87,Billy,Johnson,billy.johnson3905@example.com,31,F,East Mary,RI,20474,2024-08-29,Silver,1107,app,1,1,Accessories
+88,John,Wells,john.wells3436@example.com,72,M,New Staciemouth,UT,34087,2026-01-21,Silver,2320,email,1,0,Home
+89,Katie,Jackson,katie.jackson5085@example.com,48,F,Port Loriport,CT,76350,2024-05-15,Gold,6001,email,1,1,Shoes
+90,Anthony,Collins,anthony.collins4129@example.com,54,F,Sandersborough,CA,78108,2024-10-18,Bronze,152,app,0,0,Accessories
+91,Hannah,Burton,hannah.burton7622@example.com,64,F,Lake Kendraville,WY,74678,2019-03-11,Bronze,261,email,1,1,Accessories
+92,Kimberly,Reed,kimberly.reed3632@example.com,32,M,Stanleyland,NY,85375,2023-11-27,Silver,749,app,1,1,Home
+93,Matthew,Atkinson,matthew.atkinson5651@example.com,49,M,Garciastad,SC,60759,2025-05-23,Silver,1304,email,1,1,Accessories
+94,Jasmine,Graham,jasmine.graham1447@example.com,71,F,Christinaside,WI,63873,2024-01-25,Bronze,176,email,1,0,Home
+95,Steven,Petersen,steven.petersen1148@example.com,37,M,Marcusbury,MP,11860,2020-08-06,Silver,663,sms,1,1,Apparel
+96,Joshua,Hayes,joshua.hayes2293@example.com,56,F,Hudsonfurt,MA,04262,2024-08-04,Bronze,481,email,1,0,Home
+97,Troy,Nguyen,troy.nguyen9262@example.com,67,F,Lewisview,MA,37156,2025-02-22,Bronze,252,app,1,1,Apparel
+98,Nicole,Haynes,nicole.haynes6007@example.com,40,F,Angelahaven,ID,11722,2025-11-07,Bronze,364,app,1,1,Accessories
+99,John,Russell,john.russell9452@example.com,76,F,Lake Thomas,VT,64833,2023-04-09,Bronze,421,email,1,1,Apparel
+100,Shane,Smith,shane.smith7243@example.com,72,F,Jeffreybury,ME,87527,2022-02-22,Bronze,448,app,0,1,Shoes
