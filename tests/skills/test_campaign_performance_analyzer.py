@@ -91,12 +91,13 @@ def _build_performance() -> list[tuple]:
 
 PERFORMANCE = _build_performance()
 
-# 10 customers across 4 tiers: 4 Bronze, 2 Silver, 2 Gold, 2 Platinum.
+# 16 customers across 4 tiers (4 each), so unique-buyer rates land at clean
+# fractions: Bronze 1/4, Silver 2/4, Gold 3/4, Platinum 4/4.
 CUSTOMERS = [
     (1, "Bronze"), (2, "Bronze"), (3, "Bronze"), (4, "Bronze"),
-    (5, "Silver"), (6, "Silver"),
-    (7, "Gold"), (8, "Gold"),
-    (9, "Platinum"), (10, "Platinum"),
+    (5, "Silver"), (6, "Silver"), (7, "Silver"), (8, "Silver"),
+    (9, "Gold"), (10, "Gold"), (11, "Gold"), (12, "Gold"),
+    (13, "Platinum"), (14, "Platinum"), (15, "Platinum"), (16, "Platinum"),
 ]
 
 SKUS = [
@@ -109,30 +110,37 @@ SKUS = [
 def _build_transactions() -> list[tuple]:
     """Transactions inside campaign 100's window (2026-04-15).
 
-    Engineered tier conversion rates so lift ordering is predictable:
-        Bronze (4 cust) -> 1 txn -> rate 0.25
-        Silver (2 cust) -> 4 txns -> rate 2.0
-        Gold (2 cust)   -> 6 txns -> rate 3.0
-        Platinum (2 cust) -> 10 txns -> rate 5.0
-    Overall rate = 21 / 10 = 2.1, so Platinum is top by lift.
+    Engineered unique-buyer rates per tier are clean monotonic fractions:
+        Bronze   -> 1 of 4 customers buys -> rate 0.25
+        Silver   -> 2 of 4 customers buy  -> rate 0.50
+        Gold     -> 3 of 4 customers buy  -> rate 0.75
+        Platinum -> 4 of 4 customers buy  -> rate 1.00
+    Overall rate = 10/16 = 0.625, so Platinum is top by lift.
+
+    Some customers buy multiple times (Silver cust 5, Platinum cust 14, 16)
+    so we can verify the unique-buyer logic counts each customer exactly once
+    regardless of transaction count.
 
     SKU mix: sku 1 (Lipstick) wins by revenue, sku 2 (Mascara) wins by units.
     """
     out: list[tuple] = []
-    # Bronze: 1 transaction (customer 1, sku 1, $50)
+    # Bronze: customer 1 buys once.
     out.append((1, 1, "2026-04-15", 50.0, 1, 0.0))
-    # Silver: 4 transactions (2 each)
-    for cid in (5, 6):
-        for _ in range(2):
-            out.append((cid, 1, "2026-04-15", 30.0, 1, 0.0))
-    # Gold: 6 transactions (3 each), mostly sku 2 in HIGH quantity
-    for cid in (7, 8):
-        for _ in range(3):
-            out.append((cid, 2, "2026-04-15", 5.0, 10, 0.0))  # 10 units each tx, $50/tx
-    # Platinum: 10 transactions (5 each), big spenders on sku 1 (lipstick)
-    for cid in (9, 10):
-        for _ in range(5):
-            out.append((cid, 1, "2026-04-15", 100.0, 1, 0.0))  # $100/tx
+    # Silver: customer 5 buys twice (still 1 unique buyer), customer 6 buys once.
+    out.append((5, 1, "2026-04-15", 30.0, 1, 0.0))
+    out.append((5, 1, "2026-04-15", 30.0, 1, 0.0))
+    out.append((6, 1, "2026-04-15", 30.0, 1, 0.0))
+    # Gold: customers 9, 10, 11 each buy once; customer 12 does not buy.
+    for cid in (9, 10, 11):
+        out.append((cid, 2, "2026-04-15", 5.0, 10, 0.0))  # 10 units, $50/tx
+    # Platinum: all 4 customers buy. Customer 14 buys twice, customer 16 buys 3x.
+    out.append((13, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((14, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((14, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((15, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((16, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((16, 1, "2026-04-15", 100.0, 1, 0.0))
+    out.append((16, 1, "2026-04-15", 100.0, 1, 0.0))
     return out
 
 
@@ -344,12 +352,73 @@ def test_attribution_by_segment_lift_formula(seeded_db: Path):
     finally:
         conn.close()
     by_tier = {s["segment"]: s for s in segs}
-    # Engineered: rates 0.25, 2.0, 3.0, 5.0; overall 21/10 = 2.1
-    overall = 21 / 10
-    for tier, expected_rate in (("Bronze", 0.25), ("Silver", 2.0), ("Gold", 3.0), ("Platinum", 5.0)):
+    # Unique-buyer rates per tier: 1/4, 2/4, 3/4, 4/4. Overall 10/16 = 0.625.
+    overall = 10 / 16
+    expected_rates = {
+        "Bronze": 0.25,
+        "Silver": 0.50,
+        "Gold": 0.75,
+        "Platinum": 1.00,
+    }
+    for tier, expected_rate in expected_rates.items():
         expected_lift = (expected_rate - overall) / overall
         assert by_tier[tier]["conversion_rate"] == pytest.approx(expected_rate, abs=1e-4)
         assert by_tier[tier]["lift_vs_avg"] == pytest.approx(expected_lift, abs=1e-3)
+
+
+def test_attribution_by_segment_rates_are_bounded_in_unit_interval(seeded_db: Path):
+    """Unique-buyer rate must always be in [0, 1]."""
+    conn = analyze_mod.connect_db(seeded_db)
+    try:
+        segs = analyze_mod.attribution_by_segment(conn, "2026-04-01", "2026-04-30")
+    finally:
+        conn.close()
+    for s in segs:
+        assert 0.0 <= s["conversion_rate"] <= 1.0
+
+
+def test_attribution_by_segment_counts_repeat_buyers_only_once(seeded_db: Path):
+    """Customer 16 (Platinum) has 3 transactions; should still count as 1 unique buyer.
+    Platinum has 4 customers, all of whom bought, so the rate is exactly 1.0."""
+    conn = analyze_mod.connect_db(seeded_db)
+    try:
+        segs = analyze_mod.attribution_by_segment(conn, "2026-04-01", "2026-04-30")
+    finally:
+        conn.close()
+    platinum = next(s for s in segs if s["segment"] == "Platinum")
+    # 4 unique buyers, NOT 7 transactions.
+    assert platinum["conversions"] == 4
+    assert platinum["conversion_rate"] == pytest.approx(1.0)
+
+
+def test_attribution_by_segment_silver_repeat_buyer_counted_once(seeded_db: Path):
+    """Customer 5 (Silver) buys twice; combined with customer 6 there are
+    2 unique buyers among the 4 Silver customers (rate 0.5)."""
+    conn = analyze_mod.connect_db(seeded_db)
+    try:
+        segs = analyze_mod.attribution_by_segment(conn, "2026-04-01", "2026-04-30")
+    finally:
+        conn.close()
+    silver = next(s for s in segs if s["segment"] == "Silver")
+    assert silver["conversions"] == 2  # customers 5 and 6
+    assert silver["conversion_rate"] == pytest.approx(0.5)
+
+
+def test_attribution_by_segment_lift_still_meaningful(seeded_db: Path):
+    """Lift values should still differentiate tiers even with bounded rates."""
+    conn = analyze_mod.connect_db(seeded_db)
+    try:
+        segs = analyze_mod.attribution_by_segment(conn, "2026-04-01", "2026-04-30")
+    finally:
+        conn.close()
+    by_tier = {s["segment"]: s["lift_vs_avg"] for s in segs}
+    # Lift signs make sense: Platinum/Gold positive, Bronze/Silver negative.
+    assert by_tier["Platinum"] > 0
+    assert by_tier["Gold"] > 0
+    assert by_tier["Silver"] < 0
+    assert by_tier["Bronze"] < 0
+    # Strict ordering by lift.
+    assert by_tier["Platinum"] > by_tier["Gold"] > by_tier["Silver"] > by_tier["Bronze"]
 
 
 def test_attribution_by_segment_sorted_by_lift_descending(seeded_db: Path):

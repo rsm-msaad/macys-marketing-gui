@@ -210,13 +210,16 @@ def attribution_by_segment(
 
     The schema does not store segment on campaign_performance, so we project
     the campaign window onto the transactions table and group by the buyer's
-    loyalty tier. Conversion rate is `conversions / customer_base_in_tier`.
+    loyalty tier. Conversion is the count of *unique customers* who made at
+    least one purchase in the window. Conversion rate is therefore
+    `unique_buyers_in_tier / customer_base_in_tier`, bounded in [0, 1] so
+    executives reading the readout see a probability style number.
     """
     rows = conn.execute(
         """
         SELECT c.loyalty_tier,
-               COUNT(*)                                                       AS conversions,
-               SUM(t.unit_price * t.quantity * (1 - COALESCE(t.discount_pct, 0))) AS revenue
+               COUNT(DISTINCT t.customer_id)                                       AS unique_buyers,
+               SUM(t.unit_price * t.quantity * (1 - COALESCE(t.discount_pct, 0)))  AS revenue
         FROM transactions t
         JOIN customers c ON t.customer_id = c.customer_id
         WHERE t.transaction_date BETWEEN ? AND ?
@@ -230,22 +233,24 @@ def attribution_by_segment(
     ).fetchall()
     base = {r[0]: int(r[1]) for r in base_rows}
 
-    total_conversions = sum(int(r[1] or 0) for r in rows)
+    total_unique_buyers = sum(int(r[1] or 0) for r in rows)
     total_customers = sum(base.values()) or 1
-    overall_rate = total_conversions / total_customers
+    overall_rate = total_unique_buyers / total_customers
 
     out: list[dict] = []
     for r in rows:
         tier = r[0]
-        conversions = int(r[1] or 0)
+        unique_buyers = int(r[1] or 0)
         revenue = float(r[2] or 0)
         tier_base = base.get(tier, 0)
-        rate = _safe_divide(conversions, tier_base)
+        rate = _safe_divide(unique_buyers, tier_base)
         lift = _safe_divide(rate - overall_rate, overall_rate)
         out.append(
             {
                 "segment": tier,
-                "conversions": conversions,
+                # `conversions` keeps the field name for backward compatibility,
+                # but now represents unique buyers (customers with >= 1 tx).
+                "conversions": unique_buyers,
                 "revenue": round(revenue, 2),
                 "customer_base": tier_base,
                 "conversion_rate": round(rate, 6),

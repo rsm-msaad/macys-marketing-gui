@@ -19,7 +19,7 @@ Currently Anna spends a full day reconciling five reporting systems (Salesforce 
 ### Attribution
 
 * **By channel.** Aggregate `revenue`, `cost`, `conversions`, `impressions`, `clicks` from `campaign_performance` grouped by `channel`. ROAS is `revenue / cost`, CAC is `cost / conversions`. Channels are ranked by ROAS descending. The "worst channel" is the lowest ROAS channel that holds at least 5 percent of total spend (so a tiny experimental channel does not steal the headline).
-* **By segment.** The `campaign_performance` table does not store a segment column, so segment attribution joins `transactions` to `customers` on `customer_id` for purchases that fall inside the campaign window, then groups by `customers.loyalty_tier` (Bronze, Silver, Gold, Platinum). Conversion rate is `conversions / customer_base_in_tier`. Lift is `(tier_rate - overall_rate) / overall_rate`. This is the cleanest segment dimension actually present in the data.
+* **By segment.** The `campaign_performance` table does not store a segment column, so segment attribution joins `transactions` to `customers` on `customer_id` for purchases that fall inside the campaign window, then groups by `customers.loyalty_tier` (Bronze, Silver, Gold, Platinum). Conversion rate is the **unique buyer rate**: `COUNT(DISTINCT customer_id with >= 1 purchase) / customer_base_in_tier`. A customer who buys five times still counts as one conversion. The result is bounded in [0, 100 percent] so it reads as a probability rather than a count. Lift is `(tier_rate - overall_rate) / overall_rate`. This is the cleanest segment dimension actually present in the data.
 * **By SKU.** Top 10 by revenue and top 10 by units sold over the campaign window, joining `transactions` to `sku_catalog`.
 
 ### Forecast
