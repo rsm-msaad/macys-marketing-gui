@@ -244,6 +244,7 @@ REQUIRED_FIELDS = {
     "avg_frequency",
     "avg_monetary",
     "top_category",
+    "top_category_lift",
     "loyalty_mix",
 }
 
@@ -257,6 +258,7 @@ def test_build_segments_each_dict_has_all_required_fields(seeded_db: Path):
         assert isinstance(seg["avg_frequency"], float)
         assert isinstance(seg["avg_monetary"], float)
         assert seg["top_category"] is None or isinstance(seg["top_category"], str)
+        assert isinstance(seg["top_category_lift"], float)
         assert isinstance(seg["loyalty_mix"], dict)
 
 
@@ -297,18 +299,35 @@ def test_build_segments_assigns_friendly_names_on_seeded_data(seeded_db: Path):
 
 
 def test_build_segments_vip_segment_top_category_is_beauty(seeded_db: Path):
+    """VIP cluster is 100 percent Beauty txs; overall Beauty share is ~61 percent
+    (19 of 31 seeded txs), so lift is positive and Beauty wins."""
     segments = segment.build_segments("brief", db_path=seeded_db)
     vip = next(s for s in segments if s["name"] == "VIP Loyalists")
     assert vip["top_category"] == "Beauty"
+    assert vip["top_category_lift"] > 0.0
+    # 100% in cluster vs ~61.3% overall -> lift ~0.63
+    assert vip["top_category_lift"] == pytest.approx(0.63, abs=0.05)
     # VIP cluster contains customers 1..3, all Platinum.
     assert vip["loyalty_mix"] == {"Platinum": 100.0}
     assert vip["customer_count"] == 3
 
 
+def test_build_segments_mid_segment_top_category_is_apparel(seeded_db: Path):
+    """Mid cluster is 100 percent Apparel; overall Apparel share is ~29 percent
+    (9 of 31), so Apparel has high positive lift here."""
+    segments = segment.build_segments("brief", db_path=seeded_db)
+    mid = next(s for s in segments if s["name"] == "Mid Tier Engaged")
+    assert mid["top_category"] == "Apparel"
+    assert mid["top_category_lift"] > 1.0  # 100% vs ~29% is well over 1.0
+
+
 def test_build_segments_lapsed_segment_top_category_is_home(seeded_db: Path):
+    """Lapsed cluster is 100 percent Home; overall Home share is ~10 percent
+    (3 of 31), so Home has the largest lift in the seeded fixture."""
     segments = segment.build_segments("brief", db_path=seeded_db)
     lapsed = next(s for s in segments if s["name"] == "Lapsed or New")
     assert lapsed["top_category"] == "Home"
+    assert lapsed["top_category_lift"] > 5.0  # 100% vs ~10% is a very large lift
     assert lapsed["loyalty_mix"] == {"Bronze": 100.0}
     assert lapsed["customer_count"] == 3
 
@@ -316,6 +335,54 @@ def test_build_segments_lapsed_segment_top_category_is_home(seeded_db: Path):
 def test_build_segments_missing_db_raises(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         segment.build_segments("brief", db_path=tmp_path / "nope.db")
+
+
+# ---------- _pick_top_category_by_lift ----------
+
+
+def test_pick_top_category_by_lift_picks_highest_positive():
+    cluster = {"Beauty": 0.50, "Apparel": 0.30, "Home": 0.20}
+    overall = {"Beauty": 0.20, "Apparel": 0.40, "Home": 0.40}
+    # Lifts: Beauty +1.5, Apparel -0.25, Home -0.5
+    cat, lift = segment._pick_top_category_by_lift(cluster, overall)
+    assert cat == "Beauty"
+    assert lift == pytest.approx(1.5)
+
+
+def test_pick_top_category_by_lift_falls_back_when_no_positive():
+    """If every category in the cluster is under-represented vs overall,
+    return the highest-share category in the cluster with lift 0.0."""
+    cluster = {"Beauty": 0.20, "Apparel": 0.50, "Home": 0.30}
+    overall = {"Beauty": 0.30, "Apparel": 0.60, "Home": 0.40}
+    # All lifts negative; Apparel has the highest cluster share.
+    cat, lift = segment._pick_top_category_by_lift(cluster, overall)
+    assert cat == "Apparel"
+    assert lift == 0.0
+
+
+def test_pick_top_category_by_lift_handles_empty_cluster():
+    cat, lift = segment._pick_top_category_by_lift({}, {"Beauty": 0.5, "Apparel": 0.5})
+    assert cat is None
+    assert lift == 0.0
+
+
+def test_pick_top_category_by_lift_skips_categories_missing_overall():
+    """A category that is not present in the overall share has no defined lift,
+    and should not be considered."""
+    cluster = {"Beauty": 0.40, "Mystery": 0.60}
+    overall = {"Beauty": 0.20}
+    cat, lift = segment._pick_top_category_by_lift(cluster, overall)
+    assert cat == "Beauty"
+    assert lift == pytest.approx(1.0)
+
+
+def test_pick_top_category_by_lift_tie_breaks_on_name():
+    cluster = {"Beauty": 0.40, "Apparel": 0.40}
+    overall = {"Beauty": 0.20, "Apparel": 0.20}
+    # Both lifts == +1.0; tie break on name ascending picks "Apparel".
+    cat, lift = segment._pick_top_category_by_lift(cluster, overall)
+    assert cat == "Apparel"
+    assert lift == pytest.approx(1.0)
 
 
 # ---------- format_segments + recommend ----------
@@ -330,6 +397,27 @@ def test_format_segments_renders_three_blocks_and_header(seeded_db: Path):
     assert "SEGMENT 2:" in out
     assert "SEGMENT 3:" in out
     assert "Recommendation:" in out
+
+
+def test_format_segments_top_category_includes_lift_percentage(seeded_db: Path):
+    segments = segment.build_segments("brief", db_path=seeded_db)
+    out = segment.format_segments("brief", segments, total_customers=10)
+    # All seeded segments should have positive lift; expect at least one
+    # "Top Category: <name> (+NN percent vs avg)" line.
+    import re
+    matches = re.findall(r"Top Category:\s+\S+\s+\(\+\d+ percent vs avg\)", out)
+    assert len(matches) >= 1, f"no '(+N percent vs avg)' line found in:\n{out}"
+
+
+def test_fmt_top_category_signs_and_zero_case():
+    # Positive lift -> "+N percent vs avg"
+    assert segment._fmt_top_category("Beauty", 0.35) == "Beauty (+35 percent vs avg)"
+    # Negative lift (shouldn't happen via picker but the formatter handles it).
+    assert segment._fmt_top_category("Apparel", -0.20) == "Apparel (-20 percent vs avg)"
+    # Zero lift fallback.
+    assert segment._fmt_top_category("Home", 0.0) == "Home (+0 percent vs avg)"
+    # None category.
+    assert segment._fmt_top_category(None, 0.0) == "n/a"
 
 
 def test_recommend_picks_high_value_for_beauty_brief():

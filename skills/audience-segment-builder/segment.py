@@ -154,19 +154,73 @@ def _populate_temp_ids(conn: sqlite3.Connection, customer_ids: list[int]) -> Non
         )
 
 
-def _top_category(conn: sqlite3.Connection) -> str | None:
-    row = conn.execute(
+def _cluster_category_share(conn: sqlite3.Connection) -> dict[str, float]:
+    """Share of each category among transactions of the cluster's customers.
+
+    Cluster member ids must be staged in temp table `_seg_ids`.
+    """
+    rows = conn.execute(
         """
         SELECT s.category, COUNT(*) AS n
         FROM transactions t
         JOIN sku_catalog s ON t.sku_id = s.sku_id
         WHERE t.customer_id IN (SELECT customer_id FROM _seg_ids)
         GROUP BY s.category
-        ORDER BY n DESC, s.category ASC
-        LIMIT 1
         """
-    ).fetchone()
-    return row[0] if row else None
+    ).fetchall()
+    total = sum(int(r[1]) for r in rows)
+    if total == 0:
+        return {}
+    return {str(r[0]): int(r[1]) / total for r in rows}
+
+
+def _overall_category_share(conn: sqlite3.Connection) -> dict[str, float]:
+    """Share of each category across all transactions in the database."""
+    rows = conn.execute(
+        """
+        SELECT s.category, COUNT(*) AS n
+        FROM transactions t
+        JOIN sku_catalog s ON t.sku_id = s.sku_id
+        GROUP BY s.category
+        """
+    ).fetchall()
+    total = sum(int(r[1]) for r in rows)
+    if total == 0:
+        return {}
+    return {str(r[0]): int(r[1]) / total for r in rows}
+
+
+def _pick_top_category_by_lift(
+    cluster_share: dict[str, float],
+    overall_share: dict[str, float],
+) -> tuple[str | None, float]:
+    """Return (category, lift) for the category with the highest positive lift.
+
+    Lift is `(cluster_pct - overall_pct) / overall_pct`. Tie-broken on
+    category name ascending.
+
+    If no category in the cluster has positive lift, fall back to the most
+    represented category in the cluster with `lift = 0.0`. If the cluster
+    has no transactions at all, return `(None, 0.0)`.
+    """
+    candidates: list[tuple[str, float, float]] = []  # (category, lift, cluster_share)
+    for cat, c_share in cluster_share.items():
+        o_share = overall_share.get(cat, 0.0)
+        if o_share <= 0:
+            continue
+        lift = (c_share - o_share) / o_share
+        candidates.append((cat, lift, c_share))
+
+    if not candidates:
+        return None, 0.0
+
+    positive = [c for c in candidates if c[1] > 0]
+    if positive:
+        positive.sort(key=lambda x: (-x[1], x[0]))
+        return positive[0][0], positive[0][1]
+
+    candidates.sort(key=lambda x: (-x[2], x[0]))
+    return candidates[0][0], 0.0
 
 
 def _loyalty_mix(conn: sqlite3.Connection) -> dict[str, float]:
@@ -188,8 +242,15 @@ def profile_cluster(
     conn: sqlite3.Connection,
     customer_ids: list[int],
     rfm_subset: np.ndarray,
+    overall_category_share: dict[str, float] | None = None,
 ) -> dict:
-    """Return profile metrics for a single cluster."""
+    """Return profile metrics for a single cluster.
+
+    `top_category` is selected by lift vs the overall category share, not by
+    raw cluster representation. `top_category_lift` is the numeric lift
+    (e.g. 0.35 means 35 percent above overall share). Pass
+    `overall_category_share` to avoid recomputing it across clusters.
+    """
     n = len(customer_ids)
     if n == 0:
         return {
@@ -198,6 +259,7 @@ def profile_cluster(
             "avg_frequency": 0.0,
             "avg_monetary": 0.0,
             "top_category": None,
+            "top_category_lift": 0.0,
             "loyalty_mix": {},
         }
     avg_recency = float(rfm_subset[:, 0].mean())
@@ -205,7 +267,13 @@ def profile_cluster(
     avg_monetary = float(rfm_subset[:, 2].mean())
 
     _populate_temp_ids(conn, customer_ids)
-    top_category = _top_category(conn)
+    cluster_share = _cluster_category_share(conn)
+    overall_share = (
+        overall_category_share
+        if overall_category_share is not None
+        else _overall_category_share(conn)
+    )
+    top_category, top_category_lift = _pick_top_category_by_lift(cluster_share, overall_share)
     loyalty_mix = _loyalty_mix(conn)
 
     return {
@@ -214,6 +282,7 @@ def profile_cluster(
         "avg_frequency": round(avg_frequency, 1),
         "avg_monetary": round(avg_monetary, 2),
         "top_category": top_category,
+        "top_category_lift": round(top_category_lift, 4),
         "loyalty_mix": loyalty_mix,
     }
 
@@ -251,11 +320,13 @@ def build_segments(
             f"Cluster {i + 1}" for i in range(n_clusters)
         ]
 
+        overall_share = _overall_category_share(conn)
+
         segments: list[dict] = []
         for cluster_idx in range(n_clusters):
             mask = labels == cluster_idx
             ids = [customer_ids[i] for i in np.where(mask)[0]]
-            profile = profile_cluster(conn, ids, rfm[mask])
+            profile = profile_cluster(conn, ids, rfm[mask], overall_category_share=overall_share)
             segments.append(
                 {
                     "name": names[cluster_idx],
@@ -290,6 +361,14 @@ def _fmt_days(x: float | None) -> str:
 
 def _fmt_dollars(x: float | None) -> str:
     return f"${x:,.0f}" if x is not None else "n/a"
+
+
+def _fmt_top_category(category: str | None, lift: float) -> str:
+    if category is None:
+        return "n/a"
+    pct = round(lift * 100)
+    sign = "+" if pct >= 0 else "-"
+    return f"{category} ({sign}{abs(pct)} percent vs avg)"
 
 
 def _fmt_loyalty_mix(mix: dict[str, float]) -> str:
@@ -355,7 +434,10 @@ def format_segments(
             else "Avg Frequency: n/a"
         )
         lines.append(f"Avg Monetary:  {_fmt_dollars(seg['avg_monetary'])}")
-        lines.append(f"Top Category:  {seg['top_category'] or 'n/a'}")
+        lines.append(
+            f"Top Category:  "
+            f"{_fmt_top_category(seg.get('top_category'), seg.get('top_category_lift', 0.0))}"
+        )
         lines.append(f"Loyalty Mix:   {_fmt_loyalty_mix(seg['loyalty_mix'])}")
         lines.append("")
 

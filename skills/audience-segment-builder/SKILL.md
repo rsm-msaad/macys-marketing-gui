@@ -39,8 +39,21 @@ The campaign brief is the only caller facing input. Everything else is read from
 | `avg_recency_days` | float | Mean days since last purchase (lower is more recent). |
 | `avg_frequency` | float | Mean number of transactions per customer. |
 | `avg_monetary` | float | Mean net spend per customer (USD). |
-| `top_category` | string | The single most common product category in the segment's transaction history. |
+| `top_category` | string | Category with the highest positive lift versus the overall transaction mix (see "Top category by lift" below). |
+| `top_category_lift` | float | Numeric lift versus overall, e.g. `0.35` means the segment buys this category 35 percent more than the overall customer base. `0.0` when the lift fallback applies. |
 | `loyalty_mix` | dict | `{tier: pct}`, e.g. `{"Platinum": 45.0, "Gold": 38.0, "Silver": 17.0}`. Percentages sum to 100. |
+
+## Top category by lift
+
+Picking the most frequent category per cluster does not work well at Macy's, because Apparel is roughly 40 percent of the SKU mix and tends to dominate every behavioral cluster, leaving the segments looking undifferentiated. Instead, the skill ranks categories by **lift versus the overall mix**:
+
+1. For each cluster, compute the share of cluster transactions by category. Call this `cluster_pct`.
+2. Compute the same share across all transactions in the database. Call this `overall_pct`.
+3. For each category present in the cluster, compute `lift = (cluster_pct - overall_pct) / overall_pct`.
+4. Return the category with the highest **positive** lift, along with the lift value.
+5. If no category in the cluster has positive lift, fall back to the category with the highest cluster share and report `lift = 0.0`.
+
+This surfaces what is *distinctive* about each segment, not just what is large. A VIP cluster that over indexes on Beauty by 35 percent shows up as "Beauty (+35 percent vs avg)" even when Apparel is technically more frequent in raw counts.
 
 ## Segment naming
 
