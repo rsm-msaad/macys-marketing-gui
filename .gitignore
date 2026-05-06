@@ -20,6 +20,12 @@ __pycache__
 # Downloaded image assets (Unsplash, etc.) — not tracked in git
 data/images/
 
+# Next.js GUI build artifacts
+gui/node_modules/
+gui/.next/
+gui/out/
+gui/.swc/
+
 # Quarto
 *_files/
 *.html
@@ -32,7 +38,7 @@ DEPLOY.md
 vnijs-session-*
 
 # files to exclude
-main.py
+/main.py
 justfile
 DEPLOY.md
 config.yaml
