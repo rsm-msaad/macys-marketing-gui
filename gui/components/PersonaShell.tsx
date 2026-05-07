@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { CampaignSidebar } from "@/components/CampaignSidebar";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ResultsModal, type ModalState } from "@/components/ResultsModal";
 import { SkillCard, type SkillKind } from "@/components/SkillCard";
@@ -40,25 +41,31 @@ export function PersonaShell({
       <TopBar activePersonaId={personaId} />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left nav */}
-        <nav className="hidden w-[200px] flex-shrink-0 border-r border-charcoal/10 bg-white px-4 py-6 md:block">
-          <ul className="space-y-1 text-sm">
-            {leftNav.map((item) => (
-              <li key={item.label}>
-                <button
-                  type="button"
-                  className={`block w-full rounded-md px-3 py-2 text-left ${
-                    item.active
-                      ? "bg-cream font-semibold text-charcoal"
-                      : "text-charcoal/60 hover:bg-cream"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* Left sidebar: campaigns panel + workspace nav */}
+        <aside className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto border-r border-charcoal/10 bg-white md:flex">
+          <CampaignSidebar />
+          <nav className="px-4 py-4">
+            <h2 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+              Workspace
+            </h2>
+            <ul className="space-y-1 text-sm">
+              {leftNav.map((item) => (
+                <li key={item.label}>
+                  <button
+                    type="button"
+                    className={`block w-full rounded-md px-3 py-2 text-left ${
+                      item.active
+                        ? "bg-cream font-semibold text-charcoal"
+                        : "text-charcoal/60 hover:bg-cream"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
 
         {/* Center */}
         <main className="flex-1 overflow-y-auto px-6 py-6">

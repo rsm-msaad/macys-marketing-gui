@@ -57,3 +57,56 @@ def workflow_for_persona(persona_id: str) -> dict:
             }
         )
     return {"persona_id": persona_id, "steps": out}
+
+
+# ---------- pre seeded campaigns ----------
+#
+# Static demo data so the dashboard feels populated across personas. The
+# four skills always run against the real database; this list is purely
+# for the "Campaigns" panel in the left sidebar so reviewers see a
+# realistic mix of active, planned, and completed campaigns.
+
+CAMPAIGNS = [
+    {
+        "id": "MDC-2026-MD-001",
+        "name": "Mother's Day Beauty Event",
+        "status": "active",
+        "current_step": 4,
+        "current_step_name": "Creative Production",
+        "days_remaining": 12,
+        "days_label": "12 days remaining",
+        "owner_role": "Campaign Manager",
+        "color_indicator": "green",
+    },
+    {
+        "id": "MDC-2026-MS-002",
+        "name": "Memorial Day Home Sale",
+        "status": "planned",
+        "current_step": 1,
+        "current_step_name": "Briefing",
+        "days_remaining": 28,
+        "days_label": "Starts in 28 days",
+        "owner_role": "Marketing leadership",
+        "color_indicator": "yellow",
+    },
+    {
+        "id": "MDC-2026-SS-003",
+        "name": "Spring Style Refresh",
+        "status": "completed",
+        "current_step": 10,
+        "current_step_name": "Reporting",
+        "days_remaining": -14,
+        "days_label": "Completed 14 days ago",
+        "owner_role": "Marketing Analyst",
+        "color_indicator": "gray",
+    },
+]
+
+# Separate router with no prefix so the path is `/campaigns`, not
+# `/workflow/campaigns`. main.py registers both routers.
+campaigns_router = APIRouter(tags=["campaigns"])
+
+
+@campaigns_router.get("/campaigns")
+def list_campaigns() -> list[dict]:
+    return CAMPAIGNS

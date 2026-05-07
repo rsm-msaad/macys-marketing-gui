@@ -81,6 +81,23 @@ export async function fetchWorkflow(personaId: string): Promise<{ persona_id: st
   return request(`/workflow/${personaId}`);
 }
 
+// ----- Campaigns (pre seeded demo data) -----
+export type Campaign = {
+  id: string;
+  name: string;
+  status: "active" | "planned" | "completed";
+  current_step: number;
+  current_step_name: string;
+  days_remaining: number;
+  days_label: string;
+  owner_role: string;
+  color_indicator: "green" | "yellow" | "gray";
+};
+
+export async function fetchCampaigns(): Promise<Campaign[]> {
+  return request<Campaign[]>("/campaigns");
+}
+
 // ----- Chat -----
 export type ChatReply = {
   response: string;

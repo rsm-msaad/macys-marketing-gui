@@ -47,6 +47,7 @@ def health() -> dict:
 
 app.include_router(personas.router)
 app.include_router(workflow.router)
+app.include_router(workflow.campaigns_router)
 app.include_router(skills.router)
 app.include_router(chat.router)
 
