@@ -194,3 +194,36 @@ def reset_campaign(campaign_id: str) -> dict:
         return state_mod.reset(campaign_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc))
+
+
+class RequestRevisionsBody(BaseModel):
+    step: int
+    send_back_to_step: int
+    comment: str
+    requested_by_persona_id: str = "campaign-manager"
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/request-revisions")
+def request_revisions(campaign_id: str, body: RequestRevisionsBody) -> dict:
+    try:
+        return state_mod.request_revisions(
+            campaign_id,
+            body.step,
+            body.send_back_to_step,
+            body.comment,
+            body.requested_by_persona_id,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/resubmit/{step}")
+def resubmit_step(campaign_id: str, step: int) -> dict:
+    try:
+        return state_mod.resubmit(campaign_id, step)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))

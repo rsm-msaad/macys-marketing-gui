@@ -37,6 +37,10 @@ def _initial_state() -> dict[str, Any]:
         "completed_steps": [],
         "step_outputs": {},
         "history": [],
+        # Revision tracking: per-step list of past revision requests.
+        "revisions": {},
+        # When a revision is in flight, holds the metadata; None otherwise.
+        "pending_revision": None,
     }
 
 
@@ -50,6 +54,8 @@ def _snapshot(s: dict[str, Any]) -> dict[str, Any]:
         "step_outputs": dict(s["step_outputs"]),
         "history": list(s["history"]),
         "is_complete": s["current_step"] > LAST_STEP,
+        "revisions": {k: list(v) for k, v in s.get("revisions", {}).items()},
+        "pending_revision": dict(s["pending_revision"]) if s.get("pending_revision") else None,
     }
 
 
@@ -80,6 +86,10 @@ def advance(
             raise KeyError(f"unknown campaign: {campaign_id}")
         if s["current_step"] > LAST_STEP:
             raise ValueError("campaign is already complete; reset to replay")
+        if s.get("pending_revision"):
+            raise ValueError(
+                "campaign has a pending revision; resubmit before advancing"
+            )
         if step != s["current_step"]:
             raise ValueError(
                 f"campaign is at step {s['current_step']}, cannot advance step {step}"
@@ -107,6 +117,137 @@ def reset(campaign_id: str) -> dict[str, Any]:
             raise KeyError(f"unknown campaign: {campaign_id}")
         _STATE[campaign_id] = _initial_state()
         return _snapshot(_STATE[campaign_id])
+
+
+def request_revisions(
+    campaign_id: str,
+    from_step: int,
+    send_back_to_step: int,
+    comment: str,
+    requested_by_persona_id: str,
+) -> dict[str, Any]:
+    """Send the campaign back to `send_back_to_step` with a comment.
+
+    `from_step` is where the requester is currently working (typically
+    `current_step`). When `from_step == send_back_to_step` (e.g., the step 1
+    Briefing case where there is no prior step, or the step 10 Hold for Edits
+    case), no state change happens beyond recording the revision and setting
+    `pending_revision`. Otherwise:
+
+    * Remove `send_back_to_step` from `completed_steps` so it can be redone.
+    * Set `current_step` back to `send_back_to_step`.
+    * Set `pending_revision` so the GUI can render the resubmit panel.
+
+    Raises:
+        KeyError if the campaign id is unknown.
+        ValueError on invalid step parameters or while another revision is
+        already pending.
+    """
+    if not isinstance(comment, str) or len(comment.strip()) < 10:
+        raise ValueError("revision comment must be at least 10 characters")
+    if send_back_to_step < 1 or send_back_to_step > LAST_STEP:
+        raise ValueError(f"send_back_to_step must be between 1 and {LAST_STEP}")
+    if send_back_to_step > from_step:
+        raise ValueError("can only send revisions back to the same or earlier step")
+
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            raise KeyError(f"unknown campaign: {campaign_id}")
+        if s["current_step"] > LAST_STEP:
+            raise ValueError("campaign is already complete; reset to replay")
+        if s.get("pending_revision"):
+            raise ValueError("campaign already has a pending revision")
+        if from_step != s["current_step"]:
+            raise ValueError(
+                f"campaign is at step {s['current_step']}, cannot request revisions from step {from_step}"
+            )
+
+        ts = datetime.now(timezone.utc).isoformat()
+        entry = {
+            "comment": comment.strip(),
+            "requested_by_persona_id": requested_by_persona_id,
+            "requested_from_step": from_step,
+            "ts": ts,
+        }
+        revisions = s.setdefault("revisions", {})
+        revisions.setdefault(str(send_back_to_step), []).append(entry)
+
+        # Always set pending_revision so the UI knows there is work to resubmit.
+        s["pending_revision"] = {
+            "step_to_redo": send_back_to_step,
+            "resume_step": from_step,
+            "comment": comment.strip(),
+            "requested_by_persona_id": requested_by_persona_id,
+            "requested_at": ts,
+            "requested_from_step": from_step,
+        }
+
+        # If the target is a different step, rewind: remove from completed,
+        # move current_step back. If from_step == send_back_to_step (step 1
+        # or step 10 Hold for Edits) the state otherwise stays put.
+        if from_step != send_back_to_step:
+            if send_back_to_step in s["completed_steps"]:
+                s["completed_steps"].remove(send_back_to_step)
+            s["current_step"] = send_back_to_step
+
+        s["history"].append(
+            {
+                "step": from_step,
+                "step_name": STEP_NAMES.get(from_step, f"Step {from_step}"),
+                "action": (
+                    "Hold for Edits"
+                    if from_step == send_back_to_step
+                    else f"Request Revisions (back to step {send_back_to_step})"
+                ),
+                "ts": ts,
+                "metadata": {
+                    "send_back_to_step": send_back_to_step,
+                    "comment": comment.strip(),
+                },
+            }
+        )
+        return _snapshot(s)
+
+
+def resubmit(campaign_id: str, step: int) -> dict[str, Any]:
+    """Mark the step that was sent back as resubmitted.
+
+    Adds the step to `completed_steps` (if it isn't the resume step itself),
+    advances `current_step` back to the original requester's step, and clears
+    `pending_revision`.
+    """
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            raise KeyError(f"unknown campaign: {campaign_id}")
+        pending = s.get("pending_revision")
+        if pending is None:
+            raise ValueError("no pending revision to resubmit")
+        if step != pending["step_to_redo"]:
+            raise ValueError(
+                f"resubmit step {step} does not match pending step {pending['step_to_redo']}"
+            )
+
+        resume_step = pending["resume_step"]
+        ts = datetime.now(timezone.utc).isoformat()
+
+        if step != resume_step and step not in s["completed_steps"]:
+            s["completed_steps"].append(step)
+            s["completed_steps"].sort()
+        s["current_step"] = resume_step
+        s["pending_revision"] = None
+
+        s["history"].append(
+            {
+                "step": step,
+                "step_name": STEP_NAMES.get(step, f"Step {step}"),
+                "action": f"Resubmit ({STEP_NAMES.get(step, '')})",
+                "ts": ts,
+                "metadata": {"resume_step": resume_step},
+            }
+        )
+        return _snapshot(s)
 
 
 def status_for_step(campaign_id: str, step_number: int) -> str:

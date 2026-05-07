@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FileEdit, Send } from "lucide-react";
 
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const DRAFT_SUMMARY =
   "The Mother's Day Beauty Event generated $1.27M in revenue across 10 days, " +
@@ -22,6 +22,7 @@ export function ReportingContent({
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   const [draft, setDraft] = useState(DRAFT_SUMMARY);
 
@@ -54,15 +55,17 @@ export function ReportingContent({
         </div>
       </div>
 
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta="Send to Leadership"
-        ctaKind="send"
+        primaryLabel="Send to Leadership"
+        primaryKind="send"
+        secondaryLabel="Hold for Edits"
         stepNumber={10}
-        onClick={() =>
+        onPrimary={() =>
           onApprove("Send to Leadership", { summary: draft.slice(0, 4000) })
         }
+        onRequestRevisions={() => onRequestRevisions(10, 10)}
       />
     </div>
   );

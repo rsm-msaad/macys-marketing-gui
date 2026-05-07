@@ -32,9 +32,12 @@ function StatusDot({ status }: { status: WorkflowStep["status"] }) {
 export function WorkflowPipeline({
   personaId,
   steps: stepsProp,
+  revisionCounts,
 }: {
   personaId: string;
   steps?: WorkflowStep[];
+  // step number -> revision count (only steps with > 0 revisions are interesting)
+  revisionCounts?: Record<string, number>;
 }) {
   // If a parent passes steps in, use them. Otherwise self-fetch (legacy path,
   // kept so the component stays drop-in friendly).
@@ -128,6 +131,14 @@ export function WorkflowPipeline({
                 {isActive && (
                   <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-white animate-soft-pulse">
                     ACTIVE
+                  </span>
+                )}
+                {!isActive && (revisionCounts?.[String(step.number)] ?? 0) > 0 && (
+                  <span
+                    className="rounded-full bg-mustard/20 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-mustard"
+                    title="Number of revision requests on this step"
+                  >
+                    {revisionCounts![String(step.number)]} rev
                   </span>
                 )}
               </div>

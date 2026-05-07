@@ -2,13 +2,14 @@
 
 import { CheckCircle2, Shield } from "lucide-react";
 
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 export function FinalApprovalContent({
   context,
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   const checkpoints = context.mock_data.approval_checkpoints;
 
@@ -55,17 +56,18 @@ export function FinalApprovalContent({
         </p>
       </div>
 
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta="Final Approval"
-        ctaKind="approve"
+        primaryLabel="Final Approval"
+        secondaryLabel="Hold for Revisions"
         stepNumber={6}
-        onClick={() =>
+        onPrimary={() =>
           onApprove("Final Approval", {
             checkpoints: checkpoints.map((c) => c.name),
           })
         }
+        onRequestRevisions={() => onRequestRevisions(6, 5)}
       />
     </div>
   );

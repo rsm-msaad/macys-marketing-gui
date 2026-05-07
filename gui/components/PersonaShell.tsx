@@ -7,6 +7,7 @@ import { ActionPanel } from "@/components/ActionPanel";
 import { CampaignSidebar } from "@/components/CampaignSidebar";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ResultsModal, type ModalState } from "@/components/ResultsModal";
+import { RevisionRequestModal, type RevisionModalState } from "@/components/RevisionRequestModal";
 import { SkillCard, type SkillKind } from "@/components/SkillCard";
 import { TopBar } from "@/components/TopBar";
 import { WorkflowPipeline } from "@/components/WorkflowPipeline";
@@ -16,6 +17,7 @@ import {
   fetchCampaigns,
   fetchCampaignState,
   fetchWorkflow,
+  requestRevisions,
   resetCampaign,
   type Campaign,
   type CampaignContext,
@@ -43,10 +45,13 @@ const SKILL_STEP: Record<SkillKind, number> = {
 
 type Toast = {
   id: number;
+  kind: "handoff" | "revision_requested" | "resubmitted";
   fromStep: number;
   toStep: number;
   toOwner: string;
   toTitle: string;
+  // For revision toasts:
+  comment?: string;
 };
 
 export function PersonaShell({
@@ -65,6 +70,9 @@ export function PersonaShell({
   centerExtras?: React.ReactNode;
 }) {
   const [modal, setModal] = useState<ModalState>(null);
+  const [revisionModal, setRevisionModal] = useState<RevisionModalState>(null);
+  const [revisionBusy, setRevisionBusy] = useState(false);
+  const [revisionError, setRevisionError] = useState<string | null>(null);
   const [steps, setSteps] = useState<WorkflowStep[] | null>(null);
   const [campaigns, setCampaigns] = useState<Campaign[] | null>(null);
   const [state, setState] = useState<CampaignState | null>(null);
@@ -74,6 +82,7 @@ export function PersonaShell({
   const [toast, setToast] = useState<Toast | null>(null);
 
   const lastStepRef = useRef<number | null>(null);
+  const lastPendingRef = useRef<boolean>(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -89,17 +98,53 @@ export function PersonaShell({
       setContext(ctx);
       setPollError(null);
 
-      // Detect step transition for handoff toast.
+      // Detect transitions to fire toasts. Three cases:
+      //   1. Handoff to a new persona on a normal step advance.
+      //   2. Revision requested (pending_revision goes null -> set).
+      //   3. Resubmit happened (pending_revision goes set -> null).
       const prevStep = lastStepRef.current;
+      const wasPending = lastPendingRef.current;
       const newStep = st.current_step;
+      const isPending = st.pending_revision !== null;
       lastStepRef.current = newStep;
-      if (prevStep !== null && newStep !== prevStep && !st.is_complete && newStep <= 10) {
+      lastPendingRef.current = isPending;
+
+      const id = Date.now();
+      if (!wasPending && isPending && st.pending_revision) {
+        // Revision just requested.
+        const target = st.pending_revision.step_to_redo;
+        setToast({
+          id,
+          kind: "revision_requested",
+          fromStep: st.pending_revision.requested_from_step,
+          toStep: target,
+          toOwner: getStepOwnerName(target),
+          toTitle: getStepOwnerTitle(target),
+          comment: st.pending_revision.comment,
+        });
+      } else if (wasPending && !isPending && prevStep !== null) {
+        // Just resubmitted; campaign returned to resume_step.
+        setToast({
+          id,
+          kind: "resubmitted",
+          fromStep: prevStep,
+          toStep: newStep,
+          toOwner: getStepOwnerName(newStep),
+          toTitle: getStepOwnerTitle(newStep),
+        });
+      } else if (
+        prevStep !== null &&
+        newStep !== prevStep &&
+        !st.is_complete &&
+        newStep <= 10 &&
+        !isPending
+      ) {
         const fromOwner = prevStep <= 10 ? getStepOwnerName(prevStep) : "";
         const toOwner = getStepOwnerName(newStep);
         if (fromOwner !== toOwner) {
-          const id = Date.now();
           setToast({
             id,
+            kind: "handoff",
             fromStep: prevStep,
             toStep: newStep,
             toOwner,
@@ -162,16 +207,61 @@ export function PersonaShell({
     setModal({ kind: skill });
   }
 
+  function handleOpenRevisionModal(fromStep: number, defaultSendBackToStep: number) {
+    setRevisionError(null);
+    setRevisionModal({
+      fromStep,
+      defaultSendBackToStep,
+      destinationLabel:
+        fromStep === 1 && defaultSendBackToStep === 1
+          ? "Marketing Leadership (proxy: Sarah)"
+          : fromStep === 10 && defaultSendBackToStep === 10
+            ? "Hold for Edits (stays at Reporting)"
+            : undefined,
+    });
+  }
+
+  async function handleSubmitRevision(sendBackToStep: number, comment: string) {
+    if (!revisionModal) return;
+    setRevisionBusy(true);
+    setRevisionError(null);
+    try {
+      await requestRevisions(
+        CAMPAIGN_ID,
+        revisionModal.fromStep,
+        sendBackToStep,
+        comment,
+        personaId,
+      );
+      setRevisionModal(null);
+      await refresh();
+    } catch (e) {
+      setRevisionError((e as Error).message);
+    } finally {
+      setRevisionBusy(false);
+    }
+  }
+
   async function handleReset() {
     setResetting(true);
     try {
       await resetCampaign(CAMPAIGN_ID);
       lastStepRef.current = 1;
+      lastPendingRef.current = false;
+      setToast(null);
       await refresh();
     } catch (e) {
       setPollError((e as Error).message);
     } finally {
       setResetting(false);
+    }
+  }
+
+  // Revision counts for the WorkflowPipeline badges.
+  const revisionCounts: Record<string, number> = {};
+  if (state) {
+    for (const [stepStr, list] of Object.entries(state.revisions)) {
+      revisionCounts[stepStr] = list.length;
     }
   }
 
@@ -239,7 +329,11 @@ export function PersonaShell({
           )}
 
           <div className="mb-4">
-            <WorkflowPipeline personaId={personaId} steps={steps ?? undefined} />
+            <WorkflowPipeline
+              personaId={personaId}
+              steps={steps ?? undefined}
+              revisionCounts={revisionCounts}
+            />
           </div>
 
           <div className="mb-5">
@@ -249,6 +343,7 @@ export function PersonaShell({
               steps={steps ?? []}
               context={context}
               onLaunchSkill={launchSkillFromActionPanel}
+              onRequestRevisions={handleOpenRevisionModal}
               onAdvanced={refresh}
             />
           </div>
@@ -277,30 +372,80 @@ export function PersonaShell({
         onSuccess={handleSkillSuccess}
       />
 
-      {/* Handoff toast */}
-      {toast && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center">
-          <div className="pointer-events-auto flex items-start gap-3 rounded-lg border border-teal-600/40 bg-white px-4 py-3 shadow-lg">
-            <ArrowRightCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-teal-600" />
-            <div className="text-sm">
-              <div className="font-semibold text-charcoal">
-                Step {toast.fromStep} complete · Step {toast.toStep} now active
-              </div>
-              <div className="text-charcoal/65">
-                Handing off to <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
-                <span className="text-charcoal/50">({toast.toTitle})</span>.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setToast(null)}
-              className="ml-2 text-xs text-charcoal/45 hover:text-charcoal"
-            >
-              ✕
-            </button>
-          </div>
+      {/* Handoff / revision toast */}
+      {toast && <ToastBanner toast={toast} onClose={() => setToast(null)} />}
+
+      <RevisionRequestModal
+        state={revisionModal}
+        onClose={() => {
+          setRevisionModal(null);
+          setRevisionError(null);
+        }}
+        onSubmit={handleSubmitRevision}
+        busy={revisionBusy}
+        error={revisionError}
+      />
+    </div>
+  );
+}
+
+function ToastBanner({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  let borderClass = "border-teal-600/40";
+  let iconClass = "text-teal-600";
+  let title = "";
+  let body: React.ReactNode = null;
+
+  if (toast.kind === "handoff") {
+    title = `Step ${toast.fromStep} complete · Step ${toast.toStep} now active`;
+    body = (
+      <>
+        Handing off to <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
+        <span className="text-charcoal/50">({toast.toTitle})</span>.
+      </>
+    );
+  } else if (toast.kind === "revision_requested") {
+    borderClass = "border-mustard/60";
+    iconClass = "text-mustard";
+    title = `Revision requested · sent back to Step ${toast.toStep}`;
+    body = (
+      <>
+        Waiting on <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
+        <span className="text-charcoal/50">({toast.toTitle})</span> to resubmit.
+        {toast.comment && (
+          <div className="mt-1 italic text-charcoal/55">“{toast.comment}”</div>
+        )}
+      </>
+    );
+  } else if (toast.kind === "resubmitted") {
+    borderClass = "border-sage/60";
+    iconClass = "text-sage";
+    title = `Step ${toast.fromStep} resubmitted · Step ${toast.toStep} active again`;
+    body = (
+      <>
+        Back to <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
+        <span className="text-charcoal/50">({toast.toTitle})</span> for review.
+      </>
+    );
+  }
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center">
+      <div
+        className={`pointer-events-auto flex items-start gap-3 rounded-lg border ${borderClass} bg-white px-4 py-3 shadow-lg`}
+      >
+        <ArrowRightCircle className={`mt-0.5 h-5 w-5 flex-shrink-0 ${iconClass}`} />
+        <div className="max-w-sm text-sm">
+          <div className="font-semibold text-charcoal">{title}</div>
+          <div className="text-charcoal/65">{body}</div>
         </div>
-      )}
+        <button
+          type="button"
+          onClick={onClose}
+          className="ml-2 text-xs text-charcoal/45 hover:text-charcoal"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }

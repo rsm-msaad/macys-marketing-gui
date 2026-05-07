@@ -2,7 +2,7 @@
 
 import { CheckCircle2, ShoppingBag } from "lucide-react";
 
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const STATUS_BADGE: Record<string, { bg: string; text: string }> = {
   in_stock: { bg: "#dcfce7", text: "#15803d" },
@@ -15,6 +15,7 @@ export function SKUSelectionContent({
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   const skus = context.mock_data.sku_suggestions;
   const totalRevenue = skus.reduce((acc, s) => acc + s.base_price, 0);
@@ -87,17 +88,18 @@ export function SKUSelectionContent({
         </div>
       </div>
 
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta={`Approve ${skus.length} SKUs`}
-        ctaKind="approve"
+        primaryLabel={`Approve ${skus.length} SKUs`}
+        secondaryLabel="Request Different SKUs"
         stepNumber={3}
-        onClick={() =>
+        onPrimary={() =>
           onApprove("Approve SKU List", {
             approved_skus: skus.map((s) => s.sku_id),
           })
         }
+        onRequestRevisions={() => onRequestRevisions(3, 2)}
       />
     </div>
   );

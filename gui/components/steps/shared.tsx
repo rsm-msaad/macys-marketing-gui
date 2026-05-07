@@ -2,6 +2,7 @@
 
 import {
   AlertTriangle,
+  ArrowLeftCircle,
   BadgePercent,
   Calendar,
   CheckCircle2,
@@ -31,9 +32,32 @@ export type StepContentProps = {
   busy: boolean;
   onApprove: (action: string, output?: Record<string, unknown>) => void;
   onLaunchSkill: (skill: "segment" | "dam" | "localize" | "analyze") => void;
+  // Open the "Request Revisions" modal. The step component supplies the
+  // step it is requesting from and the default step to send back to.
+  onRequestRevisions: (
+    fromStep: number,
+    defaultSendBackToStep: number,
+  ) => void;
 };
 
 // ---------- Action footer ----------
+
+function ViewOnlyMessage({ stepNumber }: { stepNumber: number }) {
+  const owner = getStepOwnerName(stepNumber);
+  const title = getStepOwnerTitle(stepNumber);
+  return (
+    <div className="mt-4 flex items-start gap-2 rounded-md border border-charcoal/10 bg-cream/30 px-3 py-2 text-sm text-charcoal/65">
+      <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-charcoal/45" />
+      <div>
+        <div className="font-semibold text-charcoal/80">View only</div>
+        <div className="text-xs">
+          Waiting on <span className="font-medium text-charcoal/85">{owner}</span>{" "}
+          <span className="text-charcoal/50">({title})</span> to take action.
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ActionFooter({
   canAct,
@@ -53,20 +77,7 @@ export function ActionFooter({
   stepNumber: number;
 }) {
   if (!canAct) {
-    const owner = getStepOwnerName(stepNumber);
-    const title = getStepOwnerTitle(stepNumber);
-    return (
-      <div className="mt-4 flex items-start gap-2 rounded-md border border-charcoal/10 bg-cream/30 px-3 py-2 text-sm text-charcoal/65">
-        <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-charcoal/45" />
-        <div>
-          <div className="font-semibold text-charcoal/80">View only</div>
-          <div className="text-xs">
-            Waiting on <span className="font-medium text-charcoal/85">{owner}</span>{" "}
-            <span className="text-charcoal/50">({title})</span> to take action.
-          </div>
-        </div>
-      </div>
-    );
+    return <ViewOnlyMessage stepNumber={stepNumber} />;
   }
   const Icon =
     ctaKind === "skill" ? Play : ctaKind === "send" ? Send : CheckCircle2;
@@ -80,6 +91,60 @@ export function ActionFooter({
       >
         <Icon className="h-3.5 w-3.5" />
         {cta}
+      </button>
+      {hint && (
+        <span className="text-[11px] text-charcoal/55">{hint}</span>
+      )}
+    </div>
+  );
+}
+
+// ---------- Approval actions: primary Approve + secondary Request Revisions ----------
+
+export function ApprovalActions({
+  canAct,
+  busy,
+  primaryLabel,
+  primaryKind = "approve",
+  secondaryLabel,
+  hint,
+  onPrimary,
+  onRequestRevisions,
+  stepNumber,
+}: {
+  canAct: boolean;
+  busy: boolean;
+  primaryLabel: string;
+  primaryKind?: "approve" | "send";
+  secondaryLabel: string;
+  hint?: string;
+  onPrimary: () => void;
+  onRequestRevisions: () => void;
+  stepNumber: number;
+}) {
+  if (!canAct) {
+    return <ViewOnlyMessage stepNumber={stepNumber} />;
+  }
+  const PrimaryIcon = primaryKind === "send" ? Send : CheckCircle2;
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={onPrimary}
+        disabled={busy}
+        className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+      >
+        <PrimaryIcon className="h-3.5 w-3.5" />
+        {primaryLabel}
+      </button>
+      <button
+        type="button"
+        onClick={onRequestRevisions}
+        disabled={busy}
+        className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/20 bg-white px-3.5 py-2 text-sm font-medium text-charcoal/75 hover:border-charcoal/40 hover:text-charcoal disabled:opacity-50"
+      >
+        <ArrowLeftCircle className="h-3.5 w-3.5" />
+        {secondaryLabel}
       </button>
       {hint && (
         <span className="text-[11px] text-charcoal/55">{hint}</span>

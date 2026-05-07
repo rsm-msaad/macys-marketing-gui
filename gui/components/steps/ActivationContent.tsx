@@ -2,7 +2,7 @@
 
 import { Radio, Send } from "lucide-react";
 
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const CHANNEL_LABEL: Record<string, string> = {
   email: "Email",
@@ -17,6 +17,7 @@ export function ActivationContent({
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   const schedule = context.mock_data.channel_schedule;
   return (
@@ -60,17 +61,19 @@ export function ActivationContent({
         </p>
       </div>
 
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta="Activate Campaign"
-        ctaKind="send"
+        primaryLabel="Activate Campaign"
+        primaryKind="send"
+        secondaryLabel="Hold for Revisions"
         stepNumber={8}
-        onClick={() =>
+        onPrimary={() =>
           onApprove("Activate Campaign", {
             channels: schedule.map((c) => c.channel),
           })
         }
+        onRequestRevisions={() => onRequestRevisions(8, 7)}
       />
     </div>
   );

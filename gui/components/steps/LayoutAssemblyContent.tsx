@@ -2,7 +2,7 @@
 
 import { LayoutGrid } from "lucide-react";
 
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const PLACEMENT_LABEL: Record<string, string> = {
   web_banner: "Web Banner",
@@ -16,6 +16,7 @@ export function LayoutAssemblyContent({
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   const layouts = context.mock_data.layout_previews;
 
@@ -57,17 +58,18 @@ export function LayoutAssemblyContent({
         </div>
       </div>
 
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta="Approve layouts"
-        ctaKind="approve"
+        primaryLabel="Approve layouts"
+        secondaryLabel="Request Layout Changes"
         stepNumber={5}
-        onClick={() =>
+        onPrimary={() =>
           onApprove("Approve Layout", {
             approved_layouts: layouts.map((l) => l.placement),
           })
         }
+        onRequestRevisions={() => onRequestRevisions(5, 4)}
       />
     </div>
   );

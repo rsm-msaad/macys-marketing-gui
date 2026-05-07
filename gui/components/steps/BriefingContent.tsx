@@ -1,12 +1,13 @@
 "use client";
 
-import { ActionFooter, BriefCard, type StepContentProps } from "./shared";
+import { ApprovalActions, BriefCard, type StepContentProps } from "./shared";
 
 export function BriefingContent({
   context,
   canAct,
   busy,
   onApprove,
+  onRequestRevisions,
 }: StepContentProps) {
   return (
     <div className="space-y-3">
@@ -15,13 +16,15 @@ export function BriefingContent({
         strategy, offer, and constraints, then approve to begin segmentation.
       </p>
       <BriefCard brief={context.campaign_brief} />
-      <ActionFooter
+      <ApprovalActions
         canAct={canAct}
         busy={busy}
-        cta="Approve Brief"
-        ctaKind="approve"
+        primaryLabel="Approve Brief"
+        primaryKind="approve"
+        secondaryLabel="Request Revisions"
         stepNumber={1}
-        onClick={() => onApprove("Approve Brief", { approved: true })}
+        onPrimary={() => onApprove("Approve Brief", { approved: true })}
+        onRequestRevisions={() => onRequestRevisions(1, 1)}
       />
     </div>
   );

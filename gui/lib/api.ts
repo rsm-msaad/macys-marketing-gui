@@ -107,12 +107,30 @@ export type CampaignHistoryEntry = {
   metadata: Record<string, unknown>;
 };
 
+export type RevisionEntry = {
+  comment: string;
+  requested_by_persona_id: string;
+  requested_from_step: number;
+  ts: string;
+};
+
+export type PendingRevision = {
+  step_to_redo: number;
+  resume_step: number;
+  comment: string;
+  requested_by_persona_id: string;
+  requested_at: string;
+  requested_from_step: number;
+};
+
 export type CampaignState = {
   current_step: number;
   completed_steps: number[];
   step_outputs: Record<string, unknown>;
   history: CampaignHistoryEntry[];
   is_complete: boolean;
+  revisions: Record<string, RevisionEntry[]>;
+  pending_revision: PendingRevision | null;
 };
 
 export async function fetchCampaignState(campaignId: string): Promise<CampaignState> {
@@ -228,6 +246,37 @@ export async function advanceCampaignWithOutput(
         step_output: stepOutput ?? null,
       }),
     },
+  );
+}
+
+export async function requestRevisions(
+  campaignId: string,
+  fromStep: number,
+  sendBackToStep: number,
+  comment: string,
+  requestedByPersonaId: string,
+): Promise<CampaignState> {
+  return request<CampaignState>(
+    `/campaigns/${encodeURIComponent(campaignId)}/request-revisions`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        step: fromStep,
+        send_back_to_step: sendBackToStep,
+        comment,
+        requested_by_persona_id: requestedByPersonaId,
+      }),
+    },
+  );
+}
+
+export async function resubmitStep(
+  campaignId: string,
+  step: number,
+): Promise<CampaignState> {
+  return request<CampaignState>(
+    `/campaigns/${encodeURIComponent(campaignId)}/resubmit/${step}`,
+    { method: "POST" },
   );
 }
 

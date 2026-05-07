@@ -24,6 +24,8 @@ import { MonitoringContent } from "@/components/steps/MonitoringContent";
 import { ReportingContent } from "@/components/steps/ReportingContent";
 import { ActiveBadge, ActiveIcon } from "@/components/steps/shared";
 import type { StepContentProps } from "@/components/steps/shared";
+import { ResubmitPanel } from "@/components/ResubmitPanel";
+import { RevisionPendingPanel } from "@/components/RevisionPendingPanel";
 
 const CAMPAIGN_ID = "MDC-2026-MD-001";
 
@@ -74,6 +76,7 @@ export function ActionPanel({
   steps: _steps,
   context,
   onLaunchSkill,
+  onRequestRevisions,
   onAdvanced,
 }: {
   personaId: string;
@@ -81,6 +84,7 @@ export function ActionPanel({
   steps: WorkflowStep[];
   context: CampaignContext | null;
   onLaunchSkill: (skill: SkillKind) => void;
+  onRequestRevisions: (fromStep: number, defaultSendBackToStep: number) => void;
   onAdvanced: () => void;
 }) {
   const [busy, setBusy] = useState(false);
@@ -115,6 +119,23 @@ export function ActionPanel({
   }
 
   if (stepNumber === null) return null;
+
+  // Pending revision branch: render ResubmitPanel for the redo owner,
+  // RevisionPendingPanel for everyone else.
+  if (state.pending_revision) {
+    const pending = state.pending_revision;
+    const canResubmit = isStepOwnedBy(pending.step_to_redo, personaId);
+    if (canResubmit) {
+      return (
+        <ResubmitPanel
+          campaignId={CAMPAIGN_ID}
+          pending={pending}
+          onResubmitted={onAdvanced}
+        />
+      );
+    }
+    return <RevisionPendingPanel pending={pending} />;
+  }
 
   const canAct = isStepOwnedBy(stepNumber, personaId);
 
@@ -156,6 +177,7 @@ export function ActionPanel({
             busy={busy}
             onApprove={handleApprove}
             onLaunchSkill={onLaunchSkill}
+            onRequestRevisions={onRequestRevisions}
           />
         </div>
 
