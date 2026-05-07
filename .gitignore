@@ -16,6 +16,8 @@ __pycache__
 
 # Secrets
 .env
+.env.local
+.env.*.local
 
 # Downloaded image assets. The DAM subdir is tracked so the Render deploy
 # ships with thumbnails; other subdirs (future ad hoc downloads) stay ignored.

@@ -1,29 +1,55 @@
 // Typed fetch wrappers for the FastAPI backend.
+//
+// API_BASE is read from NEXT_PUBLIC_API_URL at build time so the same code
+// runs locally (default localhost:8000) and against the deployed Render
+// backend on Vercel (set NEXT_PUBLIC_API_URL to the Render URL).
 
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+// Render free tier sleeps after ~15 minutes of inactivity. The first request
+// after sleep takes 30 to 60 seconds while the dyno spins up. Default fetch
+// has no timeout, but we add an explicit 60s ceiling so a hung connection
+// surfaces as an error instead of a permanently spinning UI.
+const REQUEST_TIMEOUT_MS = 60_000;
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
-  const res = await fetch(url, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
-    },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    let detail = "";
-    try {
-      const data = await res.json();
-      detail = data.detail || JSON.stringify(data);
-    } catch {
-      detail = await res.text();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(init?.headers ?? {}),
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      let detail = "";
+      try {
+        const data = await res.json();
+        detail = data.detail || JSON.stringify(data);
+      } catch {
+        detail = await res.text();
+      }
+      throw new Error(`API ${res.status} ${res.statusText}: ${detail}`);
     }
-    throw new Error(`API ${res.status} ${res.statusText}: ${detail}`);
+    return (await res.json()) as T;
+  } catch (err) {
+    if ((err as Error).name === "AbortError") {
+      throw new Error(
+        `API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s. ` +
+          "If this is the first request after a quiet period, the Render free " +
+          "tier dyno may still be cold starting. Try again in a few seconds."
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return (await res.json()) as T;
 }
 
 // ----- Personas -----
