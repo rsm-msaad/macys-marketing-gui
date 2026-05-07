@@ -24,12 +24,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# CORS is intentionally wide open for the initial Render deploy so the
+# frontend (Vercel URL not yet known) can reach the API. Lock this down to
+# the actual Vercel origin once the deploy is live.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
