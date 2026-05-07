@@ -20,8 +20,9 @@ This skill maps to workflow steps 4 and 5 (Creative Production and Layout Assemb
    * Raw relevance, the fraction of brief tokens that appear in the asset's tags or asset_type after lowercasing, splitting on hyphens, and dropping common stopwords.
    * Recency boost, +0.20 if the asset's `created_date` is within the last 365 days.
    * Resolution boost, +0.10 for 4K and above, +0.05 for HD (1920 by 1080 up to 4K).
+   * Photo backed boost, +0.50 if the asset's `filename` exists on disk in `data/images/dam/`. The directory is scanned once per call. This is the GUI demo lever: it pushes the small set of Unsplash linked assets to the top of the ranking so the thumbnail grid renders real photos instead of empty placeholders.
    * Composite score is the sum, clamped to the 0 to 1 range. This is what the dict reports as `relevance_score`.
-4. **Rank** by relevance_score descending, tie break on asset_id, return the top N.
+4. **Rank** by `(has_photo, relevance_score, asset_id)` descending. Photo backed assets are bucketed strictly above non photo backed assets, then sorted within each bucket by relevance and asset_id. If the photo backed bucket has fewer than `max_results` candidates the ranking falls through to the non photo bucket so the result list is always full.
 
 ## What the script needs
 
@@ -43,10 +44,13 @@ This skill maps to workflow steps 4 and 5 (Creative Production and Layout Assemb
 | `tags` | list[str] | Parsed from the JSON list stored in `dam_assets.tags`. |
 | `resolution` | string | E.g. `"1920x1080"`. |
 | `usage_rights` | string | `free` or `restricted` after filtering. |
-| `relevance_score` | float | Composite score in 0 to 1 (raw relevance plus recency and resolution boosts, clamped). |
+| `relevance_score` | float | Composite score in 0 to 1 (raw relevance plus recency, resolution, and photo backed boosts, clamped). |
 | `quality_flag` | string | Always `"clean"` in the returned set, since degraded assets are filtered out. |
+| `has_photo` | bool | `True` when the asset's filename is present in `data/images/dam/` on the local filesystem. The GUI uses this implicitly via the bucketed sort. |
 
-The companion function `search_with_stats(brief, max_results, db_path)` returns the same list along with a stats dict (`total_searched`, `filtered_out` breakdown by reason, `kept`, `returned`, `avg_relevance`). The terminal demo uses this to print the analytics summary.
+The companion function `search_with_stats(brief, max_results, db_path, images_dir)` returns the same list along with a stats dict (`total_searched`, `filtered_out` breakdown by reason, `kept`, `returned`, `avg_relevance`, `photo_backed_in_pool`, `photo_backed_in_top`). The terminal demo uses this to print the analytics summary.
+
+`images_dir` defaults to `data/images/dam/` at the repo root. Passing a non existent path disables the photo backed boost (useful for tests that want pure relevance ranking).
 
 ## How to use this skill
 

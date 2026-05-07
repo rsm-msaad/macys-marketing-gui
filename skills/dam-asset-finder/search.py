@@ -21,6 +21,7 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DB_PATH = _REPO_ROOT / "data" / "macys.db"
+DEFAULT_IMAGES_DIR = _REPO_ROOT / "data" / "images" / "dam"
 
 # Filter thresholds.
 MIN_PIXELS = 1024 * 768  # below this counts as low resolution
@@ -32,6 +33,7 @@ RES_4K_PIXELS = 3840 * 2160
 RES_HD_PIXELS = 1920 * 1080
 RES_4K_BOOST = 0.10
 RES_HD_BOOST = 0.05
+PHOTO_BOOST = 0.50  # asset with a real JPG on disk gets this added to relevance
 DEFAULT_MAX_RESULTS = 12
 
 STOPWORDS = frozenset({
@@ -133,6 +135,21 @@ def compute_relevance(
     return matched / len(brief_tokens)
 
 
+def _scan_images_dir(images_dir: Path | str | None) -> frozenset[str]:
+    """Return the set of filenames present in `images_dir`.
+
+    Used to decide whether a dam_assets row points at a real JPG on disk.
+    Empty set when the directory is missing (the Unsplash downloader has
+    not been run, or no images dir was passed).
+    """
+    if images_dir is None:
+        return frozenset()
+    p = Path(images_dir)
+    if not p.exists() or not p.is_dir():
+        return frozenset()
+    return frozenset(entry.name for entry in p.iterdir() if entry.is_file())
+
+
 def _is_degraded(degradation_flag: str | None) -> bool:
     return (degradation_flag or "").strip().lower() != "clean"
 
@@ -159,7 +176,12 @@ def _classify_filter_reason(
     return None
 
 
-def _row_to_asset(row: tuple, brief_tokens: list[str], today: date) -> dict:
+def _row_to_asset(
+    row: tuple,
+    brief_tokens: list[str],
+    today: date,
+    available_filenames: frozenset[str] = frozenset(),
+) -> dict:
     (
         asset_id,
         filename,
@@ -178,7 +200,9 @@ def _row_to_asset(row: tuple, brief_tokens: list[str], today: date) -> dict:
 
     tags = _parse_tags(tags_json)
     raw_relevance = compute_relevance(brief_tokens, tags, asset_type)
-    boost = _recency_boost(created_date, today) + _resolution_boost(resolution)
+    has_photo = filename in available_filenames
+    photo_boost = PHOTO_BOOST if has_photo else 0.0
+    boost = _recency_boost(created_date, today) + _resolution_boost(resolution) + photo_boost
     composite = max(0.0, min(1.0, raw_relevance + boost))
 
     return {
@@ -190,6 +214,7 @@ def _row_to_asset(row: tuple, brief_tokens: list[str], today: date) -> dict:
         "usage_rights": usage_rights,
         "relevance_score": round(composite, 4),
         "quality_flag": "clean" if not _is_degraded(degradation_flag) else "degraded",
+        "has_photo": has_photo,
         "_raw_relevance": round(raw_relevance, 4),
         "_created_date": created_date,
     }
@@ -199,8 +224,21 @@ def search_with_stats(
     brief_description: str,
     max_results: int = DEFAULT_MAX_RESULTS,
     db_path: Path | str = DEFAULT_DB_PATH,
+    images_dir: Path | str | None = None,
 ) -> tuple[list[dict], dict]:
-    """Run the full pipeline. Returns (top_results, stats)."""
+    """Run the full pipeline. Returns (top_results, stats).
+
+    `images_dir` defaults to `data/images/dam/` at the repo root. Assets whose
+    filename is present in that directory get a `PHOTO_BOOST` added to their
+    relevance score and are bucketed above non photo backed assets in the
+    final ranking, so the GUI thumbnail grid does not render mostly empty
+    placeholders. Pass `images_dir=Path("/dev/null")` (or any non existent
+    path) to disable the boost in callers that care.
+    """
+    if images_dir is None:
+        images_dir = DEFAULT_IMAGES_DIR
+    available_filenames = _scan_images_dir(images_dir)
+
     conn = connect_db(db_path)
     try:
         rows = conn.execute(
@@ -229,9 +267,18 @@ def search_with_stats(
         if reason is not None:
             filtered_counts[reason] += 1
             continue
-        candidates.append(_row_to_asset(row, brief_tokens, today))
+        candidates.append(
+            _row_to_asset(row, brief_tokens, today, available_filenames)
+        )
 
-    candidates.sort(key=lambda a: (a["relevance_score"], a["asset_id"]), reverse=True)
+    # Bucket photo backed assets above non photo backed, then by relevance,
+    # then by asset_id. This guarantees the demo's top results render real
+    # thumbnails whenever the kept set has any photo backed candidates,
+    # while still falling back to non photo assets if there are not enough.
+    candidates.sort(
+        key=lambda a: (a["has_photo"], a["relevance_score"], a["asset_id"]),
+        reverse=True,
+    )
     top = candidates[: max(0, int(max_results))]
     for i, asset in enumerate(top, start=1):
         asset["rank"] = i
@@ -247,6 +294,8 @@ def search_with_stats(
         "kept": len(candidates),
         "returned": len(top),
         "avg_relevance": round(avg_relevance, 4),
+        "photo_backed_in_pool": sum(1 for a in candidates if a["has_photo"]),
+        "photo_backed_in_top": sum(1 for a in top if a["has_photo"]),
     }
     return top, stats
 
@@ -255,9 +304,10 @@ def find_assets(
     brief_description: str,
     max_results: int = DEFAULT_MAX_RESULTS,
     db_path: Path | str = DEFAULT_DB_PATH,
+    images_dir: Path | str | None = None,
 ) -> list[dict]:
     """Public entry point: top ranked candidate assets for the brief."""
-    top, _stats = search_with_stats(brief_description, max_results, db_path)
+    top, _stats = search_with_stats(brief_description, max_results, db_path, images_dir)
     return top
 
 
