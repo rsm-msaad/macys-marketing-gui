@@ -1,7 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CheckCircle2, Hourglass, Lock, Play, Sparkles } from "lucide-react";
+import {
+  AlertTriangle,
+  BadgePercent,
+  Calendar,
+  CheckCircle2,
+  FileText,
+  Hourglass,
+  Lock,
+  Play,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 
 import { advanceCampaign, type CampaignState, type WorkflowStep } from "@/lib/api";
 import { usePersona } from "@/components/PersonaContext";
@@ -20,7 +35,8 @@ type StepActionConfig = {
 // whether anyone can act (HUMAN_ONLY) or only the step's owner persona.
 const STEP_ACTIONS: Record<number, StepActionConfig> = {
   1: {
-    label: "Sign off on the campaign brief from Marketing leadership.",
+    label:
+      "Marketing leadership has filed the campaign brief below. Review the strategy, offer, and constraints, then approve to begin segmentation.",
     cta: "Approve Brief",
     kind: "approve",
     ownership: "anyone",
@@ -176,6 +192,12 @@ export function ActionPanel({
         </h3>
         <p className="mt-1 text-sm text-charcoal/70">{config.label}</p>
 
+        {currentStepInfo.number === 1 && (
+          <div className="mt-4">
+            <BriefCard />
+          </div>
+        )}
+
         {canAct ? (
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button
@@ -211,6 +233,140 @@ export function ActionPanel({
         )}
 
         {error && <p className="mt-2 text-xs text-soft_red">{error}</p>}
+      </div>
+    </div>
+  );
+}
+
+
+// ---------- Step 1 brief content ----------
+
+function BriefSection({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: LucideIcon;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section>
+      <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+        <Icon className="h-3 w-3" />
+        {title}
+      </div>
+      <div className="text-[12px] leading-relaxed text-charcoal/80">{children}</div>
+    </section>
+  );
+}
+
+function BriefKV({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid grid-cols-[140px_1fr] gap-x-3 py-0.5">
+      <span className="text-charcoal/55">{label}</span>
+      <span className="text-charcoal/85">{value}</span>
+    </div>
+  );
+}
+
+function BriefBullet({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="flex items-start gap-1.5 py-0.5">
+      <span className="mt-1.5 inline-block h-1 w-1 flex-shrink-0 rounded-full bg-charcoal/40" />
+      <span>{children}</span>
+    </li>
+  );
+}
+
+function BriefCard() {
+  return (
+    <div className="rounded-md border border-charcoal/10 bg-cream/50 p-5">
+      <div className="mb-4 border-b border-charcoal/10 pb-3">
+        <div className="text-[10px] font-semibold uppercase tracking-widest text-charcoal/45">
+          Campaign Brief · Filed by Marketing Leadership
+        </div>
+        <div className="mt-0.5 font-serif text-base font-semibold text-charcoal">
+          Mother&apos;s Day Beauty Event
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <BriefSection icon={FileText} title="Campaign Overview">
+          <div className="space-y-0">
+            <BriefKV label="Campaign Name" value="Mother's Day Beauty Event" />
+            <BriefKV label="Campaign ID" value="MDC-2026-MD-001" />
+            <BriefKV label="Sponsored by" value="VP of Marketing" />
+            <BriefKV label="Filed" value="12 days before launch" />
+          </div>
+        </BriefSection>
+
+        <BriefSection icon={Target} title="Strategic Objective">
+          <p>
+            Drive Beauty category revenue +20% vs last year&apos;s Mother&apos;s Day window.
+            Win back lapsed Beauty buyers and acquire first-time Beauty customers from
+            existing Macy&apos;s loyalists.
+          </p>
+        </BriefSection>
+
+        <BriefSection icon={Users} title="Target Customer">
+          <p>
+            Women 28 to 55, Macy&apos;s Star Rewards members, with prior Beauty purchases
+            or expressed Beauty preference. Emphasis on Gold and Platinum tier loyalty
+            members.
+          </p>
+        </BriefSection>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <BriefSection icon={BadgePercent} title="Promotional Offer">
+            <ul className="space-y-0">
+              <BriefBullet>25% off all Beauty (excluding fragrance and prestige skincare)</BriefBullet>
+              <BriefBullet>Free gift with purchase $75+</BriefBullet>
+              <BriefBullet>Free shipping on Beauty orders over $50</BriefBullet>
+            </ul>
+          </BriefSection>
+
+          <BriefSection icon={Calendar} title="Campaign Window">
+            <ul className="space-y-0">
+              <BriefBullet>Soft launch: 14 days before Mother&apos;s Day</BriefBullet>
+              <BriefBullet>Peak: 7 days before Mother&apos;s Day</BriefBullet>
+              <BriefBullet>Closeout: Mother&apos;s Day end of day</BriefBullet>
+            </ul>
+          </BriefSection>
+
+          <BriefSection icon={Wallet} title="Budget Allocation">
+            <ul className="space-y-0">
+              <BriefBullet>Paid media: $1.2M</BriefBullet>
+              <BriefBullet>Store experience: $400K</BriefBullet>
+              <BriefBullet>Email and CRM: $200K</BriefBullet>
+              <BriefBullet>
+                <span className="font-semibold text-charcoal">Total: $1.8M</span>
+              </BriefBullet>
+            </ul>
+          </BriefSection>
+
+          <BriefSection icon={TrendingUp} title="Success Metrics">
+            <ul className="space-y-0">
+              <BriefBullet>Revenue target: $4.2M</BriefBullet>
+              <BriefBullet>ROAS goal: 3.5x</BriefBullet>
+              <BriefBullet>New Beauty customer acquisition: 5,000+</BriefBullet>
+              <BriefBullet>Email open rate: 22%+</BriefBullet>
+            </ul>
+          </BriefSection>
+        </div>
+
+        <BriefSection icon={AlertTriangle} title="Constraints">
+          <ul className="space-y-0">
+            <BriefBullet>
+              Legal review required for all final creative (Brand and Promotional Compliance)
+            </BriefBullet>
+            <BriefBullet>
+              Cannot include prestige skincare brands (Tom Ford, La Mer, etc.)
+            </BriefBullet>
+            <BriefBullet>Regional pricing must reflect inventory levels</BriefBullet>
+            <BriefBullet>Must include Star Rewards member-exclusive offer</BriefBullet>
+          </ul>
+        </BriefSection>
       </div>
     </div>
   );
