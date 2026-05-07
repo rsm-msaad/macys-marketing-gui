@@ -141,6 +141,96 @@ export async function resetCampaign(campaignId: string): Promise<CampaignState> 
   );
 }
 
+// ----- Campaign context (brief + mock data tables) -----
+
+export type CampaignBrief = {
+  campaign_id: string;
+  name: string;
+  sponsor: string;
+  filed_days_before_launch: number;
+  objective: string;
+  target_customer: string;
+  promotional_offer: string[];
+  campaign_window: { soft_launch: string; peak: string; closeout: string };
+  budget: Record<string, string>;
+  success_metrics: Record<string, string>;
+  constraints: string[];
+};
+
+export type SkuSuggestion = {
+  sku_id: number;
+  name: string;
+  brand: string;
+  category: string;
+  subcategory: string;
+  base_price: number;
+  inventory_status: string;
+  inventory_units: number;
+  margin_pct: number;
+  segment_match_score: number;
+  reason: string;
+};
+
+export type LayoutPreview = {
+  placement: string;
+  dimensions: string;
+  headline: string;
+  subhead: string;
+  cta: string;
+  notes: string;
+};
+
+export type ApprovalCheckpoint = {
+  name: string;
+  reviewer: string;
+  criteria: string;
+  status: string;
+  reviewed_at: string;
+};
+
+export type ChannelDeployment = {
+  channel: string;
+  deployment_time: string;
+  audience: string;
+  expected_volume: string;
+  status: string;
+};
+
+export type CampaignContext = {
+  campaign_brief: CampaignBrief;
+  state: CampaignState;
+  mock_data: {
+    sku_suggestions: SkuSuggestion[];
+    layout_previews: LayoutPreview[];
+    approval_checkpoints: ApprovalCheckpoint[];
+    channel_schedule: ChannelDeployment[];
+    executive_summary_template: string;
+  };
+};
+
+export async function fetchCampaignContext(campaignId: string): Promise<CampaignContext> {
+  return request<CampaignContext>(`/campaigns/${encodeURIComponent(campaignId)}/context`);
+}
+
+export async function advanceCampaignWithOutput(
+  campaignId: string,
+  step: number,
+  action: string,
+  stepOutput?: Record<string, unknown>,
+): Promise<CampaignState> {
+  return request<CampaignState>(
+    `/campaigns/${encodeURIComponent(campaignId)}/advance`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        step,
+        action,
+        step_output: stepOutput ?? null,
+      }),
+    },
+  );
+}
+
 // ----- Chat -----
 export type ChatReply = {
   response: string;

@@ -13,17 +13,21 @@ router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 # Canonical 10 step workflow. owner_persona_id is the dropdown id used by
 # the frontend (or "all" / persona pair).
+# For demo purposes, Sarah (campaign-manager) acts as proxy for Marketing
+# Leadership at step 1, the Approval committee at step 6, and the Media
+# Coordinator at step 8. The display owner reflects the real-world role; the
+# acting persona id is who the GUI lets click the action button.
 STEPS = [
-    {"number": 1,  "name": "Briefing",            "owner": "Marketing leadership", "owner_persona_id": "leadership",        "label": "HUMAN_ONLY"},
-    {"number": 2,  "name": "Segmentation",        "owner": "Campaign Manager",     "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
-    {"number": 3,  "name": "SKU Selection",       "owner": "Campaign Manager",     "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
-    {"number": 4,  "name": "Creative Production", "owner": "Senior Designer",      "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
-    {"number": 5,  "name": "Layout Assembly",     "owner": "Senior Designer",      "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
-    {"number": 6,  "name": "Approval",            "owner": "Campaign Manager + VP","owner_persona_id": "campaign-manager",  "label": "HUMAN_ONLY"},
-    {"number": 7,  "name": "Localization",        "owner": "Production Artist",    "owner_persona_id": "production-artist", "label": "FULLY_AUTOMATED"},
-    {"number": 8,  "name": "Activation",          "owner": "Media Coordinator",    "owner_persona_id": "media-coordinator", "label": "HUMAN_PLUS_AI"},
-    {"number": 9,  "name": "Monitoring",          "owner": "Marketing Analyst",    "owner_persona_id": "marketing-analyst", "label": "FULLY_AUTOMATED"},
-    {"number": 10, "name": "Reporting",           "owner": "Marketing Analyst",    "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_AI"},
+    {"number": 1,  "name": "Briefing",            "owner": "Marketing Leadership (via Sarah)", "owner_persona_id": "campaign-manager",  "label": "HUMAN_ONLY"},
+    {"number": 2,  "name": "Segmentation",        "owner": "Campaign Manager",                 "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
+    {"number": 3,  "name": "SKU Selection",       "owner": "Campaign Manager",                 "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
+    {"number": 4,  "name": "Creative Production", "owner": "Senior Designer",                  "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
+    {"number": 5,  "name": "Layout Assembly",     "owner": "Senior Designer",                  "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
+    {"number": 6,  "name": "Final Approval",      "owner": "Campaign Manager + VP + Legal",    "owner_persona_id": "campaign-manager",  "label": "HUMAN_ONLY"},
+    {"number": 7,  "name": "Localization",        "owner": "Production Artist",                "owner_persona_id": "production-artist", "label": "FULLY_AUTOMATED"},
+    {"number": 8,  "name": "Activation",          "owner": "Media Coordinator (via Sarah)",    "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
+    {"number": 9,  "name": "Monitoring",          "owner": "Marketing Analyst",                "owner_persona_id": "marketing-analyst", "label": "FULLY_AUTOMATED"},
+    {"number": 10, "name": "Reporting",           "owner": "Marketing Analyst",                "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_AI"},
 ]
 
 VALID_PERSONAS = {
@@ -142,17 +146,46 @@ def get_campaign_state(campaign_id: str) -> dict:
 class AdvanceBody(BaseModel):
     step: int
     action: str
+    # Either field is accepted; both feed state.step_outputs[step].
+    step_output: dict[str, Any] | None = None
     metadata: dict[str, Any] | None = None
 
 
 @campaigns_router.post("/campaigns/{campaign_id}/advance")
 def advance_campaign(campaign_id: str, body: AdvanceBody) -> dict:
+    payload = body.step_output if body.step_output is not None else body.metadata
     try:
-        return state_mod.advance(campaign_id, body.step, body.action, body.metadata)
+        return state_mod.advance(campaign_id, body.step, body.action, payload)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc))
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
+
+
+@campaigns_router.get("/campaigns/{campaign_id}/context")
+def campaign_context(campaign_id: str) -> dict:
+    """Return everything the GUI needs to render rich step content.
+
+    Includes the static campaign brief, the live state (with step_outputs
+    accumulated as steps are completed), and the per-step mock data tables
+    used for the steps that don't run a real skill.
+    """
+    s = state_mod.get_state(campaign_id)
+    if s is None:
+        raise HTTPException(
+            status_code=404, detail=f"unknown campaign: {campaign_id}"
+        )
+    return {
+        "campaign_brief": state_mod.CAMPAIGN_BRIEF,
+        "state": s,
+        "mock_data": {
+            "sku_suggestions": state_mod.MOCK_SKU_SUGGESTIONS,
+            "layout_previews": state_mod.MOCK_LAYOUT_PREVIEWS,
+            "approval_checkpoints": state_mod.MOCK_APPROVAL_CHECKPOINTS,
+            "channel_schedule": state_mod.MOCK_CHANNEL_SCHEDULE,
+            "executive_summary_template": state_mod.EXECUTIVE_SUMMARY_TEMPLATE,
+        },
+    }
 
 
 @campaigns_router.post("/campaigns/{campaign_id}/reset")

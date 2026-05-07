@@ -17,8 +17,10 @@ const DEFAULT_SELECTED_ID = "MDC-2026-MD-001";
 
 export function CampaignSidebar({
   campaigns: campaignsProp,
+  activeOwnerName,
 }: {
   campaigns?: Campaign[];
+  activeOwnerName?: string | null;
 }) {
   // Two render modes: parent supplies campaigns (PersonaShell does the
   // polling and passes them in) or we self-fetch when used standalone.
@@ -99,6 +101,11 @@ export function CampaignSidebar({
                   />
                   <span className="text-charcoal/55">{c.days_label}</span>
                 </div>
+                {c.status === "active" && activeOwnerName && (
+                  <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-teal-700">
+                    Awaiting {activeOwnerName}
+                  </div>
+                )}
               </button>
             </li>
           );
