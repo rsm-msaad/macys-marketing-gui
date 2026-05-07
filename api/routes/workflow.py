@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+from api import state as state_mod
 
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
@@ -21,20 +26,6 @@ STEPS = [
     {"number": 10, "name": "Reporting",           "owner": "Marketing Analyst",    "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_AI"},
 ]
 
-# Demo state: campaign mid flight. Steps 1..3 done, 4 active, 5..10 pending.
-STATUS_BY_STEP = {
-    1: "complete",
-    2: "complete",
-    3: "complete",
-    4: "active",
-    5: "pending",
-    6: "pending",
-    7: "pending",
-    8: "pending",
-    9: "pending",
-    10: "pending",
-}
-
 VALID_PERSONAS = {
     "campaign-manager",
     "senior-designer",
@@ -45,6 +36,7 @@ VALID_PERSONAS = {
 
 @router.get("/{persona_id}")
 def workflow_for_persona(persona_id: str) -> dict:
+    """Return the 10 steps with statuses derived from live campaign state."""
     if persona_id not in VALID_PERSONAS:
         raise HTTPException(status_code=404, detail=f"unknown persona: {persona_id}")
     out = []
@@ -52,7 +44,9 @@ def workflow_for_persona(persona_id: str) -> dict:
         out.append(
             {
                 **step,
-                "status": STATUS_BY_STEP.get(step["number"], "pending"),
+                "status": state_mod.status_for_step(
+                    state_mod.DEMO_CAMPAIGN_ID, step["number"]
+                ),
                 "my_step": step["owner_persona_id"] == persona_id,
             }
         )
@@ -107,6 +101,63 @@ CAMPAIGNS = [
 campaigns_router = APIRouter(tags=["campaigns"])
 
 
+def _merged_campaign(c: dict[str, Any]) -> dict[str, Any]:
+    """Inject live state into the demo campaign so the sidebar reflects it."""
+    if c["id"] != state_mod.DEMO_CAMPAIGN_ID:
+        return c
+    live = state_mod.get_state(c["id"])
+    if not live:
+        return c
+    is_complete = live["is_complete"]
+    if is_complete:
+        return {
+            **c,
+            "current_step": state_mod.LAST_STEP,
+            "current_step_name": "Complete",
+            "status": "completed",
+            "color_indicator": "gray",
+            "days_label": "Campaign complete",
+        }
+    step = live["current_step"]
+    return {
+        **c,
+        "current_step": step,
+        "current_step_name": state_mod.STEP_NAMES.get(step, f"Step {step}"),
+    }
+
+
 @campaigns_router.get("/campaigns")
 def list_campaigns() -> list[dict]:
-    return CAMPAIGNS
+    return [_merged_campaign(c) for c in CAMPAIGNS]
+
+
+@campaigns_router.get("/campaigns/{campaign_id}/state")
+def get_campaign_state(campaign_id: str) -> dict:
+    s = state_mod.get_state(campaign_id)
+    if s is None:
+        raise HTTPException(status_code=404, detail=f"unknown campaign: {campaign_id}")
+    return s
+
+
+class AdvanceBody(BaseModel):
+    step: int
+    action: str
+    metadata: dict[str, Any] | None = None
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/advance")
+def advance_campaign(campaign_id: str, body: AdvanceBody) -> dict:
+    try:
+        return state_mod.advance(campaign_id, body.step, body.action, body.metadata)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/reset")
+def reset_campaign(campaign_id: str) -> dict:
+    try:
+        return state_mod.reset(campaign_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))

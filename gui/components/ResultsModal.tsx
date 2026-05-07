@@ -30,9 +30,11 @@ export type ModalState = {
 export function ResultsModal({
   state,
   onClose,
+  onSuccess,
 }: {
   state: ModalState;
   onClose: () => void;
+  onSuccess?: (kind: "segment" | "dam" | "localize" | "analyze") => void;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +89,9 @@ export function ResultsModal({
         const data = await runAnalyze(campaignId, forecastDays);
         setResult({ kind: "analyze", data });
       }
+      // Notify the parent so it can advance the campaign workflow when the
+      // current step matches the skill we just ran.
+      onSuccess?.(state.kind);
     } catch (e) {
       setError((e as Error).message);
     } finally {

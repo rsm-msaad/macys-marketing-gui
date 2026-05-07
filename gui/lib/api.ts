@@ -98,6 +98,49 @@ export async function fetchCampaigns(): Promise<Campaign[]> {
   return request<Campaign[]>("/campaigns");
 }
 
+// ----- Campaign live state (approval flow) -----
+export type CampaignHistoryEntry = {
+  step: number;
+  step_name: string;
+  action: string;
+  ts: string;
+  metadata: Record<string, unknown>;
+};
+
+export type CampaignState = {
+  current_step: number;
+  completed_steps: number[];
+  step_outputs: Record<string, unknown>;
+  history: CampaignHistoryEntry[];
+  is_complete: boolean;
+};
+
+export async function fetchCampaignState(campaignId: string): Promise<CampaignState> {
+  return request<CampaignState>(`/campaigns/${encodeURIComponent(campaignId)}/state`);
+}
+
+export async function advanceCampaign(
+  campaignId: string,
+  step: number,
+  action: string,
+  metadata?: Record<string, unknown>,
+): Promise<CampaignState> {
+  return request<CampaignState>(
+    `/campaigns/${encodeURIComponent(campaignId)}/advance`,
+    {
+      method: "POST",
+      body: JSON.stringify({ step, action, metadata: metadata ?? null }),
+    },
+  );
+}
+
+export async function resetCampaign(campaignId: string): Promise<CampaignState> {
+  return request<CampaignState>(
+    `/campaigns/${encodeURIComponent(campaignId)}/reset`,
+    { method: "POST" },
+  );
+}
+
 // ----- Chat -----
 export type ChatReply = {
   response: string;

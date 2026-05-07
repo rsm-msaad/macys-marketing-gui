@@ -13,26 +13,25 @@ const STATUS_STYLE: Record<
   completed: { dot: "#9ca3af", pillBg: "#e5e7eb", pillText: "#4b5563", label: "COMPLETED" },
 };
 
-// Default selected campaign is the active one (the demo campaign that all
-// skills run against). The demo doesn't actually re-fetch data when a
-// different campaign is clicked yet, so this is just visual state.
 const DEFAULT_SELECTED_ID = "MDC-2026-MD-001";
 
-export function CampaignSidebar() {
-  const [campaigns, setCampaigns] = useState<Campaign[] | null>(null);
+export function CampaignSidebar({
+  campaigns: campaignsProp,
+}: {
+  campaigns?: Campaign[];
+}) {
+  // Two render modes: parent supplies campaigns (PersonaShell does the
+  // polling and passes them in) or we self-fetch when used standalone.
+  const [fetched, setFetched] = useState<Campaign[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string>(DEFAULT_SELECTED_ID);
 
   useEffect(() => {
+    if (campaignsProp !== undefined) return;
     let cancelled = false;
     fetchCampaigns()
       .then((data) => {
-        if (cancelled) return;
-        setCampaigns(data);
-        // If the default isn't in the list, fall back to the first one.
-        if (!data.some((c) => c.id === DEFAULT_SELECTED_ID) && data.length > 0) {
-          setSelectedId(data[0].id);
-        }
+        if (!cancelled) setFetched(data);
       })
       .catch((e: Error) => {
         if (!cancelled) setError(e.message);
@@ -40,7 +39,9 @@ export function CampaignSidebar() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [campaignsProp]);
+
+  const campaigns = campaignsProp ?? fetched;
 
   return (
     <section className="border-b border-charcoal/10 px-4 py-4">
@@ -53,13 +54,8 @@ export function CampaignSidebar() {
         )}
       </div>
 
-      {error && (
-        <p className="text-[11px] text-soft_red">Could not load campaigns.</p>
-      )}
-
-      {!campaigns && !error && (
-        <p className="text-[11px] text-charcoal/40">Loading…</p>
-      )}
+      {error && <p className="text-[11px] text-soft_red">Could not load campaigns.</p>}
+      {!campaigns && !error && <p className="text-[11px] text-charcoal/40">Loading…</p>}
 
       <ul className="space-y-1.5">
         {(campaigns ?? []).map((c) => {
@@ -93,10 +89,8 @@ export function CampaignSidebar() {
                     {style.label}
                   </span>
                 </div>
-                <div className="mt-1.5 flex items-center justify-between text-[10px] text-charcoal/65">
-                  <span className="truncate">
-                    Step {c.current_step}: {c.current_step_name}
-                  </span>
+                <div className="mt-1.5 text-[10px] text-charcoal/65">
+                  Step {c.current_step}: {c.current_step_name}
                 </div>
                 <div className="mt-0.5 flex items-center gap-1.5 text-[10px]">
                   <span
