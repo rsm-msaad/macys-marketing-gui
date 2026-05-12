@@ -70,7 +70,7 @@ export type BriefResult = {
 
 export type RouteRevisionResult = {
   change_type: string;
-  suggested_owner: string;
+  owner: string;
   one_line_summary: string;
   urgency: string;
 };

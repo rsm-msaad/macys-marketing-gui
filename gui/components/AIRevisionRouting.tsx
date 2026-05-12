@@ -131,7 +131,7 @@ export function AIRevisionRouting({
                   onClick={() =>
                     onConfirm({
                       change_type: "unknown",
-                      suggested_owner: "campaign-manager",
+                      owner: "campaign-manager",
                       one_line_summary: revisionComment,
                       urgency: "medium",
                     })
@@ -164,9 +164,9 @@ export function AIRevisionRouting({
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-50 text-[10px] font-semibold text-teal-600">
-                      {result.suggested_owner.charAt(0).toUpperCase()}
+                      {result.owner.charAt(0).toUpperCase()}
                     </span>
-                    <span className="text-sm font-medium text-charcoal">{result.suggested_owner}</span>
+                    <span className="text-sm font-medium text-charcoal">{result.owner}</span>
                   </div>
                 </div>
 
@@ -243,7 +243,7 @@ export function AIRevisionRouting({
                   type="button"
                   disabled={!overrideOwner}
                   onClick={() =>
-                    onConfirm({ ...result, suggested_owner: overrideOwner })
+                    onConfirm({ ...result, owner: overrideOwner })
                   }
                   className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
                 >

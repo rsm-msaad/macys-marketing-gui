@@ -190,11 +190,7 @@ def _check_ai_ready() -> None:
             },
         )
     api_key = os.environ.get("TRITONAI_API_KEY", "")
-    if (
-        not api_key
-        or api_key.startswith("your_")
-        or api_key.startswith("placeholder")
-    ):
+    if not api_key or api_key.startswith("your_") or api_key.startswith("placeholder"):
         raise HTTPException(
             status_code=503,
             detail={
@@ -314,8 +310,7 @@ async def ai_cascade(req: ApprovalCascadeRequest) -> dict:
             detail={
                 "error": "Bad request",
                 "detail": (
-                    "ai_cascade only runs when approval_decision is 'approved'. "
-                    f"Received {req.approval_decision!r}."
+                    f"ai_cascade only runs when approval_decision is 'approved'. Received {req.approval_decision!r}."
                 ),
             },
         )
@@ -325,7 +320,10 @@ async def ai_cascade(req: ApprovalCascadeRequest) -> dict:
     )
     state = await _run_skill("localization-generator", state, req.campaign_id)
     state = await _run_skill("activation-scheduler", state, req.campaign_id)
+    variants = state.get("localized_variants")
+    if isinstance(variants, dict) and "localized_variants" in variants:
+        variants = variants["localized_variants"]
     return {
-        "localized_variants": state.get("localized_variants"),
+        "localized_variants": variants,
         "activation_schedule": state.get("activation_schedule"),
     }
