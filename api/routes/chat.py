@@ -46,15 +46,15 @@ def _extract_brief(message: str) -> str:
 
 GREETING_BY_PERSONA = {
     "campaign-manager": (
-        "Hi Sarah. I can build segment options, pull active campaigns, or "
+        "Hi Merna. I can build segment options, pull active campaigns, or "
         "help you triage today. What would you like to tackle first?"
     ),
     "senior-designer": (
-        "Hi Priya. I can search the DAM and rank assets by relevance, or show "
+        "Hi Abdullah. I can search the DAM and rank assets by relevance, or show "
         "your blocked design queue. What do you need?"
     ),
     "production-artist": (
-        "Hi Diego. I can spin up the 40 regional variants for your master ad, "
+        "Hi Shankar. I can spin up the 40 regional variants for your master ad, "
         "or report on what's ready to ship. What would you like?"
     ),
     "marketing-analyst": (
@@ -72,8 +72,7 @@ def _campaign_manager(message: str) -> dict:
         brief = _extract_brief(message)
         return {
             "response": (
-                f"I can build segment options for that. Running the Audience "
-                f"Segment Builder against {brief!r} now."
+                f"I can build segment options for that. Running the Audience Segment Builder against {brief!r} now."
             ),
             "action": "run_segment",
             "data": {"brief": brief},
@@ -114,8 +113,7 @@ def _senior_designer(message: str) -> dict:
         brief = _extract_brief(message)
         return {
             "response": (
-                f"Let me search the DAM. Filtering out degraded assets and "
-                f"ranking by relevance to {brief!r}."
+                f"Let me search the DAM. Filtering out degraded assets and ranking by relevance to {brief!r}."
             ),
             "action": "run_dam",
             "data": {"brief": brief, "max_results": 12},

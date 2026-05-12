@@ -30,7 +30,7 @@ The routing rules live in [routing_table.py](routing_table.py). There are 8 rule
 |------|---------|------------|
 | Initial submission | status submitted_by_sarah and no compliance_check | compliance-pre-check |
 | Compliance passed | compliance_check.recommended_action proceed and no approval_brief | approval-brief-generator |
-| Compliance failed, return to Sarah | compliance_check.recommended_action revise (and status not already revision_in_progress) | terminal (await human) |
+| Compliance failed, return to Merna | compliance_check.recommended_action revise (and status not already revision_in_progress) | terminal (await human) |
 | VP approved | approval_decision approved and no localized_variants | localization-generator |
 | VP requested revision | approval_decision revise and no revision_routing | revision-router |
 | Localization done | localized_variants present and no activation_schedule | activation-scheduler |
@@ -82,7 +82,7 @@ python -m orchestrator.seed_state
 
 The orchestrator stops in one of these states:
 
-* `Compliance failed, return to Sarah`. The compliance pre check flagged fail level issues. Sarah revises the campaign and the orchestrator restarts from the top of the chain.
+* `Compliance failed, return to Merna`. The compliance pre check flagged fail level issues. Merna revises the campaign and the orchestrator restarts from the top of the chain.
 * `Activation schedule drafted`. The chain produced a schedule. The media coordinator reviews and confirms, then sets `status` to `in_production` (human action).
 * `Rejected`. The VP rejected the campaign. The chain stops.
 * `no_rule_matched`. No routing rule applies to the current state. This is what you see after the approval brief is written and the chain is waiting on a VP decision. It is also what you see if a state field is missing. Inspect the state to tell the difference.
@@ -115,7 +115,7 @@ The agent uses the OpenAI chat completions function calling protocol, routed thr
 | | generate_locale_variants | Simulated transcreation to es or fr-CA |
 | State | read_workflow_state | Return the current state dict |
 | | update_workflow_state | Write one top level field (use sparingly) |
-| Control | request_human_input | Pause for a VP, Sarah, or coordinator decision |
+| Control | request_human_input | Pause for a VP, Merna, or coordinator decision |
 
 ### Running Option B
 

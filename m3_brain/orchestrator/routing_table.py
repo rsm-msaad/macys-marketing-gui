@@ -33,44 +33,39 @@ def _get(state: dict, *keys: str, default: Any = None) -> Any:
 ROUTING_TABLE: list[tuple[str, Callable[[dict], bool], str | None]] = [
     (
         "Initial submission",
-        lambda s: s.get("status") == "submitted_by_sarah"
-        and s.get("compliance_check") is None,
+        lambda s: s.get("status") == "submitted_by_sarah" and s.get("compliance_check") is None,
         "compliance-pre-check",
     ),
     (
         "Compliance passed",
-        lambda s: _get(s, "compliance_check", "recommended_action") == "proceed"
-        and s.get("approval_brief") is None,
+        lambda s: _get(s, "compliance_check", "recommended_action") == "proceed" and s.get("approval_brief") is None,
         "approval-brief-generator",
     ),
     (
-        "Compliance failed, return to Sarah",
-        lambda s: _get(s, "compliance_check", "recommended_action") == "revise"
-        and s.get("status") != "revision_in_progress",
+        "Compliance failed, return to Merna",
+        lambda s: (
+            _get(s, "compliance_check", "recommended_action") == "revise" and s.get("status") != "revision_in_progress"
+        ),
         None,
     ),
     (
         "VP approved",
-        lambda s: s.get("approval_decision") == "approved"
-        and s.get("localized_variants") is None,
+        lambda s: s.get("approval_decision") == "approved" and s.get("localized_variants") is None,
         "localization-generator",
     ),
     (
         "VP requested revision",
-        lambda s: s.get("approval_decision") == "revise"
-        and s.get("revision_routing") is None,
+        lambda s: s.get("approval_decision") == "revise" and s.get("revision_routing") is None,
         "revision-router",
     ),
     (
         "Localization done",
-        lambda s: s.get("localized_variants") is not None
-        and s.get("activation_schedule") is None,
+        lambda s: s.get("localized_variants") is not None and s.get("activation_schedule") is None,
         "activation-scheduler",
     ),
     (
         "Activation schedule drafted",
-        lambda s: s.get("activation_schedule") is not None
-        and s.get("status") != "in_production",
+        lambda s: s.get("activation_schedule") is not None and s.get("status") != "in_production",
         None,
     ),
     (

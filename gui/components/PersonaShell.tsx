@@ -230,7 +230,7 @@ export function PersonaShell({
       defaultSendBackToStep,
       destinationLabel:
         fromStep === 1 && defaultSendBackToStep === 1
-          ? "Marketing Leadership (proxy: Sarah)"
+          ? "Marketing Leadership (proxy: Merna)"
           : fromStep === 10 && defaultSendBackToStep === 10
             ? "Hold for Edits (stays at Reporting)"
             : undefined,

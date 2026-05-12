@@ -72,7 +72,7 @@ export function FinalApprovalContent({
           ))}
         </div>
         <p className="mt-3 text-[12px] text-charcoal/65">
-          All three checkpoints have signed off. Sarah carries this forward as
+          All three checkpoints have signed off. Merna carries this forward as
           a single Final Approval on behalf of the committee, then production
           moves to Localization.
         </p>

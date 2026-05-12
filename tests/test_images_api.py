@@ -23,6 +23,7 @@ client = TestClient(app)
 
 # ---- Persona avatars ----
 
+
 def test_personas_have_avatar_field():
     """Every persona returned by the API should include an avatar URL."""
     resp = client.get("/personas")
@@ -31,7 +32,7 @@ def test_personas_have_avatar_field():
     assert len(personas) == 4
     for p in personas:
         assert "avatar" in p, f"Persona {p['name']} missing avatar field"
-        assert p["avatar"].startswith("https://images.unsplash.com/")
+        assert p["avatar"].startswith("/avatars/")
 
 
 def test_persona_avatar_urls_are_unique():

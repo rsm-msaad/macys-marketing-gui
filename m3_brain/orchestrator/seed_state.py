@@ -32,16 +32,13 @@ STARTER_STATE: dict = {
     "campaign": {
         "title": "Spring Beauty Refresh",
         "audience_segment": "Beauty Loyalists",
-        "copy": (
-            "Up to 40 percent off on your favorite Beauty brands. "
-            "Refresh your routine for spring."
-        ),
+        "copy": ("Up to 40 percent off on your favorite Beauty brands. Refresh your routine for spring."),
         "tagline": "The Magic of Macys",
         "skus": ["BTY-001", "BTY-045", "BTY-112"],
         "discount_pct": 40,
         "regions": ["NY", "CA", "FL", "TX"],
         "estimated_spend": 350000,
-        "campaign_manager": "Sarah Chen",
+        "campaign_manager": "Merna",
     },
     "compliance_check": None,
     "approval_brief": None,
@@ -53,7 +50,7 @@ STARTER_STATE: dict = {
 
 HAPPY_PATH_STATE: dict = {
     "campaign_id": "CAMP-2026-0512",
-    "status": "submitted_by_sarah",
+    "status": "submitted_by_merna",
     "submitted_at": "2026-05-12T09:00:00Z",
     "campaign": {
         "title": "Spring Beauty Refresh, Clean",
@@ -67,7 +64,7 @@ HAPPY_PATH_STATE: dict = {
         "discount_pct": 40,
         "regions": ["NY", "CA", "FL", "TX"],
         "estimated_spend": 350000,
-        "campaign_manager": "Sarah Chen",
+        "campaign_manager": "Merna",
     },
     "compliance_check": None,
     "approval_brief": None,
@@ -100,9 +97,7 @@ def seed_happy_path_state() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry, seed either the fail path or the happy path campaign."""
-    parser = argparse.ArgumentParser(
-        description="Reset the workflow state to a starter campaign."
-    )
+    parser = argparse.ArgumentParser(description="Reset the workflow state to a starter campaign.")
     parser.add_argument(
         "--happy-path",
         action="store_true",

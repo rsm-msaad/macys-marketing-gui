@@ -87,13 +87,9 @@ def advance(
         if s["current_step"] > LAST_STEP:
             raise ValueError("campaign is already complete; reset to replay")
         if s.get("pending_revision"):
-            raise ValueError(
-                "campaign has a pending revision; resubmit before advancing"
-            )
+            raise ValueError("campaign has a pending revision; resubmit before advancing")
         if step != s["current_step"]:
-            raise ValueError(
-                f"campaign is at step {s['current_step']}, cannot advance step {step}"
-            )
+            raise ValueError(f"campaign is at step {s['current_step']}, cannot advance step {step}")
         if step in s["completed_steps"]:
             raise ValueError(f"step {step} is already completed")
         s["completed_steps"].append(step)
@@ -159,9 +155,7 @@ def request_revisions(
         if s.get("pending_revision"):
             raise ValueError("campaign already has a pending revision")
         if from_step != s["current_step"]:
-            raise ValueError(
-                f"campaign is at step {s['current_step']}, cannot request revisions from step {from_step}"
-            )
+            raise ValueError(f"campaign is at step {s['current_step']}, cannot request revisions from step {from_step}")
 
         ts = datetime.now(timezone.utc).isoformat()
         entry = {
@@ -225,9 +219,7 @@ def resubmit(campaign_id: str, step: int) -> dict[str, Any]:
         if pending is None:
             raise ValueError("no pending revision to resubmit")
         if step != pending["step_to_redo"]:
-            raise ValueError(
-                f"resubmit step {step} does not match pending step {pending['step_to_redo']}"
-            )
+            raise ValueError(f"resubmit step {step} does not match pending step {pending['step_to_redo']}")
 
         resume_step = pending["resume_step"]
         ts = datetime.now(timezone.utc).isoformat()
@@ -359,24 +351,222 @@ def _sku(
 # Step 3: 18 Beauty SKU suggestions, mid-tier through prestige but excluding
 # the brands the brief restricts (Tom Ford, La Mer, etc.).
 MOCK_SKU_SUGGESTIONS: list[dict[str, Any]] = [
-    _sku(2401, "Ruby Woo Lipstick", "MAC", "Lip", 19.00, "in_stock", 1280, 0.55, 0.95, "Beauty hero; iconic Mother's Day pick across tiers"),
-    _sku(2402, "Advanced Night Repair Serum 50ml", "Estee Lauder", "Skincare", 98.00, "in_stock", 870, 0.48, 0.91, "Top seller for Gold/Platinum loyalists"),
-    _sku(2403, "Moisture Surge 100H Auto-Replenishing Hydrator", "Clinique", "Skincare", 42.00, "in_stock", 1140, 0.50, 0.88, "Strong Silver tier conversion last MD"),
-    _sku(2404, "Genifique Youth Activating Serum", "Lancome", "Skincare", 115.00, "low_stock", 38, 0.45, 0.87, "High AOV; great for gift-with-purchase trigger"),
-    _sku(2405, "Orgasm Blush", "NARS", "Cheek", 32.00, "in_stock", 950, 0.55, 0.84, "Reliable repeat purchase, high margin"),
-    _sku(2406, "Skin Foundation Stick", "Bobbi Brown", "Face", 52.00, "in_stock", 720, 0.45, 0.82, "Pairs well with Beauty bundle gifting"),
-    _sku(2407, "Naked Eyeshadow Palette", "Urban Decay", "Eye", 58.00, "in_stock", 610, 0.50, 0.80, "Drives basket size; Mother's Day giftable"),
-    _sku(2408, "Photo Finish Smooth & Blur Primer", "Smashbox", "Face", 42.00, "in_stock", 880, 0.52, 0.78, "Loyal Silver-tier repeat audience"),
-    _sku(2409, "Pillow Talk Lipstick", "Charlotte Tilbury", "Lip", 34.00, "in_stock", 1010, 0.55, 0.86, "Top giftable lip; strong gift-with-purchase pull"),
-    _sku(2410, "Touche Eclat Highlighter Pen", "YSL", "Face", 42.00, "in_stock", 720, 0.48, 0.83, "Iconic; performs well in MD email"),
-    _sku(2411, "Ultra Facial Cream", "Kiehl's", "Skincare", 36.00, "in_stock", 1340, 0.50, 0.81, "Mid tier; broadens reach"),
-    _sku(2412, "GinZing Refreshing Eye Cream", "Origins", "Skincare", 38.00, "in_stock", 1080, 0.50, 0.79, "Entry-tier MD gift; broadens audience"),
-    _sku(2413, "Studio Fix Powder Plus Foundation", "MAC", "Face", 36.00, "in_stock", 950, 0.55, 0.82, "Long-time MD performer"),
-    _sku(2414, "Double Wear Stay-in-Place Foundation", "Estee Lauder", "Face", 48.00, "in_stock", 1100, 0.50, 0.84, "Top 10 every Mother's Day"),
-    _sku(2415, "Black Honey Almost Lipstick", "Clinique", "Lip", 22.00, "in_stock", 1220, 0.55, 0.83, "Universally flattering; strong gift add"),
-    _sku(2416, "Crushed Liquid Lip Color", "Bobbi Brown", "Lip", 32.00, "in_stock", 850, 0.50, 0.78, "Repeat-purchase favorite"),
-    _sku(2417, "Radiant Creamy Concealer", "NARS", "Face", 32.00, "in_stock", 980, 0.55, 0.85, "High velocity; great margin"),
-    _sku(2418, "Hypnose Volumizing Mascara", "Lancome", "Eye", 30.00, "in_stock", 1170, 0.50, 0.80, "Reliable cross-tier seller"),
+    _sku(
+        2401,
+        "Ruby Woo Lipstick",
+        "MAC",
+        "Lip",
+        19.00,
+        "in_stock",
+        1280,
+        0.55,
+        0.95,
+        "Beauty hero; iconic Mother's Day pick across tiers",
+    ),
+    _sku(
+        2402,
+        "Advanced Night Repair Serum 50ml",
+        "Estee Lauder",
+        "Skincare",
+        98.00,
+        "in_stock",
+        870,
+        0.48,
+        0.91,
+        "Top seller for Gold/Platinum loyalists",
+    ),
+    _sku(
+        2403,
+        "Moisture Surge 100H Auto-Replenishing Hydrator",
+        "Clinique",
+        "Skincare",
+        42.00,
+        "in_stock",
+        1140,
+        0.50,
+        0.88,
+        "Strong Silver tier conversion last MD",
+    ),
+    _sku(
+        2404,
+        "Genifique Youth Activating Serum",
+        "Lancome",
+        "Skincare",
+        115.00,
+        "low_stock",
+        38,
+        0.45,
+        0.87,
+        "High AOV; great for gift-with-purchase trigger",
+    ),
+    _sku(
+        2405,
+        "Orgasm Blush",
+        "NARS",
+        "Cheek",
+        32.00,
+        "in_stock",
+        950,
+        0.55,
+        0.84,
+        "Reliable repeat purchase, high margin",
+    ),
+    _sku(
+        2406,
+        "Skin Foundation Stick",
+        "Bobbi Brown",
+        "Face",
+        52.00,
+        "in_stock",
+        720,
+        0.45,
+        0.82,
+        "Pairs well with Beauty bundle gifting",
+    ),
+    _sku(
+        2407,
+        "Naked Eyeshadow Palette",
+        "Urban Decay",
+        "Eye",
+        58.00,
+        "in_stock",
+        610,
+        0.50,
+        0.80,
+        "Drives basket size; Mother's Day giftable",
+    ),
+    _sku(
+        2408,
+        "Photo Finish Smooth & Blur Primer",
+        "Smashbox",
+        "Face",
+        42.00,
+        "in_stock",
+        880,
+        0.52,
+        0.78,
+        "Loyal Silver-tier repeat audience",
+    ),
+    _sku(
+        2409,
+        "Pillow Talk Lipstick",
+        "Charlotte Tilbury",
+        "Lip",
+        34.00,
+        "in_stock",
+        1010,
+        0.55,
+        0.86,
+        "Top giftable lip; strong gift-with-purchase pull",
+    ),
+    _sku(
+        2410,
+        "Touche Eclat Highlighter Pen",
+        "YSL",
+        "Face",
+        42.00,
+        "in_stock",
+        720,
+        0.48,
+        0.83,
+        "Iconic; performs well in MD email",
+    ),
+    _sku(
+        2411,
+        "Ultra Facial Cream",
+        "Kiehl's",
+        "Skincare",
+        36.00,
+        "in_stock",
+        1340,
+        0.50,
+        0.81,
+        "Mid tier; broadens reach",
+    ),
+    _sku(
+        2412,
+        "GinZing Refreshing Eye Cream",
+        "Origins",
+        "Skincare",
+        38.00,
+        "in_stock",
+        1080,
+        0.50,
+        0.79,
+        "Entry-tier MD gift; broadens audience",
+    ),
+    _sku(
+        2413,
+        "Studio Fix Powder Plus Foundation",
+        "MAC",
+        "Face",
+        36.00,
+        "in_stock",
+        950,
+        0.55,
+        0.82,
+        "Long-time MD performer",
+    ),
+    _sku(
+        2414,
+        "Double Wear Stay-in-Place Foundation",
+        "Estee Lauder",
+        "Face",
+        48.00,
+        "in_stock",
+        1100,
+        0.50,
+        0.84,
+        "Top 10 every Mother's Day",
+    ),
+    _sku(
+        2415,
+        "Black Honey Almost Lipstick",
+        "Clinique",
+        "Lip",
+        22.00,
+        "in_stock",
+        1220,
+        0.55,
+        0.83,
+        "Universally flattering; strong gift add",
+    ),
+    _sku(
+        2416,
+        "Crushed Liquid Lip Color",
+        "Bobbi Brown",
+        "Lip",
+        32.00,
+        "in_stock",
+        850,
+        0.50,
+        0.78,
+        "Repeat-purchase favorite",
+    ),
+    _sku(
+        2417,
+        "Radiant Creamy Concealer",
+        "NARS",
+        "Face",
+        32.00,
+        "in_stock",
+        980,
+        0.55,
+        0.85,
+        "High velocity; great margin",
+    ),
+    _sku(
+        2418,
+        "Hypnose Volumizing Mascara",
+        "Lancome",
+        "Eye",
+        30.00,
+        "in_stock",
+        1170,
+        0.50,
+        0.80,
+        "Reliable cross-tier seller",
+    ),
 ]
 
 
@@ -418,7 +608,7 @@ MOCK_LAYOUT_PREVIEWS: list[dict[str, Any]] = [
 ]
 
 
-# Step 6: 3 final approval checkpoints. Sarah signs off on behalf of these
+# Step 6: 3 final approval checkpoints. Merna signs off on behalf of these
 # stakeholders in the demo flow.
 MOCK_APPROVAL_CHECKPOINTS: list[dict[str, Any]] = [
     {
@@ -437,7 +627,7 @@ MOCK_APPROVAL_CHECKPOINTS: list[dict[str, Any]] = [
     },
     {
         "name": "VP Marketing",
-        "reviewer": "Sarah Chen, VP of Marketing",
+        "reviewer": "VP of Marketing",
         "criteria": "Strategy alignment with Q2 plan, budget within envelope",
         "status": "approved",
         "reviewed_at": "ready for sign off",
@@ -495,4 +685,3 @@ EXECUTIVE_SUMMARY_TEMPLATE = (
     "trend {trend_direction} to {forecast_revenue} (80 percent CI: "
     "{forecast_lower} to {forecast_upper})."
 )
-

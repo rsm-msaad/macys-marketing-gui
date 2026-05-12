@@ -2,7 +2,7 @@
 //
 // The display "owner" string for steps 1, 6, and 8 names the real-world role
 // (Marketing Leadership, VP+Legal, Media Coordinator). For demo flow we
-// designate Sarah (campaign-manager) as the proxy, so she is the persona
+// designate Merna (campaign-manager) as the proxy, so she is the persona
 // who can actually click the action button.
 
 export type PersonaId =
@@ -20,42 +20,42 @@ type Authority = {
 export const STEP_AUTHORITIES: Record<number, Authority> = {
   1: {
     ownerPersonaId: "campaign-manager",
-    ownerDisplay: "Sarah",
+    ownerDisplay: "Merna",
     ownerTitle: "Campaign Manager (proxy for Marketing Leadership)",
   },
   2: {
     ownerPersonaId: "campaign-manager",
-    ownerDisplay: "Sarah",
+    ownerDisplay: "Merna",
     ownerTitle: "Campaign Manager",
   },
   3: {
     ownerPersonaId: "campaign-manager",
-    ownerDisplay: "Sarah",
+    ownerDisplay: "Merna",
     ownerTitle: "Campaign Manager",
   },
   4: {
     ownerPersonaId: "senior-designer",
-    ownerDisplay: "Priya",
+    ownerDisplay: "Abdullah",
     ownerTitle: "Senior Designer",
   },
   5: {
     ownerPersonaId: "senior-designer",
-    ownerDisplay: "Priya",
+    ownerDisplay: "Abdullah",
     ownerTitle: "Senior Designer",
   },
   6: {
     ownerPersonaId: "campaign-manager",
-    ownerDisplay: "Sarah",
+    ownerDisplay: "Merna",
     ownerTitle: "Campaign Manager (proxy for VP + Legal)",
   },
   7: {
     ownerPersonaId: "production-artist",
-    ownerDisplay: "Diego",
+    ownerDisplay: "Shankar",
     ownerTitle: "Production Artist",
   },
   8: {
     ownerPersonaId: "campaign-manager",
-    ownerDisplay: "Sarah",
+    ownerDisplay: "Merna",
     ownerTitle: "Campaign Manager (proxy for Media Coordinator)",
   },
   9: {

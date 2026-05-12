@@ -132,10 +132,7 @@ TOOLS: list[dict[str, Any]] = [
                     },
                     "proposed_discount_pct": {
                         "type": "number",
-                        "description": (
-                            "Proposed discount percentage, for example 40 "
-                            "for 40 percent off."
-                        ),
+                        "description": ("Proposed discount percentage, for example 40 for 40 percent off."),
                     },
                 },
                 "required": ["sku_ids", "proposed_discount_pct"],
@@ -156,15 +153,11 @@ TOOLS: list[dict[str, Any]] = [
                 "properties": {
                     "category": {
                         "type": "string",
-                        "description": (
-                            "Top level category (Beauty, Apparel, Home, etc)."
-                        ),
+                        "description": ("Top level category (Beauty, Apparel, Home, etc)."),
                     },
                     "region": {
                         "type": "string",
-                        "description": (
-                            "Region code (NY, CA, FL, TX, PR, QC, etc)."
-                        ),
+                        "description": ("Region code (NY, CA, FL, TX, PR, QC, etc)."),
                     },
                     "max_results": {
                         "type": "integer",
@@ -227,9 +220,7 @@ TOOLS: list[dict[str, Any]] = [
                         "description": "Top level state field name.",
                     },
                     "value": {
-                        "description": (
-                            "New value. May be a string, object, or null."
-                        ),
+                        "description": ("New value. May be a string, object, or null."),
                     },
                 },
                 "required": ["field", "value"],
@@ -243,7 +234,7 @@ TOOLS: list[dict[str, Any]] = [
             "description": (
                 "Signal that the workflow needs a human action before it can "
                 "proceed (the VP must decide approve, revise, or reject, or "
-                "Sarah must revise a flagged campaign, or the media "
+                "Merna must revise a flagged campaign, or the media "
                 "coordinator must confirm a schedule). Call this when you "
                 "have done all the automated work for the current stage. "
                 "After calling, produce a final text summary in your next "
@@ -254,10 +245,7 @@ TOOLS: list[dict[str, Any]] = [
                 "properties": {
                     "reason": {
                         "type": "string",
-                        "description": (
-                            "One sentence reason explaining what the human "
-                            "needs to do."
-                        ),
+                        "description": ("One sentence reason explaining what the human needs to do."),
                     },
                 },
                 "required": ["reason"],

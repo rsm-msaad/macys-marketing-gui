@@ -8,12 +8,12 @@ variability.
 """
 
 OWNER_BY_CHANGE_TYPE = {
-    "copy": "Sarah (campaign manager)",
-    "imagery": "Priya (creative production)",
-    "targeting": "Sarah (campaign manager)",
+    "copy": "Merna (campaign manager)",
+    "imagery": "Abdullah (creative production)",
+    "targeting": "Merna (campaign manager)",
     "pricing": "Merchandising (Anna)",
     "legal": "Legal team",
-    "localization": "Diego (localization lead)",
+    "localization": "Shankar (localization lead)",
 }
 
 

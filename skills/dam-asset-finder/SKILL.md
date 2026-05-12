@@ -5,7 +5,7 @@ description: Find clean, on-brief DAM assets for a Macy's marketing campaign. Us
 
 # DAM Asset Finder
 
-Use this skill when a designer (Priya in our story) describes a campaign and needs hero photos, lifestyle shots, or product shots from the Digital Asset Management system. The DAM contains 5,000 assets, of which roughly 30 percent are intentionally degraded (mislabeled, duplicate, low resolution, orphaned, expired). Without help, the designer scrolls through hundreds of noisy results to find a handful of usable ones. The script does the filtering and ranking, the designer makes the final pick.
+Use this skill when a designer (Abdullah in our story) describes a campaign and needs hero photos, lifestyle shots, or product shots from the Digital Asset Management system. The DAM contains 5,000 assets, of which roughly 30 percent are intentionally degraded (mislabeled, duplicate, low resolution, orphaned, expired). Without help, the designer scrolls through hundreds of noisy results to find a handful of usable ones. The script does the filtering and ranking, the designer makes the final pick.
 
 This skill maps to workflow steps 4 and 5 (Creative Production and Layout Assembly).
 

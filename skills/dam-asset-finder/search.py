@@ -3,7 +3,7 @@
 Searches `data/macys.db` for clean, on-brief DAM assets ranked by how well
 their tags and asset_type match a campaign brief, with quality boosts for
 recent and high-resolution assets. Filters out degraded, expired, or low
-resolution assets so a designer like Priya does not have to scroll through
+resolution assets so a designer like Abdullah does not have to scroll through
 800 noisy results.
 
 Usage:
@@ -36,11 +36,33 @@ RES_HD_BOOST = 0.05
 PHOTO_BOOST = 0.50  # asset with a real JPG on disk gets this added to relevance
 DEFAULT_MAX_RESULTS = 12
 
-STOPWORDS = frozenset({
-    "the", "a", "an", "for", "of", "and", "or", "to", "in", "on",
-    "at", "by", "with", "this", "that", "is", "are", "was", "were",
-    "be", "been", "being", "from",
-})
+STOPWORDS = frozenset(
+    {
+        "the",
+        "a",
+        "an",
+        "for",
+        "of",
+        "and",
+        "or",
+        "to",
+        "in",
+        "on",
+        "at",
+        "by",
+        "with",
+        "this",
+        "that",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "from",
+    }
+)
 
 
 # ---------- DB ----------
@@ -267,9 +289,7 @@ def search_with_stats(
         if reason is not None:
             filtered_counts[reason] += 1
             continue
-        candidates.append(
-            _row_to_asset(row, brief_tokens, today, available_filenames)
-        )
+        candidates.append(_row_to_asset(row, brief_tokens, today, available_filenames))
 
     # Bucket photo backed assets above non photo backed, then by relevance,
     # then by asset_id. This guarantees the demo's top results render real
@@ -283,9 +303,7 @@ def search_with_stats(
     for i, asset in enumerate(top, start=1):
         asset["rank"] = i
 
-    avg_relevance = (
-        sum(a["relevance_score"] for a in top) / len(top) if top else 0.0
-    )
+    avg_relevance = sum(a["relevance_score"] for a in top) / len(top) if top else 0.0
 
     stats = {
         "total_searched": len(rows),

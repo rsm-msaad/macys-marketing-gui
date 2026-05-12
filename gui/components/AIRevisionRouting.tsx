@@ -31,9 +31,9 @@ function urgencyColor(u: string): string {
 }
 
 const OWNER_OPTIONS = [
-  { id: "campaign-manager", name: "Sarah", title: "Campaign Manager" },
-  { id: "senior-designer", name: "Priya", title: "Senior Designer" },
-  { id: "production-artist", name: "Diego", title: "Production Artist" },
+  { id: "campaign-manager", name: "Merna", title: "Campaign Manager" },
+  { id: "senior-designer", name: "Abdullah", title: "Senior Designer" },
+  { id: "production-artist", name: "Shankar", title: "Production Artist" },
   { id: "marketing-analyst", name: "Anna", title: "Marketing Analyst" },
 ];
 

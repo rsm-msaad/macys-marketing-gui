@@ -31,7 +31,7 @@ export function SegmentationContent({
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Run RFM clustering on 50,000 customers. Returns 3 segments. Sarah
+          Run RFM clustering on 50,000 customers. Returns 3 segments. Merna
           picks the one that best matches the brief, then approves.
         </p>
 

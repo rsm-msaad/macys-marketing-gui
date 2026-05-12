@@ -14,9 +14,9 @@ Each of the four skills we shipped pairs AI work with a specific human owner who
 
 | Skill | Workflow Step | AI Does | Human Decides |
 |-------|---------------|---------|---------------|
-| Audience Segment Builder | Step 2: Segmentation | Generates 3 ranked segment options using RFM clustering | Sarah picks which segment to target based on business context |
-| DAM Asset Finder | Steps 4 to 5: Creative Production | Filters degraded assets, ranks clean ones by relevance | Priya picks the final hero photos for the campaign |
-| Localization Generator | Step 7: Localization | Generates 40 regional variants with pricing and copy substitutions | Diego reviews variants, flags edge cases, approves the batch |
+| Audience Segment Builder | Step 2: Segmentation | Generates 3 ranked segment options using RFM clustering | Merna picks which segment to target based on business context |
+| DAM Asset Finder | Steps 4 to 5: Creative Production | Filters degraded assets, ranks clean ones by relevance | Abdullah picks the final hero photos for the campaign |
+| Localization Generator | Step 7: Localization | Generates 40 regional variants with pricing and copy substitutions | Shankar reviews variants, flags edge cases, approves the batch |
 | Campaign Performance Analyzer | Step 9: Monitoring | Pulls data, runs attribution, forecasts next campaign | Anna adds business context to the auto-generated readout before sending to leadership |
 
 ### Deterministic automations (not skills)

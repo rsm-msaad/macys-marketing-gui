@@ -12,7 +12,7 @@
       "discount_pct": 40,
       "regions": ["NY", "CA", "FL", "TX"],
       "estimated_spend": 350000,
-      "campaign_manager": "Sarah Chen"
+      "campaign_manager": "Merna"
     },
     "compliance_check": {
       "brand_alignment": {"status": "pass", "reason": "Tagline approved, no banned words.", "cited_doc": "BRAND-GL-2026-001"},

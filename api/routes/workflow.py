@@ -13,21 +13,81 @@ router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 # Canonical 10 step workflow. owner_persona_id is the dropdown id used by
 # the frontend (or "all" / persona pair).
-# For demo purposes, Sarah (campaign-manager) acts as proxy for Marketing
+# For demo purposes, Merna (campaign-manager) acts as proxy for Marketing
 # Leadership at step 1, the Approval committee at step 6, and the Media
-# Coordinator at step 8. The display owner reflects the real-world role; the
+# Coordinator at step 8. The display owner reflects the real world role; the
 # acting persona id is who the GUI lets click the action button.
 STEPS = [
-    {"number": 1,  "name": "Briefing",            "owner": "Marketing Leadership (via Sarah)", "owner_persona_id": "campaign-manager",  "label": "HUMAN_ONLY"},
-    {"number": 2,  "name": "Segmentation",        "owner": "Campaign Manager",                 "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
-    {"number": 3,  "name": "SKU Selection",       "owner": "Campaign Manager",                 "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
-    {"number": 4,  "name": "Creative Production", "owner": "Senior Designer",                  "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
-    {"number": 5,  "name": "Layout Assembly",     "owner": "Senior Designer",                  "owner_persona_id": "senior-designer",   "label": "HUMAN_PLUS_AI"},
-    {"number": 6,  "name": "Final Approval",      "owner": "Campaign Manager + VP + Legal",    "owner_persona_id": "campaign-manager",  "label": "HUMAN_ONLY"},
-    {"number": 7,  "name": "Localization",        "owner": "Production Artist",                "owner_persona_id": "production-artist", "label": "FULLY_AUTOMATED"},
-    {"number": 8,  "name": "Activation",          "owner": "Media Coordinator (via Sarah)",    "owner_persona_id": "campaign-manager",  "label": "HUMAN_PLUS_AI"},
-    {"number": 9,  "name": "Monitoring",          "owner": "Marketing Analyst",                "owner_persona_id": "marketing-analyst", "label": "FULLY_AUTOMATED"},
-    {"number": 10, "name": "Reporting",           "owner": "Marketing Analyst",                "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_AI"},
+    {
+        "number": 1,
+        "name": "Briefing",
+        "owner": "Marketing Leadership (via Merna)",
+        "owner_persona_id": "campaign-manager",
+        "label": "HUMAN_ONLY",
+    },
+    {
+        "number": 2,
+        "name": "Segmentation",
+        "owner": "Campaign Manager",
+        "owner_persona_id": "campaign-manager",
+        "label": "HUMAN_PLUS_AI",
+    },
+    {
+        "number": 3,
+        "name": "SKU Selection",
+        "owner": "Campaign Manager",
+        "owner_persona_id": "campaign-manager",
+        "label": "HUMAN_PLUS_AI",
+    },
+    {
+        "number": 4,
+        "name": "Creative Production",
+        "owner": "Senior Designer",
+        "owner_persona_id": "senior-designer",
+        "label": "HUMAN_PLUS_AI",
+    },
+    {
+        "number": 5,
+        "name": "Layout Assembly",
+        "owner": "Senior Designer",
+        "owner_persona_id": "senior-designer",
+        "label": "HUMAN_PLUS_AI",
+    },
+    {
+        "number": 6,
+        "name": "Final Approval",
+        "owner": "Campaign Manager + VP + Legal",
+        "owner_persona_id": "campaign-manager",
+        "label": "HUMAN_ONLY",
+    },
+    {
+        "number": 7,
+        "name": "Localization",
+        "owner": "Production Artist",
+        "owner_persona_id": "production-artist",
+        "label": "FULLY_AUTOMATED",
+    },
+    {
+        "number": 8,
+        "name": "Activation",
+        "owner": "Media Coordinator (via Merna)",
+        "owner_persona_id": "campaign-manager",
+        "label": "HUMAN_PLUS_AI",
+    },
+    {
+        "number": 9,
+        "name": "Monitoring",
+        "owner": "Marketing Analyst",
+        "owner_persona_id": "marketing-analyst",
+        "label": "FULLY_AUTOMATED",
+    },
+    {
+        "number": 10,
+        "name": "Reporting",
+        "owner": "Marketing Analyst",
+        "owner_persona_id": "marketing-analyst",
+        "label": "HUMAN_PLUS_AI",
+    },
 ]
 
 VALID_PERSONAS = {
@@ -48,9 +108,7 @@ def workflow_for_persona(persona_id: str) -> dict:
         out.append(
             {
                 **step,
-                "status": state_mod.status_for_step(
-                    state_mod.DEMO_CAMPAIGN_ID, step["number"]
-                ),
+                "status": state_mod.status_for_step(state_mod.DEMO_CAMPAIGN_ID, step["number"]),
                 "my_step": step["owner_persona_id"] == persona_id,
             }
         )
@@ -172,9 +230,7 @@ def campaign_context(campaign_id: str) -> dict:
     """
     s = state_mod.get_state(campaign_id)
     if s is None:
-        raise HTTPException(
-            status_code=404, detail=f"unknown campaign: {campaign_id}"
-        )
+        raise HTTPException(status_code=404, detail=f"unknown campaign: {campaign_id}")
     return {
         "campaign_brief": state_mod.CAMPAIGN_BRIEF,
         "state": s,

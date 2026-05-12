@@ -1,13 +1,13 @@
 # Spring 2025 Beauty Launch Retrospective
 
 **Document ID:** RETRO-SP-2025-BTY
-**Owner:** Sarah Chen, Spring Beauty Campaign Manager
+**Owner:** Merna, Spring Beauty Campaign Manager
 **Last updated:** May 22, 2025
 **Audience:** Marketing, Beauty Merchandising, Brand
 
 ## Summary
 
-The Spring 2025 Beauty launch ran March 3 through April 15, anchored by the "Find Your Glow" creative platform. Sarah Chen led the campaign with support from the Beauty Merchandising team. Revenue came in 7 percent ahead of plan, driven primarily by skincare and fragrance gift sets. Below are the key learnings.
+The Spring 2025 Beauty launch ran March 3 through April 15, anchored by the "Find Your Glow" creative platform. Merna led the campaign with support from the Beauty Merchandising team. Revenue came in 7 percent ahead of plan, driven primarily by skincare and fragrance gift sets. Below are the key learnings.
 
 ## Performance
 
@@ -26,7 +26,7 @@ Already engaged. The Spring campaign confirmed that Beauty Loyalists respond bes
 
 ### Beauty Discovery
 
-Responsive to sampling and education. Free samples plus a "how to start" guide outperformed pure discount creative by a wide margin. Sarah noted that the educational module on the landing page (which explained how to layer products) drove a 12 percent lift in average order value among Discovery segment buyers.
+Responsive to sampling and education. Free samples plus a "how to start" guide outperformed pure discount creative by a wide margin. Merna noted that the educational module on the landing page (which explained how to layer products) drove a 12 percent lift in average order value among Discovery segment buyers.
 
 ### Beauty Lapsed
 
@@ -41,12 +41,12 @@ Did not move. Lapsed Beauty customers (no purchase in 12 months) returned at rou
 
 Email continued to over index, consistent with past Beauty campaigns. Paid social showed the largest year over year improvement, up from 17 percent contribution in Spring 2024.
 
-## What Sarah and the Team Would Do Differently
+## What Merna and the Team Would Do Differently
 
 1. Move the sampling offer earlier in the campaign. The sampling offer launched in week three. By the time it landed, the cleanest segment overlap windows had passed. Next launch, lead with the sample, follow with the full collection story.
 
 2. Pair the founder video with retargeting. The La Mer founder video had outstanding watch through but the team did not have a structured retarget for the watchers. Build the retarget plan into the creative kickoff for next launch.
 
-3. Rethink the lapsed Beauty offer. Either deepen the discount, change the message away from price, or accept that this segment is not movable in the Spring window. Recommend testing a curated edit ("Sarah's Picks for the Customer Who Stepped Away") in Fall 2025.
+3. Rethink the lapsed Beauty offer. Either deepen the discount, change the message away from price, or accept that this segment is not movable in the Spring window. Recommend testing a curated edit ("Merna's Picks for the Customer Who Stepped Away") in Fall 2025.
 
 4. Better localized creative. Texas and Florida Spanish creative was rushed in the final week. Localization should be on the master timeline from the kickoff meeting, not added at copy lock.
