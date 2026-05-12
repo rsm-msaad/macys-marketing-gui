@@ -1,0 +1,33 @@
+{
+  "name": "VP requests pricing revision on Spring Beauty Refresh",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0511",
+    "status": "in_vp_review",
+    "campaign": {
+      "title": "Spring Beauty Refresh",
+      "estimated_spend": 350000,
+      "business_days_to_launch": 6
+    },
+    "approval_decision": "revise",
+    "revision_comment": "The up to 40 percent off line in the hero needs the starting at minimum, and confirm Lancome is cleared with Merch."
+  },
+  "llm_classification": {
+    "change_type": "pricing",
+    "rationale": "The comment names a pricing disclaimer fix plus a MAP brand confirmation. Both fall under pricing."
+  },
+  "retrieval_calls": [
+    "past revision tickets for pricing changes in Beauty"
+  ],
+  "helper_calls": [
+    {"fn": "lookup_owner", "args": {"change_type": "pricing"}, "result": "Merchandising (Anna)"},
+    {"fn": "assess_urgency", "args": {"estimated_spend": 350000, "business_days_to_launch": 6}, "result": "low"}
+  ],
+  "output_state_revision_routing": {
+    "change_type": "pricing",
+    "owner": "Merchandising (Anna)",
+    "urgency": "low",
+    "one_line_summary": "Add starting at minimum to the up to 40 percent off claim and confirm Lancome MAP clearance with Merchandising.",
+    "similar_past_tickets": ["TICKET-INC-2025-4471"],
+    "retrieved_docs": ["TICKET-INC-2025-4471"]
+  }
+}

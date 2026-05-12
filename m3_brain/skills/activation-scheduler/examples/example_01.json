@@ -1,0 +1,67 @@
+{
+  "name": "Spring Beauty Refresh schedule across four regions",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0511",
+    "status": "ready_for_scheduling",
+    "campaign": {
+      "title": "Spring Beauty Refresh",
+      "estimated_spend": 350000,
+      "regions": ["NY", "CA", "FL", "TX"]
+    },
+    "localized_variants": [
+      {"region": "NY", "language": "en"},
+      {"region": "CA", "language": "en"},
+      {"region": "FL", "language": "es"},
+      {"region": "TX", "language": "es"}
+    ],
+    "launch_date": "2026-05-13"
+  },
+  "retrieval_calls": [
+    "activation timing for Beauty campaign across email social display"
+  ],
+  "helper_calls": [
+    {"fn": "region_to_timezone", "args": {"region": "NY"}, "result": "America/New_York"},
+    {"fn": "compute_send_time", "args": {"tz_name": "America/New_York", "launch_date": "2026-05-13", "hour_local": 10}, "result": "2026-05-13T14:00:00Z"},
+    {"fn": "compute_send_time", "args": {"tz_name": "America/Los_Angeles", "launch_date": "2026-05-13", "hour_local": 10}, "result": "2026-05-13T17:00:00Z"},
+    {"fn": "compute_send_time", "args": {"tz_name": "America/Chicago", "launch_date": "2026-05-13", "hour_local": 10}, "result": "2026-05-13T15:00:00Z"},
+    {"fn": "display_cap", "args": {"estimated_spend": 350000, "region": "NY"}, "result": 3}
+  ],
+  "output_state_activation_schedule": {
+    "schedule_by_region": [
+      {
+        "region": "NY",
+        "timezone": "America/New_York",
+        "email_send_utc": "2026-05-13T14:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "CA",
+        "timezone": "America/Los_Angeles",
+        "email_send_utc": "2026-05-13T17:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "FL",
+        "timezone": "America/New_York",
+        "email_send_utc": "2026-05-13T14:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "TX",
+        "timezone": "America/Chicago",
+        "email_send_utc": "2026-05-13T15:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      }
+    ],
+    "human_confirmation_required": true,
+    "retrieved_docs": ["RETRO-SP-2025-BTY"]
+  }
+}

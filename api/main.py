@@ -6,22 +6,61 @@ Run from the repo root:
 
 from __future__ import annotations
 
+import asyncio
+import logging
+import os
+import sys
+import time
 from pathlib import Path
 
-from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
-from api._skill_loader import DB_PATH, IMAGES_DIR
-from api.routes import chat, personas, skills, workflow
+# Load .env so TRITONAI_API_KEY is available at request time. Render injects
+# env vars directly, so this is a no op in production, but it matters
+# locally where uvicorn does not auto load .env on its own.
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+# M3 brain path setup. Must run before any 'from rag.', 'from tools.',
+# or 'from orchestrator.' import below, since those packages now live
+# under ../m3_brain/ rather than at the repo root.
+_M3_BRAIN_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "m3_brain"))
+if _M3_BRAIN_DIR not in sys.path:
+    sys.path.insert(0, _M3_BRAIN_DIR)
+
+from api._skill_loader import DB_PATH, IMAGES_DIR  # noqa: E402
+from api.routes import chat, personas, skills, workflow  # noqa: E402
+
+# Try to import the M3 skill invoker. If the M3 deps are missing on this
+# host (sentence-transformers, faiss, openai, etc), the M2 endpoints still
+# work and the AI endpoints return 503 with a clear error.
+try:
+    from orchestrator.skill_invoker import invoke_skill as _invoke_skill  # noqa: E402
+
+    _M3_AVAILABLE = True
+    _M3_IMPORT_ERROR: str | None = None
+except Exception as _exc:  # noqa: BLE001
+    _invoke_skill = None  # type: ignore[assignment]
+    _M3_AVAILABLE = False
+    _M3_IMPORT_ERROR = str(_exc)
+
+
+logger = logging.getLogger("macys.m3")
+logging.basicConfig(level=logging.INFO)
+
 
 app = FastAPI(
     title="Macy's Marketing Operations API",
     description=(
         "Local backend for the M2 GUI. Wraps the four skills in HTTP endpoints "
-        "and serves persona, workflow, and scripted chat data."
+        "and serves persona, workflow, and scripted chat data. Also hosts the "
+        "M3 AI endpoints (compliance, brief, revision routing, cascade) backed "
+        "by the chained skills and RAG corpus in m3_brain/."
     ),
-    version="0.1.0",
+    version="0.2.0",
 )
 
 # CORS is intentionally wide open for the initial Render deploy so the
@@ -42,6 +81,8 @@ def health() -> dict:
         "ok": True,
         "db_exists": Path(DB_PATH).exists(),
         "images_dir_exists": Path(IMAGES_DIR).exists(),
+        "m3_brain_available": _M3_AVAILABLE,
+        "tritonai_key_set": bool(os.environ.get("TRITONAI_API_KEY", "")),
     }
 
 
@@ -59,3 +100,204 @@ if Path(IMAGES_DIR).exists():
         StaticFiles(directory=str(IMAGES_DIR)),
         name="dam_images",
     )
+
+
+# ===========================================================================
+# M3 AI endpoints
+#
+# Each endpoint wraps a chained skill from m3_brain/. The skill invoker calls
+# Claude via the TritonAI proxy, returns structured JSON, and the endpoint
+# returns the relevant slice of that JSON to the client.
+#
+# All endpoints fail with 503 when:
+#   * The m3_brain modules failed to import (missing deps).
+#   * TRITONAI_API_KEY is unset or still a placeholder.
+#   * The underlying skill raises.
+# ===========================================================================
+
+
+class CampaignContext(BaseModel):
+    """Shared campaign payload used by every M3 endpoint."""
+
+    campaign_id: str
+    title: str
+    audience_segment: str
+    copy: str
+    tagline: str | None = None
+    skus: list[str]
+    discount_pct: float
+    regions: list[str]
+    estimated_spend: float | None = None
+    campaign_manager: str | None = None
+
+
+class BriefRequest(BaseModel):
+    """Body for the approval brief generator endpoint."""
+
+    campaign: CampaignContext
+    compliance_check: dict | None = None
+
+
+class RevisionRequest(BaseModel):
+    """Body for the revision router endpoint."""
+
+    campaign_id: str
+    revision_comment: str
+    campaign_context: CampaignContext
+
+
+class ApprovalCascadeRequest(BaseModel):
+    """Body for the post approval cascade (localization plus scheduling)."""
+
+    campaign_id: str
+    approval_decision: str
+    campaign_context: CampaignContext
+
+
+def _check_ai_ready() -> None:
+    """Raise 503 if the M3 brain or the TritonAI key are not available."""
+    if not _M3_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "AI service temporarily unavailable",
+                "detail": f"m3_brain failed to import: {_M3_IMPORT_ERROR}",
+            },
+        )
+    api_key = os.environ.get("TRITONAI_API_KEY", "")
+    if (
+        not api_key
+        or api_key.startswith("your_")
+        or api_key.startswith("placeholder")
+    ):
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "AI service temporarily unavailable",
+                "detail": "TRITONAI_API_KEY not configured on this deployment.",
+            },
+        )
+
+
+def _build_state(campaign: CampaignContext, extra: dict | None = None) -> dict:
+    """Build a fresh workflow state dict from a campaign context."""
+    state = {
+        "campaign_id": campaign.campaign_id,
+        "status": "submitted_by_sarah",
+        "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "campaign": campaign.model_dump(),
+        "compliance_check": None,
+        "approval_brief": None,
+        "approval_decision": None,
+        "revision_routing": None,
+        "localized_variants": None,
+        "activation_schedule": None,
+    }
+    if extra:
+        state.update(extra)
+    return state
+
+
+async def _run_skill(skill_name: str, state: dict, campaign_id: str) -> dict:
+    """Run a skill in a worker thread, log timing, return the updated state."""
+    if _invoke_skill is None:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "AI service temporarily unavailable",
+                "detail": f"m3_brain failed to import: {_M3_IMPORT_ERROR}",
+            },
+        )
+    start = time.monotonic()
+    try:
+        updated = await asyncio.to_thread(_invoke_skill, skill_name, state)
+    except Exception as exc:  # noqa: BLE001
+        duration_ms = int((time.monotonic() - start) * 1000)
+        logger.exception(
+            "M3 skill %s failed: campaign_id=%s duration_ms=%s",
+            skill_name,
+            campaign_id,
+            duration_ms,
+        )
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "AI service temporarily unavailable",
+                "detail": f"Skill {skill_name} raised: {exc}",
+            },
+        ) from exc
+    duration_ms = int((time.monotonic() - start) * 1000)
+    logger.info(
+        "M3 skill %s ok: campaign_id=%s duration_ms=%s",
+        skill_name,
+        campaign_id,
+        duration_ms,
+    )
+    return updated
+
+
+@app.post("/api/ai/compliance")
+async def ai_compliance(campaign: CampaignContext) -> dict:
+    """Run the compliance pre check skill on a submitted campaign."""
+    _check_ai_ready()
+    state = _build_state(campaign)
+    updated = await _run_skill("compliance-pre-check", state, campaign.campaign_id)
+    return updated.get("compliance_check") or {}
+
+
+@app.post("/api/ai/brief")
+async def ai_brief(req: BriefRequest) -> dict:
+    """Generate the VP approval brief for a campaign that passed compliance."""
+    _check_ai_ready()
+    state = _build_state(
+        req.campaign,
+        extra={"compliance_check": req.compliance_check},
+    )
+    updated = await _run_skill(
+        "approval-brief-generator",
+        state,
+        req.campaign.campaign_id,
+    )
+    return updated.get("approval_brief") or {}
+
+
+@app.post("/api/ai/route-revision")
+async def ai_route_revision(req: RevisionRequest) -> dict:
+    """Classify and route a VP revision comment to the right owner."""
+    _check_ai_ready()
+    state = _build_state(
+        req.campaign_context,
+        extra={
+            "approval_decision": "revise",
+            "revision_comment": req.revision_comment,
+        },
+    )
+    updated = await _run_skill("revision-router", state, req.campaign_id)
+    return updated.get("revision_routing") or {}
+
+
+@app.post("/api/ai/cascade")
+async def ai_cascade(req: ApprovalCascadeRequest) -> dict:
+    """Run localization plus activation scheduling after VP approval."""
+    _check_ai_ready()
+    if req.approval_decision != "approved":
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "Bad request",
+                "detail": (
+                    "ai_cascade only runs when approval_decision is 'approved'. "
+                    f"Received {req.approval_decision!r}."
+                ),
+            },
+        )
+    state = _build_state(
+        req.campaign_context,
+        extra={"approval_decision": "approved", "status": "approved"},
+    )
+    state = await _run_skill("localization-generator", state, req.campaign_id)
+    state = await _run_skill("activation-scheduler", state, req.campaign_id)
+    return {
+        "localized_variants": state.get("localized_variants"),
+        "activation_schedule": state.get("activation_schedule"),
+    }

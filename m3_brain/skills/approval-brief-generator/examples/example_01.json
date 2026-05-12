@@ -1,0 +1,40 @@
+{
+  "name": "VP brief for Beauty campaign with one MAP warning",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0511",
+    "status": "in_vp_review",
+    "campaign": {
+      "title": "Spring Beauty Refresh",
+      "audience_segment": "Beauty Loyalists",
+      "copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+      "tagline": "The Magic of Macys",
+      "skus": ["BTY-001", "BTY-045", "BTY-112"],
+      "discount_pct": 40,
+      "regions": ["NY", "CA", "FL", "TX"],
+      "estimated_spend": 350000,
+      "campaign_manager": "Sarah Chen"
+    },
+    "compliance_check": {
+      "brand_alignment": {"status": "pass", "reason": "Tagline approved, no banned words.", "cited_doc": "BRAND-GL-2026-001"},
+      "disclaimers": {"status": "pass", "reason": "Minimum clause present in revised copy.", "cited_doc": "LEGAL-DIS-2026-002"},
+      "pricing_cross_check": {"status": "warn", "reason": "BTY-001 is Lancome (MAP enforced). Confirm Merchandising approval.", "cited_doc": "PRICE-RULES-2026-001"},
+      "recommended_action": "proceed",
+      "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001"]
+    }
+  },
+  "retrieval_calls": [
+    "Beauty campaign retro performance benchmarks for Beauty Loyalists"
+  ],
+  "helper_calls": [
+    {"fn": "extract_roi_benchmark", "args": {"audience_segment": "Beauty Loyalists"}, "result": {"paid_social_roas": 4.2, "email_open_rate": 0.32, "in_store_uplift": 0.18}},
+    {"fn": "decide_recommendation", "args": {"has_any_fail": false}, "result": "approve"}
+  ],
+  "output_state_approval_brief": {
+    "campaign_goal": "Drive Beauty Loyalists to refresh their spring skincare routine with a 40 percent off offer across qualifying brands.",
+    "target_audience": "Beauty Loyalists, customers who purchased prestige Beauty in the prior 12 months with an active Star Rewards account.",
+    "expected_roi": "Based on Spring 2025 Beauty benchmarks, expect paid social ROAS around 4.2 and email open rate around 32 percent for the Loyalist segment.",
+    "risk_flags": ["BTY-001 is Lancome, MAP enforced. Confirm Merchandising approval before launch."],
+    "ai_recommendation": "approve, the only flag is a procedural MAP confirmation that can be cleared before production.",
+    "retrieved_docs": ["RETRO-SP-2025-BTY"]
+  }
+}

@@ -1,0 +1,267 @@
+"""
+Skill invoker for the M3 orchestrator.
+
+Loads a SKILL.md, pre fetches the RAG context and any MCP tool data the
+skill needs, builds a prompt, calls Claude, parses the JSON response,
+and merges it into the workflow state.
+
+The pre fetch pattern (Option A) keeps the orchestrator deterministic.
+The model receives the context it needs already retrieved, and only
+produces the structured JSON the SKILL.md output schema describes. No
+tool calling loop, no model issued retrieval, no model issued MCP calls.
+The model reasons, the orchestrator routes.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+from pathlib import Path
+from typing import Any, Callable
+
+from openai import OpenAI
+
+from rag.retrieval import retrieve
+from tools import check_pricing_conflicts
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SKILLS_DIR = REPO_ROOT / "skills"
+
+CLAUDE_MODEL = "claude-sonnet-4-6"
+MAX_TOKENS = 2000
+TEMPERATURE = 0.2
+TRITONAI_BASE_URL = "https://tritonai-api.ucsd.edu/v1"
+
+
+# Per skill pre fetch configuration. Each entry:
+#   rag_queries: list of query strings. May contain {dotted.path}
+#                placeholders that are filled from the state dict.
+#   mcp_calls:   list of (tool_name, args_callable) where args_callable
+#                takes the state dict and returns a dict of kwargs for
+#                the tool function.
+SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
+    "compliance-pre-check": {
+        "rag_queries": [
+            "banned words and approved taglines",
+            "required legal disclaimers for percent off pricing",
+            "MAP minimum advertised price restrictions",
+            "past compliance flag examples",
+        ],
+        "mcp_calls": [
+            (
+                "check_pricing_conflicts",
+                lambda s: {
+                    "sku_ids": s["campaign"]["skus"],
+                    "proposed_discount_pct": s["campaign"]["discount_pct"],
+                },
+            ),
+        ],
+    },
+    "approval-brief-generator": {
+        "rag_queries": [
+            "{campaign.audience_segment} campaign retro performance benchmarks",
+        ],
+        "mcp_calls": [],
+    },
+    "revision-router": {
+        "rag_queries": [
+            "past revision tickets for VP review",
+        ],
+        "mcp_calls": [],
+    },
+    "localization-generator": {
+        "rag_queries": [
+            "localization rules including holidays pricing",
+            "DAM asset usage rights and tagging for regional campaigns",
+        ],
+        "mcp_calls": [],
+    },
+    "activation-scheduler": {
+        "rag_queries": [
+            "activation timing for campaign across email social display",
+        ],
+        "mcp_calls": [],
+    },
+}
+
+# Where each skill writes its result inside the workflow state.
+SKILL_OUTPUT_FIELD: dict[str, str] = {
+    "compliance-pre-check": "compliance_check",
+    "approval-brief-generator": "approval_brief",
+    "revision-router": "revision_routing",
+    "localization-generator": "localized_variants",
+    "activation-scheduler": "activation_schedule",
+}
+
+# Status to set after the skill completes, so the routing table can
+# pick the next rule cleanly. The skill output itself does not have to
+# include a status field.
+SKILL_STATUS_AFTER: dict[str, str] = {
+    "compliance-pre-check": "compliance_check_complete",
+    "approval-brief-generator": "in_vp_review",
+    "revision-router": "revision_requested",
+    "localization-generator": "in_localization",
+    "activation-scheduler": "scheduled",
+}
+
+# MCP tool registry. Keyed by the tool name used in SKILL_PREFETCH_CONFIG.
+# Each value is the Python callable that runs the tool.
+_MCP_TOOLS: dict[str, Callable[..., dict]] = {
+    "check_pricing_conflicts": check_pricing_conflicts,
+}
+
+
+def _format_query(template: str, state: dict) -> str:
+    """Fill {dotted.path} placeholders in a query template from state.
+
+    Example: '{campaign.audience_segment} retro' with the starter state
+    becomes 'Beauty Loyalists retro'. If a path is missing, the literal
+    placeholder is left in the query rather than crashing.
+    """
+    def replacer(match: re.Match[str]) -> str:
+        path = match.group(1)
+        current: Any = state
+        for key in path.split("."):
+            if not isinstance(current, dict):
+                return match.group(0)
+            current = current.get(key)
+            if current is None:
+                return match.group(0)
+        return str(current)
+
+    return re.sub(r"\{([a-zA-Z0-9_.]+)\}", replacer, template)
+
+
+def _load_skill_markdown(skill_name: str) -> str:
+    """Load SKILL.md for the named skill folder. Raise if missing."""
+    path = SKILLS_DIR / skill_name / "SKILL.md"
+    if not path.exists():
+        raise FileNotFoundError(f"SKILL.md not found at {path}")
+    return path.read_text(encoding="utf-8")
+
+
+def _prefetch_rag(skill_name: str, state: dict) -> dict[str, list[dict]]:
+    """Run the configured RAG queries. Return dict keyed by filled query."""
+    config = SKILL_PREFETCH_CONFIG.get(skill_name, {})
+    queries = config.get("rag_queries", [])
+    out: dict[str, list[dict]] = {}
+    for template in queries:
+        query = _format_query(template, state)
+        out[query] = retrieve(query, k=4)
+    return out
+
+
+def _prefetch_mcp(skill_name: str, state: dict) -> dict[str, dict]:
+    """Run the configured MCP tool calls. Return dict keyed by tool name."""
+    config = SKILL_PREFETCH_CONFIG.get(skill_name, {})
+    calls = config.get("mcp_calls", [])
+    out: dict[str, dict] = {}
+    for tool_name, args_fn in calls:
+        tool = _MCP_TOOLS.get(tool_name)
+        if tool is None:
+            continue
+        args = args_fn(state)
+        if isinstance(args, dict):
+            out[tool_name] = tool(**args)
+        elif isinstance(args, tuple):
+            out[tool_name] = tool(*args)
+        else:
+            out[tool_name] = tool(args)
+    return out
+
+
+def _strip_json_fences(text: str) -> str:
+    """Strip ```json ... ``` or ``` ... ``` fences if present."""
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        first_newline = stripped.find("\n")
+        if first_newline != -1:
+            stripped = stripped[first_newline + 1:]
+        if stripped.endswith("```"):
+            stripped = stripped[:-3]
+    return stripped.strip()
+
+
+def _call_claude(system: str, user_payload: dict) -> str:
+    """Call Claude via the TritonAI proxy and return the response text.
+
+    TritonAI is the UCSD course provided LLM proxy. It speaks the OpenAI
+    chat completions protocol but routes to Claude on the backend, so we
+    use the openai Python SDK with a custom base_url. Reads
+    TRITONAI_API_KEY from the environment.
+    """
+    client = OpenAI(
+        api_key=os.environ["TRITONAI_API_KEY"],
+        base_url=TRITONAI_BASE_URL,
+    )
+    response = client.chat.completions.create(
+        model=CLAUDE_MODEL,
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE,
+        messages=[
+            {"role": "system", "content": system},
+            {
+                "role": "user",
+                "content": json.dumps(user_payload, ensure_ascii=False, indent=2),
+            },
+        ],
+    )
+    return response.choices[0].message.content or ""
+
+
+def update_state_field(state: dict, skill_name: str, result: Any) -> dict:
+    """Merge the skill result into the matching state field and set status."""
+    field = SKILL_OUTPUT_FIELD.get(skill_name)
+    if field is None:
+        raise KeyError(f"No output field mapping for skill {skill_name!r}")
+    state[field] = result
+    after_status = SKILL_STATUS_AFTER.get(skill_name)
+    if after_status is not None:
+        state["status"] = after_status
+    return state
+
+
+def invoke_skill(skill_name: str, state: dict) -> dict:
+    """Run one skill end to end and return the updated state.
+
+    Steps:
+      1. Load SKILL.md as the system prompt.
+      2. Pre fetch RAG chunks and MCP tool data per SKILL_PREFETCH_CONFIG.
+      3. Build a user payload with state, retrieved_context, tool_results,
+         and a clear "return JSON only" instruction.
+      4. Call Claude.
+      5. Strip code fences, parse JSON.
+      6. Merge into state via update_state_field, update status.
+
+    Args:
+        skill_name: skill folder name under skills/ (for example
+            'compliance-pre-check').
+        state: current workflow state dict.
+
+    Returns:
+        The updated state dict (mutated in place and also returned).
+    """
+    skill_md = _load_skill_markdown(skill_name)
+    retrieved = _prefetch_rag(skill_name, state)
+    tool_results = _prefetch_mcp(skill_name, state)
+    user_payload = {
+        "current_state": state,
+        "retrieved_context": retrieved,
+        "tool_results": tool_results,
+        "instruction": (
+            "Execute this skill according to the SKILL.md instructions. "
+            "Use the retrieved_context and tool_results to inform your "
+            "decisions. Return ONLY a JSON object that matches the Output "
+            "schema in the SKILL.md. No commentary, no markdown fences."
+        ),
+    }
+    text = _call_claude(skill_md, user_payload)
+    cleaned = _strip_json_fences(text)
+    try:
+        result = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Skill {skill_name} returned non JSON response:\n{cleaned[:500]}"
+        ) from exc
+    return update_state_field(state, skill_name, result)
