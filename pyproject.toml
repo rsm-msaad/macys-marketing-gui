@@ -22,6 +22,7 @@ dependencies = [
     "uvicorn>=0.46.0",
     "faiss-cpu>=1.13.2",
     "sentence-transformers>=5.5.0",
+    "torch>=2.0",
 ]
 
 [dependency-groups]
@@ -29,6 +30,20 @@ dev = [
     "pytest>=8.0",
     "ruff>=0.5",
 ]
+
+# Pull torch from the CPU only wheel index so Render does not get the
+# CUDA build (torch plus nvidia cublas plus cudnn plus triton, around
+# 1.5 GB total, which OOM kills the 512 MB free tier). The explicit flag
+# on the index means uv only uses this index for packages that name it
+# via [tool.uv.sources] below, so the rest of the dependency tree still
+# resolves against the standard PyPI.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
