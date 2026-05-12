@@ -86,6 +86,12 @@ def health() -> dict:
     }
 
 
+@app.get("/api/health")
+def health_api() -> dict:
+    """Alias for /health under the /api/* prefix for frontend symmetry."""
+    return health()
+
+
 app.include_router(personas.router)
 app.include_router(workflow.router)
 app.include_router(workflow.campaigns_router)
@@ -131,10 +137,15 @@ class CampaignContext(BaseModel):
     campaign_manager: str | None = None
 
 
-class BriefRequest(BaseModel):
-    """Body for the approval brief generator endpoint."""
+class BriefRequest(CampaignContext):
+    """Body for the approval brief generator endpoint.
 
-    campaign: CampaignContext
+    Inherits every field from CampaignContext so the frontend can post the
+    same flat shape it uses for /api/ai/compliance, with one extra optional
+    compliance_check field. Keeping the body flat matches the rest of the
+    M3 endpoint family.
+    """
+
     compliance_check: dict | None = None
 
 
@@ -249,14 +260,17 @@ async def ai_compliance(campaign: CampaignContext) -> dict:
 async def ai_brief(req: BriefRequest) -> dict:
     """Generate the VP approval brief for a campaign that passed compliance."""
     _check_ai_ready()
+    # Construct a plain CampaignContext from the request so the state's
+    # 'campaign' field does not pick up the optional compliance_check.
+    campaign = CampaignContext(**req.model_dump(exclude={"compliance_check"}))
     state = _build_state(
-        req.campaign,
+        campaign,
         extra={"compliance_check": req.compliance_check},
     )
     updated = await _run_skill(
         "approval-brief-generator",
         state,
-        req.campaign.campaign_id,
+        req.campaign_id,
     )
     return updated.get("approval_brief") or {}
 
