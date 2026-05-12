@@ -2,7 +2,7 @@
 # Versions match what works in the local uv project (see pyproject.toml /
 # uv.lock for exact pins).
 fastapi>=0.115
-uvicorn[standard]>=0.30
+uvicorn>=0.30
 pydantic>=2.7
 numpy>=2.0
 polars>=1.0
