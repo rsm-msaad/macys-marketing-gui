@@ -179,6 +179,19 @@ class ApprovalCascadeRequest(BaseModel):
     campaign_context: CampaignContext
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class AIChatRequest(BaseModel):
+    """Body for the live AI chat endpoint."""
+
+    message: str
+    campaign_context: CampaignContext
+    chat_history: list[ChatMessage] = []
+
+
 def _check_ai_ready() -> None:
     """Raise 503 if the M3 brain or the TritonAI key are not available."""
     if not _M3_AVAILABLE:
@@ -275,6 +288,55 @@ async def ai_warmup() -> dict:
         return {"warmed": True, "elapsed_seconds": elapsed}
     except Exception as exc:  # noqa: BLE001
         return {"warmed": False, "error": str(exc)}
+
+
+@app.post("/api/ai/chat")
+async def ai_chat(req: AIChatRequest) -> dict:
+    """Live AI chat grounded in the campaign context and RAG corpus."""
+    _check_ai_ready()
+
+    from openai import OpenAI as _OpenAI
+    from rag.retrieval import retrieve
+
+    chunks = await asyncio.to_thread(retrieve, req.message, k=4)
+    doc_ids = list({c.get("doc_id", "unknown") for c in chunks})
+    docs_text = "\n\n".join(f"[{c.get('doc_id', 'unknown')}] {c.get('text', '')}" for c in chunks)
+    campaign_json = req.campaign_context.model_dump_json(indent=2)
+
+    system_prompt = (
+        "You are an AI marketing coworker at Macys. You help campaign managers, "
+        "VPs, and designers reason about campaigns. You have access to internal "
+        "Macys policy documents and past campaign data through retrieval. "
+        "Cite document IDs (like BRAND-GL-2026-001) when you reference internal "
+        "policy. Keep responses concise, helpful, and grounded in the provided "
+        "context and retrieved documents. Do not invent information."
+    )
+
+    user_content = (
+        f"Question: {req.message}\n\n"
+        f"Current campaign context:\n{campaign_json}\n\n"
+        f"Relevant internal documents:\n{docs_text}"
+    )
+
+    messages: list[dict] = [{"role": "system", "content": system_prompt}]
+    for m in req.chat_history[-10:]:
+        messages.append({"role": m.role, "content": m.content})
+    messages.append({"role": "user", "content": user_content})
+
+    client = _OpenAI(
+        api_key=os.environ["TRITONAI_API_KEY"],
+        base_url="https://tritonai-api.ucsd.edu/v1",
+    )
+    response = await asyncio.to_thread(
+        lambda: client.chat.completions.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1024,
+            temperature=0.4,
+            messages=messages,
+        )
+    )
+    answer = response.choices[0].message.content or ""
+    return {"response": answer, "retrieved_docs": doc_ids}
 
 
 @app.post("/api/ai/compliance")

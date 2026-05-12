@@ -112,3 +112,20 @@ export async function callCascade(
 export function warmupAI(): void {
   fetch(`${AI_BASE}/api/ai/warmup`).catch(() => {});
 }
+
+export type AIChatResponse = {
+  response: string;
+  retrieved_docs: string[];
+};
+
+export async function callAIChat(
+  message: string,
+  campaignContext: Record<string, unknown>,
+  chatHistory: Array<{ role: string; content: string }>
+): Promise<AIChatResponse> {
+  return aiRequest<AIChatResponse>("/api/ai/chat", {
+    message,
+    campaign_context: campaignContext,
+    chat_history: chatHistory,
+  });
+}

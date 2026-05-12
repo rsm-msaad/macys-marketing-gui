@@ -57,7 +57,7 @@ export default function LandingPage() {
       </div>
 
       <footer className="mt-12 text-center text-xs text-charcoal/50">
-        4 skills, 1 unified database, scripted Claude chat. Local demo · May 7.
+        4 skills, 1 unified database, live AI chat powered by TritonAI.
       </footer>
     </main>
   );

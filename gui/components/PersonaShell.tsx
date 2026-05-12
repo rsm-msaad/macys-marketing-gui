@@ -409,7 +409,7 @@ export function PersonaShell({
 
         {/* Right chat */}
         <div className="hidden w-[360px] flex-shrink-0 lg:block">
-          <ChatSidebar personaId={personaId} onAction={handleAction} />
+          <ChatSidebar context={context} onAction={handleAction} />
         </div>
       </div>
 
