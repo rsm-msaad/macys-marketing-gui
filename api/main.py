@@ -36,16 +36,30 @@ from api.routes import chat, personas, skills, workflow  # noqa: E402
 
 # Try to import the M3 skill invoker. If the M3 deps are missing on this
 # host (sentence-transformers, faiss, openai, etc), the M2 endpoints still
-# work and the AI endpoints return 503 with a clear error.
+# work and the AI endpoints return 503 with a clear error. The error is
+# also logged to stderr at startup so it surfaces in the Render runtime
+# log without needing to hit /health to see it.
 try:
     from orchestrator.skill_invoker import invoke_skill as _invoke_skill  # noqa: E402
 
     _M3_AVAILABLE = True
     _M3_IMPORT_ERROR: str | None = None
 except Exception as _exc:  # noqa: BLE001
+    import traceback as _traceback
+
     _invoke_skill = None  # type: ignore[assignment]
     _M3_AVAILABLE = False
     _M3_IMPORT_ERROR = str(_exc)
+    print(
+        f"WARNING: M3 brain failed to import: {_exc}",
+        file=sys.stderr,
+        flush=True,
+    )
+    print(
+        f"Traceback:\n{_traceback.format_exc()}",
+        file=sys.stderr,
+        flush=True,
+    )
 
 
 logger = logging.getLogger("macys.m3")
