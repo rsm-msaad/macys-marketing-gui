@@ -257,6 +257,26 @@ async def _run_skill(skill_name: str, state: dict, campaign_id: str) -> dict:
     return updated
 
 
+@app.get("/api/ai/warmup")
+async def ai_warmup() -> dict:
+    """Pre warm the AI stack so user facing endpoints respond fast.
+
+    Triggers lazy loading of the FAISS index and embedding model.
+    Called by the frontend on page load. Safe to call multiple times.
+    """
+    if not _M3_AVAILABLE:
+        return {"warmed": False, "reason": "m3 brain not available"}
+    try:
+        started = time.monotonic()
+        from rag.retrieval import retrieve
+
+        await asyncio.to_thread(retrieve, "warmup", k=1)
+        elapsed = round(time.monotonic() - started, 2)
+        return {"warmed": True, "elapsed_seconds": elapsed}
+    except Exception as exc:  # noqa: BLE001
+        return {"warmed": False, "error": str(exc)}
+
+
 @app.post("/api/ai/compliance")
 async def ai_compliance(campaign: CampaignContext) -> dict:
     """Run the compliance pre check skill on a submitted campaign."""

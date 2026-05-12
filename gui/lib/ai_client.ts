@@ -108,3 +108,7 @@ export async function callCascade(
 ): Promise<CascadeResult> {
   return aiRequest<CascadeResult>("/api/ai/cascade", approvalInput);
 }
+
+export function warmupAI(): void {
+  fetch(`${AI_BASE}/api/ai/warmup`).catch(() => {});
+}

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { fetchPersonas, type Persona } from "@/lib/api";
+import { warmupAI } from "@/lib/ai_client";
 
 type PersonaContextValue = {
   personas: Persona[];
@@ -22,6 +23,7 @@ export function PersonaProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    warmupAI();
     let cancelled = false;
     fetchPersonas()
       .then((data) => {
