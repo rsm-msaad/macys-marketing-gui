@@ -440,9 +440,12 @@ export function PersonaShell({
           campaignId={CAMPAIGN_ID}
           campaignContext={{
             campaign_id: context.campaign_brief.campaign_id,
-            name: context.campaign_brief.name,
-            objective: context.campaign_brief.objective,
-            current_step: routingPending.fromStep,
+            title: context.campaign_brief.name,
+            audience_segment: context.campaign_brief.target_customer,
+            copy: context.campaign_brief.objective,
+            skus: context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5),
+            discount_pct: 15,
+            regions: ["NY", "CA", "FL", "TX"],
           }}
           onConfirm={handleRoutingConfirm}
           onCancel={() => setRoutingPending(null)}
@@ -455,10 +458,12 @@ export function PersonaShell({
           campaignId={CAMPAIGN_ID}
           campaignContext={{
             campaign_id: context.campaign_brief.campaign_id,
-            name: context.campaign_brief.name,
-            objective: context.campaign_brief.objective,
-            target_customer: context.campaign_brief.target_customer,
-            promotional_offer: context.campaign_brief.promotional_offer,
+            title: context.campaign_brief.name,
+            audience_segment: context.campaign_brief.target_customer,
+            copy: context.campaign_brief.objective,
+            skus: context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5),
+            discount_pct: 15,
+            regions: ["NY", "CA", "FL", "TX"],
           }}
           onDone={handleCascadeDone}
         />
