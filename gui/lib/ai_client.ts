@@ -113,6 +113,27 @@ export function warmupAI(): void {
   fetch(`${AI_BASE}/api/ai/warmup`).catch(() => {});
 }
 
+export type ActivityEvent = {
+  timestamp: string;
+  skill_name: string;
+  summary: string;
+  retrieved_docs: string[];
+  campaign_id: string | null;
+};
+
+export async function fetchActivity(
+  campaignId?: string,
+  limit: number = 10,
+): Promise<{ events: ActivityEvent[]; count: number }> {
+  const params = new URLSearchParams({ limit: limit.toString() });
+  if (campaignId) params.set("campaign_id", campaignId);
+  const res = await fetch(`${AI_BASE}/api/ai/activity?${params}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Activity fetch failed: ${res.status}`);
+  return res.json();
+}
+
 export type AIChatResponse = {
   response: string;
   retrieved_docs: string[];

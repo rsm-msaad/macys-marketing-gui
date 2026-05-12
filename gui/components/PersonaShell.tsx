@@ -11,7 +11,8 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { HeroBanner } from "@/components/HeroBanner";
 import { ResultsModal, type ModalState } from "@/components/ResultsModal";
 import { RevisionRequestModal, type RevisionModalState } from "@/components/RevisionRequestModal";
-import { SkillCard, type SkillKind } from "@/components/SkillCard";
+import { AICoworkerPanel } from "@/components/AICoworkerPanel";
+import type { SkillKind } from "@/components/SkillCard";
 import { TopBar } from "@/components/TopBar";
 import { WorkflowPipeline } from "@/components/WorkflowPipeline";
 import type { RouteRevisionResult } from "@/lib/ai_client";
@@ -406,12 +407,11 @@ export function PersonaShell({
           {centerExtras}
 
           <section className="mt-5">
-            <h2 className="mb-3 font-serif text-lg font-semibold text-charcoal">Your skills</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              {skills.map((kind) => (
-                <SkillCard key={kind} kind={kind} onLaunch={() => setModal({ kind })} />
-              ))}
-            </div>
+            <AICoworkerPanel
+              skills={skills}
+              campaignId={CAMPAIGN_ID}
+              onLaunchSkill={(kind) => setModal({ kind })}
+            />
           </section>
         </main>
 

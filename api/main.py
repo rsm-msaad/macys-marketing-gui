@@ -11,7 +11,10 @@ import logging
 import os
 import sys
 import time
+from collections import deque
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -64,6 +67,25 @@ except Exception as _exc:  # noqa: BLE001
 
 logger = logging.getLogger("macys.m3")
 logging.basicConfig(level=logging.INFO)
+
+# In memory log of recent AI activity events, newest first.
+AI_ACTIVITY_LOG: deque[dict] = deque(maxlen=50)
+
+
+def log_ai_activity(
+    skill_name: str,
+    summary: str,
+    retrieved_docs: list[str] | None = None,
+    campaign_id: str | None = None,
+) -> None:
+    """Append an AI activity event to the in memory log."""
+    AI_ACTIVITY_LOG.appendleft({
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "skill_name": skill_name,
+        "summary": summary,
+        "retrieved_docs": retrieved_docs or [],
+        "campaign_id": campaign_id,
+    })
 
 
 app = FastAPI(
@@ -271,6 +293,15 @@ async def _run_skill(skill_name: str, state: dict, campaign_id: str) -> dict:
     return updated
 
 
+@app.get("/api/ai/activity")
+async def ai_activity(limit: int = 10, campaign_id: Optional[str] = None) -> dict:
+    """Return the most recent AI activity events."""
+    events = list(AI_ACTIVITY_LOG)
+    if campaign_id:
+        events = [e for e in events if e.get("campaign_id") == campaign_id]
+    return {"events": events[:limit], "count": len(events)}
+
+
 @app.get("/api/ai/warmup")
 async def ai_warmup() -> dict:
     """Pre warm the AI stack so user facing endpoints respond fast.
@@ -337,6 +368,12 @@ async def ai_chat(req: AIChatRequest) -> dict:
         )
     )
     answer = response.choices[0].message.content or ""
+    log_ai_activity(
+        skill_name="ai_chat",
+        summary=f"Chat answered, {len(doc_ids)} docs retrieved",
+        retrieved_docs=doc_ids,
+        campaign_id=req.campaign_context.campaign_id,
+    )
     return {"response": answer, "retrieved_docs": doc_ids}
 
 
@@ -346,7 +383,16 @@ async def ai_compliance(campaign: CampaignContext) -> dict:
     _check_ai_ready()
     state = _build_state(campaign)
     updated = await _run_skill("compliance-pre-check", state, campaign.campaign_id)
-    return updated.get("compliance_check") or {}
+    result = updated.get("compliance_check") or {}
+    action = result.get("recommended_action", "completed")
+    docs = result.get("retrieved_docs", [])
+    log_ai_activity(
+        skill_name="compliance_pre_check",
+        summary=f"Compliance check {action}, {len(docs)} docs cited",
+        retrieved_docs=docs,
+        campaign_id=campaign.campaign_id,
+    )
+    return result
 
 
 @app.post("/api/ai/brief")
@@ -365,7 +411,15 @@ async def ai_brief(req: BriefRequest) -> dict:
         state,
         req.campaign_id,
     )
-    return updated.get("approval_brief") or {}
+    result = updated.get("approval_brief") or {}
+    docs = result.get("retrieved_docs", [])
+    log_ai_activity(
+        skill_name="approval_brief_generator",
+        summary=f"Approval brief generated for {req.title}",
+        retrieved_docs=docs,
+        campaign_id=req.campaign_id,
+    )
+    return result
 
 
 @app.post("/api/ai/route-revision")
@@ -380,7 +434,14 @@ async def ai_route_revision(req: RevisionRequest) -> dict:
         },
     )
     updated = await _run_skill("revision-router", state, req.campaign_id)
-    return updated.get("revision_routing") or {}
+    result = updated.get("revision_routing") or {}
+    owner = result.get("owner", "unknown")
+    log_ai_activity(
+        skill_name="revision_router",
+        summary=f"Revision routed to {owner}",
+        campaign_id=req.campaign_id,
+    )
+    return result
 
 
 @app.post("/api/ai/cascade")
@@ -406,6 +467,12 @@ async def ai_cascade(req: ApprovalCascadeRequest) -> dict:
     variants = state.get("localized_variants")
     if isinstance(variants, dict) and "localized_variants" in variants:
         variants = variants["localized_variants"]
+    variant_count = len(variants) if isinstance(variants, list) else 0
+    log_ai_activity(
+        skill_name="approval_cascade",
+        summary=f"Cascade complete, {variant_count} variants localized and scheduled",
+        campaign_id=req.campaign_id,
+    )
     return {
         "localized_variants": variants,
         "activation_schedule": state.get("activation_schedule"),
