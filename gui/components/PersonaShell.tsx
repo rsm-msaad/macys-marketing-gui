@@ -8,6 +8,7 @@ import { AIRevisionRouting } from "@/components/AIRevisionRouting";
 import { ApprovalCascade } from "@/components/ApprovalCascade";
 import { CampaignSidebar } from "@/components/CampaignSidebar";
 import { ChatSidebar } from "@/components/ChatSidebar";
+import { HeroBanner } from "@/components/HeroBanner";
 import { ResultsModal, type ModalState } from "@/components/ResultsModal";
 import { RevisionRequestModal, type RevisionModalState } from "@/components/RevisionRequestModal";
 import { SkillCard, type SkillKind } from "@/components/SkillCard";
@@ -372,6 +373,13 @@ export function PersonaShell({
             <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
               Sync issue: {pollError}
             </div>
+          )}
+
+          {context && (
+            <HeroBanner
+              category={context.campaign_brief.name}
+              audience={context.campaign_brief.target_customer}
+            />
           )}
 
           <div className="mb-4">

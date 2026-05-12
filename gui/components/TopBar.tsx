@@ -28,10 +28,15 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
           {active ? (
             <>
               <span
-                className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold text-white"
-                style={{ backgroundColor: active.color }}
+                className="flex h-7 w-7 items-center justify-center rounded-full ring-2"
+                style={{ ["--tw-ring-color" as string]: active.color }}
               >
-                {active.initial}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={active.avatar}
+                  alt={active.name}
+                  className="h-7 w-7 rounded-full object-cover"
+                />
               </span>
               <span className="text-left leading-tight">
                 <span className="block text-xs text-charcoal/60">{active.title}</span>
@@ -62,10 +67,15 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
                 }`}
               >
                 <span
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-white"
-                  style={{ backgroundColor: p.color }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full ring-2"
+                  style={{ ["--tw-ring-color" as string]: p.color }}
                 >
-                  {p.initial}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.avatar}
+                    alt={p.name}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
                 </span>
                 <div className="leading-tight">
                   <div className="text-sm font-medium text-charcoal">{p.name}</div>

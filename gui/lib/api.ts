@@ -60,7 +60,24 @@ export type Persona = {
   initial: string;
   color: string;
   tagline: string;
+  avatar: string;
 };
+
+export type HeroImage = {
+  image_url: string;
+  alt: string;
+  photographer: string;
+  photographer_url: string;
+};
+
+export async function fetchHeroImage(
+  category: string,
+  audience: string,
+): Promise<HeroImage> {
+  return request<HeroImage>(
+    `/api/images/hero?category=${encodeURIComponent(category)}&audience=${encodeURIComponent(audience)}`,
+  );
+}
 
 export async function fetchPersonas(): Promise<Persona[]> {
   return request<Persona[]>("/personas");

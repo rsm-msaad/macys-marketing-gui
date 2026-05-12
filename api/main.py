@@ -32,7 +32,7 @@ if _M3_BRAIN_DIR not in sys.path:
     sys.path.insert(0, _M3_BRAIN_DIR)
 
 from api._skill_loader import DB_PATH, IMAGES_DIR  # noqa: E402
-from api.routes import chat, personas, skills, workflow  # noqa: E402
+from api.routes import chat, images, personas, skills, workflow  # noqa: E402
 
 # Try to import the M3 skill invoker. If the M3 deps are missing on this
 # host (sentence-transformers, faiss, openai, etc), the M2 endpoints still
@@ -111,6 +111,7 @@ app.include_router(workflow.router)
 app.include_router(workflow.campaigns_router)
 app.include_router(skills.router)
 app.include_router(chat.router)
+app.include_router(images.router)
 
 # Static images (DAM thumbnails). Files live in data/images/dam/ but may not
 # exist if download_images.py has not been run. Mount path is `/images`.

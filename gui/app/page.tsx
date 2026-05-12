@@ -36,10 +36,15 @@ export default function LandingPage() {
           >
             <div className="flex items-center gap-4">
               <span
-                className="flex h-14 w-14 items-center justify-center rounded-full text-2xl font-semibold text-white"
-                style={{ backgroundColor: p.color }}
+                className="flex h-14 w-14 items-center justify-center rounded-full ring-2 ring-offset-2"
+                style={{ ["--tw-ring-color" as string]: p.color }}
               >
-                {p.initial}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.avatar}
+                  alt={p.name}
+                  className="h-14 w-14 rounded-full object-cover"
+                />
               </span>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/55">
