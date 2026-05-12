@@ -78,6 +78,7 @@ export function ActionPanel({
   onLaunchSkill,
   onRequestRevisions,
   onAdvanced,
+  onInterceptApproval,
 }: {
   personaId: string;
   state: CampaignState | null;
@@ -86,6 +87,7 @@ export function ActionPanel({
   onLaunchSkill: (skill: SkillKind) => void;
   onRequestRevisions: (fromStep: number, defaultSendBackToStep: number) => void;
   onAdvanced: () => void;
+  onInterceptApproval?: (step: number, action: string, output?: Record<string, unknown>) => boolean;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,6 +143,10 @@ export function ActionPanel({
 
   async function handleApprove(action: string, output?: Record<string, unknown>) {
     if (!state) return;
+    // Allow parent to intercept (e.g. for cascade animation at step 6)
+    if (onInterceptApproval && onInterceptApproval(state.current_step, action, output)) {
+      return;
+    }
     setBusy(true);
     setError(null);
     try {

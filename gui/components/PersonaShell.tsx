@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRightCircle, RotateCcw } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
+import { AIRevisionRouting } from "@/components/AIRevisionRouting";
+import { ApprovalCascade } from "@/components/ApprovalCascade";
 import { CampaignSidebar } from "@/components/CampaignSidebar";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ResultsModal, type ModalState } from "@/components/ResultsModal";
@@ -11,8 +13,10 @@ import { RevisionRequestModal, type RevisionModalState } from "@/components/Revi
 import { SkillCard, type SkillKind } from "@/components/SkillCard";
 import { TopBar } from "@/components/TopBar";
 import { WorkflowPipeline } from "@/components/WorkflowPipeline";
+import type { RouteRevisionResult } from "@/lib/ai_client";
 import {
   advanceCampaign,
+  advanceCampaignWithOutput,
   fetchCampaignContext,
   fetchCampaigns,
   fetchCampaignState,
@@ -80,6 +84,16 @@ export function PersonaShell({
   const [pollError, setPollError] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
+
+  // AI Revision Routing state (Feature 3)
+  const [routingPending, setRoutingPending] = useState<{
+    sendBackToStep: number;
+    comment: string;
+    fromStep: number;
+  } | null>(null);
+
+  // AI Cascade state (Feature 4)
+  const [cascadeActive, setCascadeActive] = useState(false);
 
   const lastStepRef = useRef<number | null>(null);
   const lastPendingRef = useRef<boolean>(false);
@@ -223,17 +237,26 @@ export function PersonaShell({
 
   async function handleSubmitRevision(sendBackToStep: number, comment: string) {
     if (!revisionModal) return;
-    setRevisionBusy(true);
+    // Close the revision modal and show AI routing panel (Feature 3)
+    const fromStep = revisionModal.fromStep;
+    setRevisionModal(null);
     setRevisionError(null);
+    setRoutingPending({ sendBackToStep, comment, fromStep });
+  }
+
+  async function handleRoutingConfirm(routingMeta: RouteRevisionResult) {
+    if (!routingPending) return;
+    const { sendBackToStep, comment, fromStep } = routingPending;
+    setRoutingPending(null);
+    setRevisionBusy(true);
     try {
       await requestRevisions(
         CAMPAIGN_ID,
-        revisionModal.fromStep,
+        fromStep,
         sendBackToStep,
         comment,
         personaId,
       );
-      setRevisionModal(null);
       await refresh();
     } catch (e) {
       setRevisionError((e as Error).message);
@@ -254,6 +277,29 @@ export function PersonaShell({
       setPollError((e as Error).message);
     } finally {
       setResetting(false);
+    }
+  }
+
+  // Intercept step 6 approval to show cascade animation (Feature 4)
+  const [cascadeOutput, setCascadeOutput] = useState<Record<string, unknown> | undefined>(undefined);
+
+  function handleInterceptApproval(step: number, action: string, output?: Record<string, unknown>): boolean {
+    if (step === 6) {
+      setCascadeOutput(output);
+      setCascadeActive(true);
+      return true; // intercepted
+    }
+    return false;
+  }
+
+  async function handleCascadeDone() {
+    setCascadeActive(false);
+    // Now actually advance the campaign
+    try {
+      await advanceCampaignWithOutput(CAMPAIGN_ID, 6, "Final Approval", cascadeOutput);
+      await refresh();
+    } catch (e) {
+      setPollError((e as Error).message);
     }
   }
 
@@ -345,6 +391,7 @@ export function PersonaShell({
               onLaunchSkill={launchSkillFromActionPanel}
               onRequestRevisions={handleOpenRevisionModal}
               onAdvanced={refresh}
+              onInterceptApproval={handleInterceptApproval}
             />
           </div>
 
@@ -385,6 +432,37 @@ export function PersonaShell({
         busy={revisionBusy}
         error={revisionError}
       />
+
+      {/* AI Revision Routing overlay (Feature 3) */}
+      {routingPending && context && (
+        <AIRevisionRouting
+          revisionComment={routingPending.comment}
+          campaignId={CAMPAIGN_ID}
+          campaignContext={{
+            campaign_id: context.campaign_brief.campaign_id,
+            name: context.campaign_brief.name,
+            objective: context.campaign_brief.objective,
+            current_step: routingPending.fromStep,
+          }}
+          onConfirm={handleRoutingConfirm}
+          onCancel={() => setRoutingPending(null)}
+        />
+      )}
+
+      {/* AI Cascade overlay (Feature 4) */}
+      {cascadeActive && context && (
+        <ApprovalCascade
+          campaignId={CAMPAIGN_ID}
+          campaignContext={{
+            campaign_id: context.campaign_brief.campaign_id,
+            name: context.campaign_brief.name,
+            objective: context.campaign_brief.objective,
+            target_customer: context.campaign_brief.target_customer,
+            promotional_offer: context.campaign_brief.promotional_offer,
+          }}
+          onDone={handleCascadeDone}
+        />
+      )}
     </div>
   );
 }

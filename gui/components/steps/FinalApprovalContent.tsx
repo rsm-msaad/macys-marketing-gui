@@ -1,8 +1,12 @@
 "use client";
 
-import { CheckCircle2, Shield } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, CheckCircle2, Shield } from "lucide-react";
 
+import { type ComplianceResult } from "@/lib/ai_client";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
+import { CompliancePreCheck } from "@/components/CompliancePreCheck";
+import { AIBriefCard } from "@/components/AIBriefCard";
 
 export function FinalApprovalContent({
   context,
@@ -12,10 +16,28 @@ export function FinalApprovalContent({
   onRequestRevisions,
 }: StepContentProps) {
   const checkpoints = context.mock_data.approval_checkpoints;
+  const [complianceResult, setComplianceResult] = useState<ComplianceResult | null>(null);
+  const [aiRecommendsRevise, setAiRecommendsRevise] = useState(false);
+  const [overrideSubmit, setOverrideSubmit] = useState(false);
+
+  function handleComplianceResult(result: ComplianceResult | null) {
+    setComplianceResult(result);
+    if (result) {
+      const lower = result.recommended_action.toLowerCase();
+      setAiRecommendsRevise(
+        lower.includes("revise") || lower.includes("reject") || lower.includes("fail") || lower.includes("block")
+      );
+    }
+  }
+
+  const shouldBlockSubmit = aiRecommendsRevise && !overrideSubmit;
 
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
+
+      {/* AI Brief Card (Feature 2) */}
+      <AIBriefCard context={context} complianceCheck={complianceResult} />
 
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-3 flex items-center gap-1.5">
@@ -56,15 +78,41 @@ export function FinalApprovalContent({
         </p>
       </div>
 
+      {/* AI Compliance Pre Check (Feature 1) */}
+      <CompliancePreCheck
+        context={context}
+        onComplianceResult={handleComplianceResult}
+      />
+
+      {/* Warning if AI recommends revisions */}
+      {shouldBlockSubmit && canAct && (
+        <div className="flex items-start gap-3 rounded-md border border-mustard/30 bg-mustard/10 p-3">
+          <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-mustard" />
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-mustard">
+              AI recommends revisions before VP review.
+            </div>
+            <button
+              type="button"
+              onClick={() => setOverrideSubmit(true)}
+              className="mt-1.5 rounded-md border border-mustard/40 bg-white px-3 py-1.5 text-xs font-medium text-mustard hover:bg-mustard/5"
+            >
+              Submit Anyway
+            </button>
+          </div>
+        </div>
+      )}
+
       <ApprovalActions
         canAct={canAct}
-        busy={busy}
+        busy={busy || shouldBlockSubmit}
         primaryLabel="Final Approval"
         secondaryLabel="Hold for Revisions"
         stepNumber={6}
         onPrimary={() =>
           onApprove("Final Approval", {
             checkpoints: checkpoints.map((c) => c.name),
+            compliance_check: complianceResult,
           })
         }
         onRequestRevisions={() => onRequestRevisions(6, 5)}
