@@ -126,24 +126,18 @@ export function AIBriefCard({
           </div>
           <div className="py-2">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Risk Flags</div>
-            <div className="mt-1 flex flex-wrap gap-1.5">
-              {result.risk_flags && result.risk_flags.length > 0 ? (
-                result.risk_flags.map((flag, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1 rounded-full bg-soft_red/10 px-2 py-0.5 text-[10px] font-semibold text-soft_red"
-                  >
-                    <AlertTriangle className="h-2.5 w-2.5" />
-                    {flag}
-                  </span>
-                ))
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-sage/10 px-2 py-0.5 text-[10px] font-semibold text-sage">
-                  <CheckCircle2 className="h-2.5 w-2.5" />
-                  No flags
-                </span>
-              )}
-            </div>
+            {result.risk_flags && result.risk_flags.length > 0 ? (
+              <ul className="mt-1.5 space-y-1">
+                {result.risk_flags.map((flag, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-charcoal/80">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-soft_red" />
+                    <span className="line-clamp-2">{flag}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1.5 text-xs text-charcoal/45">No risk flags identified</p>
+            )}
           </div>
 
           {/* AI Recommendation banner */}

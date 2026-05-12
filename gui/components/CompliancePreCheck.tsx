@@ -163,15 +163,24 @@ export function CompliancePreCheck({
 
           {/* Recommended action banner */}
           <div
-            className={`mt-2 rounded-md p-3 text-sm font-medium ${
+            className={`mt-3 flex items-center justify-between rounded-md p-3 ${
               actionColor === "green"
-                ? "border border-sage/30 bg-sage/10 text-sage"
+                ? "border border-green-200 bg-green-50 text-green-900"
                 : actionColor === "red"
-                  ? "border border-soft_red/30 bg-soft_red/10 text-soft_red"
-                  : "border border-mustard/30 bg-mustard/10 text-mustard"
+                  ? "border border-red-200 bg-red-50 text-red-900"
+                  : "border border-amber-200 bg-amber-50 text-amber-900"
             }`}
           >
-            Recommended action: {recommendedAction}
+            <span className="text-sm font-bold uppercase tracking-wide">
+              {recommendedAction.toUpperCase()}
+            </span>
+            <span className="text-xs">
+              {actionColor === "green"
+                ? "All checks passed. Safe to advance."
+                : actionColor === "red"
+                  ? "Blocking issues found. Must fix before approval."
+                  : "Issues flagged. Review before advancing."}
+            </span>
           </div>
 
           {/* Retrieved docs citation */}
