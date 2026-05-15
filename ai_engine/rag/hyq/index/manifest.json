@@ -1,0 +1,11 @@
+{
+  "built_at": "2026-05-15T21:40:28Z",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "llm_model": "api-llama-4-scout",
+  "embedding_dim": 384,
+  "total_entries": 381,
+  "total_chunks": 78,
+  "total_questions": 303,
+  "total_docs": 12,
+  "build_time_seconds": 50.5
+}
