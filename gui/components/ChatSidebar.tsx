@@ -150,7 +150,7 @@ export function ChatSidebar({
                     : "bg-cream text-charcoal"
                 }`}
               >
-                <span className={m.role === "assistant" ? "ai-generated" : ""}>
+                <span className={m.role === "assistant" ? "ai-accent" : ""}>
                   {m.text}
                 </span>
               </div>

@@ -206,7 +206,7 @@ export function AIRevisionRouting({
                   <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-stone">
                     Summary
                   </span>
-                  <p className="ai-generated mt-1 text-[13px] text-charcoal/75">
+                  <p className="ai-accent mt-1 text-[13px] text-charcoal/75">
                     {result.one_line_summary}
                   </p>
                 </div>

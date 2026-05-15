@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRightCircle, RotateCcw } from "lucide-react";
+import { ArrowRightCircle, RotateCcw, Sparkles, X, ChevronDown, ChevronUp } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { AIRevisionRouting } from "@/components/AIRevisionRouting";
@@ -56,7 +56,6 @@ type Toast = {
   toStep: number;
   toOwner: string;
   toTitle: string;
-  // For revision toasts:
   comment?: string;
 };
 
@@ -87,6 +86,11 @@ export function PersonaShell({
   const [resetting, setResetting] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
 
+  // Floating AI drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // Campaign list collapsed
+  const [campaignsExpanded, setCampaignsExpanded] = useState(false);
+
   // AI Revision Routing state (Feature 3)
   const [routingPending, setRoutingPending] = useState<{
     sendBackToStep: number;
@@ -114,10 +118,6 @@ export function PersonaShell({
       setContext(ctx);
       setPollError(null);
 
-      // Detect transitions to fire toasts. Three cases:
-      //   1. Handoff to a new persona on a normal step advance.
-      //   2. Revision requested (pending_revision goes null -> set).
-      //   3. Resubmit happened (pending_revision goes set -> null).
       const prevStep = lastStepRef.current;
       const wasPending = lastPendingRef.current;
       const newStep = st.current_step;
@@ -127,7 +127,6 @@ export function PersonaShell({
 
       const id = Date.now();
       if (!wasPending && isPending && st.pending_revision) {
-        // Revision just requested.
         const target = st.pending_revision.step_to_redo;
         setToast({
           id,
@@ -139,7 +138,6 @@ export function PersonaShell({
           comment: st.pending_revision.comment,
         });
       } else if (wasPending && !isPending && prevStep !== null) {
-        // Just resubmitted; campaign returned to resume_step.
         setToast({
           id,
           kind: "resubmitted",
@@ -179,7 +177,6 @@ export function PersonaShell({
     return () => clearInterval(id);
   }, [refresh]);
 
-  // Toast auto dismiss.
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 5_500);
@@ -197,8 +194,6 @@ export function PersonaShell({
       if (!cur || cur.is_complete) return;
       const target = SKILL_STEP[kind];
       if (cur.current_step !== target) return;
-      // Authority gate: only auto-advance when the viewer owns the step.
-      // (The user may still manually click Approve from a different tab.)
       if (!isStepOwnedBy(target, personaId)) return;
       try {
         const next = await advanceCampaign(CAMPAIGN_ID, target, `Ran ${kind}`);
@@ -206,7 +201,7 @@ export function PersonaShell({
         const w = await fetchWorkflow(personaId);
         setSteps(w.steps);
       } catch {
-        // Race or already advanced; the next poll reconciles.
+        // Race or already advanced
       }
     },
     [personaId],
@@ -239,7 +234,6 @@ export function PersonaShell({
 
   async function handleSubmitRevision(sendBackToStep: number, comment: string) {
     if (!revisionModal) return;
-    // Close the revision modal and show AI routing panel (Feature 3)
     const fromStep = revisionModal.fromStep;
     setRevisionModal(null);
     setRevisionError(null);
@@ -252,13 +246,7 @@ export function PersonaShell({
     setRoutingPending(null);
     setRevisionBusy(true);
     try {
-      await requestRevisions(
-        CAMPAIGN_ID,
-        fromStep,
-        sendBackToStep,
-        comment,
-        personaId,
-      );
+      await requestRevisions(CAMPAIGN_ID, fromStep, sendBackToStep, comment, personaId);
       await refresh();
     } catch (e) {
       setRevisionError((e as Error).message);
@@ -282,21 +270,19 @@ export function PersonaShell({
     }
   }
 
-  // Intercept step 6 approval to show cascade animation (Feature 4)
   const [cascadeOutput, setCascadeOutput] = useState<Record<string, unknown> | undefined>(undefined);
 
-  function handleInterceptApproval(step: number, action: string, output?: Record<string, unknown>): boolean {
+  function handleInterceptApproval(step: number, _action: string, output?: Record<string, unknown>): boolean {
     if (step === 6) {
       setCascadeOutput(output);
       setCascadeActive(true);
-      return true; // intercepted
+      return true;
     }
     return false;
   }
 
   async function handleCascadeDone() {
     setCascadeActive(false);
-    // Now actually advance the campaign
     try {
       await advanceCampaignWithOutput(CAMPAIGN_ID, 6, "Final Approval", cascadeOutput);
       await refresh();
@@ -305,7 +291,6 @@ export function PersonaShell({
     }
   }
 
-  // Revision counts for the WorkflowPipeline badges.
   const revisionCounts: Record<string, number> = {};
   if (state) {
     for (const [stepStr, list] of Object.entries(state.revisions)) {
@@ -313,113 +298,191 @@ export function PersonaShell({
     }
   }
 
+  const completedCount = steps?.filter((s) => s.status === "complete").length ?? 0;
+  const totalSteps = steps?.length ?? 10;
+
   return (
     <div className="flex min-h-screen flex-col bg-cream">
       <TopBar activePersonaId={personaId} />
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left sidebar */}
-        <aside className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto border-r border-charcoal/10 bg-white md:flex">
-          <CampaignSidebar
-            campaigns={campaigns ?? undefined}
-            activeOwnerName={
-              state && !state.is_complete
-                ? getStepOwnerName(state.current_step)
-                : null
-            }
-          />
-          <nav className="px-4 py-4">
-            <h2 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
-              Workspace
-            </h2>
-            <ul className="space-y-1 text-sm">
-              {leftNav.map((item) => (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    className={`block w-full rounded-md px-3 py-2 text-left ${
-                      item.active
-                        ? "bg-cream font-semibold text-charcoal"
-                        : "text-charcoal/60 hover:bg-cream"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Center */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
-          <header className="mb-5 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="font-serif text-2xl font-semibold text-charcoal">{headline}</h1>
-              <p className="mt-1 text-sm text-charcoal/65">{subhead}</p>
-            </div>
+      {/* Hero campaign header */}
+      {context && state && (
+        <div className="border-b border-charcoal/[0.06] bg-surface px-8 py-6">
+          <div className="mx-auto max-w-7xl">
+            {/* Campaign selector row */}
             <button
               type="button"
-              onClick={handleReset}
-              disabled={resetting}
-              className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-soft_red/40 hover:text-soft_red disabled:opacity-50"
-              title="Reset the demo campaign back to step 1"
+              onClick={() => setCampaignsExpanded((v) => !v)}
+              className="mb-3 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone hover:text-charcoal"
             >
-              <RotateCcw className="h-3 w-3" />
-              {resetting ? "Resetting…" : "Reset Demo"}
+              Campaign
+              {campaignsExpanded ? (
+                <ChevronUp className="h-3 w-3" />
+              ) : (
+                <ChevronDown className="h-3 w-3" />
+              )}
             </button>
-          </header>
 
+            {campaignsExpanded && (
+              <div className="mb-4 max-w-sm">
+                <CampaignSidebar
+                  campaigns={campaigns ?? undefined}
+                  activeOwnerName={
+                    state && !state.is_complete
+                      ? getStepOwnerName(state.current_step)
+                      : null
+                  }
+                />
+              </div>
+            )}
+
+            {/* Campaign name: HERO */}
+            <h1 className="font-display text-4xl font-extrabold tracking-tight text-charcoal md:text-5xl">
+              {context.campaign_brief.name}
+            </h1>
+
+            {/* Key metrics row */}
+            <div className="mt-4 flex flex-wrap items-center gap-6 text-sm">
+              {context.campaign_brief.budget && (
+                <div>
+                  <span className="font-display text-2xl font-bold text-charcoal">
+                    {Object.values(context.campaign_brief.budget).join(" ")}
+                  </span>
+                  <span className="ml-1.5 text-[11px] uppercase tracking-wider text-stone">
+                    budget
+                  </span>
+                </div>
+              )}
+              <div>
+                <span className="font-display text-2xl font-bold text-charcoal">
+                  {completedCount}/{totalSteps}
+                </span>
+                <span className="ml-1.5 text-[11px] uppercase tracking-wider text-stone">
+                  steps
+                </span>
+              </div>
+              {state && !state.is_complete && (
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-teal-600 animate-soft-pulse" />
+                  <span className="text-[13px] font-medium text-teal-600">
+                    Step {state.current_step}: {steps?.find((s) => s.status === "active")?.name}
+                  </span>
+                </div>
+              )}
+              <div className="ml-auto">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  disabled={resetting}
+                  className="inline-flex items-center gap-1.5 rounded-card border border-charcoal/10 bg-white px-3 py-1.5 text-xs font-medium text-stone hover:border-rose/40 hover:text-rose disabled:opacity-50"
+                  title="Reset the demo campaign back to step 1"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  {resetting ? "Resetting..." : "Reset Demo"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mx-auto flex w-full max-w-7xl flex-1 overflow-hidden">
+        {/* Left rail: vertical stepper */}
+        <aside className="hidden w-[280px] flex-shrink-0 overflow-y-auto border-r border-charcoal/[0.06] px-6 py-6 md:block">
+          <h2 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-stone">
+            Workflow
+          </h2>
+          <WorkflowPipeline
+            personaId={personaId}
+            steps={steps ?? undefined}
+            revisionCounts={revisionCounts}
+          />
+        </aside>
+
+        {/* Center: active step content */}
+        <main className="flex-1 overflow-y-auto px-8 py-8">
           {pollError && (
-            <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
+            <div className="mb-4 rounded-card border border-rose/30 bg-rose/5 px-4 py-3 text-xs text-rose">
               Sync issue: {pollError}
             </div>
           )}
 
-          {context && (
-            <HeroBanner
-              category={context.campaign_brief.name}
-              audience={context.campaign_brief.target_customer}
-            />
-          )}
-
-          <div className="mb-4">
-            <WorkflowPipeline
-              personaId={personaId}
-              steps={steps ?? undefined}
-              revisionCounts={revisionCounts}
-            />
-          </div>
-
-          <div className="mb-5">
-            <ActionPanel
-              personaId={personaId}
-              state={state}
-              steps={steps ?? []}
-              context={context}
-              onLaunchSkill={launchSkillFromActionPanel}
-              onRequestRevisions={handleOpenRevisionModal}
-              onAdvanced={refresh}
-              onInterceptApproval={handleInterceptApproval}
-            />
-          </div>
+          <ActionPanel
+            personaId={personaId}
+            state={state}
+            steps={steps ?? []}
+            context={context}
+            onLaunchSkill={launchSkillFromActionPanel}
+            onRequestRevisions={handleOpenRevisionModal}
+            onAdvanced={refresh}
+            onInterceptApproval={handleInterceptApproval}
+          />
 
           {centerExtras}
-
-          <section className="mt-5">
-            <AICoworkerPanel
-              skills={skills}
-              campaignId={CAMPAIGN_ID}
-              onLaunchSkill={(kind) => setModal({ kind })}
-            />
-          </section>
         </main>
-
-        {/* Right chat */}
-        <div className="hidden w-[360px] flex-shrink-0 lg:block">
-          <ChatSidebar context={context} onAction={handleAction} />
-        </div>
       </div>
+
+      {/* Floating AI drawer toggle button */}
+      {!drawerOpen && (
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-elevated transition-transform hover:scale-105 hover:bg-teal-700"
+          title="Open AI Coworker"
+        >
+          <Sparkles className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Floating AI drawer */}
+      {drawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-charcoal/10"
+            onClick={() => setDrawerOpen(false)}
+          />
+          {/* Drawer panel */}
+          <div className="fixed right-0 top-0 z-50 flex h-full w-[420px] max-w-[90vw] flex-col bg-white shadow-drawer animate-slide-in-right">
+            {/* Drawer header */}
+            <div className="flex items-center justify-between border-b border-charcoal/[0.06] px-5 py-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-gold" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-600">
+                  AI Coworker
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="rounded-card p-1.5 text-stone hover:bg-cream hover:text-charcoal"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Drawer content: scrollable area with AI panel + chat */}
+            <div className="flex flex-1 flex-col overflow-hidden">
+              {/* AI Coworker panel (activity + invokable) */}
+              <div className="overflow-y-auto border-b border-charcoal/[0.06] px-1 py-1" style={{ maxHeight: "45%" }}>
+                <AICoworkerPanel
+                  skills={skills}
+                  campaignId={CAMPAIGN_ID}
+                  onLaunchSkill={(kind) => {
+                    setModal({ kind });
+                    setDrawerOpen(false);
+                  }}
+                />
+              </div>
+
+              {/* Chat fills the rest */}
+              <div className="flex-1 overflow-hidden">
+                <ChatSidebar context={context} onAction={handleAction} />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <ResultsModal
         state={modal}
@@ -427,7 +490,6 @@ export function PersonaShell({
         onSuccess={handleSkillSuccess}
       />
 
-      {/* Handoff / revision toast */}
       {toast && <ToastBanner toast={toast} onClose={() => setToast(null)} />}
 
       <RevisionRequestModal
@@ -441,7 +503,6 @@ export function PersonaShell({
         error={revisionError}
       />
 
-      {/* AI Revision Routing overlay (Feature 3) */}
       {routingPending && context && (
         <AIRevisionRouting
           revisionComment={routingPending.comment}
@@ -460,7 +521,6 @@ export function PersonaShell({
         />
       )}
 
-      {/* AI Cascade overlay (Feature 4) */}
       {cascadeActive && context && (
         <ApprovalCascade
           campaignId={CAMPAIGN_ID}
@@ -481,40 +541,40 @@ export function PersonaShell({
 }
 
 function ToastBanner({ toast, onClose }: { toast: Toast; onClose: () => void }) {
-  let borderClass = "border-teal-600/40";
-  let iconClass = "text-teal-600";
+  let borderColor = "#0B7B8A60";
+  let iconColor = "text-teal-600";
   let title = "";
   let body: React.ReactNode = null;
 
   if (toast.kind === "handoff") {
-    title = `Step ${toast.fromStep} complete · Step ${toast.toStep} now active`;
+    title = `Step ${toast.fromStep} complete, Step ${toast.toStep} now active`;
     body = (
       <>
-        Handing off to <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
-        <span className="text-charcoal/50">({toast.toTitle})</span>.
+        Handing off to <strong className="text-charcoal">{toast.toOwner}</strong>{" "}
+        <span className="text-stone">({toast.toTitle})</span>.
       </>
     );
   } else if (toast.kind === "revision_requested") {
-    borderClass = "border-mustard/60";
-    iconClass = "text-mustard";
-    title = `Revision requested · sent back to Step ${toast.toStep}`;
+    borderColor = "#D4A84360";
+    iconColor = "text-gold";
+    title = `Revision requested, sent back to Step ${toast.toStep}`;
     body = (
       <>
-        Waiting on <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
-        <span className="text-charcoal/50">({toast.toTitle})</span> to resubmit.
+        Waiting on <strong className="text-charcoal">{toast.toOwner}</strong>{" "}
+        <span className="text-stone">({toast.toTitle})</span> to resubmit.
         {toast.comment && (
-          <div className="mt-1 italic text-charcoal/55">“{toast.comment}”</div>
+          <div className="mt-1 text-stone">&ldquo;{toast.comment}&rdquo;</div>
         )}
       </>
     );
   } else if (toast.kind === "resubmitted") {
-    borderClass = "border-sage/60";
-    iconClass = "text-sage";
-    title = `Step ${toast.fromStep} resubmitted · Step ${toast.toStep} active again`;
+    borderColor = "#8DA67E60";
+    iconColor = "text-sage";
+    title = `Step ${toast.fromStep} resubmitted, Step ${toast.toStep} active again`;
     body = (
       <>
-        Back to <strong className="text-charcoal/85">{toast.toOwner}</strong>{" "}
-        <span className="text-charcoal/50">({toast.toTitle})</span> for review.
+        Back to <strong className="text-charcoal">{toast.toOwner}</strong>{" "}
+        <span className="text-stone">({toast.toTitle})</span> for review.
       </>
     );
   }
@@ -522,19 +582,20 @@ function ToastBanner({ toast, onClose }: { toast: Toast; onClose: () => void }) 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center">
       <div
-        className={`pointer-events-auto flex items-start gap-3 rounded-lg border ${borderClass} bg-white px-4 py-3 shadow-lg`}
+        className="pointer-events-auto flex items-start gap-3 rounded-panel bg-white px-5 py-4 shadow-overlay"
+        style={{ borderLeft: `3px solid ${borderColor}` }}
       >
-        <ArrowRightCircle className={`mt-0.5 h-5 w-5 flex-shrink-0 ${iconClass}`} />
+        <ArrowRightCircle className={`mt-0.5 h-5 w-5 flex-shrink-0 ${iconColor}`} />
         <div className="max-w-sm text-sm">
           <div className="font-semibold text-charcoal">{title}</div>
-          <div className="text-charcoal/65">{body}</div>
+          <div className="mt-0.5 text-stone">{body}</div>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="ml-2 text-xs text-charcoal/45 hover:text-charcoal"
+          className="ml-3 text-xs text-stone hover:text-charcoal"
         >
-          ✕
+          <X className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>

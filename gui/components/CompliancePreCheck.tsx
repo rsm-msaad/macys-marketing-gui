@@ -157,7 +157,7 @@ export function CompliancePreCheck({
               <StatusPill status={row.item?.status ?? "warn"} />
               <div className="min-w-0 flex-1">
                 <div className="text-[13px] font-semibold text-charcoal">{row.label}</div>
-                <div className="ai-generated mt-1 text-[12px] text-charcoal/65">
+                <div className="ai-accent mt-1 text-[12px] text-charcoal/65">
                   {row.item?.reason}
                 </div>
                 {row.item?.cited_doc && (

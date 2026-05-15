@@ -125,7 +125,7 @@ export function AIBriefCard({
               <div className="text-[10px] font-semibold uppercase tracking-[0.15em] text-stone">
                 {field.label}
               </div>
-              <div className="ai-generated mt-1 text-[14px] text-charcoal/80">
+              <div className="ai-accent mt-1 text-[14px] text-charcoal/80">
                 {field.value}
               </div>
             </div>
@@ -140,7 +140,7 @@ export function AIBriefCard({
                 {result.risk_flags.map((flag, i) => (
                   <li key={i} className="flex items-start gap-2 text-[13px] text-charcoal/75">
                     <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-rose" />
-                    <span className="ai-generated line-clamp-2">{flag}</span>
+                    <span className="ai-accent line-clamp-2">{flag}</span>
                   </li>
                 ))}
               </ul>
@@ -169,7 +169,7 @@ export function AIBriefCard({
                 }}
               >
                 <Icon className="h-4 w-4 flex-shrink-0" />
-                <span className="ai-generated">{result.ai_recommendation}</span>
+                <span className="ai-accent">{result.ai_recommendation}</span>
               </div>
             );
           })()}

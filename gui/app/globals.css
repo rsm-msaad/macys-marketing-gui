@@ -8,21 +8,22 @@
 
 html, body {
   background: #F8F4EC;
-  color: #2C2C2C;
-  font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  color: #1A1A1A;
+  font-family: 'Plus Jakarta Sans', 'Inter Tight', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
-  letter-spacing: -0.01em;
+  font-family: 'Plus Jakarta Sans', 'Inter Tight', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
 
-/* AI generated content marker */
-.ai-generated {
-  font-family: 'Bodoni Moda', Georgia, serif;
-  font-style: italic;
+/* AI generated content: gold left border accent */
+.ai-accent {
+  border-left: 3px solid #D4A843;
+  padding-left: 12px;
 }
 
 /* Custom scrollbar: narrow, warm, unobtrusive */
@@ -30,7 +31,7 @@ h1, h2, h3, h4 {
   width: 5px;
 }
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(44, 44, 44, 0.12);
+  background: rgba(26, 26, 26, 0.10);
   border-radius: 9999px;
 }
 .chat-scroll::-webkit-scrollbar-track {
@@ -46,22 +47,12 @@ h1, h2, h3, h4 {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
 
-/* Grain overlay for editorial texture (applied sparingly) */
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.015;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-}
-
 /* Card hover lift */
 .card-hover {
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 .card-hover:hover {
-  box-shadow: 0 4px 16px rgba(44,44,44,0.08), 0 2px 6px rgba(44,44,44,0.04);
+  box-shadow: 0 4px 16px rgba(26,26,26,0.06), 0 2px 6px rgba(26,26,26,0.03);
   transform: translateY(-1px);
 }
 
@@ -77,5 +68,30 @@ h1, h2, h3, h4 {
   }
 }
 .animate-fade-up {
-  animation: fade-up 0.5s ease both;
+  animation: fade-up 0.4s ease both;
+}
+
+/* Slide in from right for drawer */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease both;
+}
+
+/* Vertical stepper connector line */
+.stepper-line {
+  position: absolute;
+  left: 15px;
+  top: 36px;
+  bottom: 0;
+  width: 2px;
+  background: #E5E2DB;
 }
