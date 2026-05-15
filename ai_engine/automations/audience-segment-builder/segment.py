@@ -19,7 +19,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB_PATH = _REPO_ROOT / "data" / "macys.db"
 
 N_CLUSTERS = 3

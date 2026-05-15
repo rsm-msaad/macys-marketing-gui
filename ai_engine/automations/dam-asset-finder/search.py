@@ -19,7 +19,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB_PATH = _REPO_ROOT / "data" / "macys.db"
 DEFAULT_IMAGES_DIR = _REPO_ROOT / "data" / "images" / "dam"
 

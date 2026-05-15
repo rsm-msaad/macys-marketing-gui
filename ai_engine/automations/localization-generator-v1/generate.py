@@ -22,7 +22,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DB_PATH = _REPO_ROOT / "data" / "macys.db"
 
 # All 10 US regions present in regional_pricing.
