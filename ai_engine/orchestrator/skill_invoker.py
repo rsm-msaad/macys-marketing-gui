@@ -27,6 +27,7 @@ from tools import check_pricing_conflicts
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = REPO_ROOT / "skills"
+AUTOMATIONS_DIR = REPO_ROOT / "automations"
 
 CLAUDE_MODEL = "claude-sonnet-4-6"
 MAX_TOKENS = 2000
@@ -119,6 +120,7 @@ def _format_query(template: str, state: dict) -> str:
     becomes 'Beauty Loyalists retro'. If a path is missing, the literal
     placeholder is left in the query rather than crashing.
     """
+
     def replacer(match: re.Match[str]) -> str:
         path = match.group(1)
         current: Any = state
@@ -177,7 +179,7 @@ def _strip_json_fences(text: str) -> str:
     if stripped.startswith("```"):
         first_newline = stripped.find("\n")
         if first_newline != -1:
-            stripped = stripped[first_newline + 1:]
+            stripped = stripped[first_newline + 1 :]
         if stripped.endswith("```"):
             stripped = stripped[:-3]
     return stripped.strip()
@@ -222,8 +224,92 @@ def update_state_field(state: dict, skill_name: str, result: Any) -> dict:
     return state
 
 
-def invoke_skill(skill_name: str, state: dict) -> dict:
-    """Run one skill end to end and return the updated state.
+def _is_automation(step_name: str) -> bool:
+    """Check if a step lives in automations/ (no SKILL.md, no LLM)."""
+    return (AUTOMATIONS_DIR / step_name).is_dir()
+
+
+def _invoke_automation(step_name: str, state: dict) -> dict:
+    """Run an automation deterministically using its helpers. No LLM call.
+
+    Each automation has a helpers.py with pure Python functions. This
+    dispatcher calls the right helper chain based on the step name and
+    merges the result into the workflow state.
+    """
+    import importlib
+    import sys
+
+    helpers_path = AUTOMATIONS_DIR / step_name / "helpers.py"
+    if not helpers_path.exists():
+        raise FileNotFoundError(f"helpers.py not found at {helpers_path}")
+
+    module_name = f"automations.{step_name.replace('-', '_')}.helpers"
+    spec = importlib.util.spec_from_file_location(module_name, helpers_path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = mod
+    spec.loader.exec_module(mod)
+
+    campaign = state.get("campaign", {})
+    retrieved = _prefetch_rag(step_name, state)
+    doc_ids = []
+    for chunks in retrieved.values():
+        for c in chunks:
+            did = c.get("doc_id", "")
+            if did and did not in doc_ids:
+                doc_ids.append(did)
+
+    if step_name == "localization-generator":
+        regions = campaign.get("regions", [])
+        category = campaign.get("category", "")
+        discount_pct = campaign.get("discount_pct", 0)
+        month = int(campaign.get("launch_month", 0)) or 6
+        variants = []
+        for region in regions:
+            lang = mod.region_to_language(region)
+            pricing = mod.apply_regional_pricing(discount_pct, region, category)
+            holiday = mod.holiday_overlay(region, month)
+            variants.append(
+                {
+                    "region": region,
+                    "language": lang,
+                    "pricing_note": pricing.get("pricing_note", ""),
+                    "effective_discount_pct": pricing.get("effective_discount_pct", discount_pct),
+                    "holiday_overlay": holiday,
+                    "retrieved_docs": doc_ids,
+                }
+            )
+        result = mod.assemble_variants(variants)
+
+    elif step_name == "activation-scheduler":
+        variants = state.get("localized_variants", [])
+        if isinstance(variants, dict) and "localized_variants" in variants:
+            variants = variants["localized_variants"]
+        estimated_spend = campaign.get("estimated_spend", 0)
+        launch_date = campaign.get("launch_date", "2026-06-01")
+        per_region = []
+        for v in variants if isinstance(variants, list) else []:
+            region = v.get("region", "NY")
+            tz = mod.region_to_timezone(region)
+            per_region.append(
+                {
+                    "region": region,
+                    "timezone": tz,
+                    "email_send_utc": mod.compute_send_time(tz, launch_date),
+                    "paid_social_window_local": mod.peak_social_window(tz),
+                    "display_frequency_cap": mod.display_cap(estimated_spend, region),
+                    "signage_window_local": mod.signage_window(tz),
+                }
+            )
+        result = mod.assemble_schedule(per_region, doc_ids)
+
+    else:
+        raise ValueError(f"No automation dispatch logic for {step_name!r}")
+
+    return update_state_field(state, step_name, result)
+
+
+def _invoke_llm_skill(skill_name: str, state: dict) -> dict:
+    """Run one LLM skill end to end and return the updated state.
 
     Steps:
       1. Load SKILL.md as the system prompt.
@@ -233,14 +319,6 @@ def invoke_skill(skill_name: str, state: dict) -> dict:
       4. Call Claude.
       5. Strip code fences, parse JSON.
       6. Merge into state via update_state_field, update status.
-
-    Args:
-        skill_name: skill folder name under skills/ (for example
-            'compliance-pre-check').
-        state: current workflow state dict.
-
-    Returns:
-        The updated state dict (mutated in place and also returned).
     """
     skill_md = _load_skill_markdown(skill_name)
     retrieved = _prefetch_rag(skill_name, state)
@@ -261,7 +339,17 @@ def invoke_skill(skill_name: str, state: dict) -> dict:
     try:
         result = json.loads(cleaned)
     except json.JSONDecodeError as exc:
-        raise ValueError(
-            f"Skill {skill_name} returned non JSON response:\n{cleaned[:500]}"
-        ) from exc
+        raise ValueError(f"Skill {skill_name} returned non JSON response:\n{cleaned[:500]}") from exc
     return update_state_field(state, skill_name, result)
+
+
+def invoke_skill(skill_name: str, state: dict) -> dict:
+    """Run a step (skill or automation) and return the updated state.
+
+    Dispatches to _invoke_automation if the step lives in automations/,
+    otherwise to _invoke_llm_skill. This keeps the api/main.py call
+    sites unchanged.
+    """
+    if _is_automation(skill_name):
+        return _invoke_automation(skill_name, state)
+    return _invoke_llm_skill(skill_name, state)

@@ -1,4 +1,4 @@
-"""Tests for `skills/audience-segment-builder/segment.py` (RFM k-means version)."""
+"""Tests for `ai_engine/automations/audience-segment-builder/segment.py` (RFM k-means version)."""
 
 from __future__ import annotations
 
@@ -10,10 +10,7 @@ import numpy as np
 import pytest
 
 _MODULE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "skills"
-    / "audience-segment-builder"
-    / "segment.py"
+    Path(__file__).resolve().parents[2] / "ai_engine" / "automations" / "audience-segment-builder" / "segment.py"
 )
 _spec = importlib.util.spec_from_file_location("segment", _MODULE_PATH)
 assert _spec and _spec.loader
@@ -51,9 +48,15 @@ REF = "2026-04-01"
 #   Customers 7..9 = Lapsed:  one old low-value Home tx (Bronze)
 #   Customer 10    = no transactions (excluded from clustering)
 CUSTOMERS = [
-    (1, "Platinum"), (2, "Platinum"), (3, "Platinum"),
-    (4, "Gold"), (5, "Gold"), (6, "Gold"),
-    (7, "Bronze"), (8, "Bronze"), (9, "Bronze"),
+    (1, "Platinum"),
+    (2, "Platinum"),
+    (3, "Platinum"),
+    (4, "Gold"),
+    (5, "Gold"),
+    (6, "Gold"),
+    (7, "Bronze"),
+    (8, "Bronze"),
+    (9, "Bronze"),
     (10, "Bronze"),
 ]
 
@@ -201,9 +204,9 @@ def test_cluster_rfm_too_few_rows_raises():
 def test_name_clusters_friendly_when_pattern_matches():
     centroids = np.array(
         [
-            [10.0, 20.0, 5000.0],   # high monetary, low recency, high freq -> VIP
-            [200.0, 5.0, 800.0],    # mid
-            [800.0, 1.0, 50.0],     # low monetary, high recency -> Lapsed
+            [10.0, 20.0, 5000.0],  # high monetary, low recency, high freq -> VIP
+            [200.0, 5.0, 800.0],  # mid
+            [800.0, 1.0, 50.0],  # low monetary, high recency -> Lapsed
         ]
     )
     names = segment.name_clusters(centroids)
@@ -217,7 +220,7 @@ def test_name_clusters_falls_back_when_pattern_breaks():
     centroids = np.array(
         [
             [500.0, 20.0, 5000.0],  # high monetary but high recency
-            [10.0, 5.0, 800.0],     # most recent but only mid spend
+            [10.0, 5.0, 800.0],  # most recent but only mid spend
             [800.0, 1.0, 50.0],
         ]
     )
@@ -270,9 +273,7 @@ def test_build_segments_counts_sum_to_clustered_customer_total(seeded_db: Path):
 
     conn = sqlite3.connect(str(seeded_db))
     total_customers = conn.execute("SELECT COUNT(*) FROM customers").fetchone()[0]
-    n_with_tx = conn.execute(
-        "SELECT COUNT(DISTINCT customer_id) FROM transactions"
-    ).fetchone()[0]
+    n_with_tx = conn.execute("SELECT COUNT(DISTINCT customer_id) FROM transactions").fetchone()[0]
     conn.close()
 
     assert total_in_segments == n_with_tx
@@ -405,6 +406,7 @@ def test_format_segments_top_category_includes_lift_percentage(seeded_db: Path):
     # All seeded segments should have positive lift; expect at least one
     # "Top Category: <name> (+NN percent vs avg)" line.
     import re
+
     matches = re.findall(r"Top Category:\s+\S+\s+\(\+\d+ percent vs avg\)", out)
     assert len(matches) >= 1, f"no '(+N percent vs avg)' line found in:\n{out}"
 

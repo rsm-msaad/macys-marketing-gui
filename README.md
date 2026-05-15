@@ -1,33 +1,61 @@
-# Milestone 02
+# Macys AI Coworker
 
-Push all deliverables to GitHub before the start of class on **May 7th**. Make sure to have the required folders and files starting from the base provided in this repo. GitHub will run automated check to ensure each file is available.
+**Team:** Merna Saad, Abdullah AlJarallah, Shankar D.
+**Live frontend:** [macys-marketing-gui.vercel.app](https://macys-marketing-gui.vercel.app)
+**Live backend:** [macys-api-n6f3.onrender.com](https://macys-api-n6f3.onrender.com)
 
-- README.md
-- `data/` Contains data and code for data preparation
-- `skill/` Contains the _skills_ you create for your project
+## Project Structure (M2 + M3)
+
+```
+ai_engine/
+  skills/                   3 LLM skills (judgment calls)
+    compliance-pre-check/
+    approval-brief-generator/
+    revision-router/
+  automations/              6 deterministic steps (no LLM)
+    audience-segment-builder/       (M2)
+    dam-asset-finder/               (M2)
+    localization-generator-v1/      (M2)
+    campaign-performance-analyzer/  (M2)
+    localization-generator/         (M3)
+    activation-scheduler/           (M3)
+  orchestrator/             deterministic router + agentic alternative
+  rag/                      12 doc knowledge base, FAISS index, retrieval
+  tools/                    3 MCP tools (pricing, DAM, transcreation)
+  mcp_server/               FastMCP server config
+api/                        FastAPI backend
+gui/                        Next.js frontend
+data/                       SQLite database, images
+tests/                      pytest suite (236 passing)
+skills/example/             instructional template skill
+```
+
+## Skills vs Automations
+
+Following the professor's reference pattern: "Build deterministic automations first. Only promote a step to a skill where the judgment is genuinely hard and a wrong call is easy to verify."
+
+**3 Skills** (LLM driven, have SKILL.md):
+
+| Skill | Workflow Step | What the LLM Decides |
+| --- | --- | --- |
+| Compliance Pre Check | Step 6a | Writes human readable compliance findings from helper scan results |
+| Approval Brief Generator | Step 6b | Writes prose summaries, identifies business risks beyond compliance |
+| Revision Router | Step 6c | Classifies free text VP comment into change type, writes summary |
+
+**6 Automations** (deterministic, no SKILL.md, no LLM):
+
+| Automation | Origin | What It Does |
+| --- | --- | --- |
+| Audience Segment Builder | M2 | RFM clustering on 50,000 customers |
+| DAM Asset Finder | M2 | Filters and ranks DAM assets by relevance |
+| Localization Generator v1 | M2 | Generates 40 regional variants from templates |
+| Campaign Performance Analyzer | M2 | Last touch attribution and forecasting |
+| Localization Generator | M3 | Region to language mapping, regional pricing, holiday overlays |
+| Activation Scheduler | M3 | Timezone aware channel scheduling |
 
 ## Human in the Loop Architecture
 
-Our project follows the architecture Vincent laid out on Piazza. Skills are markdown first, with Python scripts handling every calculation. The LLM never computes results. It reads the brief, picks the right script to run, and surfaces the output for review. Humans stay in the loop at every strategic decision point.
-
-Each of the four skills we shipped pairs AI work with a specific human owner who makes the final call:
-
-| Skill | Workflow Step | AI Does | Human Decides |
-|-------|---------------|---------|---------------|
-| Audience Segment Builder | Step 2: Segmentation | Generates 3 ranked segment options using RFM clustering | Merna picks which segment to target based on business context |
-| DAM Asset Finder | Steps 4 to 5: Creative Production | Filters degraded assets, ranks clean ones by relevance | Abdullah picks the final hero photos for the campaign |
-| Localization Generator | Step 7: Localization | Generates 40 regional variants with pricing and copy substitutions | Shankar reviews variants, flags edge cases, approves the batch |
-| Campaign Performance Analyzer | Step 9: Monitoring | Pulls data, runs attribution, forecasts next campaign | Anna adds business context to the auto-generated readout before sending to leadership |
-
-### Deterministic automations (not skills)
-
-Other pieces of the workflow are pure automation. They run on a schedule, they make no business judgment, and they get no benefit from an LLM in the loop:
-
-- Star Rewards data export (daily customer data sync, cron job)
-- File format conversion (PSD to JPG, PNG, MP4, deterministic)
-- Regional pricing sync (data join across systems, no judgment needed)
-
-These are intentionally not skills. They run as scheduled scripts because they don't benefit from AI judgment. This is the deterministic automation improvement path Vincent mentioned in his Piazza clarification.
+Skills are markdown first, with Python scripts handling every calculation. The LLM never computes results. It reads the brief, picks the right script to run, and surfaces the output for review. Humans stay in the loop at every strategic decision point.
 
 ## Claude usage logging
 

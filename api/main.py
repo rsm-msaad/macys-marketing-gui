@@ -27,12 +27,12 @@ from pydantic import BaseModel
 # locally where uvicorn does not auto load .env on its own.
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-# M3 brain path setup. Must run before any 'from rag.', 'from tools.',
+# AI engine path setup. Must run before any 'from rag.', 'from tools.',
 # or 'from orchestrator.' import below, since those packages now live
-# under ../m3_brain/ rather than at the repo root.
-_M3_BRAIN_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "m3_brain"))
-if _M3_BRAIN_DIR not in sys.path:
-    sys.path.insert(0, _M3_BRAIN_DIR)
+# under ../ai_engine/ rather than at the repo root.
+_AI_ENGINE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ai_engine"))
+if _AI_ENGINE_DIR not in sys.path:
+    sys.path.insert(0, _AI_ENGINE_DIR)
 
 from api._skill_loader import DB_PATH, IMAGES_DIR  # noqa: E402
 from api.routes import chat, images, personas, skills, workflow  # noqa: E402
@@ -54,7 +54,7 @@ except Exception as _exc:  # noqa: BLE001
     _M3_AVAILABLE = False
     _M3_IMPORT_ERROR = str(_exc)
     print(
-        f"WARNING: M3 brain failed to import: {_exc}",
+        f"WARNING: ai_engine failed to import: {_exc}",
         file=sys.stderr,
         flush=True,
     )
@@ -79,13 +79,15 @@ def log_ai_activity(
     campaign_id: str | None = None,
 ) -> None:
     """Append an AI activity event to the in memory log."""
-    AI_ACTIVITY_LOG.appendleft({
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "skill_name": skill_name,
-        "summary": summary,
-        "retrieved_docs": retrieved_docs or [],
-        "campaign_id": campaign_id,
-    })
+    AI_ACTIVITY_LOG.appendleft(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "skill_name": skill_name,
+            "summary": summary,
+            "retrieved_docs": retrieved_docs or [],
+            "campaign_id": campaign_id,
+        }
+    )
 
 
 app = FastAPI(
@@ -94,7 +96,7 @@ app = FastAPI(
         "Local backend for the M2 GUI. Wraps the four skills in HTTP endpoints "
         "and serves persona, workflow, and scripted chat data. Also hosts the "
         "M3 AI endpoints (compliance, brief, revision routing, cascade) backed "
-        "by the chained skills and RAG corpus in m3_brain/."
+        "by the chained skills and RAG corpus in ai_engine/."
     ),
     version="0.2.0",
 )
@@ -117,7 +119,7 @@ def health() -> dict:
         "ok": True,
         "db_exists": Path(DB_PATH).exists(),
         "images_dir_exists": Path(IMAGES_DIR).exists(),
-        "m3_brain_available": _M3_AVAILABLE,
+        "ai_engine_available": _M3_AVAILABLE,
         "tritonai_key_set": bool(os.environ.get("TRITONAI_API_KEY", "")),
     }
 
@@ -148,12 +150,12 @@ if Path(IMAGES_DIR).exists():
 # ===========================================================================
 # M3 AI endpoints
 #
-# Each endpoint wraps a chained skill from m3_brain/. The skill invoker calls
+# Each endpoint wraps a chained skill from ai_engine/. The skill invoker calls
 # Claude via the TritonAI proxy, returns structured JSON, and the endpoint
 # returns the relevant slice of that JSON to the client.
 #
 # All endpoints fail with 503 when:
-#   * The m3_brain modules failed to import (missing deps).
+#   * The ai_engine modules failed to import (missing deps).
 #   * TRITONAI_API_KEY is unset or still a placeholder.
 #   * The underlying skill raises.
 # ===========================================================================
@@ -222,7 +224,7 @@ def _check_ai_ready() -> None:
             status_code=503,
             detail={
                 "error": "AI service temporarily unavailable",
-                "detail": f"m3_brain failed to import: {_M3_IMPORT_ERROR}",
+                "detail": f"ai_engine failed to import: {_M3_IMPORT_ERROR}",
             },
         )
     api_key = os.environ.get("TRITONAI_API_KEY", "")
@@ -262,7 +264,7 @@ async def _run_skill(skill_name: str, state: dict, campaign_id: str) -> dict:
             status_code=503,
             detail={
                 "error": "AI service temporarily unavailable",
-                "detail": f"m3_brain failed to import: {_M3_IMPORT_ERROR}",
+                "detail": f"ai_engine failed to import: {_M3_IMPORT_ERROR}",
             },
         )
     start = time.monotonic()

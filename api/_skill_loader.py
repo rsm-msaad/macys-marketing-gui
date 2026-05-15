@@ -13,15 +13,15 @@ from pathlib import Path
 from types import ModuleType
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SKILLS_DIR = REPO_ROOT / "skills"
+AUTOMATIONS_DIR = REPO_ROOT / "ai_engine" / "automations"
 DB_PATH = REPO_ROOT / "data" / "macys.db"
 IMAGES_DIR = REPO_ROOT / "data" / "images" / "dam"
 
 
 def _load(folder: str, file: str, mod_name: str) -> ModuleType:
-    path = SKILLS_DIR / folder / file
+    path = AUTOMATIONS_DIR / folder / file
     if not path.exists():
-        raise FileNotFoundError(f"skill file not found: {path}")
+        raise FileNotFoundError(f"automation file not found: {path}")
     spec = importlib.util.spec_from_file_location(mod_name, path)
     assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
@@ -31,5 +31,5 @@ def _load(folder: str, file: str, mod_name: str) -> ModuleType:
 
 SEGMENT = _load("audience-segment-builder", "segment.py", "asb_segment")
 DAM = _load("dam-asset-finder", "search.py", "daf_search")
-LOCALIZE = _load("localization-generator", "generate.py", "lg_generate")
+LOCALIZE = _load("localization-generator-v1", "generate.py", "lg_generate")
 ANALYZE = _load("campaign-performance-analyzer", "analyze.py", "cpa_analyze")

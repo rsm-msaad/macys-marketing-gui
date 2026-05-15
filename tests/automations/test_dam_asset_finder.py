@@ -1,4 +1,4 @@
-"""Tests for `skills/dam-asset-finder/search.py`."""
+"""Tests for `ai_engine/automations/dam-asset-finder/search.py`."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-_MODULE_PATH = Path(__file__).resolve().parents[2] / "skills" / "dam-asset-finder" / "search.py"
+_MODULE_PATH = Path(__file__).resolve().parents[2] / "ai_engine" / "automations" / "dam-asset-finder" / "search.py"
 _spec = importlib.util.spec_from_file_location("dam_search", _MODULE_PATH)
 assert _spec and _spec.loader
 search = importlib.util.module_from_spec(_spec)
@@ -404,9 +404,7 @@ def test_find_assets_includes_has_photo_field(seeded_db: Path):
 def test_find_assets_no_images_dir_means_no_photo_backed(seeded_db: Path, tmp_path: Path):
     """When images_dir is empty, no asset is photo backed."""
     empty = tmp_path / "empty-images"
-    results = search.find_assets(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=empty
-    )
+    results = search.find_assets(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=empty)
     assert all(r["has_photo"] is False for r in results)
 
 
@@ -415,9 +413,7 @@ def test_find_assets_photo_backed_asset_ranks_first(seeded_db: Path, tmp_path: P
     With a real photo on disk it should still rank above asset 14 which has
     perfect tag match but no photo."""
     images = _make_images_dir(tmp_path, ["a07.jpg"])
-    results = search.find_assets(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images
-    )
+    results = search.find_assets(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images)
     assert results[0]["asset_id"] == 7
     assert results[0]["has_photo"] is True
     # Asset 14 (perfect relevance, no photo) is now second.
@@ -425,16 +421,12 @@ def test_find_assets_photo_backed_asset_ranks_first(seeded_db: Path, tmp_path: P
     assert results[1]["has_photo"] is False
 
 
-def test_find_assets_multiple_photos_keep_relative_relevance_order(
-    seeded_db: Path, tmp_path: Path
-):
+def test_find_assets_multiple_photos_keep_relative_relevance_order(seeded_db: Path, tmp_path: Path):
     """Within the photo backed bucket, relevance still drives the sort.
     Asset 14 (perfect relevance) should beat asset 7 (zero relevance) when
     both are photo backed."""
     images = _make_images_dir(tmp_path, ["a07.jpg", "a14.jpg"])
-    results = search.find_assets(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images
-    )
+    results = search.find_assets(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images)
     # Photo backed bucket comes first; ordered by relevance desc within it.
     assert results[0]["asset_id"] == 14
     assert results[1]["asset_id"] == 7
@@ -448,12 +440,8 @@ def test_find_assets_photo_boost_lifts_relevance_score(seeded_db: Path, tmp_path
     no_images = tmp_path / "no-images"
     with_image = _make_images_dir(tmp_path, ["a07.jpg"])
 
-    no_photo = search.find_assets(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=no_images
-    )
-    with_photo = search.find_assets(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=with_image
-    )
+    no_photo = search.find_assets(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=no_images)
+    with_photo = search.find_assets(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=with_image)
 
     no_photo_a7 = next(r for r in no_photo if r["asset_id"] == 7)
     with_photo_a7 = next(r for r in with_photo if r["asset_id"] == 7)
@@ -464,15 +452,11 @@ def test_find_assets_photo_boost_lifts_relevance_score(seeded_db: Path, tmp_path
     assert diff == pytest.approx(search.PHOTO_BOOST, abs=1e-3) or with_photo_a7["relevance_score"] == 1.0
 
 
-def test_find_assets_falls_back_to_non_photo_when_few_photos(
-    seeded_db: Path, tmp_path: Path
-):
+def test_find_assets_falls_back_to_non_photo_when_few_photos(seeded_db: Path, tmp_path: Path):
     """Only one photo backed asset on disk; max_results=4 must still return 4
     candidates by falling through to the non photo bucket."""
     images = _make_images_dir(tmp_path, ["a07.jpg"])
-    results = search.find_assets(
-        BEAUTY_BRIEF, max_results=4, db_path=seeded_db, images_dir=images
-    )
+    results = search.find_assets(BEAUTY_BRIEF, max_results=4, db_path=seeded_db, images_dir=images)
     assert len(results) == 4
     photo_count = sum(1 for r in results if r["has_photo"])
     assert photo_count == 1  # the one we put on disk
@@ -482,9 +466,7 @@ def test_find_assets_falls_back_to_non_photo_when_few_photos(
 
 def test_search_with_stats_reports_photo_backed_counts(seeded_db: Path, tmp_path: Path):
     images = _make_images_dir(tmp_path, ["a07.jpg", "a14.jpg"])
-    _, stats = search.search_with_stats(
-        BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images
-    )
+    _, stats = search.search_with_stats(BEAUTY_BRIEF, max_results=20, db_path=seeded_db, images_dir=images)
     assert stats["photo_backed_in_pool"] == 2
     # Both should make it into the kept top.
     assert stats["photo_backed_in_top"] == 2

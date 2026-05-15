@@ -1,4 +1,4 @@
-"""Tests for `skills/campaign-performance-analyzer/analyze.py`."""
+"""Tests for `ai_engine/automations/campaign-performance-analyzer/analyze.py`."""
 
 from __future__ import annotations
 
@@ -9,10 +9,7 @@ from pathlib import Path
 import pytest
 
 _MODULE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "skills"
-    / "campaign-performance-analyzer"
-    / "analyze.py"
+    Path(__file__).resolve().parents[2] / "ai_engine" / "automations" / "campaign-performance-analyzer" / "analyze.py"
 )
 _spec = importlib.util.spec_from_file_location("cpa_analyze", _MODULE_PATH)
 assert _spec and _spec.loader
@@ -94,10 +91,22 @@ PERFORMANCE = _build_performance()
 # 16 customers across 4 tiers (4 each), so unique-buyer rates land at clean
 # fractions: Bronze 1/4, Silver 2/4, Gold 3/4, Platinum 4/4.
 CUSTOMERS = [
-    (1, "Bronze"), (2, "Bronze"), (3, "Bronze"), (4, "Bronze"),
-    (5, "Silver"), (6, "Silver"), (7, "Silver"), (8, "Silver"),
-    (9, "Gold"), (10, "Gold"), (11, "Gold"), (12, "Gold"),
-    (13, "Platinum"), (14, "Platinum"), (15, "Platinum"), (16, "Platinum"),
+    (1, "Bronze"),
+    (2, "Bronze"),
+    (3, "Bronze"),
+    (4, "Bronze"),
+    (5, "Silver"),
+    (6, "Silver"),
+    (7, "Silver"),
+    (8, "Silver"),
+    (9, "Gold"),
+    (10, "Gold"),
+    (11, "Gold"),
+    (12, "Gold"),
+    (13, "Platinum"),
+    (14, "Platinum"),
+    (15, "Platinum"),
+    (16, "Platinum"),
 ]
 
 SKUS = [
@@ -198,13 +207,13 @@ def test_safe_divide_zero_denom_returns_default():
 
 
 def test_trend_direction_up_down_flat_thresholds():
-    assert analyze_mod._trend_direction(110, 100) == "up"     # +10%
-    assert analyze_mod._trend_direction(106, 100) == "up"     # +6%
-    assert analyze_mod._trend_direction(105, 100) == "flat"   # +5% boundary
+    assert analyze_mod._trend_direction(110, 100) == "up"  # +10%
+    assert analyze_mod._trend_direction(106, 100) == "up"  # +6%
+    assert analyze_mod._trend_direction(105, 100) == "flat"  # +5% boundary
     assert analyze_mod._trend_direction(100, 100) == "flat"
-    assert analyze_mod._trend_direction(94, 100) == "down"    # -6%
-    assert analyze_mod._trend_direction(95, 100) == "flat"    # -5% boundary
-    assert analyze_mod._trend_direction(100, 0) == "flat"     # safe
+    assert analyze_mod._trend_direction(94, 100) == "down"  # -6%
+    assert analyze_mod._trend_direction(95, 100) == "flat"  # -5% boundary
+    assert analyze_mod._trend_direction(100, 0) == "flat"  # safe
 
 
 # ---------- forecast_metric ----------
@@ -624,9 +633,7 @@ def test_format_results_renders_insufficient_data_message(seeded_db: Path):
 
 
 def test_main_runs_against_seeded_db(seeded_db: Path, capsys):
-    rc = analyze_mod.main(
-        ["analyze.py", "100", "--db", str(seeded_db)]
-    )
+    rc = analyze_mod.main(["analyze.py", "100", "--db", str(seeded_db)])
     assert rc == 0
     out = capsys.readouterr().out
     assert "Big Test Campaign" in out

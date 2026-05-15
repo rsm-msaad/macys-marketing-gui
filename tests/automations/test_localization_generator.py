@@ -1,4 +1,4 @@
-"""Tests for `skills/localization-generator/generate.py`."""
+"""Tests for `ai_engine/automations/localization-generator-v1/generate.py`."""
 
 from __future__ import annotations
 
@@ -9,10 +9,7 @@ from pathlib import Path
 import pytest
 
 _MODULE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "skills"
-    / "localization-generator"
-    / "generate.py"
+    Path(__file__).resolve().parents[2] / "ai_engine" / "automations" / "localization-generator-v1" / "generate.py"
 )
 _spec = importlib.util.spec_from_file_location("loc_generate", _MODULE_PATH)
 assert _spec and _spec.loader
@@ -51,10 +48,10 @@ SKUS = [
 # Engineered pricing rows. sku=2 in Mountain is omitted to test "no regional data".
 PRICING = [
     # (sku_id, region, regional_price, in_stock_locally)
-    (1, "Northeast", 22.00, 1),          # +10% no flag
+    (1, "Northeast", 22.00, 1),  # +10% no flag
     (1, "Pacific-Northwest", 24.00, 1),  # +20% significantly_higher
-    (1, "Mountain", 15.00, 1),           # -25% significantly_lower
-    (2, "Northeast", 80.00, 1),          # 0% no flag
+    (1, "Mountain", 15.00, 1),  # -25% significantly_lower
+    (2, "Northeast", 80.00, 1),  # 0% no flag
     (2, "Pacific-Northwest", 85.00, 0),  # in_stock_locally=0 -> out_of_stock
     # NO row for (2, Mountain) -> no_regional_data
     (3, "Northeast", 120.00, 1),
@@ -234,9 +231,7 @@ REQUIRED_FIELDS = {
 
 
 def test_generate_variants_count_matches_regions_x_placements_x_skus(seeded_db: Path):
-    variants = gen.generate_variants(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    variants = gen.generate_variants("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     # 3 regions x 4 default placements x 3 skus
     assert len(variants) == 3 * 4 * 3
 
@@ -278,9 +273,7 @@ def test_generate_variants_empty_sku_list_returns_empty(seeded_db: Path):
 
 
 def test_generate_variants_skips_unknown_skus(seeded_db: Path):
-    variants = gen.generate_variants(
-        "MD Beauty", [1, 9999], regions=["Northeast"], db_path=seeded_db
-    )
+    variants = gen.generate_variants("MD Beauty", [1, 9999], regions=["Northeast"], db_path=seeded_db)
     # Only sku 1 exists; sku 9999 is skipped silently.
     sku_ids_in_output = {v["sku_id"] for v in variants}
     assert sku_ids_in_output == {1}
@@ -411,46 +404,34 @@ def test_generate_variants_is_deterministic(seeded_db: Path):
 
 
 def test_with_stats_total_matches_returned_list(seeded_db: Path):
-    variants, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    variants, stats = gen.generate_variants_with_stats("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     assert stats["total_variants"] == len(variants)
 
 
 def test_with_stats_by_region_counts_sum_to_total(seeded_db: Path):
-    _, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    _, stats = gen.generate_variants_with_stats("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     assert sum(stats["by_region"].values()) == stats["total_variants"]
 
 
 def test_with_stats_by_placement_counts_sum_to_total(seeded_db: Path):
-    _, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    _, stats = gen.generate_variants_with_stats("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     assert sum(stats["by_placement"].values()) == stats["total_variants"]
 
 
 def test_with_stats_inventory_alerts_only_low_or_out(seeded_db: Path):
-    _, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    _, stats = gen.generate_variants_with_stats("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     for alert in stats["inventory_alerts"]:
         assert alert["status"] in {"low_stock", "out_of_stock"}
 
 
 def test_with_stats_price_alerts_only_flagged(seeded_db: Path):
-    _, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db
-    )
+    _, stats = gen.generate_variants_with_stats("MD Beauty", [1, 2, 3], regions=REGIONS, db_path=seeded_db)
     for alert in stats["price_alerts"]:
         assert abs(alert["pct_diff"]) > gen.PRICE_FLAG_PCT
 
 
 def test_with_stats_includes_expected_keys(seeded_db: Path):
-    _, stats = gen.generate_variants_with_stats(
-        "MD Beauty", [1], regions=["Northeast"], db_path=seeded_db
-    )
+    _, stats = gen.generate_variants_with_stats("MD Beauty", [1], regions=["Northeast"], db_path=seeded_db)
     expected = {
         "total_variants",
         "regions",
