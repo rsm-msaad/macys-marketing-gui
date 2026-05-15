@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRightCircle, RotateCcw } from "lucide-react";
+import { ArrowRightCircle, MessageCircle, RotateCcw, X } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { AIRevisionRouting } from "@/components/AIRevisionRouting";
@@ -86,6 +86,17 @@ export function PersonaShell({
   const [pollError, setPollError] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+
+  // Close chat on ESC key
+  useEffect(() => {
+    if (!chatOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setChatOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [chatOpen]);
 
   // AI Revision Routing state (Feature 3)
   const [routingPending, setRoutingPending] = useState<{
@@ -415,11 +426,41 @@ export function PersonaShell({
           </section>
         </main>
 
-        {/* Right chat */}
-        <div className="hidden w-[360px] flex-shrink-0 lg:block">
-          <ChatSidebar context={context} onAction={handleAction} />
-        </div>
       </div>
+
+      {/* Floating chat button */}
+      {!chatOpen && (
+        <button
+          type="button"
+          onClick={() => setChatOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-teal-700"
+          title="Open Claude Chat"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Chat modal */}
+      {chatOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-backdrop-in"
+          style={{ backgroundColor: "rgba(45,45,45,0.35)" }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setChatOpen(false);
+          }}
+        >
+          <div className="relative flex h-[80vh] w-full max-w-[480px] flex-col overflow-hidden rounded-lg bg-white shadow-xl animate-modal-in">
+            <button
+              type="button"
+              onClick={() => setChatOpen(false)}
+              className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-charcoal/50 hover:bg-cream hover:text-charcoal"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <ChatSidebar context={context} onAction={handleAction} />
+          </div>
+        </div>
+      )}
 
       <ResultsModal
         state={modal}

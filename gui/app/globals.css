@@ -9,15 +9,15 @@
 html, body {
   background: #F8F4EC;
   color: #2D2D2D;
-  font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  font-family: var(--font-inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
 }
 
 h1, h2, h3, h4 {
-  font-family: Georgia, Cambria, ui-serif, serif;
+  font-family: var(--font-fraunces, Georgia, Cambria, ui-serif, serif);
   letter-spacing: -0.005em;
 }
 
-/* Custom scrollbar in chat panes — light, narrow, unobtrusive. */
+/* Custom scrollbar in chat panes */
 .chat-scroll::-webkit-scrollbar {
   width: 6px;
 }
@@ -29,11 +29,27 @@ h1, h2, h3, h4 {
   background: transparent;
 }
 
-/* A subtle pulsing dot used for the "active" workflow step. */
+/* Pulsing dot for the active workflow step */
 @keyframes soft-pulse {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 0.45; }
 }
 .animate-soft-pulse {
   animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+/* Chat modal fade + scale */
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-modal-in {
+  animation: modal-in 0.2s ease both;
+}
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-backdrop-in {
+  animation: backdrop-in 0.15s ease both;
 }

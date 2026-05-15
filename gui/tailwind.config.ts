@@ -9,7 +9,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Macy's marketing operations palette.
         teal: {
           DEFAULT: "#0B7B8A",
           50: "#E6F1F3",
@@ -24,8 +23,10 @@ const config: Config = {
         soft_red: "#C84B4B",
       },
       fontFamily: {
-        serif: ["Georgia", "Cambria", "ui-serif", "serif"],
+        display: ["var(--font-fraunces)", "Georgia", "ui-serif", "serif"],
+        serif: ["var(--font-fraunces)", "Georgia", "Cambria", "ui-serif", "serif"],
         sans: [
+          "var(--font-inter)",
           "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
