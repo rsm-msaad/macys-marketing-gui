@@ -342,32 +342,41 @@ export function PersonaShell({
             </h1>
 
             {/* Key metrics row */}
-            <div className="mt-4 flex flex-wrap items-center gap-6 text-sm">
-              {context.campaign_brief.budget && (
-                <div>
-                  <span className="font-display text-2xl font-bold text-charcoal">
-                    {Object.values(context.campaign_brief.budget).join(" ")}
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-stone">
+              {context.campaign_brief.budget && (() => {
+                const vals = Object.values(context.campaign_brief.budget);
+                const total = vals.reduce((sum, v) => {
+                  const cleaned = v.replace(/[^0-9.]/g, "");
+                  const num = parseFloat(cleaned) || 0;
+                  const multiplier = v.toLowerCase().includes("m") ? 1_000_000
+                    : v.toLowerCase().includes("k") ? 1_000 : 1;
+                  return sum + num * multiplier;
+                }, 0);
+                const display = total >= 1_000_000
+                  ? `$${(total / 1_000_000).toFixed(1)}M`
+                  : total >= 1_000
+                    ? `$${(total / 1_000).toFixed(0)}K`
+                    : `$${total}`;
+                return (
+                  <span className="font-display text-lg font-bold text-charcoal">
+                    {display} total budget
                   </span>
-                  <span className="ml-1.5 text-[11px] uppercase tracking-wider text-stone">
-                    budget
-                  </span>
-                </div>
-              )}
-              <div>
-                <span className="font-display text-2xl font-bold text-charcoal">
-                  {completedCount}/{totalSteps}
-                </span>
-                <span className="ml-1.5 text-[11px] uppercase tracking-wider text-stone">
-                  steps
-                </span>
-              </div>
+                );
+              })()}
+              <span className="text-charcoal/20">|</span>
+              <span className="text-[13px]">
+                {context.mock_data.sku_suggestions.length} SKUs
+              </span>
+              <span className="text-charcoal/20">|</span>
+              <span className="text-[13px]">
+                {context.campaign_brief.filed_days_before_launch} days until launch
+              </span>
+              <span className="text-charcoal/20">|</span>
               {state && !state.is_complete && (
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-teal-600 animate-soft-pulse" />
-                  <span className="text-[13px] font-medium text-teal-600">
-                    Step {state.current_step}: {steps?.find((s) => s.status === "active")?.name}
-                  </span>
-                </div>
+                <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-teal-600">
+                  <span className="h-1.5 w-1.5 rounded-full bg-teal-600 animate-soft-pulse" />
+                  Step {state.current_step} of {totalSteps}: {steps?.find((s) => s.status === "active")?.name}
+                </span>
               )}
               <div className="ml-auto">
                 <button
