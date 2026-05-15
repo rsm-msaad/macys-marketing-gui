@@ -8,32 +8,74 @@
 
 html, body {
   background: #F8F4EC;
-  color: #2D2D2D;
-  font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  color: #2C2C2C;
+  font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4 {
-  font-family: Georgia, Cambria, ui-serif, serif;
-  letter-spacing: -0.005em;
+  font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
-/* Custom scrollbar in chat panes — light, narrow, unobtrusive. */
+/* AI generated content marker */
+.ai-generated {
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-style: italic;
+}
+
+/* Custom scrollbar: narrow, warm, unobtrusive */
 .chat-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(45, 45, 45, 0.18);
-  border-radius: 3px;
+  background: rgba(44, 44, 44, 0.12);
+  border-radius: 9999px;
 }
 .chat-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* A subtle pulsing dot used for the "active" workflow step. */
+/* Subtle pulsing dot for active workflow step */
 @keyframes soft-pulse {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 0.45; }
 }
 .animate-soft-pulse {
   animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+/* Grain overlay for editorial texture (applied sparingly) */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 4px 16px rgba(44,44,44,0.08), 0 2px 6px rgba(44,44,44,0.04);
+  transform: translateY(-1px);
+}
+
+/* Stagger entrance for cards */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.5s ease both;
 }

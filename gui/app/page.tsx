@@ -8,61 +8,85 @@ export default function LandingPage() {
   const { personas, loading, error } = usePersonas();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-16">
-      <header className="mb-12 text-center">
-        <p className="font-serif text-xs font-semibold uppercase tracking-widest text-teal-600">
+    <main className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-8 py-20">
+      {/* Editorial header */}
+      <header className="mb-16 text-center">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-stone">
           MACY&apos;S MARKETING OPERATIONS
         </p>
-        <h1 className="mt-3 font-serif text-4xl font-semibold text-charcoal">
-          Welcome to Marketing Operations
+        <h1 className="mt-4 font-display text-5xl font-semibold tracking-tight text-charcoal md:text-6xl">
+          Campaign Studio
         </h1>
-        <p className="mt-2 text-base text-charcoal/65">Select your role to begin.</p>
+        <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-stone">
+          Select your role to begin. Each persona owns specific steps
+          in the 10 step campaign workflow.
+        </p>
       </header>
 
-      {loading && <p className="text-center text-sm text-charcoal/60">Loading personas…</p>}
+      {loading && (
+        <p className="text-center text-sm text-stone">Loading personas...</p>
+      )}
       {error && (
-        <div className="mx-auto max-w-md rounded-md border border-soft_red/30 bg-soft_red/5 p-4 text-sm text-soft_red">
-          Could not reach the API at <code>http://localhost:8000</code>. Make sure the backend is running.
-          <pre className="mt-2 whitespace-pre-wrap text-xs">{error}</pre>
+        <div className="mx-auto max-w-md rounded-card border border-rose/30 bg-rose/5 p-5 text-sm text-rose">
+          Could not reach the API. Make sure the backend is running.
+          <pre className="mt-2 whitespace-pre-wrap text-xs text-stone">{error}</pre>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {personas.map((p) => (
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {personas.map((p, i) => (
           <Link
             key={p.id}
             href={`/${p.id}`}
-            className="group flex flex-col rounded-lg border border-charcoal/10 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="card-hover group relative flex flex-col rounded-panel border border-charcoal/[0.06] bg-white p-8 shadow-card animate-fade-up"
+            style={{ animationDelay: `${i * 100}ms` }}
           >
-            <div className="flex items-center gap-4">
+            {/* Accent line */}
+            <div
+              className="absolute left-0 top-0 h-full w-1 rounded-l-panel"
+              style={{ backgroundColor: p.color }}
+            />
+
+            <div className="flex items-center gap-5">
               <span
-                className="flex h-14 w-14 items-center justify-center rounded-full ring-2 ring-offset-2"
+                className="flex h-16 w-16 items-center justify-center rounded-full ring-2 ring-offset-4 ring-offset-white"
                 style={{ ["--tw-ring-color" as string]: p.color }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={p.avatar}
                   alt={p.name}
-                  className="h-14 w-14 rounded-full object-cover"
+                  className="h-16 w-16 rounded-full object-cover"
                 />
               </span>
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/55">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone">
                   {p.title}
                 </div>
-                <div className="font-serif text-2xl font-semibold text-charcoal">{p.name}</div>
+                <div className="mt-1 font-display text-2xl font-semibold text-charcoal">
+                  {p.name}
+                </div>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/70">{p.tagline}</p>
-            <div className="mt-6 inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-700">
-              Continue as {p.name} →
+
+            <p className="mt-6 text-sm leading-relaxed text-charcoal/65">
+              {p.tagline}
+            </p>
+
+            <div className="mt-8 inline-flex items-center text-sm font-medium text-teal-600 transition-colors group-hover:text-teal-700">
+              Continue as {p.name}
+              <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </div>
           </Link>
         ))}
       </div>
 
-      <footer className="mt-12 text-center text-xs text-charcoal/50">
-        4 skills, 1 unified database, live AI chat powered by TritonAI.
+      <footer className="mt-16 text-center">
+        <p className="text-[11px] tracking-wider text-stone/60">
+          3 skills &middot; 6 automations &middot; 12 RAG documents &middot; Live AI chat powered by TritonAI
+        </p>
       </footer>
     </main>
   );

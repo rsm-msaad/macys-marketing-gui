@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Play, Diamond } from "lucide-react";
+import { Play, Sparkles } from "lucide-react";
 
 import { fetchActivity, type ActivityEvent } from "@/lib/ai_client";
 import type { SkillKind } from "@/components/SkillCard";
@@ -29,7 +29,7 @@ const SKILL_META: Record<
     description:
       "Scans 5,000 DAM records, filters out degraded and expired assets, and ranks the rest by tag relevance plus recency and resolution boosts.",
     cta: "Search DAM",
-    accent: "#D4A537",
+    accent: "#D4A843",
     stepType: "automation",
   },
   localize: {
@@ -37,7 +37,7 @@ const SKILL_META: Record<
     description:
       "Generates 40 regional/placement variants per master SKU, with regional pricing, regional inventory, and regionally voiced copy.",
     cta: "Generate Variants",
-    accent: "#87A96B",
+    accent: "#8DA67E",
     stepType: "automation",
   },
   analyze: {
@@ -45,7 +45,7 @@ const SKILL_META: Record<
     description:
       "Last touch attribution across channels, segments, and SKUs, plus a 14 day forecast with 80 percent confidence intervals.",
     cta: "Analyze Campaign",
-    accent: "#C84B4B",
+    accent: "#C97373",
     stepType: "automation",
   },
 };
@@ -99,45 +99,50 @@ export function AICoworkerPanel({
   }, [refresh]);
 
   return (
-    <section className="rounded-lg border border-charcoal/10 bg-white shadow-sm">
+    <section className="rounded-panel border border-charcoal/[0.06] bg-white shadow-card">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-charcoal/10 px-5 py-3">
-        <h2 className="text-[10px] font-semibold uppercase tracking-widest text-teal-600">
-          AI Coworker
-        </h2>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-teal-700">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-500" />
+      <div className="flex items-center justify-between border-b border-charcoal/[0.06] px-6 py-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-gold" />
+          <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-600">
+            AI Coworker
+          </h2>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider"
+          style={{ backgroundColor: "#0B7B8A1A", color: "#0B7B8A" }}
+        >
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-600" />
           Active
         </span>
       </div>
 
-      <div className="px-5 py-4 space-y-5">
+      <div className="px-6 py-5 space-y-6">
         {/* Activity feed */}
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+          <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-stone">
             Recent activity
           </h3>
           {events.length === 0 ? (
-            <p className="text-xs text-charcoal/45 italic">
+            <p className="text-xs italic text-stone/50">
               No AI activity in this session yet
             </p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {events.slice(0, 5).map((evt, i) => (
-                <li key={`${evt.timestamp}_${i}`} className="flex items-start gap-2">
-                  <Diamond className="mt-0.5 h-2.5 w-2.5 flex-shrink-0 fill-teal-500 text-teal-500" />
+                <li key={`${evt.timestamp}_${i}`} className="flex items-start gap-3">
+                  <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gold" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-charcoal/45">
+                      <span className="text-[10px] text-stone/60">
                         {relativeTime(evt.timestamp)}
                       </span>
-                      <span className="rounded bg-charcoal/5 px-1 py-px text-[9px] font-medium text-charcoal/50">
+                      <span className="rounded-full bg-charcoal/[0.04] px-1.5 py-0.5 text-[9px] font-medium text-stone">
                         {friendlyName(evt.skill_name)}
                       </span>
                     </div>
-                    <p className="truncate text-xs text-charcoal/75">{evt.summary}</p>
+                    <p className="truncate text-[12px] text-charcoal/70">{evt.summary}</p>
                     {evt.retrieved_docs.length > 0 && (
-                      <p className="mt-0.5 truncate font-mono text-[10px] text-charcoal/40">
+                      <p className="mt-0.5 truncate font-mono text-[10px] text-stone/40">
                         {evt.retrieved_docs[0]}
                         {evt.retrieved_docs.length > 1 &&
                           ` +${evt.retrieved_docs.length - 1} more`}
@@ -151,49 +156,47 @@ export function AICoworkerPanel({
         </div>
 
         {/* Divider */}
-        <div className="border-t border-charcoal/10" />
+        <div className="border-t border-charcoal/[0.06]" />
 
-        {/* Invokable skills */}
+        {/* Invokable actions */}
         <div>
-          <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+          <h3 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-stone">
             Now invokable
           </h3>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {skills.map((kind) => {
               const m = SKILL_META[kind];
+              const isSkill = m.stepType === "skill";
               return (
                 <div
                   key={kind}
-                  className="rounded-lg border border-charcoal/10 bg-cream/30 p-4"
+                  className="card-hover rounded-card border border-charcoal/[0.06] bg-cream/40 p-5"
                 >
                   <div
-                    className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                    className="mb-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
                     style={{
-                      backgroundColor:
-                        m.stepType === "skill" ? "#0B7B8A1A" : "#78716C1A",
-                      color:
-                        m.stepType === "skill" ? "#0B7B8A" : "#57534E",
+                      backgroundColor: isSkill ? "#0B7B8A1A" : "#78716C1A",
+                      color: isSkill ? "#0B7B8A" : "#57534E",
                     }}
                   >
                     <span
                       className="h-1.5 w-1.5 rounded-full"
                       style={{
-                        backgroundColor:
-                          m.stepType === "skill" ? "#0B7B8A" : "#78716C",
+                        backgroundColor: isSkill ? "#0B7B8A" : "#78716C",
                       }}
                     />
-                    {m.stepType === "skill" ? "Skill" : "Automation"}
+                    {isSkill ? "Skill" : "Automation"}
                   </div>
-                  <h4 className="font-serif text-base font-semibold text-charcoal">
+                  <h4 className="font-display text-base font-semibold text-charcoal">
                     {m.title}
                   </h4>
-                  <p className="mt-1.5 text-xs leading-relaxed text-charcoal/65">
+                  <p className="mt-2 text-[12px] leading-relaxed text-stone">
                     {m.description}
                   </p>
                   <button
                     type="button"
                     onClick={() => onLaunchSkill(kind)}
-                    className="mt-3 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white"
+                    className="mt-4 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12px] font-medium text-white transition-colors"
                     style={{ backgroundColor: m.accent }}
                   >
                     <Play className="h-3 w-3" />

@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Macy's marketing operations palette.
+        cream: { DEFAULT: "#F8F4EC", dark: "#F0EBE0" },
         teal: {
           DEFAULT: "#0B7B8A",
           50: "#E6F1F3",
@@ -17,23 +17,60 @@ const config: Config = {
           600: "#0B7B8A",
           700: "#08646F",
         },
-        cream: "#F8F4EC",
-        charcoal: "#2D2D2D",
-        mustard: "#D4A537",
-        sage: "#87A96B",
-        soft_red: "#C84B4B",
+        charcoal: "#2C2C2C",
+        stone: "#78716C",
+        gold: { DEFAULT: "#D4A843", light: "#D4A8431A" },
+        sage: { DEFAULT: "#8DA67E", light: "#8DA67E1A" },
+        amber: { DEFAULT: "#D49B43", light: "#D49B431A" },
+        rose: { DEFAULT: "#C97373", light: "#C973731A" },
+        // Legacy aliases so existing code does not break
+        mustard: "#D4A843",
+        soft_red: "#C97373",
       },
       fontFamily: {
-        serif: ["Georgia", "Cambria", "ui-serif", "serif"],
-        sans: [
+        display: [
+          "'Bodoni Moda'",
+          "'Playfair Display'",
+          "Georgia",
+          "serif",
+        ],
+        serif: [
+          "'Bodoni Moda'",
+          "'Playfair Display'",
+          "Georgia",
+          "serif",
+        ],
+        body: [
+          "'Inter Tight'",
+          "'Inter'",
           "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Helvetica Neue",
-          "Arial",
           "sans-serif",
         ],
+        sans: [
+          "'Inter Tight'",
+          "'Inter'",
+          "system-ui",
+          "sans-serif",
+        ],
+        mono: [
+          "'JetBrains Mono'",
+          "'SF Mono'",
+          "'Fira Code'",
+          "monospace",
+        ],
+      },
+      boxShadow: {
+        subtle:
+          "0 1px 3px rgba(44,44,44,0.04), 0 1px 2px rgba(44,44,44,0.02)",
+        card: "0 2px 8px rgba(44,44,44,0.05), 0 1px 3px rgba(44,44,44,0.03)",
+        elevated:
+          "0 4px 16px rgba(44,44,44,0.08), 0 2px 6px rgba(44,44,44,0.04)",
+        overlay:
+          "0 8px 32px rgba(44,44,44,0.12), 0 4px 12px rgba(44,44,44,0.06)",
+      },
+      borderRadius: {
+        card: "12px",
+        panel: "16px",
       },
     },
   },

@@ -7,27 +7,31 @@ import { callRouteRevision, type RouteRevisionResult } from "@/lib/ai_client";
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-      AI
+    <span
+      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+      style={{ backgroundColor: "#D4A8431A", color: "#B8922E", border: "1px solid #D4A84330" }}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+      AI Skill
     </span>
   );
 }
 
-function changeTypeColor(t: string): string {
+function changeTypeColor(t: string): { bg: string; text: string } {
   const lower = t.toLowerCase();
-  if (lower.includes("copy") || lower.includes("text")) return "bg-teal-50 text-teal-600";
-  if (lower.includes("imag") || lower.includes("visual") || lower.includes("design")) return "bg-mustard/15 text-mustard";
-  if (lower.includes("target") || lower.includes("audience")) return "bg-sage/15 text-sage";
-  if (lower.includes("pric") || lower.includes("cost")) return "bg-soft_red/15 text-soft_red";
-  if (lower.includes("legal") || lower.includes("compliance")) return "bg-soft_red/15 text-soft_red";
-  return "bg-charcoal/10 text-charcoal/70";
+  if (lower.includes("copy") || lower.includes("text")) return { bg: "#0B7B8A1A", text: "#0B7B8A" };
+  if (lower.includes("imag") || lower.includes("visual") || lower.includes("design")) return { bg: "#D4A8431A", text: "#B8922E" };
+  if (lower.includes("target") || lower.includes("audience")) return { bg: "#8DA67E1A", text: "#6B8A5E" };
+  if (lower.includes("pric") || lower.includes("cost")) return { bg: "#C973731A", text: "#B55A5A" };
+  if (lower.includes("legal") || lower.includes("compliance")) return { bg: "#C973731A", text: "#B55A5A" };
+  return { bg: "#78716C1A", text: "#57534E" };
 }
 
-function urgencyColor(u: string): string {
+function urgencyColor(u: string): { bg: string; text: string } {
   const lower = u.toLowerCase();
-  if (lower.includes("high") || lower.includes("urgent")) return "bg-soft_red/15 text-soft_red";
-  if (lower.includes("medium") || lower.includes("moderate")) return "bg-mustard/15 text-mustard";
-  return "bg-sage/15 text-sage";
+  if (lower.includes("high") || lower.includes("urgent")) return { bg: "#C973731A", text: "#B55A5A" };
+  if (lower.includes("medium") || lower.includes("moderate")) return { bg: "#D49B431A", text: "#B8842E" };
+  return { bg: "#8DA67E1A", text: "#6B8A5E" };
 }
 
 const OWNER_OPTIONS = [
@@ -85,44 +89,44 @@ export function AIRevisionRouting({
   }, [campaignId, revisionComment, campaignContext]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4">
-      <div className="w-full max-w-lg rounded-lg bg-white shadow-xl">
-        <header className="flex items-center justify-between border-b border-charcoal/10 px-5 py-3">
-          <div className="flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/40 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-panel bg-white shadow-overlay animate-fade-up">
+        <header className="flex items-center justify-between border-b border-charcoal/[0.06] px-6 py-4">
+          <div className="flex items-center gap-2.5">
             <ArrowLeftCircle className="h-5 w-5 text-teal-600" />
-            <h2 className="font-serif text-lg font-semibold text-charcoal">
-              AI Revision Routing
+            <h2 className="font-display text-xl font-semibold text-charcoal">
+              Revision Routing
             </h2>
           </div>
           <AIBadge />
         </header>
 
-        <div className="px-5 py-4">
+        <div className="px-6 py-5">
           {loading && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs text-charcoal/55">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-xs text-stone">
                 <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
                 Analyzing revision request...
               </div>
-              <div className="space-y-2">
-                <div className="h-4 w-3/4 animate-pulse rounded bg-charcoal/10" />
-                <div className="h-4 w-1/2 animate-pulse rounded bg-charcoal/10" />
-                <div className="h-4 w-2/3 animate-pulse rounded bg-charcoal/10" />
+              <div className="space-y-3">
+                <div className="h-4 w-3/4 animate-pulse rounded bg-charcoal/8" />
+                <div className="h-4 w-1/2 animate-pulse rounded bg-charcoal/8" />
+                <div className="h-4 w-2/3 animate-pulse rounded bg-charcoal/8" />
               </div>
             </div>
           )}
 
           {error && (
-            <div className="space-y-3">
-              <div className="rounded-md border border-mustard/30 bg-mustard/5 p-3 text-xs text-charcoal/70">
+            <div className="space-y-4">
+              <div className="rounded-card border border-amber/30 bg-amber/5 p-4 text-xs text-charcoal/70">
                 AI temporarily unavailable. You may route this revision manually.
-                <div className="mt-1 text-[10px] text-charcoal/45">{error}</div>
+                <div className="mt-1.5 text-[10px] text-stone/60">{error}</div>
               </div>
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="rounded-md border border-charcoal/15 bg-white px-3.5 py-2 text-sm font-medium text-charcoal hover:bg-cream"
+                  className="rounded-card border border-charcoal/10 bg-white px-4 py-2.5 text-sm font-medium text-charcoal transition-colors hover:bg-cream"
                 >
                   Go Back
                 </button>
@@ -136,7 +140,7 @@ export function AIRevisionRouting({
                       urgency: "medium",
                     })
                   }
-                  className="rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700"
+                  className="rounded-card bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-700"
                 >
                   Proceed Without AI Routing
                 </button>
@@ -145,57 +149,78 @@ export function AIRevisionRouting({
           )}
 
           {result && !loading && (
-            <div className="space-y-3">
-              <p className="text-xs text-charcoal/60">AI parsed this revision as:</p>
+            <div className="space-y-4">
+              <p className="text-[12px] text-stone">AI parsed this revision as:</p>
 
-              <div className="space-y-2 rounded-md border border-charcoal/10 bg-cream/30 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
-                    Change Type
-                  </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${changeTypeColor(result.change_type)}`}>
-                    {result.change_type}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
-                    Suggested Owner
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-50 text-[10px] font-semibold text-teal-600">
-                      {result.owner.charAt(0).toUpperCase()}
+              <div className="space-y-3 rounded-card border border-charcoal/[0.06] bg-cream/40 p-5">
+                {[
+                  {
+                    label: "Change Type",
+                    render: () => {
+                      const c = changeTypeColor(result.change_type);
+                      return (
+                        <span
+                          className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                          style={{ backgroundColor: c.bg, color: c.text }}
+                        >
+                          {result.change_type}
+                        </span>
+                      );
+                    },
+                  },
+                  {
+                    label: "Suggested Owner",
+                    render: () => (
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-50 text-[11px] font-semibold text-teal-600">
+                          {result.owner.charAt(0).toUpperCase()}
+                        </span>
+                        <span className="text-[13px] font-medium text-charcoal">{result.owner}</span>
+                      </div>
+                    ),
+                  },
+                  {
+                    label: "Urgency",
+                    render: () => {
+                      const c = urgencyColor(result.urgency);
+                      return (
+                        <span
+                          className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                          style={{ backgroundColor: c.bg, color: c.text }}
+                        >
+                          {result.urgency}
+                        </span>
+                      );
+                    },
+                  },
+                ].map((field) => (
+                  <div key={field.label} className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-stone">
+                      {field.label}
                     </span>
-                    <span className="text-sm font-medium text-charcoal">{result.owner}</span>
+                    {field.render()}
                   </div>
-                </div>
+                ))}
 
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-stone">
                     Summary
                   </span>
-                  <p className="mt-0.5 text-sm text-charcoal/80">{result.one_line_summary}</p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
-                    Urgency
-                  </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${urgencyColor(result.urgency)}`}>
-                    {result.urgency}
-                  </span>
+                  <p className="ai-generated mt-1 text-[13px] text-charcoal/75">
+                    {result.one_line_summary}
+                  </p>
                 </div>
               </div>
 
               {overrideMode && (
-                <div className="rounded-md border border-charcoal/10 bg-cream/20 p-3">
-                  <label className="block text-xs font-semibold text-charcoal/60">
+                <div className="rounded-card border border-charcoal/[0.06] bg-cream/30 p-4">
+                  <label className="block text-xs font-semibold text-stone">
                     Select a different owner:
                   </label>
                   <select
                     value={overrideOwner}
                     onChange={(e) => setOverrideOwner(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-charcoal/15 bg-white px-3 py-2 text-sm text-charcoal focus:border-teal-600 focus:outline-none"
+                    className="mt-2 w-full rounded-card border border-charcoal/10 bg-white px-4 py-2.5 text-sm text-charcoal focus:border-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-600/20"
                   >
                     <option value="">Choose owner...</option>
                     {OWNER_OPTIONS.map((o) => (
@@ -211,20 +236,20 @@ export function AIRevisionRouting({
         </div>
 
         {result && !loading && (
-          <footer className="flex items-center justify-end gap-2 border-t border-charcoal/10 px-5 py-3">
+          <footer className="flex items-center justify-end gap-3 border-t border-charcoal/[0.06] px-6 py-4">
             {!overrideMode ? (
               <>
                 <button
                   type="button"
                   onClick={() => setOverrideMode(true)}
-                  className="rounded-md border border-charcoal/15 bg-white px-3.5 py-2 text-sm font-medium text-charcoal hover:bg-cream"
+                  className="rounded-card border border-charcoal/10 bg-white px-4 py-2.5 text-sm font-medium text-charcoal transition-colors hover:bg-cream"
                 >
                   Override Routing
                 </button>
                 <button
                   type="button"
                   onClick={() => onConfirm(result)}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700"
+                  className="inline-flex items-center gap-2 rounded-card bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-700"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Confirm and Route
@@ -235,7 +260,7 @@ export function AIRevisionRouting({
                 <button
                   type="button"
                   onClick={() => setOverrideMode(false)}
-                  className="rounded-md border border-charcoal/15 bg-white px-3.5 py-2 text-sm font-medium text-charcoal hover:bg-cream"
+                  className="rounded-card border border-charcoal/10 bg-white px-4 py-2.5 text-sm font-medium text-charcoal transition-colors hover:bg-cream"
                 >
                   Cancel Override
                 </button>
@@ -245,7 +270,7 @@ export function AIRevisionRouting({
                   onClick={() =>
                     onConfirm({ ...result, owner: overrideOwner })
                   }
-                  className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-card bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Confirm with Override
