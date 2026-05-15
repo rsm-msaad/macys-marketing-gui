@@ -196,7 +196,7 @@ export function AICoworkerPanel({
                   <button
                     type="button"
                     onClick={() => onLaunchSkill(kind)}
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12px] font-medium text-white transition-colors"
+                    className="btn-interact mt-4 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12px] font-medium text-white transition-colors"
                     style={{ backgroundColor: m.accent }}
                   >
                     <Play className="h-3 w-3" />

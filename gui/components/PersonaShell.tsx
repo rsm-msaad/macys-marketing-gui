@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRightCircle, RotateCcw, Sparkles, X, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { springSmooth, useAnimatedNumber } from "@/lib/motion";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { AIRevisionRouting } from "@/components/AIRevisionRouting";
@@ -301,19 +303,36 @@ export function PersonaShell({
   const completedCount = steps?.filter((s) => s.status === "complete").length ?? 0;
   const totalSteps = steps?.length ?? 10;
 
+  const skuCount = useAnimatedNumber(context?.mock_data.sku_suggestions.length ?? 0);
+  const daysCount = useAnimatedNumber(context?.campaign_brief.filed_days_before_launch ?? 0);
+  const progressPct = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
   return (
     <div className="flex min-h-screen flex-col bg-cream">
+      {/* Top progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-charcoal/[0.04]">
+        <div
+          className="h-full bg-teal-600 progress-bar"
+          style={{ width: `${progressPct}%` }}
+        />
+      </div>
+
       <TopBar activePersonaId={personaId} />
 
       {/* Hero campaign header */}
       {context && state && (
-        <div className="border-b border-charcoal/[0.06] bg-surface px-8 py-6">
+        <motion.div
+          className="border-b border-charcoal/[0.06] bg-surface px-8 py-6"
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={springSmooth}
+        >
           <div className="mx-auto max-w-7xl">
             {/* Campaign selector row */}
             <button
               type="button"
               onClick={() => setCampaignsExpanded((v) => !v)}
-              className="mb-3 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone hover:text-charcoal"
+              className="btn-interact mb-3 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone hover:text-charcoal"
             >
               Campaign
               {campaignsExpanded ? (
@@ -323,26 +342,44 @@ export function PersonaShell({
               )}
             </button>
 
-            {campaignsExpanded && (
-              <div className="mb-4 max-w-sm">
-                <CampaignSidebar
-                  campaigns={campaigns ?? undefined}
-                  activeOwnerName={
-                    state && !state.is_complete
-                      ? getStepOwnerName(state.current_step)
-                      : null
-                  }
-                />
-              </div>
-            )}
+            <AnimatePresence>
+              {campaignsExpanded && (
+                <motion.div
+                  className="mb-4 max-w-sm"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <CampaignSidebar
+                    campaigns={campaigns ?? undefined}
+                    activeOwnerName={
+                      state && !state.is_complete
+                        ? getStepOwnerName(state.current_step)
+                        : null
+                    }
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Campaign name: HERO */}
-            <h1 className="font-display text-4xl font-extrabold tracking-tight text-charcoal md:text-5xl">
+            <motion.h1
+              className="font-display text-4xl font-extrabold tracking-tight text-charcoal md:text-5xl"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...springSmooth, delay: 0.1 }}
+            >
               {context.campaign_brief.name}
-            </h1>
+            </motion.h1>
 
             {/* Key metrics row */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-stone">
+            <motion.div
+              className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-stone"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               {context.campaign_brief.budget && (() => {
                 const vals = Object.values(context.campaign_brief.budget);
                 const total = vals.reduce((sum, v) => {
@@ -365,16 +402,16 @@ export function PersonaShell({
               })()}
               <span className="text-charcoal/20">|</span>
               <span className="text-[13px]">
-                {context.mock_data.sku_suggestions.length} SKUs
+                <span className="font-display font-bold text-charcoal">{skuCount}</span> SKUs
               </span>
               <span className="text-charcoal/20">|</span>
               <span className="text-[13px]">
-                {context.campaign_brief.filed_days_before_launch} days until launch
+                <span className="font-display font-bold text-charcoal">{daysCount}</span> days until launch
               </span>
               <span className="text-charcoal/20">|</span>
               {state && !state.is_complete && (
                 <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-teal-600">
-                  <span className="h-1.5 w-1.5 rounded-full bg-teal-600 animate-soft-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-teal-600 animate-glow" />
                   Step {state.current_step} of {totalSteps}: {steps?.find((s) => s.status === "active")?.name}
                 </span>
               )}
@@ -383,16 +420,16 @@ export function PersonaShell({
                   type="button"
                   onClick={handleReset}
                   disabled={resetting}
-                  className="inline-flex items-center gap-1.5 rounded-card border border-charcoal/10 bg-white px-3 py-1.5 text-xs font-medium text-stone hover:border-rose/40 hover:text-rose disabled:opacity-50"
+                  className="btn-interact inline-flex items-center gap-1.5 rounded-card border border-charcoal/10 bg-white px-3 py-1.5 text-xs font-medium text-stone hover:border-rose/40 hover:text-rose disabled:opacity-50"
                   title="Reset the demo campaign back to step 1"
                 >
                   <RotateCcw className="h-3 w-3" />
                   {resetting ? "Resetting..." : "Reset Demo"}
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       <div className="mx-auto flex w-full max-w-7xl flex-1 overflow-hidden">
@@ -432,27 +469,49 @@ export function PersonaShell({
       </div>
 
       {/* Floating AI drawer toggle button */}
-      {!drawerOpen && (
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-elevated transition-transform hover:scale-105 hover:bg-teal-700"
-          title="Open AI Coworker"
-        >
-          <Sparkles className="h-5 w-5" />
-        </button>
-      )}
+      <AnimatePresence>
+        {!drawerOpen && (
+          <motion.button
+            key="fab"
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-elevated animate-fab-pulse"
+            title="Open AI Coworker"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.1, rotate: 15 }}
+            whileTap={{ scale: 0.9 }}
+            transition={springSmooth}
+          >
+            <Sparkles className="h-5 w-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Floating AI drawer */}
-      {drawerOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-charcoal/10"
-            onClick={() => setDrawerOpen(false)}
-          />
-          {/* Drawer panel */}
-          <div className="fixed right-0 top-0 z-50 flex h-full w-[420px] max-w-[90vw] flex-col bg-white shadow-drawer animate-slide-in-right">
+      <AnimatePresence>
+        {drawerOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              className="fixed inset-0 z-40 bg-charcoal/15"
+              onClick={() => setDrawerOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+            {/* Drawer panel */}
+            <motion.div
+              key="drawer"
+              className="fixed right-0 top-0 z-50 flex h-full w-[420px] max-w-[90vw] flex-col bg-white shadow-drawer"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            >
             {/* Drawer header */}
             <div className="flex items-center justify-between border-b border-charcoal/[0.06] px-5 py-4">
               <div className="flex items-center gap-2">
@@ -489,9 +548,10 @@ export function PersonaShell({
                 <ChatSidebar context={context} onAction={handleAction} />
               </div>
             </div>
-          </div>
-        </>
-      )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <ResultsModal
         state={modal}

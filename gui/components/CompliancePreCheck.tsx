@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, ShieldCheck, XCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { springSmooth } from "@/lib/motion";
 
 import { callCompliance, type ComplianceCheckItem, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
@@ -149,10 +151,13 @@ export function CompliancePreCheck({
 
       {result && !loading && (
         <div className="space-y-3">
-          {rows.map((row) => (
-            <div
+          {rows.map((row, i) => (
+            <motion.div
               key={row.label}
               className="flex items-start gap-3 rounded-card border border-charcoal/[0.04] bg-cream/40 p-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...springSmooth, delay: i * 0.1 }}
             >
               <StatusPill status={row.item?.status ?? "warn"} />
               <div className="min-w-0 flex-1">
@@ -166,7 +171,7 @@ export function CompliancePreCheck({
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
 
           {/* Recommended action banner */}

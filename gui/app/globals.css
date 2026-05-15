@@ -47,6 +47,24 @@ h1, h2, h3, h4 {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
 
+/* Active step glow */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(11,123,138,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(11,123,138,0); }
+}
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Sparkle FAB pulse when AI is active */
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(11,123,138,0.2); }
+  50% { box-shadow: 0 4px 24px rgba(11,123,138,0.4); }
+}
+.animate-fab-pulse {
+  animation: fab-pulse 2s ease-in-out infinite;
+}
+
 /* Card hover lift */
 .card-hover {
   transition: box-shadow 0.25s ease, transform 0.25s ease;
@@ -56,42 +74,27 @@ h1, h2, h3, h4 {
   transform: translateY(-1px);
 }
 
-/* Stagger entrance for cards */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Button microinteraction */
+.btn-interact {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.animate-fade-up {
-  animation: fade-up 0.4s ease both;
+.btn-interact:hover {
+  transform: scale(1.02);
+}
+.btn-interact:active {
+  transform: scale(0.98);
 }
 
-/* Slide in from right for drawer */
-@keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-.animate-slide-in-right {
-  animation: slide-in-right 0.3s ease both;
+/* Progress bar at the top */
+.progress-bar {
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Vertical stepper connector line */
-.stepper-line {
-  position: absolute;
-  left: 15px;
-  top: 36px;
-  bottom: 0;
-  width: 2px;
-  background: #E5E2DB;
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
