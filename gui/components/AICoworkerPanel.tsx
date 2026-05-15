@@ -103,11 +103,11 @@ export function AICoworkerPanel({
       {/* Header */}
       <div className="flex items-center justify-between border-b border-charcoal/10 px-5 py-3">
         <h2 className="text-[10px] font-semibold uppercase tracking-widest text-teal-600">
-          AI Coworker
+          AI Tools
         </h2>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-teal-700">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-500" />
-          Active
+          Ready
         </span>
       </div>
 
@@ -115,11 +115,11 @@ export function AICoworkerPanel({
         {/* Activity feed */}
         <div>
           <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
-            Recent activity
+            Recent AI Work
           </h3>
           {events.length === 0 ? (
             <p className="text-xs text-charcoal/45 italic">
-              No AI activity in this session yet
+              Click a tool below to see what the AI does
             </p>
           ) : (
             <ul className="space-y-2">
@@ -156,7 +156,7 @@ export function AICoworkerPanel({
         {/* Invokable skills */}
         <div>
           <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
-            Now invokable
+            Available for this step
           </h3>
           <div className="grid gap-3 md:grid-cols-2">
             {skills.map((kind) => {
