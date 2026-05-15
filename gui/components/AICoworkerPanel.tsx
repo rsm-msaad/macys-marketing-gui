@@ -8,7 +8,13 @@ import type { SkillKind } from "@/components/SkillCard";
 
 const SKILL_META: Record<
   SkillKind,
-  { title: string; description: string; cta: string; accent: string }
+  {
+    title: string;
+    description: string;
+    cta: string;
+    accent: string;
+    stepType: "skill" | "automation";
+  }
 > = {
   segment: {
     title: "Audience Segment Builder",
@@ -16,6 +22,7 @@ const SKILL_META: Record<
       "RFM k means clustering on 50,000 customers. Returns three behavior based segments with counts, recency, frequency, and monetary lift.",
     cta: "Build Segments",
     accent: "#0B7B8A",
+    stepType: "automation",
   },
   dam: {
     title: "DAM Asset Finder",
@@ -23,6 +30,7 @@ const SKILL_META: Record<
       "Scans 5,000 DAM records, filters out degraded and expired assets, and ranks the rest by tag relevance plus recency and resolution boosts.",
     cta: "Search DAM",
     accent: "#D4A537",
+    stepType: "automation",
   },
   localize: {
     title: "Localization Generator",
@@ -30,6 +38,7 @@ const SKILL_META: Record<
       "Generates 40 regional/placement variants per master SKU, with regional pricing, regional inventory, and regionally voiced copy.",
     cta: "Generate Variants",
     accent: "#87A96B",
+    stepType: "automation",
   },
   analyze: {
     title: "Campaign Performance Analyzer",
@@ -37,6 +46,7 @@ const SKILL_META: Record<
       "Last touch attribution across channels, segments, and SKUs, plus a 14 day forecast with 80 percent confidence intervals.",
     cta: "Analyze Campaign",
     accent: "#C84B4B",
+    stepType: "automation",
   },
 };
 
@@ -159,15 +169,20 @@ export function AICoworkerPanel({
                   <div
                     className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
                     style={{
-                      backgroundColor: `${m.accent}1A`,
-                      color: m.accent,
+                      backgroundColor:
+                        m.stepType === "skill" ? "#0B7B8A1A" : "#78716C1A",
+                      color:
+                        m.stepType === "skill" ? "#0B7B8A" : "#57534E",
                     }}
                   >
                     <span
                       className="h-1.5 w-1.5 rounded-full"
-                      style={{ backgroundColor: m.accent }}
+                      style={{
+                        backgroundColor:
+                          m.stepType === "skill" ? "#0B7B8A" : "#78716C",
+                      }}
                     />
-                    Skill
+                    {m.stepType === "skill" ? "Skill" : "Automation"}
                   </div>
                   <h4 className="font-serif text-base font-semibold text-charcoal">
                     {m.title}
