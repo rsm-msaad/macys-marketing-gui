@@ -159,15 +159,25 @@ function SourcesPanel({ docs, tools }: { docs: string[]; tools?: string[] }) {
 export function CompliancePreCheck({
   context,
   onComplianceResult,
+  cachedOutput,
 }: {
   context: CampaignContext;
   onComplianceResult?: (result: ComplianceResult | null) => void;
+  cachedOutput?: ComplianceResult | null;
 }) {
   const [result, setResult] = useState<ComplianceResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // If we have a non-empty cached output, use it directly — skip the API call.
+    if (cachedOutput && Object.keys(cachedOutput).length > 0) {
+      setResult(cachedOutput);
+      setLoading(false);
+      onComplianceResult?.(cachedOutput);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -202,6 +212,8 @@ export function CompliancePreCheck({
             result_summary: { recommended_action: r.recommended_action, findings: 3 },
             captured_at: new Date().toISOString(),
           }).catch(() => {}); // best effort
+          // Also persist output to step_outputs so it's cached for future visits
+          storeEvidence(context.campaign_brief.campaign_id, "6a_output", r).catch(() => {});
         }
       })
       .catch((e) => {
@@ -216,7 +228,7 @@ export function CompliancePreCheck({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.campaign_brief.campaign_id]);
+  }, [context.campaign_brief.campaign_id, cachedOutput]);
 
   const rows: { label: string; item: ComplianceCheckItem | undefined }[] = [
     { label: "Brand Alignment", item: result?.brand_alignment },

@@ -392,7 +392,9 @@ def edit_step_output(campaign_id: str, step_id: str, body: EditOutputBody) -> di
     state_mod.edit_step_output(campaign_id, step_id, body.output)
     state_mod.set_step_review_status(campaign_id, step_id, "edited")
     state_mod.append_audit_log(campaign_id, "edit", body.persona, step_id)
-    return {"ok": True, "status": "edited"}
+    # Editing a step invalidates downstream (they were based on the old version)
+    invalidated = state_mod.invalidate_downstream_steps(campaign_id, step_id)
+    return {"ok": True, "status": "edited", "invalidated_downstream": invalidated}
 
 
 @campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/reject")
@@ -401,7 +403,9 @@ def reject_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
         raise HTTPException(status_code=400, detail="Rejection reason must be at least 10 characters.")
     state_mod.set_step_review_status(campaign_id, step_id, "rejected")
     state_mod.append_audit_log(campaign_id, "reject", body.persona, step_id, reason=body.reason)
-    return {"ok": True, "status": "rejected"}
+    # Rejection invalidates downstream steps
+    invalidated = state_mod.invalidate_downstream_steps(campaign_id, step_id)
+    return {"ok": True, "status": "rejected", "invalidated_downstream": invalidated}
 
 
 @campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/rerun")
@@ -413,7 +417,9 @@ def rerun_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
     state_mod.store_evidence(campaign_id, step_id, {})
     state_mod.set_step_review_status(campaign_id, step_id, "pending")
     state_mod.append_audit_log(campaign_id, "rerun", body.persona, step_id)
-    return {"ok": True, "status": "rerun_queued"}
+    # Rerun invalidates downstream steps (they depend on this step's output)
+    invalidated = state_mod.invalidate_downstream_steps(campaign_id, step_id)
+    return {"ok": True, "status": "rerun_queued", "invalidated_downstream": invalidated}
 
 
 @campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/escalate")

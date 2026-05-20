@@ -157,6 +157,7 @@ export type CampaignState = {
   is_complete: boolean;
   revisions: Record<string, RevisionEntry[]>;
   pending_revision: PendingRevision | null;
+  evidence?: Record<string, unknown>;
 };
 
 export async function fetchCampaignState(campaignId: string): Promise<CampaignState> {

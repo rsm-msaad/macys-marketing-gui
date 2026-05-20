@@ -134,12 +134,15 @@ const FIELDS: { key: keyof EditableBrief; label: string; rows: number }[] = [
 export function AIBriefCard({
   context,
   complianceCheck,
+  cachedOutput,
 }: {
   context: CampaignContext;
   complianceCheck: ComplianceResult | null;
+  cachedOutput?: BriefResult | null;
 }) {
   const [result, setResult] = useState<BriefResult | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [waitingForCompliance, setWaitingForCompliance] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Edit state
@@ -150,11 +153,23 @@ export function AIBriefCard({
   const [evidenceOpen, setEvidenceOpen] = useState(false);
 
   useEffect(() => {
-    if (!complianceCheck) {
-      setLoading(true);
+    // If we have a non-empty cached output, use it directly — skip the API call.
+    if (cachedOutput && Object.keys(cachedOutput).length > 0) {
+      setResult(cachedOutput);
+      setAiOriginal(cachedOutput);
+      setWaitingForCompliance(false);
+      setLoading(false);
       return;
     }
 
+    if (!complianceCheck) {
+      setWaitingForCompliance(true);
+      setLoading(false);
+      return;
+    }
+
+    // Compliance is done, no cache — fire the brief skill.
+    setWaitingForCompliance(false);
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -191,6 +206,8 @@ export function AIBriefCard({
             result_summary: { recommendation: r.ai_recommendation, risk_flags: r.risk_flags?.length ?? 0 },
             captured_at: new Date().toISOString(),
           }).catch(() => {});
+          // Persist output for caching
+          storeEvidence(context.campaign_brief.campaign_id, "6b_output", r).catch(() => {});
         }
       })
       .catch((e) => {
@@ -204,7 +221,7 @@ export function AIBriefCard({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.campaign_brief.campaign_id, complianceCheck]);
+  }, [context.campaign_brief.campaign_id, complianceCheck, cachedOutput]);
 
   function startEditing() {
     if (result) {
@@ -278,7 +295,21 @@ export function AIBriefCard({
         </div>
       </div>
 
-      {loading && (
+      {/* Waiting for compliance to complete — show muted queued state */}
+      {waitingForCompliance && !result && !loading && (
+        <div className="space-y-1 opacity-50">
+          <div className="flex items-center gap-2 text-xs text-charcoal/40">
+            <Loader2 className="h-3.5 w-3.5 text-charcoal/25" />
+            Waiting for Compliance Pre Check to complete...
+          </div>
+          <SkeletonField />
+          <SkeletonField />
+          <SkeletonField />
+        </div>
+      )}
+
+      {/* Actively running — compliance done, brief firing */}
+      {loading && !waitingForCompliance && (
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs text-charcoal/55">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />

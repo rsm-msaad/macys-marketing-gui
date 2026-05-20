@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AlertTriangle } from "lucide-react";
 
-import { type ComplianceResult } from "@/lib/ai_client";
+import { type ComplianceResult, type BriefResult } from "@/lib/ai_client";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 import { CompliancePreCheck } from "@/components/CompliancePreCheck";
 import { AIBriefCard } from "@/components/AIBriefCard";
+
+function isNonEmpty(obj: unknown): boolean {
+  return obj != null && typeof obj === "object" && Object.keys(obj as object).length > 0;
+}
 
 export function FinalApprovalContent({
   context,
@@ -18,6 +22,18 @@ export function FinalApprovalContent({
   const [complianceResult, setComplianceResult] = useState<ComplianceResult | null>(null);
   const [aiRecommendsRevise, setAiRecommendsRevise] = useState(false);
   const [overrideSubmit, setOverrideSubmit] = useState(false);
+
+  // Read cached AI outputs from evidence store (persisted by components after AI call).
+  // Keys "6a_output" and "6b_output" hold the raw AI result for replay.
+  const cachedCompliance = useMemo(() => {
+    const out = context.state.evidence?.["6a_output"];
+    return isNonEmpty(out) ? (out as ComplianceResult) : null;
+  }, [context.state.evidence]);
+
+  const cachedBrief = useMemo(() => {
+    const out = context.state.evidence?.["6b_output"];
+    return isNonEmpty(out) ? (out as BriefResult) : null;
+  }, [context.state.evidence]);
 
   function handleComplianceResult(result: ComplianceResult | null) {
     setComplianceResult(result);
@@ -39,10 +55,15 @@ export function FinalApprovalContent({
       <CompliancePreCheck
         context={context}
         onComplianceResult={handleComplianceResult}
+        cachedOutput={cachedCompliance}
       />
 
-      {/* AI Brief fires after compliance completes */}
-      <AIBriefCard context={context} complianceCheck={complianceResult} />
+      {/* AI Brief fires after compliance completes (or uses cache) */}
+      <AIBriefCard
+        context={context}
+        complianceCheck={complianceResult}
+        cachedOutput={cachedBrief}
+      />
 
       {/* Warning if AI recommends revisions */}
       {shouldBlockSubmit && canAct && (

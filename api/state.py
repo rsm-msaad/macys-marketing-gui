@@ -404,6 +404,7 @@ def _snapshot(s: dict[str, Any]) -> dict[str, Any]:
         "is_complete": s["current_step"] > LAST_STEP,
         "revisions": {k: list(v) for k, v in s.get("revisions", {}).items()},
         "pending_revision": dict(s["pending_revision"]) if s.get("pending_revision") else None,
+        "evidence": dict(s.get("evidence", {})),
     }
 
 
@@ -798,6 +799,69 @@ def edit_step_output(campaign_id: str, step_id: str, edited: dict[str, Any]) -> 
             return
         s["step_outputs"][step_id] = edited
     _persist()
+
+
+# ---------- cascade invalidation ----------
+
+# Substep ordering within Step 6.
+_SUBSTEP_ORDER = ["6a", "6b", "6c"]
+
+# Main step numbers (for full-step invalidation).
+_MAIN_STEPS = list(range(1, LAST_STEP + 1))
+
+
+def invalidate_downstream_steps(campaign_id: str, from_step: str) -> list[str]:
+    """Clear outputs and evidence for all steps downstream of `from_step`.
+
+    Handles both substep notation (6a/6b/6c) and main steps (1-10).
+    Also clears the AI output cache keys (e.g., "6a_output", "6b_output").
+    Returns the list of step IDs that were invalidated.
+    """
+    invalidated: list[str] = []
+
+    # Determine which step IDs to clear.
+    if from_step in _SUBSTEP_ORDER:
+        idx = _SUBSTEP_ORDER.index(from_step)
+        downstream = _SUBSTEP_ORDER[idx + 1 :]
+    else:
+        # Main step: clear all subsequent main steps and their substeps.
+        try:
+            step_num = int(from_step)
+        except ValueError:
+            return []
+        downstream = [str(s) for s in _MAIN_STEPS if s > step_num]
+        # Also include substeps of Step 6 if we're invalidating from step 5 or earlier.
+        if step_num <= 6:
+            downstream.extend(_SUBSTEP_ORDER)
+
+    if not downstream:
+        return []
+
+    # Build the full set of keys to clear: step IDs + their output cache keys.
+    keys_to_clear = list(downstream)
+    for sid in downstream:
+        keys_to_clear.append(f"{sid}_output")
+
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return []
+        for sid in keys_to_clear:
+            if sid in s.get("step_outputs", {}):
+                del s["step_outputs"][sid]
+                if sid not in invalidated:
+                    invalidated.append(sid)
+            ev = s.get("evidence", {})
+            if sid in ev:
+                del ev[sid]
+                if sid not in invalidated:
+                    invalidated.append(sid)
+            sr = s.get("step_review_status", {})
+            if sid in sr:
+                del sr[sid]
+    if invalidated:
+        _persist()
+    return invalidated
 
 
 # ---------- demo content (brief + mock per step data) ----------
