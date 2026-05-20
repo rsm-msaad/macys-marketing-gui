@@ -118,6 +118,12 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
         >
           Evidence
         </Link>
+        <Link
+          href="/docs"
+          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+        >
+          Docs
+        </Link>
         <button
           type="button"
           title="Settings (placeholder)"

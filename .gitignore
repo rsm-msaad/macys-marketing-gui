@@ -42,6 +42,8 @@ __pycache__/
 
 # extra
 docs/
+!gui/app/docs/
+!gui/components/docs/
 slides/
 AGENTS.md
 .codex/
