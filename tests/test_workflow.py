@@ -60,7 +60,27 @@ def run_workflow(case_input: str) -> str:
     DeepEval will score.
     """
 
-    raise NotImplementedError("Wire run_workflow() to your actual orchestrator / skill chain.")
+    # Route through the orchestrator's routing table to determine the next skill.
+    import sys
+    from pathlib import Path
+
+    ai = str(Path(__file__).resolve().parents[1] / "ai_engine")
+    if ai not in sys.path:
+        sys.path.insert(0, ai)
+    from orchestrator.routing_table import pick_next_step  # noqa: E402
+
+    state = {
+        "status": "submitted_by_sarah",
+        "campaign": {"title": case_input, "skus": [], "discount_pct": 25, "regions": ["NY"]},
+        "compliance_check": None,
+        "approval_brief": None,
+        "approval_decision": None,
+        "revision_routing": None,
+        "localized_variants": None,
+        "activation_schedule": None,
+    }
+    step, rule, step_type, _ = pick_next_step(state)
+    return f"Routed to {step} ({step_type}) via rule: {rule}"
 
 
 @pytest.mark.integration

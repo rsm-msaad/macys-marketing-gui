@@ -21,7 +21,7 @@ Examples to draw from:
 | *(add row 1)* | | | | |
 | *(add row 2)* | | | | |
 | *(add row 3)* | | | | |
-| *(add row 4)* | | | | |
+| Localization (Step 7) | Localization Manager | Reviews translations and regional pricing | Approves or requests re-generation | Must lock in before activation fires | Regional copy checked against style guide | | | | |
 | *(add row 5)* | | | | |
 
 At least **2 of these failures** should be the ones you specifically

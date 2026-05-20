@@ -17,7 +17,7 @@ For each review point, be specific about what the human sees:
 |---|---|---|---|---|---|
 | *(add row 1)* | | | | | |
 | *(add row 2)* | | | | | |
-| *(add row 3)* | | | | | |
+| SKU Selection (Step 3) | Campaign Manager | Reviews MAP exclusions and vendor commitments | Approves or deselects individual SKUs | Override comment required if diverging from recommendation | Score-based ranking with MAP compliance | | | | | |
 | *(add row 4)* | | | | | |
 | *(add row 5)* | | | | | |
 | *(add row 6)* | | | | | |
