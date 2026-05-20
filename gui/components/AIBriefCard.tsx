@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   FileText,
   Loader2,
   Pencil,
   RotateCcw,
+  Wrench,
   XCircle,
 } from "lucide-react";
 
@@ -27,6 +30,52 @@ function SkeletonField() {
     <div className="space-y-1.5 py-2">
       <div className="h-2.5 w-20 animate-pulse rounded bg-charcoal/10" />
       <div className="h-3 w-3/4 animate-pulse rounded bg-charcoal/8" />
+    </div>
+  );
+}
+
+function BriefConfidence({ result }: { result: BriefResult }) {
+  const hasRisks = result.risk_flags && result.risk_flags.length > 0;
+  const recLower = result.ai_recommendation.toLowerCase();
+  const isRevise = recLower.includes("revise") || recLower.includes("reject");
+  const level = isRevise ? "low" : hasRisks ? "medium" : "high";
+  const styles = {
+    high: { dot: "bg-sage", text: "text-sage", label: "High confidence" },
+    medium: { dot: "bg-mustard", text: "text-mustard", label: "Medium confidence" },
+    low: { dot: "bg-soft_red", text: "text-soft_red", label: "Low confidence" },
+  };
+  const s = styles[level];
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-[10px] font-medium ${s.text}`}>
+      <span className={`h-2 w-2 rounded-full ${s.dot}`} />
+      {s.label}
+    </span>
+  );
+}
+
+function BriefSourcesPanel({ docs }: { docs: string[] }) {
+  const [open, setOpen] = useState(false);
+  if (!docs || docs.length === 0) return null;
+  return (
+    <div className="pt-2">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1 text-[10px] font-medium text-charcoal/45 hover:text-charcoal/65"
+      >
+        {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        Sources used ({docs.length} docs)
+      </button>
+      {open && (
+        <div className="mt-1.5 space-y-1 pl-4">
+          {docs.map((d) => (
+            <div key={d} className="flex items-center gap-1.5 text-[10px] text-charcoal/50">
+              <FileText className="h-3 w-3 text-charcoal/30" />
+              {d}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -177,6 +226,7 @@ export function AIBriefCard({
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
             AI Approval Brief
           </span>
+          {result && !loading && <BriefConfidence result={result} />}
           {wasEdited && (
             <span className="text-[10px] italic text-charcoal/45">
               (manually edited)
@@ -202,7 +252,7 @@ export function AIBriefCard({
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs text-charcoal/55">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
-            AI brief generating...
+            Drafting approval brief from compliance findings...
           </div>
           <SkeletonField />
           <SkeletonField />
@@ -318,12 +368,8 @@ export function AIBriefCard({
             </div>
           )}
 
-          {/* Retrieved docs */}
-          {result.retrieved_docs && result.retrieved_docs.length > 0 && (
-            <div className="pt-2 text-[10px] font-mono text-charcoal/40">
-              Sources: {result.retrieved_docs.join(", ")}
-            </div>
-          )}
+          {/* Sources panel */}
+          <BriefSourcesPanel docs={result.retrieved_docs ?? []} />
         </div>
       )}
     </div>
