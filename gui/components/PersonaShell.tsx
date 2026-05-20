@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRightCircle, Database, MessageCircle, RotateCcw, X } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
+import { FloatingPersonaAvatar } from "@/components/FloatingPersonaAvatar";
 import { AIRevisionRouting } from "@/components/AIRevisionRouting";
 import { ApprovalCascade } from "@/components/ApprovalCascade";
 import { CampaignSidebar } from "@/components/CampaignSidebar";
@@ -344,6 +345,7 @@ export function PersonaShell({
 
   return (
     <div className="flex min-h-screen flex-col bg-cream">
+      <FloatingPersonaAvatar personaId={personaId} />
       <TopBar activePersonaId={personaId} />
 
       <div className="flex flex-1 overflow-hidden">
