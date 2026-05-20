@@ -1,0 +1,34 @@
+{
+  "test_cases": [
+    {
+      "id": "copy_change",
+      "revision_comment": "The headline feels too aggressive. Tone it down and make it warmer for the Mother's Day audience.",
+      "expected_change_type": "copy"
+    },
+    {
+      "id": "imagery_change",
+      "revision_comment": "The hero image feels too cold and wintery. We need warm spring tones. Replace with a lifestyle shot.",
+      "expected_change_type": "imagery"
+    },
+    {
+      "id": "pricing_change",
+      "revision_comment": "The up to 40 percent off line in the hero needs the starting at minimum, and confirm Lancome is cleared with Merch.",
+      "expected_change_type": "pricing"
+    },
+    {
+      "id": "targeting_change",
+      "revision_comment": "We should be targeting Gold tier members only for this campaign, not all loyalty members.",
+      "expected_change_type": "targeting"
+    },
+    {
+      "id": "legal_issue",
+      "revision_comment": "Legal flagged that the disclaimer text is not visible enough on the email banner. Need minimum font size compliance.",
+      "expected_change_type": "legal"
+    },
+    {
+      "id": "localization_issue",
+      "revision_comment": "The Spanish translation for the Puerto Rico market sounds too formal. Make it more conversational.",
+      "expected_change_type": "localization"
+    }
+  ]
+}

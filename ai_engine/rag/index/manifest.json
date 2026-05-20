@@ -1,0 +1,21 @@
+{
+  "built_at": "2026-05-12T04:50:31Z",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dim": 384,
+  "total_chunks": 78,
+  "total_docs": 12,
+  "doc_ids": [
+    "APPRV-POL-2025-003",
+    "BRAND-GL-2026-001",
+    "COMP-EX-2026-001",
+    "DAM-TAG-2025-005",
+    "FAQ-INT-2026-001",
+    "LEGAL-DIS-2026-002",
+    "LOC-STYLE-2025-002",
+    "PRICE-RULES-2026-001",
+    "RETRO-Q4-2025",
+    "RETRO-SP-2025-BTY",
+    "TICKET-INC-2025-4471",
+    "TICKET-INC-2026-0212"
+  ]
+}

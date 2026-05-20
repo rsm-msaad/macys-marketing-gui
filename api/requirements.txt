@@ -1,0 +1,19 @@
+# Render deploys the FastAPI app via `pip install -r api/requirements.txt`.
+# Versions match what works in the local uv project (see pyproject.toml /
+# uv.lock for exact pins).
+fastapi>=0.115
+uvicorn>=0.30
+pydantic>=2.7
+numpy>=2.0
+polars>=1.0
+scikit-learn>=1.4
+requests>=2.32
+python-dotenv>=1.0
+
+# M3 brain dependencies (compliance, brief, revision routing, cascade).
+# These power the /api/ai/* endpoints. Render will install PyTorch as a
+# transitive of sentence-transformers, which is large (around 500 MB) and
+# pushes the build time to 5 to 10 minutes.
+openai>=1.0.0
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2

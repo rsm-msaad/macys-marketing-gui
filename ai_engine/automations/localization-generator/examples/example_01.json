@@ -1,0 +1,72 @@
+{
+  "name": "Spring Beauty Refresh, four region rollout",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0511",
+    "status": "approved",
+    "campaign": {
+      "title": "Spring Beauty Refresh",
+      "copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+      "tagline": "The Magic of Macys",
+      "regions": ["NY", "CA", "FL", "TX"],
+      "discount_pct": 40
+    },
+    "approval_decision": "approve"
+  },
+  "retrieval_calls": [
+    "localization rules for FL including holidays pricing variations",
+    "localization rules for TX including Dia de los Muertos and Spanish editor review",
+    "DAM asset usage rights and tagging for regional campaigns"
+  ],
+  "mcp_calls": [
+    {"tool": "find_dam_assets", "args": {"category": "Beauty", "region": "FL", "rights_required": "active"}, "result": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-021"]},
+    {"tool": "find_dam_assets", "args": {"category": "Beauty", "region": "TX", "rights_required": "active"}, "result": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-022"]},
+    {"tool": "generate_locale_variants", "args": {"copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.", "target_language": "es"}, "result": "Hasta 40 por ciento de descuento, desde 10 por ciento de descuento, en tus marcas favoritas de belleza. Renueva tu rutina para la primavera."}
+  ],
+  "helper_calls": [
+    {"fn": "region_to_language", "args": {"region": "NY"}, "result": "en"},
+    {"fn": "region_to_language", "args": {"region": "FL"}, "result": "es"},
+    {"fn": "holiday_overlay", "args": {"region": "FL", "campaign_window_month": 5}, "result": null}
+  ],
+  "output_state_localized_variants": [
+    {
+      "region": "NY",
+      "language": "en",
+      "localized_copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+      "localized_tagline": "The Magic of Macys",
+      "asset_ids": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-021"],
+      "pricing_note": "Standard continental pricing applies.",
+      "holiday_overlay": null,
+      "retrieved_docs": ["LOC-STYLE-2025-002", "DAM-TAG-2025-005"]
+    },
+    {
+      "region": "CA",
+      "language": "en",
+      "localized_copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+      "localized_tagline": "The Magic of Macys",
+      "asset_ids": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-021"],
+      "pricing_note": "Standard continental pricing applies.",
+      "holiday_overlay": null,
+      "retrieved_docs": ["LOC-STYLE-2025-002", "DAM-TAG-2025-005"]
+    },
+    {
+      "region": "FL",
+      "language": "es",
+      "localized_copy": "Hasta 40 por ciento de descuento, desde 10 por ciento de descuento, en tus marcas favoritas de belleza. Renueva tu rutina para la primavera.",
+      "localized_tagline": "La Magia de Macys",
+      "asset_ids": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-021"],
+      "pricing_note": "Standard continental pricing applies.",
+      "holiday_overlay": null,
+      "retrieved_docs": ["LOC-STYLE-2025-002", "DAM-TAG-2025-005"]
+    },
+    {
+      "region": "TX",
+      "language": "es",
+      "localized_copy": "Hasta 40 por ciento de descuento, desde 10 por ciento de descuento, en tus marcas favoritas de belleza. Renueva tu rutina para la primavera.",
+      "localized_tagline": "La Magia de Macys",
+      "asset_ids": ["DAM-BTY-SP26-014", "DAM-BTY-SP26-022"],
+      "pricing_note": "Standard continental pricing applies.",
+      "holiday_overlay": null,
+      "retrieved_docs": ["LOC-STYLE-2025-002", "DAM-TAG-2025-005"]
+    }
+  ]
+}

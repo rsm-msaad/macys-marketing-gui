@@ -1,0 +1,48 @@
+{
+  "name": "Clean Beauty campaign passes pre check",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0408",
+    "status": "submitted_by_sarah",
+    "submitted_at": "2026-04-08T11:15:00Z",
+    "campaign": {
+      "title": "Cleanse and Glow Refresh",
+      "audience_segment": "Beauty Loyalists",
+      "copy": "Up to 30 percent off skincare, starting at 10 percent off. Refresh your routine with the picks our beauty editors love.",
+      "tagline": "Find Your Magic",
+      "skus": ["BTY-200", "BTY-201"],
+      "discount_pct": 30,
+      "regions": ["NY"],
+      "estimated_spend": 180000,
+      "campaign_manager": "Merna"
+    },
+    "compliance_check": null
+  },
+  "retrieval_calls": [
+    "banned words and approved taglines for campaign copy",
+    "required legal disclaimers for percent off pricing claims and Star Rewards multipliers",
+    "MAP minimum advertised price and brand discount exclusions",
+    "compliance flag examples for Beauty"
+  ],
+  "mcp_calls": [
+    {"tool": "check_pricing_conflicts", "args": {"skus": ["BTY-200", "BTY-201"], "discount_pct": 30}, "result": {"violations": []}}
+  ],
+  "output_state_compliance_check": {
+    "brand_alignment": {
+      "status": "pass",
+      "reason": "Tagline matches approved list. No banned words detected in copy.",
+      "cited_doc": "BRAND-GL-2026-001"
+    },
+    "disclaimers": {
+      "status": "pass",
+      "reason": "Up to claim includes the required starting at minimum.",
+      "cited_doc": "LEGAL-DIS-2026-002"
+    },
+    "pricing_cross_check": {
+      "status": "pass",
+      "reason": "Neither BTY-200 nor BTY-201 is on the MAP enforced brand list at the requested discount.",
+      "cited_doc": "PRICE-RULES-2026-001"
+    },
+    "recommended_action": "proceed",
+    "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001", "COMP-EX-2026-001"]
+  }
+}

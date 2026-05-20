@@ -1,0 +1,239 @@
+{
+  "campaign_id": "CAMP-2026-0512",
+  "status": "scheduled",
+  "submitted_at": "2026-05-12T09:00:00Z",
+  "campaign": {
+    "title": "Spring Beauty Refresh, Clean",
+    "audience_segment": "Beauty Loyalists",
+    "copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+    "tagline": "The Magic of Macys",
+    "skus": [
+      "BTY-200",
+      "BTY-201",
+      "BTY-202"
+    ],
+    "discount_pct": 40,
+    "regions": [
+      "NY",
+      "CA",
+      "FL",
+      "TX"
+    ],
+    "estimated_spend": 350000,
+    "campaign_manager": "Merna"
+  },
+  "compliance_check": {
+    "brand_alignment": {
+      "status": "pass",
+      "reason": "Tagline 'The Magic of Macys' is on the pre-approved list per BRAND-GL-2026-001. No banned words detected in copy ('cheap', 'basic', 'last chance', 'clearance blowout', 'dirt cheap', 'unbeatable', 'lowest prices anywhere', 'nobody beats Macys' are all absent). Copy does not use 'save big' or 'huge savings' as a headline.",
+      "cited_doc": "BRAND-GL-2026-001"
+    },
+    "disclaimers": {
+      "status": "pass",
+      "reason": "The 'up to 40 percent off' claim correctly includes the required minimum clause 'starting at 10 percent off' in the same line of copy, satisfying both BRAND-GL-2026-001 tiered pricing language requirements and LEGAL-DIS-2026-002 FTC representative pricing guidance. No compare-at, financing, sweepstakes, or endorsement claims are present that would trigger additional disclaimer requirements.",
+      "cited_doc": "LEGAL-DIS-2026-002"
+    },
+    "pricing_cross_check": {
+      "status": "pass",
+      "reason": "MCP tool check_pricing_conflicts returned no conflicts across all three SKUs (BTY-200, BTY-201, BTY-202) at 40 percent discount. No MAP-enforced brands (Lancome, Estee Lauder, Clinique, La Mer, Dior Beauty, Levi's, Coach, Tag Heuer) were identified in the SKU list. No written Merchandising approval is required.",
+      "cited_doc": "PRICE-RULES-2026-001"
+    },
+    "recommended_action": "proceed",
+    "retrieved_docs": [
+      "BRAND-GL-2026-001",
+      "LEGAL-DIS-2026-002",
+      "PRICE-RULES-2026-001",
+      "COMP-EX-2026-001"
+    ]
+  },
+  "approval_brief": {
+    "campaign_goal": "Drive Beauty Loyalists to refresh their spring skincare routine with up to 40 percent off qualifying Beauty brands across NY, CA, FL, and TX.",
+    "target_audience": "Beauty Loyalists, customers who purchased prestige Beauty in the prior 12 months and hold an active Star Rewards account.",
+    "expected_roi": "Based on Spring 2025 Beauty benchmarks (RETRO-SP-2025-BTY), expect paid social ROAS around 4.2, email open rate around 32 percent, and in-store conversion uplift around 18 percent for the Beauty Loyalists segment.",
+    "risk_flags": [
+      "Segment learning from RETRO-SP-2025-BTY indicates Beauty Loyalists respond better to product depth and editorial content (founder stories, ritual videos) than to discount messaging — a discount-led creative approach may underperform benchmark ROAS of 4.2.",
+      "All three compliance checks passed with no flags; no MAP-enforced brands are present in the SKU list and no Merchandising approval is required."
+    ],
+    "ai_recommendation": "approve — all compliance checks passed with no fails or warns, and historical benchmarks from the Spring 2025 Beauty retro support a viable ROI outlook, though the creative team should consider supplementing discount messaging with product-depth content to maximize Loyalist engagement.",
+    "retrieved_docs": [
+      "RETRO-SP-2025-BTY",
+      "RETRO-Q4-2025"
+    ]
+  },
+  "approval_decision": "approved",
+  "revision_routing": null,
+  "localized_variants": {
+    "current_state": {
+      "campaign_id": "CAMP-2026-0512",
+      "status": "in_localization",
+      "submitted_at": "2026-05-12T09:00:00Z",
+      "campaign": {
+        "title": "Spring Beauty Refresh, Clean",
+        "audience_segment": "Beauty Loyalists",
+        "copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+        "tagline": "The Magic of Macys",
+        "skus": [
+          "BTY-200",
+          "BTY-201",
+          "BTY-202"
+        ],
+        "discount_pct": 40,
+        "regions": [
+          "NY",
+          "CA",
+          "FL",
+          "TX"
+        ],
+        "estimated_spend": 350000,
+        "campaign_manager": "Merna"
+      },
+      "compliance_check": {
+        "brand_alignment": {
+          "status": "pass",
+          "reason": "Tagline 'The Magic of Macys' is on the pre-approved list per BRAND-GL-2026-001. No banned words detected in copy ('cheap', 'basic', 'last chance', 'clearance blowout', 'dirt cheap', 'unbeatable', 'lowest prices anywhere', 'nobody beats Macys' are all absent). Copy does not use 'save big' or 'huge savings' as a headline.",
+          "cited_doc": "BRAND-GL-2026-001"
+        },
+        "disclaimers": {
+          "status": "pass",
+          "reason": "The 'up to 40 percent off' claim correctly includes the required minimum clause 'starting at 10 percent off' in the same line of copy, satisfying both BRAND-GL-2026-001 tiered pricing language requirements and LEGAL-DIS-2026-002 FTC representative pricing guidance. No compare-at, financing, sweepstakes, or endorsement claims are present that would trigger additional disclaimer requirements.",
+          "cited_doc": "LEGAL-DIS-2026-002"
+        },
+        "pricing_cross_check": {
+          "status": "pass",
+          "reason": "MCP tool check_pricing_conflicts returned no conflicts across all three SKUs (BTY-200, BTY-201, BTY-202) at 40 percent discount. No MAP-enforced brands (Lancome, Estee Lauder, Clinique, La Mer, Dior Beauty, Levi's, Coach, Tag Heuer) were identified in the SKU list. No written Merchandising approval is required.",
+          "cited_doc": "PRICE-RULES-2026-001"
+        },
+        "recommended_action": "proceed",
+        "retrieved_docs": [
+          "BRAND-GL-2026-001",
+          "LEGAL-DIS-2026-002",
+          "PRICE-RULES-2026-001",
+          "COMP-EX-2026-001"
+        ]
+      },
+      "approval_brief": {
+        "campaign_goal": "Drive Beauty Loyalists to refresh their spring skincare routine with up to 40 percent off qualifying Beauty brands across NY, CA, FL, and TX.",
+        "target_audience": "Beauty Loyalists, customers who purchased prestige Beauty in the prior 12 months and hold an active Star Rewards account.",
+        "expected_roi": "Based on Spring 2025 Beauty benchmarks (RETRO-SP-2025-BTY), expect paid social ROAS around 4.2, email open rate around 32 percent, and in-store conversion uplift around 18 percent for the Beauty Loyalists segment.",
+        "risk_flags": [
+          "Segment learning from RETRO-SP-2025-BTY indicates Beauty Loyalists respond better to product depth and editorial content (founder stories, ritual videos) than to discount messaging — a discount-led creative approach may underperform benchmark ROAS of 4.2.",
+          "All three compliance checks passed with no flags; no MAP-enforced brands are present in the SKU list and no Merchandising approval is required."
+        ],
+        "ai_recommendation": "approve — all compliance checks passed with no fails or warns, and historical benchmarks from the Spring 2025 Beauty retro support a viable ROI outlook, though the creative team should consider supplementing discount messaging with product-depth content to maximize Loyalist engagement.",
+        "retrieved_docs": [
+          "RETRO-SP-2025-BTY",
+          "RETRO-Q4-2025"
+        ]
+      },
+      "approval_decision": "approved",
+      "revision_routing": null,
+      "localized_variants": [
+        {
+          "region": "NY",
+          "language": "en",
+          "localized_copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+          "localized_tagline": "The Magic of Macys",
+          "asset_ids": [
+            "DAM-BTY-SP26-001",
+            "DAM-BTY-SP26-002"
+          ],
+          "pricing_note": "Standard continental pricing applies.",
+          "holiday_overlay": null,
+          "retrieved_docs": [
+            "LOC-STYLE-2025-002",
+            "DAM-TAG-2025-005"
+          ]
+        },
+        {
+          "region": "CA",
+          "language": "en",
+          "localized_copy": "Up to 40 percent off, starting at 10 percent off, on your favorite Beauty brands. Refresh your routine for spring.",
+          "localized_tagline": "The Magic of Macys",
+          "asset_ids": [
+            "DAM-BTY-SP26-001",
+            "DAM-BTY-SP26-003"
+          ],
+          "pricing_note": "Standard continental pricing applies.",
+          "holiday_overlay": null,
+          "retrieved_docs": [
+            "LOC-STYLE-2025-002",
+            "DAM-TAG-2025-005"
+          ]
+        },
+        {
+          "region": "FL",
+          "language": "es",
+          "localized_copy": "Hasta 40 por ciento de descuento, desde 10 por ciento de descuento, en tus marcas favoritas de belleza. Renueva tu rutina para la primavera.",
+          "localized_tagline": "La Magia de Macys",
+          "asset_ids": [
+            "DAM-BTY-SP26-014",
+            "DAM-BTY-SP26-021"
+          ],
+          "pricing_note": "Standard continental pricing applies.",
+          "holiday_overlay": null,
+          "retrieved_docs": [
+            "LOC-STYLE-2025-002",
+            "DAM-TAG-2025-005"
+          ]
+        },
+        {
+          "region": "TX",
+          "language": "es",
+          "localized_copy": "Hasta 40 por ciento de descuento, desde 10 por ciento de descuento, en tus marcas favoritas de belleza. Renueva tu rutina para la primavera.",
+          "localized_tagline": "La Magia de Macys",
+          "asset_ids": [
+            "DAM-BTY-SP26-014",
+            "DAM-BTY-SP26-022"
+          ],
+          "pricing_note": "Standard continental pricing applies.",
+          "holiday_overlay": null,
+          "retrieved_docs": [
+            "LOC-STYLE-2025-002",
+            "DAM-TAG-2025-005"
+          ]
+        }
+      ],
+      "activation_schedule": null
+    }
+  },
+  "activation_schedule": {
+    "schedule_by_region": [
+      {
+        "region": "NY",
+        "timezone": "America/New_York",
+        "email_send_utc": "2026-05-13T14:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "CA",
+        "timezone": "America/Los_Angeles",
+        "email_send_utc": "2026-05-13T17:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "FL",
+        "timezone": "America/New_York",
+        "email_send_utc": "2026-05-13T14:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      },
+      {
+        "region": "TX",
+        "timezone": "America/Chicago",
+        "email_send_utc": "2026-05-13T15:00:00Z",
+        "paid_social_window_local": "18:00 to 21:00",
+        "display_frequency_cap": 3,
+        "signage_window_local": "10:00 to 21:00"
+      }
+    ],
+    "human_confirmation_required": true,
+    "retrieved_docs": [
+      "RETRO-SP-2025-BTY"
+    ]
+  }
+}

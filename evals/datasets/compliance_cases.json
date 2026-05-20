@@ -1,0 +1,88 @@
+{
+  "test_cases": [
+    {
+      "id": "all_pass",
+      "input": {
+        "campaign_id": "eval-001",
+        "title": "Spring Beauty Event",
+        "copy": "Save up to 25 percent off select beauty favorites this spring.",
+        "tagline": "The Magic of Macys",
+        "skus": ["SKU-001", "SKU-002"],
+        "discount_pct": 25.0,
+        "regions": ["NY", "FL"],
+        "audience_segment": "Beauty Loyalists"
+      },
+      "expected_action": "proceed"
+    },
+    {
+      "id": "banned_word_blowout",
+      "input": {
+        "campaign_id": "eval-002",
+        "title": "Beauty Blowout",
+        "copy": "Our biggest blowout sale ever with unbelievable deals.",
+        "tagline": "The Magic of Macys",
+        "skus": ["SKU-003"],
+        "discount_pct": 20.0,
+        "regions": ["NY"],
+        "audience_segment": "VIP Loyalists"
+      },
+      "expected_action": "revise"
+    },
+    {
+      "id": "missing_disclaimer",
+      "input": {
+        "campaign_id": "eval-003",
+        "title": "Summer Savings",
+        "copy": "Up to 40 percent off everything in store.",
+        "tagline": "Find Your Magic",
+        "skus": ["SKU-004", "SKU-005"],
+        "discount_pct": 40.0,
+        "regions": ["NY", "CA", "FL", "TX"],
+        "audience_segment": "All Members"
+      },
+      "expected_action": "revise"
+    },
+    {
+      "id": "bad_tagline",
+      "input": {
+        "campaign_id": "eval-004",
+        "title": "Holiday Glow Up",
+        "copy": "Get holiday ready with 20 percent off beauty essentials.",
+        "tagline": "Glow Up Season",
+        "skus": ["SKU-006"],
+        "discount_pct": 20.0,
+        "regions": ["NY"],
+        "audience_segment": "Gold Tier"
+      },
+      "expected_action": "revise"
+    },
+    {
+      "id": "map_violation",
+      "input": {
+        "campaign_id": "eval-005",
+        "title": "Coach Clearance",
+        "copy": "Take 50 percent off select Coach handbags.",
+        "tagline": "The Magic of Macys",
+        "skus": ["SKU-COACH-001", "SKU-COACH-002"],
+        "discount_pct": 50.0,
+        "regions": ["NY", "CA"],
+        "audience_segment": "Platinum Members"
+      },
+      "expected_action": "revise"
+    },
+    {
+      "id": "clean_moderate_discount",
+      "input": {
+        "campaign_id": "eval-006",
+        "title": "Back to School Basics",
+        "copy": "Save 15 percent on backpacks and dorm essentials this August.",
+        "tagline": "The Magic of Macys",
+        "skus": ["SKU-BTS-001", "SKU-BTS-002", "SKU-BTS-003"],
+        "discount_pct": 15.0,
+        "regions": ["NY", "FL", "TX"],
+        "audience_segment": "Parents 30 to 50"
+      },
+      "expected_action": "proceed"
+    }
+  ]
+}

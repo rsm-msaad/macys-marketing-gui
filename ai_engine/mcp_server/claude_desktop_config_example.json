@@ -1,0 +1,10 @@
+{
+  "_comment": "Claude Desktop config location on macOS is ~/Library/Application Support/Claude/claude_desktop_config.json. If the file does not exist yet, open Claude Desktop once, then close it, and the empty file will appear. Open that file, merge the mcpServers block below into your config (preserving any other servers you already have), replace the cwd with the absolute path to your local clone of this repo, then restart Claude Desktop.",
+  "mcpServers": {
+    "macys-marketing": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/path/to/mgt449-milestone03-prep"
+    }
+  }
+}

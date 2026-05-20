@@ -1,12 +1,13 @@
 [project]
-name = "milestone04"
+name = "milestone02"
 version = "0.1.0"
-description = "Milestone 04 student starter — GenAI for Business"
+description = "Milestone 02 student starter — GenAI for Business"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "numpy>=2.0",
     "polars>=1.0",
+    "plotnine>=0.13",
     "openai>=1.40",
     "python-dotenv>=1.0",
     "pydantic>=2.7",
@@ -14,19 +15,43 @@ dependencies = [
     "ipython>=8.0",
     "requests>=2.32",
     "pyarrow>=17",
-    "mcp>=1.27.1",
+    "scikit-learn>=1.8.0",
+    "faker>=40.15.0",
+    "pandas>=3.0.2",
+    "fastapi>=0.136.1",
+    "uvicorn>=0.46.0",
+    "faiss-cpu>=1.13.2",
+    "sentence-transformers>=5.5.0",
+    "torch>=2.0",
+    "httpx>=0.28.1",
+    "python-multipart>=0.0.28",
+    "bcrypt>=5.0.0",
+    "pyjwt>=2.12.1",
 ]
 
 [dependency-groups]
 dev = [
+    "deepeval>=4.0.2",
     "pytest>=8.0",
     "ruff>=0.5",
-    "deepeval>=2.0",
 ]
+
+# Pull torch from the CPU only wheel index so Render does not get the
+# CUDA build (torch plus nvidia cublas plus cudnn plus triton, around
+# 1.5 GB total, which OOM kills the 512 MB free tier). The explicit flag
+# on the index means uv only uses this index for packages that name it
+# via [tool.uv.sources] below, so the rest of the dependency tree still
+# resolves against the standard PyPI.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["tests"]
 markers = [
     "integration: tests that make real network calls to the TritonAI API (skipped by default)",
 ]

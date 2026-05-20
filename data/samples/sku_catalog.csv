@@ -1,0 +1,101 @@
+sku_id,product_name,category,subcategory,brand,base_price,season,inventory_count,supplier
+1,INC Sleepwear Purpose,Apparel,Sleepwear,INC,83.88,Summer,1243,Macy's Direct
+2,Nike Athletic Brother,Shoes,Athletic,Nike,284.01,All,1423,Premier Apparel Co
+3,Hotel Collection Bath Ago,Home,Bath,Hotel Collection,460.45,Fall,204,Footwear Partners LLC
+4,Dior Skincare Site,Beauty,Skincare,Dior,59.24,Spring,1251,Footwear Partners LLC
+5,INC Activewear Face,Apparel,Activewear,INC,32.56,Spring,249,Accent Accessories Inc
+6,INC Outerwear Election,Apparel,Outerwear,INC,151.45,Summer,689,Macy's Direct
+7,Style & Co Dresse Dog,Apparel,Dresses,Style & Co,117.5,Summer,638,Premier Apparel Co
+8,Tory Burch Belt Chair,Accessories,Belts,Tory Burch,216.14,Winter,1226,Macy's Direct
+9,Hotel Collection Furniture Since,Home,Furniture,Hotel Collection,578.77,Fall,198,Footwear Partners LLC
+10,Cuisinart Luggage Blue,Home,Luggage,Cuisinart,248.2,All,895,Accent Accessories Inc
+11,Style & Co Outerwear Require,Apparel,Outerwear,Style & Co,165.5,Fall,20,HomeStyle Imports
+12,Nike Sandal Sit,Shoes,Sandals,Nike,119.52,Winter,983,Vendor Marketplace
+13,Michael Kors Handbag Wait,Accessories,Handbags,Michael Kors,293.77,Summer,852,Footwear Partners LLC
+14,Tommy Hilfiger Outerwear Offer,Apparel,Outerwear,Tommy Hilfiger,161.92,Summer,424,Global Beauty Group
+15,Style & Co Top Begin,Apparel,Tops,Style & Co,29.96,Winter,894,Vendor Marketplace
+16,INC Pant Performance,Apparel,Pants,INC,81.47,All,1014,Macy's Direct
+17,INC Outerwear Knowledge,Apparel,Outerwear,INC,147.65,All,572,Global Beauty Group
+18,Chanel Makeup Almost,Beauty,Makeup,Chanel,156.92,Winter,422,Global Beauty Group
+19,Dior Skincare All,Beauty,Skincare,Dior,131.79,Fall,965,HomeStyle Imports
+20,INC Activewear Better,Apparel,Activewear,INC,75.88,All,841,HomeStyle Imports
+21,KitchenAid Bedding Discover,Home,Bedding,KitchenAid,116.15,All,1135,Global Beauty Group
+22,Levi's Suit Early,Apparel,Suits,Levi's,73.62,Spring,1167,Accent Accessories Inc
+23,Tommy Hilfiger Suit Mouth,Apparel,Suits,Tommy Hilfiger,117.65,Winter,1109,Accent Accessories Inc
+24,Levi's Top Play,Apparel,Tops,Levi's,90.38,Winter,1317,Macy's Direct
+25,Dior Skincare Agreement,Beauty,Skincare,Dior,148.06,Fall,242,Premier Apparel Co
+26,Coach Watche Option,Accessories,Watches,Coach,636.5,Summer,390,Vendor Marketplace
+27,Alfani Top Decide,Apparel,Tops,Alfani,221.23,Fall,1091,Macy's Direct
+28,Lancome Haircare Sense,Beauty,Haircare,Lancome,139.86,Fall,375,HomeStyle Imports
+29,Clinique Makeup Rate,Beauty,Makeup,Clinique,35.83,Winter,627,Global Beauty Group
+30,Style & Co Pant Science,Apparel,Pants,Style & Co,220.88,Summer,1000,Footwear Partners LLC
+31,Cuisinart Kitchen Offer,Home,Kitchen,Cuisinart,344.91,Winter,880,Footwear Partners LLC
+32,INC Sleepwear Kind,Apparel,Sleepwear,INC,31.11,Spring,1277,Accent Accessories Inc
+33,Style & Co Sleepwear Discussion,Apparel,Sleepwear,Style & Co,102.32,Summer,1011,Accent Accessories Inc
+34,Nine West Athletic List,Shoes,Athletic,Nine West,287.49,Summer,600,Premier Apparel Co
+35,Adidas Flat Perform,Shoes,Flats,Adidas,163.19,Spring,708,Global Beauty Group
+36,Tag Heuer Scarve Fall,Accessories,Scarves,Tag Heuer,772.82,Summer,7,Accent Accessories Inc
+37,Levi's Top Table,Apparel,Tops,Levi's,89.61,Winter,163,Global Beauty Group
+38,Alfani Suit True,Apparel,Suits,Alfani,87.2,Summer,904,Vendor Marketplace
+39,Hotel Collection Bedding According,Home,Bedding,Hotel Collection,249.66,All,1127,Vendor Marketplace
+40,Bobbi Brown Skincare Song,Beauty,Skincare,Bobbi Brown,100.83,Fall,1477,Global Beauty Group
+41,Tommy Hilfiger Outerwear Sure,Apparel,Outerwear,Tommy Hilfiger,203.48,Summer,386,Macy's Direct
+42,Chanel Fragrance Collection,Beauty,Fragrance,Chanel,74.91,All,39,Footwear Partners LLC
+43,Style & Co Pant Save,Apparel,Pants,Style & Co,139.09,Fall,1014,Footwear Partners LLC
+44,Adidas Flat Knowledge,Shoes,Flats,Adidas,97.11,All,687,Footwear Partners LLC
+45,Style & Co Outerwear Grow,Apparel,Outerwear,Style & Co,59.22,Fall,965,Global Beauty Group
+46,Hotel Collection Bath Fall,Home,Bath,Hotel Collection,581.3,All,648,Footwear Partners LLC
+47,Calvin Klein Activewear Clearly,Apparel,Activewear,Calvin Klein,205.81,Fall,1039,Global Beauty Group
+48,MAC Wellnes Dinner,Beauty,Wellness,MAC,178.09,Fall,1012,Accent Accessories Inc
+49,Lancome Haircare Source,Beauty,Haircare,Lancome,125.21,Winter,1283,Premier Apparel Co
+50,Calvin Klein Top Great,Apparel,Tops,Calvin Klein,249.34,All,246,HomeStyle Imports
+51,Sam Edelman Sneaker Blue,Shoes,Sneakers,Sam Edelman,80.25,Winter,130,Macy's Direct
+52,Michael Kors Handbag Best,Accessories,Handbags,Michael Kors,438.46,Winter,929,Footwear Partners LLC
+53,Sam Edelman Heel Husband,Shoes,Heels,Sam Edelman,105.02,Summer,226,Footwear Partners LLC
+54,Tory Burch Sunglasse Bill,Accessories,Sunglasses,Tory Burch,178.37,All,1395,Macy's Direct
+55,MAC Haircare Her,Beauty,Haircare,MAC,166.5,Spring,1400,Accent Accessories Inc
+56,UGG Flat Throw,Shoes,Flats,UGG,186.06,All,456,Global Beauty Group
+57,Alfani Activewear Guy,Apparel,Activewear,Alfani,105.5,Fall,1154,Macy's Direct
+58,Levi's Sleepwear Pm,Apparel,Sleepwear,Levi's,222.96,Fall,1300,Macy's Direct
+59,Calvin Klein Sleepwear Everything,Apparel,Sleepwear,Calvin Klein,50.41,Spring,1440,Vendor Marketplace
+60,Alfani Pant Surface,Apparel,Pants,Alfani,78.97,Spring,40,Footwear Partners LLC
+61,INC Pant Animal,Apparel,Pants,INC,191.43,Spring,1098,Global Beauty Group
+62,Style & Co Outerwear Show,Apparel,Outerwear,Style & Co,171.51,Winter,272,HomeStyle Imports
+63,Tag Heuer Handbag Machine,Accessories,Handbags,Tag Heuer,678.71,Fall,930,Footwear Partners LLC
+64,Calvin Klein Pant Not,Apparel,Pants,Calvin Klein,32.0,Winter,1089,Vendor Marketplace
+65,Calvin Klein Top Capital,Apparel,Tops,Calvin Klein,95.86,Spring,1070,Macy's Direct
+66,Bobbi Brown Makeup Win,Beauty,Makeup,Bobbi Brown,43.86,All,123,Footwear Partners LLC
+67,Calvin Klein Activewear Human,Apparel,Activewear,Calvin Klein,248.14,Spring,639,Premier Apparel Co
+68,Kate Spade Jewelry Bar,Accessories,Jewelry,Kate Spade,526.8,Winter,142,Vendor Marketplace
+69,Calvin Klein Top Old,Apparel,Tops,Calvin Klein,72.84,Spring,948,Vendor Marketplace
+70,Steve Madden Sandal Finally,Shoes,Sandals,Steve Madden,242.48,All,459,Accent Accessories Inc
+71,Fossil Watche Themselves,Accessories,Watches,Fossil,213.06,All,844,Macy's Direct
+72,Tommy Hilfiger Dresse Production,Apparel,Dresses,Tommy Hilfiger,227.24,Winter,645,Vendor Marketplace
+73,Tommy Hilfiger Suit Present,Apparel,Suits,Tommy Hilfiger,175.91,Fall,1377,Premier Apparel Co
+74,Michael Kors Handbag Value,Accessories,Handbags,Michael Kors,377.0,Fall,611,Accent Accessories Inc
+75,Charter Club Bedding Training,Home,Bedding,Charter Club,241.33,Spring,595,Footwear Partners LLC
+76,Charter Club Decor High,Home,Decor,Charter Club,30.44,Fall,269,Vendor Marketplace
+77,Michael Kors Belt Participant,Accessories,Belts,Michael Kors,737.33,Summer,82,Premier Apparel Co
+78,Polo Ralph Lauren Sleepwear Dark,Apparel,Sleepwear,Polo Ralph Lauren,243.87,All,1298,Accent Accessories Inc
+79,Tommy Hilfiger Top Sea,Apparel,Tops,Tommy Hilfiger,206.1,Spring,1350,Accent Accessories Inc
+80,Calvin Klein Suit Available,Apparel,Suits,Calvin Klein,164.8,Fall,1398,HomeStyle Imports
+81,Tory Burch Jewelry Answer,Accessories,Jewelry,Tory Burch,442.5,Winter,1011,Vendor Marketplace
+82,Cuisinart Luggage Recently,Home,Luggage,Cuisinart,85.3,Winter,675,Premier Apparel Co
+83,Tommy Hilfiger Sleepwear Drive,Apparel,Sleepwear,Tommy Hilfiger,46.72,Summer,319,HomeStyle Imports
+84,Levi's Sleepwear Spring,Apparel,Sleepwear,Levi's,152.61,Summer,1226,Global Beauty Group
+85,Calvin Klein Outerwear Figure,Apparel,Outerwear,Calvin Klein,41.7,Summer,333,HomeStyle Imports
+86,Style & Co Dresse Base,Apparel,Dresses,Style & Co,192.22,Spring,67,Premier Apparel Co
+87,Martha Stewart Bedding Top,Home,Bedding,Martha Stewart,528.8,All,1150,Macy's Direct
+88,KitchenAid Furniture Early,Home,Furniture,KitchenAid,383.18,Fall,1085,Premier Apparel Co
+89,Michael Kors Belt Trial,Accessories,Belts,Michael Kors,642.85,Spring,1058,Macy's Direct
+90,Dior Skincare Blood,Beauty,Skincare,Dior,59.18,Winter,1492,Footwear Partners LLC
+91,Style & Co Dresse Husband,Apparel,Dresses,Style & Co,142.33,Spring,1299,Macy's Direct
+92,Martha Stewart Bedding Fall,Home,Bedding,Martha Stewart,147.73,Fall,1012,Macy's Direct
+93,Michael Kors Belt Long,Accessories,Belts,Michael Kors,106.8,All,1347,Global Beauty Group
+94,Clinique Haircare Prove,Beauty,Haircare,Clinique,158.31,Spring,479,Accent Accessories Inc
+95,Tag Heuer Jewelry They,Accessories,Jewelry,Tag Heuer,472.41,Fall,1454,Accent Accessories Inc
+96,MAC Wellnes His,Beauty,Wellness,MAC,28.56,All,173,Premier Apparel Co
+97,Bobbi Brown Haircare Commercial,Beauty,Haircare,Bobbi Brown,142.69,Winter,25,HomeStyle Imports
+98,Estee Lauder Fragrance Hospital,Beauty,Fragrance,Estee Lauder,42.2,Spring,532,Macy's Direct
+99,Polo Ralph Lauren Sleepwear Hear,Apparel,Sleepwear,Polo Ralph Lauren,167.04,Fall,178,Global Beauty Group
+100,Polo Ralph Lauren Outerwear Determine,Apparel,Outerwear,Polo Ralph Lauren,78.42,Fall,539,HomeStyle Imports

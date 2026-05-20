@@ -1,0 +1,48 @@
+{
+  "name": "Campaign fails pre check on missing minimum clause, MAP brand warning",
+  "input_state": {
+    "campaign_id": "CAMP-2026-0511",
+    "status": "submitted_by_sarah",
+    "submitted_at": "2026-05-11T14:30:00Z",
+    "campaign": {
+      "title": "Spring Beauty Refresh",
+      "audience_segment": "Beauty Loyalists",
+      "copy": "Up to 40 percent off on your favorite Beauty brands. Refresh your routine for spring.",
+      "tagline": "The Magic of Macys",
+      "skus": ["BTY-001", "BTY-045", "BTY-112"],
+      "discount_pct": 40,
+      "regions": ["NY", "CA", "FL", "TX"],
+      "estimated_spend": 350000,
+      "campaign_manager": "Merna"
+    },
+    "compliance_check": null
+  },
+  "retrieval_calls": [
+    "banned words and approved taglines for campaign copy",
+    "required legal disclaimers for percent off pricing claims and Star Rewards multipliers",
+    "MAP minimum advertised price and brand discount exclusions",
+    "compliance flag examples for Beauty"
+  ],
+  "mcp_calls": [
+    {"tool": "check_pricing_conflicts", "args": {"skus": ["BTY-001", "BTY-045", "BTY-112"], "discount_pct": 40}, "result": {"violations": [{"sku": "BTY-001", "brand": "Lancome", "rule": "MAP enforced, discount above MAP requires Merchandising approval"}]}}
+  ],
+  "output_state_compliance_check": {
+    "brand_alignment": {
+      "status": "pass",
+      "reason": "Tagline matches approved list. No banned words detected in copy.",
+      "cited_doc": "BRAND-GL-2026-001"
+    },
+    "disclaimers": {
+      "status": "fail",
+      "reason": "Up to 40 percent off claim missing required starting at minimum per Pricing Language standard.",
+      "cited_doc": "LEGAL-DIS-2026-002"
+    },
+    "pricing_cross_check": {
+      "status": "warn",
+      "reason": "BTY-001 is Lancome (MAP enforced). 40 percent discount above MAP requires written Merchandising approval.",
+      "cited_doc": "PRICE-RULES-2026-001"
+    },
+    "recommended_action": "revise",
+    "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001", "COMP-EX-2026-001"]
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "test_cases": [
+    {
+      "id": "clean_campaign_approve",
+      "input": {
+        "campaign": {
+          "title": "Spring Beauty Refresh",
+          "audience_segment": "VIP Loyalists",
+          "discount_pct": 20.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "pass"},
+          "disclaimers": {"status": "pass"},
+          "pricing_cross_check": {"status": "pass"},
+          "recommended_action": "proceed"
+        }
+      },
+      "expected_recommendation": "approve",
+      "risk_flags": []
+    },
+    {
+      "id": "compliance_fail_forces_revise",
+      "input": {
+        "campaign": {
+          "title": "Holiday Mega Sale",
+          "audience_segment": "All Members",
+          "discount_pct": 45.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "fail"},
+          "disclaimers": {"status": "pass"},
+          "pricing_cross_check": {"status": "warn"},
+          "recommended_action": "revise"
+        }
+      },
+      "expected_recommendation": "revise",
+      "risk_flags": ["brand_alignment fail"]
+    },
+    {
+      "id": "pricing_fail_revise",
+      "input": {
+        "campaign": {
+          "title": "Coach Outlet Event",
+          "audience_segment": "Platinum Members",
+          "discount_pct": 50.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "pass"},
+          "disclaimers": {"status": "pass"},
+          "pricing_cross_check": {"status": "fail"},
+          "recommended_action": "revise"
+        }
+      },
+      "expected_recommendation": "revise",
+      "risk_flags": ["pricing_cross_check fail"]
+    },
+    {
+      "id": "disclaimer_warn_still_approve",
+      "input": {
+        "campaign": {
+          "title": "Summer Friends and Family",
+          "audience_segment": "Gold Tier",
+          "discount_pct": 25.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "pass"},
+          "disclaimers": {"status": "warn"},
+          "pricing_cross_check": {"status": "pass"},
+          "recommended_action": "proceed"
+        }
+      },
+      "expected_recommendation": "approve",
+      "risk_flags": []
+    },
+    {
+      "id": "all_fail_revise",
+      "input": {
+        "campaign": {
+          "title": "Unauthorized Flash Sale",
+          "audience_segment": "Unknown Segment",
+          "discount_pct": 70.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "fail"},
+          "disclaimers": {"status": "fail"},
+          "pricing_cross_check": {"status": "fail"},
+          "recommended_action": "revise"
+        }
+      },
+      "expected_recommendation": "revise",
+      "risk_flags": ["brand_alignment fail", "disclaimers fail", "pricing_cross_check fail"]
+    },
+    {
+      "id": "moderate_campaign_approve",
+      "input": {
+        "campaign": {
+          "title": "Back to School Essentials",
+          "audience_segment": "Parents 30 to 50",
+          "discount_pct": 15.0
+        },
+        "compliance_check": {
+          "brand_alignment": {"status": "pass"},
+          "disclaimers": {"status": "pass"},
+          "pricing_cross_check": {"status": "pass"},
+          "recommended_action": "proceed"
+        }
+      },
+      "expected_recommendation": "approve",
+      "risk_flags": []
+    }
+  ]
+}

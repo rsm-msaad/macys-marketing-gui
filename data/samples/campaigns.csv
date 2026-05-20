@@ -1,0 +1,13 @@
+campaign_id,campaign_name,brief,target_segment,start_date,end_date,total_budget,status
+1,Spring Style Refresh 2026,Drive Spring apparel sell through with a focus on dresses and lightweight outerwear for women 25 to 45 in warm weather regions.,"Women 25-45, warm regions, fashion forward",2026-05-26,2026-07-25,850000.0,planned
+2,Mother's Day Beauty Event 2026,"Promote prestige beauty gift sets for Mother's Day. Emphasize Estee Lauder, Clinique, and Lancome bundles.","Gift givers, Silver and Gold tier loyalty",2026-05-14,2026-05-28,600000.0,planned
+3,Memorial Day Home Sale 2026,"Site wide home sale featuring bedding, bath, and small appliances. Anchor on 30 percent off mattresses.",Homeowners 30-65 across all regions,2026-04-16,2026-05-31,1200000.0,live
+4,Summer Friends and Family 2026,"Annual loyalty event. Extra 25 percent off plus free shipping. Cross category, deepest pricing of the season.","All Star Rewards members, lapsed buyers",2026-06-30,2026-07-15,1800000.0,planned
+5,Back To School 2025,"Apparel, shoes, and dorm essentials for the K-12 and college audience. Lean on backpacks and sneakers.","Parents 30-50, college students 18-24",2025-06-10,2025-10-08,950000.0,completed
+6,Labor Day Mattress Event 2025,Three day mattress and bedding event. Hero is sealy and serta with 0 percent APR financing.,"Home shoppers, recent furniture browsers",2025-10-08,2025-11-27,700000.0,completed
+7,Fall Style Edit 2025,"Curated fall fashion drop. Focus on outerwear, denim, boots, and transitional layering.","Fashion engaged 25-55, cooler regions",2025-09-08,2026-01-06,1100000.0,completed
+8,Black Friday 2025,"Site wide doorbusters across all categories. Heavy paid media push, hourly deal rotations.","All shoppers, deep deal seekers",2025-11-17,2026-01-16,3500000.0,completed
+9,Holiday Gift Guide 2025,"Editorial gift guide across price points. Lean into beauty gift sets, watches, and home decor.","Gift givers, Gold and Platinum tiers",2025-11-27,2026-03-12,2200000.0,completed
+10,Lunar New Year 2026,"Cultural moment activation in major metro markets. Red packets, gold accents, premium beauty.","AAPI customers, urban metros",2026-01-31,2026-03-12,350000.0,completed
+11,Valentines Day Jewelry 2026,Fine jewelry and watches event. Emphasize quick ship and free engraving.,"Gift givers, urban regions",2026-02-20,2026-03-22,480000.0,completed
+12,Easter Family Style 2026,"Spring family dressing, including kids apparel and accessories. Pastel palette.","Parents 25-45, all regions",2026-04-06,2026-05-16,320000.0,live

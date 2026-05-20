@@ -1,0 +1,52 @@
+{
+  "test_cases": [
+    {
+      "id": "disclaimer_percent_off",
+      "query": "What disclaimer do I need for percent off claims?",
+      "expected_doc_id": "LEGAL-DIS-2026-002",
+      "expected_answer": "Percent off claims require a minimum purchase disclaimer, clear starting at language, and asterisk notation linking to terms."
+    },
+    {
+      "id": "markdown_hold_time",
+      "query": "How long should I hold a first markdown for?",
+      "expected_doc_id": "PRICE-RULES-2026-001",
+      "expected_answer": "First markdowns should be held for a minimum of 14 days before further reductions are applied."
+    },
+    {
+      "id": "tagline_approval",
+      "query": "Who can approve a campaign with a new tagline?",
+      "expected_doc_id": "BRAND-GL-2026-001",
+      "expected_answer": "New taglines require Brand Council approval. Only pre-approved taglines can be used without additional review."
+    },
+    {
+      "id": "compliance_failures",
+      "query": "What are common reasons campaigns fail compliance?",
+      "expected_doc_id": "FAQ-INT-2026-001",
+      "expected_answer": "Common compliance failures include banned words, missing disclaimers, unapproved taglines, and MAP violations."
+    },
+    {
+      "id": "q4_underperformance",
+      "query": "Why did the Q4 2025 holiday campaign underperform?",
+      "expected_doc_id": "RETRO-Q4-2025",
+      "expected_answer": "The Q4 2025 holiday campaign underperformed due to inventory shortages in key categories and a late launch window."
+    },
+    {
+      "id": "spanish_style_guide",
+      "query": "What style guide should I use for Spanish translations?",
+      "expected_doc_id": "LOC-STYLE-2025-002",
+      "expected_answer": "Use the Localization Style Guide which specifies conversational tone for US Spanish markets with regional adaptations."
+    },
+    {
+      "id": "dam_tagging",
+      "query": "How do I tag assets so they show up in DAM search?",
+      "expected_doc_id": "DAM-TAG-2025-005",
+      "expected_answer": "Assets must be tagged with category, season, model presence, and usage rights. Follow the DAM Tagging Policy naming conventions."
+    },
+    {
+      "id": "beauty_roas",
+      "query": "What is the average ROAS for beauty campaigns?",
+      "expected_doc_id": "RETRO-SP-2025-BTY",
+      "expected_answer": "The Spring 2025 Beauty campaign achieved a 4.2x ROAS, which serves as the benchmark for beauty category campaigns."
+    }
+  ]
+}

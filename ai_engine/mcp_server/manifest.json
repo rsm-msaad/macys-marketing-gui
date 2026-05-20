@@ -1,0 +1,114 @@
+{
+  "name": "macys-marketing",
+  "description": "Macys M3 MCP tools for compliance pre check, DAM lookup, and localization. Wraps the M2 functions and exposes them to the chained skills via the Model Context Protocol over stdio.",
+  "tools": [
+    {
+      "name": "check_pricing_conflicts",
+      "description": "Check a list of SKUs against MAP rules, active promo stacking, and catalog existence. Returns structured conflicts with severity.",
+      "input_schema": {
+        "type": "object",
+        "required": ["sku_ids", "proposed_discount_pct"],
+        "properties": {
+          "sku_ids": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of SKU identifiers to check."
+          },
+          "proposed_discount_pct": {
+            "type": "number",
+            "description": "Proposed discount as a percentage, for example 40 for 40 percent off."
+          }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sku_id": {"type": "string"},
+                "issue": {"type": "string"},
+                "severity": {"type": "string", "enum": ["warn", "fail"]}
+              }
+            }
+          },
+          "checked_count": {"type": "integer"}
+        }
+      },
+      "workflow_step": "6a, compliance pre check",
+      "wraps": "M2 SKU pricing query plus the brand and stacking rules from PRICE-RULES-2026-001"
+    },
+    {
+      "name": "find_dam_assets",
+      "description": "Find DAM assets matching a category and region with currently active model release rights. Used to pull regional imagery for localized variants.",
+      "input_schema": {
+        "type": "object",
+        "required": ["category", "region"],
+        "properties": {
+          "category": {"type": "string", "description": "Top level category, for example Beauty, Apparel, or Home."},
+          "region": {"type": "string", "description": "Region code, for example NY, CA, FL, TX, PR, or QC."},
+          "max_results": {"type": "integer", "default": 5}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "enum": ["pass", "empty"]},
+          "assets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "asset_id": {"type": "string"},
+                "filename": {"type": "string"},
+                "tag_list": {"type": "string"},
+                "region_rights": {"type": "string"}
+              }
+            }
+          },
+          "result_count": {"type": "integer"}
+        }
+      },
+      "workflow_step": "7, localization",
+      "wraps": "M2 DAM finder (skills/dam-asset-finder), simplified to read from the seeded SQLite store for M3"
+    },
+    {
+      "name": "generate_locale_variants",
+      "description": "Produce a simulated localized variant of English campaign copy. Supports Spanish (es) and Quebec French (fr-CA). Does not call any external translation API.",
+      "input_schema": {
+        "type": "object",
+        "required": ["copy", "target_language"],
+        "properties": {
+          "copy": {"type": "string"},
+          "target_language": {"type": "string", "enum": ["es", "fr-CA"]},
+          "regional_pricing": {
+            "type": "object",
+            "description": "Optional pricing dict with currency and effective price. Appended as a line at the end of the variant.",
+            "properties": {
+              "currency": {"type": "string"},
+              "effective_price_usd": {"type": "number"},
+              "effective_price_local": {"type": "number"}
+            }
+          }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "enum": ["pass", "partial", "fail"]},
+          "original_copy": {"type": "string"},
+          "translated_copy": {"type": "string"},
+          "target_language": {"type": "string"},
+          "applied_pricing": {"type": ["object", "null"]},
+          "applied_phrases": {"type": "array", "items": {"type": "string"}},
+          "unmatched_words": {"type": "integer"}
+        }
+      },
+      "workflow_step": "7, localization",
+      "wraps": "M2 localize_copy function, dictionary based transcreation"
+    }
+  ]
+}
