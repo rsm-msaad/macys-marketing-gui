@@ -404,6 +404,18 @@ def reject_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
     return {"ok": True, "status": "rejected"}
 
 
+@campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/rerun")
+def rerun_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
+    """Clear the step output and evidence so the skill re-fires on next view."""
+    # Clear the output for this step
+    state_mod.edit_step_output(campaign_id, step_id, {})
+    # Clear captured evidence
+    state_mod.store_evidence(campaign_id, step_id, {})
+    state_mod.set_step_review_status(campaign_id, step_id, "pending")
+    state_mod.append_audit_log(campaign_id, "rerun", body.persona, step_id)
+    return {"ok": True, "status": "rerun_queued"}
+
+
 @campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/escalate")
 def escalate_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
     state_mod.set_step_review_status(campaign_id, step_id, "escalated")

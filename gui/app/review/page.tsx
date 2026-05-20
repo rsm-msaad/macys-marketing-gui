@@ -24,6 +24,8 @@ import {
   rejectStep,
 } from "@/lib/api";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 const STEP_NAMES: Record<string, string> = {
   "6a": "Compliance Pre Check",
   "6b": "Approval Brief Generator",
@@ -132,6 +134,9 @@ function ReviewContent() {
   const [modal, setModal] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [rerunning, setRerunning] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -164,6 +169,58 @@ function ReviewContent() {
       setError((e as Error).message);
     } finally {
       setBusy(false);
+    }
+  }
+
+  function startEditing() {
+    if (!output) return;
+    const d: Record<string, string> = {};
+    for (const [k, v] of Object.entries(output)) {
+      if (k === "retrieved_docs") continue;
+      d[k] = typeof v === "object" ? JSON.stringify(v, null, 2) : String(v ?? "");
+    }
+    setDraft(d);
+    setEditing(true);
+  }
+
+  async function saveEdit() {
+    setBusy(true);
+    setError(null);
+    try {
+      const parsed: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(draft)) {
+        try { parsed[k] = JSON.parse(v); } catch { parsed[k] = v; }
+      }
+      if (output?.retrieved_docs) parsed.retrieved_docs = output.retrieved_docs;
+      await editStepOutput(campaignId, stepId, parsed);
+      setEditing(false);
+      await refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRerun() {
+    setRerunning(true);
+    setError(null);
+    setModal(null);
+    try {
+      const res = await fetch(`${API_BASE}/campaigns/${encodeURIComponent(campaignId)}/steps/${encodeURIComponent(stepId)}/rerun`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ persona: "campaign-manager" }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || `Rerun failed: ${res.status}`);
+      }
+      await refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setRerunning(false);
     }
   }
 
@@ -213,10 +270,15 @@ function ReviewContent() {
           </div>
         )}
 
-        {/* Section 2: AI Output */}
-        {output && !loading && (
+        {/* Section 2: AI Output (read mode or edit mode) */}
+        {output && !loading && !editing && (
           <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
-            <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
+              {reviewStatus === "edited" && (
+                <span className="text-[10px] italic text-amber-600">(manually edited)</span>
+              )}
+            </div>
             <div className="space-y-2">
               {Object.entries(output).filter(([k]) => k !== "retrieved_docs").map(([key, value]) => (
                 <div key={key} className="rounded-md border border-charcoal/5 bg-cream/20 p-3">
@@ -234,17 +296,66 @@ function ReviewContent() {
           </div>
         )}
 
-        {/* Section 4: Action buttons */}
-        {output && !loading && (
+        {/* Edit mode */}
+        {output && !loading && editing && (
+          <div className="mb-6 rounded-lg border-2 border-amber-300/50 bg-white p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-amber-600">Editing AI Output</h2>
+              <div className="flex gap-2">
+                <button type="button" onClick={saveEdit} disabled={busy} className="inline-flex items-center gap-1 rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-700 disabled:opacity-50">
+                  {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />} Save
+                </button>
+                <button type="button" onClick={() => setEditing(false)} className="rounded-md border border-charcoal/15 px-3 py-1.5 text-xs text-charcoal/60 hover:bg-cream">
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {Object.entries(draft).map(([key, value]) => (
+                <div key={key}>
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                    {key.replace(/_/g, " ")}
+                  </label>
+                  <textarea
+                    value={value}
+                    onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
+                    rows={value.length > 100 ? 4 : 2}
+                    className="w-full rounded-md border border-charcoal/20 bg-cream/30 px-3 py-2 text-sm text-charcoal/80 focus:border-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-600/30"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Rerunning state */}
+        {rerunning && (
+          <div className="mb-6 flex items-center gap-3 rounded-lg border border-teal-600/30 bg-teal-50/30 p-5">
+            <Loader2 className="h-5 w-5 animate-spin text-teal-600" />
+            <div>
+              <div className="text-sm font-medium text-teal-700">Re-running AI...</div>
+              <div className="text-[11px] text-teal-600/70">This may take 30 to 60 seconds. Please wait.</div>
+            </div>
+          </div>
+        )}
+
+        {/* Section 4: Action buttons (all 5 + evidence link) */}
+        {output && !loading && !editing && !rerunning && (
           <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
             <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Review Actions</h2>
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={() => setModal("approve")} className="inline-flex items-center gap-1.5 rounded-md bg-sage px-4 py-2 text-sm font-medium text-white hover:bg-sage/90">
                 <Check className="h-3.5 w-3.5" /> Approve
               </button>
+              <button type="button" onClick={startEditing} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2 text-sm font-medium text-charcoal/65 hover:bg-cream">
+                <Edit3 className="h-3.5 w-3.5" /> Edit
+              </button>
               <Link href={`/evidence?step=${stepId}&campaign=${campaignId}`} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2 text-sm font-medium text-charcoal/65 hover:bg-cream">
-                <Edit3 className="h-3.5 w-3.5" /> View Evidence
+                Evidence
               </Link>
+              <button type="button" onClick={() => setModal("rerun")} className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-white px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-50">
+                <RotateCcw className="h-3.5 w-3.5" /> Rerun
+              </button>
               <button type="button" onClick={() => setModal("reject")} className="inline-flex items-center gap-1.5 rounded-md border border-soft_red/30 bg-white px-4 py-2 text-sm font-medium text-soft_red hover:bg-soft_red/5">
                 <ThumbsDown className="h-3.5 w-3.5" /> Reject
               </button>
@@ -290,6 +401,17 @@ function ReviewContent() {
           onConfirm={(reason) => handleAction("reject", reason)}
           onCancel={() => setModal(null)}
           busy={busy}
+        />
+      )}
+      {modal === "rerun" && (
+        <ConfirmModal
+          title="Re-run this AI step?"
+          description="Current output and evidence will be replaced. This calls TritonAI and may take 30 to 60 seconds."
+          confirmLabel="Re-run"
+          confirmColor="bg-teal-600 hover:bg-teal-700"
+          onConfirm={() => handleRerun()}
+          onCancel={() => setModal(null)}
+          busy={rerunning}
         />
       )}
       {modal === "escalate" && (
