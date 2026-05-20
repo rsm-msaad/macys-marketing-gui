@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { usePersonas } from "@/components/PersonaContext";
 
@@ -60,16 +59,6 @@ export default function LandingPage() {
             </div>
           </Link>
         ))}
-      </div>
-
-      <div className="mt-10 text-center">
-        <Link
-          href="/start"
-          className="inline-flex items-center gap-2 rounded-md border border-teal-600 px-5 py-2.5 text-sm font-medium text-teal-700 hover:bg-teal-50"
-        >
-          Or start a new campaign
-          <ArrowRight className="h-4 w-4" />
-        </Link>
       </div>
 
       <footer className="mt-12 space-y-2 text-center text-xs text-charcoal/50">

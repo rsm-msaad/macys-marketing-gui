@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Pencil, Plus } from "lucide-react";
 
 import { fetchCampaigns, type Campaign, type CampaignBrief } from "@/lib/api";
@@ -28,6 +29,7 @@ export function CampaignSidebar({
   selectedCampaignId?: string;
   onSelectCampaign?: (id: string) => void;
 }) {
+  const router = useRouter();
   const [fetched, setFetched] = useState<Campaign[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [localSelectedId, setLocalSelectedId] = useState<string>(DEFAULT_SELECTED_ID);
@@ -82,7 +84,7 @@ export function CampaignSidebar({
         </h2>
         <button
           type="button"
-          onClick={() => setEditModal({ mode: "create", brief: null })}
+          onClick={() => router.push("/start")}
           className="inline-flex items-center gap-1 rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-teal-700"
         >
           <Plus className="h-3 w-3" />
