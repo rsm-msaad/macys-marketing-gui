@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { usePersonas } from "@/components/PersonaContext";
 
@@ -61,8 +62,18 @@ export default function LandingPage() {
         ))}
       </div>
 
+      <div className="mt-10 text-center">
+        <Link
+          href="/start"
+          className="inline-flex items-center gap-2 rounded-md border border-teal-600 px-5 py-2.5 text-sm font-medium text-teal-700 hover:bg-teal-50"
+        >
+          Or start a new campaign
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+
       <footer className="mt-12 space-y-2 text-center text-xs text-charcoal/50">
-        <p>3 skills, 6 automations, 12 RAG documents, live AI chat powered by TritonAI.</p>
+        <p>4 skills, 7 automations, 12 RAG documents, live AI chat powered by TritonAI.</p>
         <p>
           <Link href="/story" className="text-teal-600 hover:text-teal-700">
             Watch the Story (75 slides)
