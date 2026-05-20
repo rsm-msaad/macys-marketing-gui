@@ -19,6 +19,7 @@ import Link from "next/link";
 import { callCompliance, type ComplianceCheckItem, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
 import { storeEvidence } from "@/lib/api";
+import { EvidenceSidePanel } from "@/components/EvidenceSidePanel";
 
 function AIBadge() {
   return (
@@ -223,6 +224,7 @@ export function CompliancePreCheck({
     { label: "Pricing Cross Check", item: result?.pricing_cross_check },
   ];
 
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
   const confidence = result ? computeConfidence(result) : null;
   const recommendedAction = result?.recommended_action ?? "";
   const actionColor = statusColor(recommendedAction);
@@ -237,7 +239,19 @@ export function CompliancePreCheck({
           </span>
           {confidence && <ConfidenceBadge confidence={confidence} />}
         </div>
-        <AIBadge />
+        <div className="flex items-center gap-2">
+          {result && !loading && (
+            <button
+              type="button"
+              onClick={() => setEvidenceOpen(true)}
+              className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-medium text-teal-700 hover:bg-teal-100 transition-colors"
+            >
+              <BookOpen className="h-3 w-3" />
+              Evidence
+            </button>
+          )}
+          <AIBadge />
+        </div>
       </div>
 
       {/* Progress state */}
@@ -314,6 +328,14 @@ export function CompliancePreCheck({
           </div>
         </div>
       )}
+
+      {/* Evidence side panel */}
+      <EvidenceSidePanel
+        stepId="6a"
+        campaignId={context.campaign_brief.campaign_id}
+        open={evidenceOpen}
+        onClose={() => setEvidenceOpen(false)}
+      />
     </div>
   );
 }

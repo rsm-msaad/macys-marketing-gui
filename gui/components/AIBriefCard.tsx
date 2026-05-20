@@ -19,6 +19,7 @@ import {
 import { callBrief, type BriefResult, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
 import { storeEvidence } from "@/lib/api";
+import { EvidenceSidePanel } from "@/components/EvidenceSidePanel";
 
 function AIBadge() {
   return (
@@ -146,6 +147,7 @@ export function AIBriefCard({
   const [draft, setDraft] = useState<EditableBrief | null>(null);
   const [wasEdited, setWasEdited] = useState(false);
   const [aiOriginal, setAiOriginal] = useState<BriefResult | null>(null);
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
 
   useEffect(() => {
     if (!complianceCheck) {
@@ -253,14 +255,24 @@ export function AIBriefCard({
         </div>
         <div className="flex items-center gap-2">
           {result && !loading && !editing && (
-            <button
-              type="button"
-              onClick={startEditing}
-              className="rounded p-1 text-charcoal/40 hover:bg-cream hover:text-charcoal/70"
-              title="Edit brief manually"
-            >
-              <Pencil className="h-3.5 w-3.5" />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setEvidenceOpen(true)}
+                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-medium text-teal-700 hover:bg-teal-100 transition-colors"
+              >
+                <BookOpen className="h-3 w-3" />
+                Evidence
+              </button>
+              <button
+                type="button"
+                onClick={startEditing}
+                className="rounded p-1 text-charcoal/40 hover:bg-cream hover:text-charcoal/70"
+                title="Edit brief manually"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            </>
           )}
           <AIBadge />
         </div>
@@ -401,6 +413,14 @@ export function AIBriefCard({
           </div>
         </div>
       )}
+
+      {/* Evidence side panel */}
+      <EvidenceSidePanel
+        stepId="6b"
+        campaignId={context.campaign_brief.campaign_id}
+        open={evidenceOpen}
+        onClose={() => setEvidenceOpen(false)}
+      />
     </div>
   );
 }
