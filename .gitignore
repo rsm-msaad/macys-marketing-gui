@@ -32,6 +32,7 @@ vnijs-session-*
 
 # files to exclude
 main.py
+!api/main.py
 justfile
 DEPLOY.md
 config.yaml
