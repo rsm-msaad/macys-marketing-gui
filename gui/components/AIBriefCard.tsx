@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   AlertTriangle,
+  BookOpen,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -370,6 +372,17 @@ export function AIBriefCard({
 
           {/* Sources panel */}
           <BriefSourcesPanel docs={result.retrieved_docs ?? []} />
+
+          {/* View Evidence link */}
+          <div className="pt-2">
+            <Link
+              href="/evidence?step=6b"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
+            >
+              <BookOpen className="h-3 w-3" />
+              View full evidence
+            </Link>
+          </div>
         </div>
       )}
     </div>

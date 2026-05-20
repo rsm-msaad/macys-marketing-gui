@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   AlertTriangle,
+  BookOpen,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -12,6 +13,8 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
+
+import Link from "next/link";
 
 import { callCompliance, type ComplianceCheckItem, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
@@ -283,6 +286,17 @@ export function CompliancePreCheck({
             docs={result.retrieved_docs ?? []}
             tools={["check_pricing_conflicts"]}
           />
+
+          {/* View Evidence link */}
+          <div className="mt-2">
+            <Link
+              href="/evidence?step=6a"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
+            >
+              <BookOpen className="h-3 w-3" />
+              View full evidence
+            </Link>
+          </div>
         </div>
       )}
     </div>
