@@ -1,11 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { Shield } from "lucide-react";
 
 import { usePersonas } from "@/components/PersonaContext";
 
+const OPERATIONAL_ORDER = [
+  "campaign-manager",
+  "senior-designer",
+  "marketing-analyst",
+  "production-artist",
+];
+
 export default function LandingPage() {
   const { personas, loading, error } = usePersonas();
+
+  const ceo = personas.find((p) => p.id === "ceo");
+  const operational = OPERATIONAL_ORDER
+    .map((id) => personas.find((p) => p.id === id))
+    .filter(Boolean) as typeof personas;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-16">
@@ -19,7 +32,7 @@ export default function LandingPage() {
         <p className="mt-2 text-base text-charcoal/65">Select your role to begin.</p>
       </header>
 
-      {loading && <p className="text-center text-sm text-charcoal/60">Loading personas…</p>}
+      {loading && <p className="text-center text-sm text-charcoal/60">Loading personas...</p>}
       {error && (
         <div className="mx-auto max-w-md rounded-md border border-soft_red/30 bg-soft_red/5 p-4 text-sm text-soft_red">
           Could not reach the API at <code>http://localhost:8000</code>. Make sure the backend is running.
@@ -27,8 +40,59 @@ export default function LandingPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {personas.map((p) => (
+      {/* CEO card: featured, wider, centered */}
+      {ceo && (
+        <div className="mb-6 flex justify-center">
+          <Link
+            href={`/${ceo.id}`}
+            className="group flex w-full max-w-2xl flex-col rounded-xl border-2 border-purple-300/50 bg-white p-8 shadow-md transition-all hover:border-purple-400/70 hover:shadow-lg"
+          >
+            <div className="flex items-center gap-5">
+              <span
+                className="flex h-20 w-20 items-center justify-center rounded-full ring-[3px] ring-purple-400 ring-offset-2"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={ceo.avatar}
+                  alt={ceo.name}
+                  className="h-20 w-20 rounded-full object-cover"
+                />
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                    <Shield className="h-3 w-3" />
+                    Executive
+                  </span>
+                </div>
+                <div className="mt-1 font-serif text-3xl font-semibold text-charcoal">{ceo.name}</div>
+                <div className="text-sm text-charcoal/55">{ceo.title}</div>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-charcoal/70">
+              {ceo.tagline}
+            </p>
+            <div className="mt-5 inline-flex items-center text-sm font-medium text-purple-600 group-hover:text-purple-700">
+              Continue as {ceo.name} →
+            </div>
+          </Link>
+        </div>
+      )}
+
+      {/* Divider */}
+      {operational.length > 0 && (
+        <div className="mb-6 flex items-center gap-4">
+          <div className="h-px flex-1 bg-charcoal/10" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">
+            Operational Roles
+          </span>
+          <div className="h-px flex-1 bg-charcoal/10" />
+        </div>
+      )}
+
+      {/* 2x2 grid of operational personas */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {operational.map((p) => (
           <Link
             key={p.id}
             href={`/${p.id}`}
