@@ -373,6 +373,40 @@ export async function updateCampaign(campaignId: string, data: CampaignBriefInpu
   });
 }
 
+// ----- Review actions -----
+
+export async function approveStep(campaignId: string, stepId: string, persona = "campaign-manager"): Promise<{ ok: boolean }> {
+  return request(`/campaigns/${encodeURIComponent(campaignId)}/steps/${encodeURIComponent(stepId)}/approve`, {
+    method: "POST", body: JSON.stringify({ persona }),
+  });
+}
+
+export async function editStepOutput(campaignId: string, stepId: string, output: Record<string, unknown>, persona = "campaign-manager"): Promise<{ ok: boolean }> {
+  return request(`/campaigns/${encodeURIComponent(campaignId)}/steps/${encodeURIComponent(stepId)}/output`, {
+    method: "PATCH", body: JSON.stringify({ persona, output }),
+  });
+}
+
+export async function rejectStep(campaignId: string, stepId: string, reason: string, persona = "campaign-manager"): Promise<{ ok: boolean }> {
+  return request(`/campaigns/${encodeURIComponent(campaignId)}/steps/${encodeURIComponent(stepId)}/reject`, {
+    method: "POST", body: JSON.stringify({ persona, reason }),
+  });
+}
+
+export async function escalateStep(campaignId: string, stepId: string, reason = "", persona = "campaign-manager"): Promise<{ ok: boolean }> {
+  return request(`/campaigns/${encodeURIComponent(campaignId)}/steps/${encodeURIComponent(stepId)}/escalate`, {
+    method: "POST", body: JSON.stringify({ persona, reason }),
+  });
+}
+
+export async function fetchAuditLog(campaignId: string): Promise<Array<Record<string, unknown>>> {
+  return request(`/campaigns/${encodeURIComponent(campaignId)}/audit-log`);
+}
+
+export async function fetchEscalations(): Promise<Array<Record<string, unknown>>> {
+  return request("/escalations");
+}
+
 // ----- Evidence capture -----
 
 export async function fetchEvidence(campaignId: string, stepId: string): Promise<Record<string, unknown> | null> {

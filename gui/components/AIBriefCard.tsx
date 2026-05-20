@@ -401,14 +401,20 @@ export function AIBriefCard({
           {/* Sources panel */}
           <BriefSourcesPanel docs={result.retrieved_docs ?? []} />
 
-          {/* View Evidence link */}
-          <div className="pt-2">
+          {/* View Evidence + Review links */}
+          <div className="flex items-center gap-4 pt-2">
             <Link
               href="/evidence?step=6b"
               className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
             >
               <BookOpen className="h-3 w-3" />
-              View full evidence
+              Evidence
+            </Link>
+            <Link
+              href={`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-purple-600 hover:text-purple-700 hover:underline"
+            >
+              Review
             </Link>
           </div>
         </div>

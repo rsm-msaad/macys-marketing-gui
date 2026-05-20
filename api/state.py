@@ -50,6 +50,9 @@ def _fresh_state() -> dict[str, Any]:
         "revisions": {},
         "pending_revision": None,
         "evidence": {},
+        "audit_log": [],
+        "escalations": [],
+        "step_review_status": {},
     }
 
 
@@ -693,6 +696,108 @@ def get_all_evidence(campaign_id: str) -> dict[str, dict[str, Any]]:
         if s is None:
             return {}
         return dict(s.get("evidence", {}))
+
+
+# ---------- review actions (audit log + escalations) ----------
+
+
+def append_audit_log(
+    campaign_id: str,
+    action: str,
+    persona: str,
+    step_id: str,
+    reason: str | None = None,
+    extra: dict[str, Any] | None = None,
+) -> None:
+    """Append an entry to the campaign's audit log."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return
+        if "audit_log" not in s:
+            s["audit_log"] = []
+        entry: dict[str, Any] = {
+            "action": action,
+            "persona": persona,
+            "step_id": step_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        if reason:
+            entry["reason"] = reason
+        if extra:
+            entry.update(extra)
+        s["audit_log"].append(entry)
+    _persist()
+
+
+def get_audit_log(campaign_id: str) -> list[dict[str, Any]]:
+    """Return the full audit log for a campaign."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return []
+        return list(s.get("audit_log", []))
+
+
+def set_step_review_status(campaign_id: str, step_id: str, status: str) -> None:
+    """Set the review status of a step (approved, rejected, escalated, edited)."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return
+        if "step_review_status" not in s:
+            s["step_review_status"] = {}
+        s["step_review_status"][step_id] = status
+    _persist()
+
+
+def get_step_review_status(campaign_id: str, step_id: str) -> str | None:
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return None
+        return s.get("step_review_status", {}).get(step_id)
+
+
+def add_escalation(campaign_id: str, step_id: str, persona: str, reason: str | None = None) -> None:
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return
+        if "escalations" not in s:
+            s["escalations"] = []
+        s["escalations"].append(
+            {
+                "campaign_id": campaign_id,
+                "step_id": step_id,
+                "escalated_by": persona,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "reason": reason or "",
+                "resolved": False,
+            }
+        )
+    _persist()
+
+
+def get_all_escalations() -> list[dict[str, Any]]:
+    """Return all open escalations across all campaigns."""
+    with _LOCK:
+        result = []
+        for cid, s in _STATE.items():
+            for esc in s.get("escalations", []):
+                if not esc.get("resolved"):
+                    result.append(esc)
+        return result
+
+
+def edit_step_output(campaign_id: str, step_id: str, edited: dict[str, Any]) -> None:
+    """Replace a step's output with an edited version."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return
+        s["step_outputs"][step_id] = edited
+    _persist()
 
 
 # ---------- demo content (brief + mock per step data) ----------

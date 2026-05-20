@@ -316,14 +316,20 @@ export function CompliancePreCheck({
             tools={["check_pricing_conflicts"]}
           />
 
-          {/* View Evidence link */}
-          <div className="mt-2">
+          {/* View Evidence + Review links */}
+          <div className="mt-2 flex items-center gap-4">
             <Link
               href="/evidence?step=6a"
               className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
             >
               <BookOpen className="h-3 w-3" />
-              View full evidence
+              Evidence
+            </Link>
+            <Link
+              href={`/review?step=6a&campaign=${context.campaign_brief.campaign_id}`}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-purple-600 hover:text-purple-700 hover:underline"
+            >
+              Review
             </Link>
           </div>
         </div>

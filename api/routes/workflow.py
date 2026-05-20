@@ -365,3 +365,58 @@ def get_evidence(campaign_id: str, step_id: str) -> dict:
 def store_evidence(campaign_id: str, step_id: str, body: dict) -> dict:
     state_mod.store_evidence(campaign_id, step_id, body)
     return {"ok": True, "campaign_id": campaign_id, "step_id": step_id}
+
+
+# ---------- review action endpoints ----------
+
+
+class ReviewActionBody(BaseModel):
+    persona: str = "campaign-manager"
+    reason: str = ""
+
+
+class EditOutputBody(BaseModel):
+    persona: str = "campaign-manager"
+    output: dict
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/approve")
+def approve_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
+    state_mod.set_step_review_status(campaign_id, step_id, "approved")
+    state_mod.append_audit_log(campaign_id, "approve", body.persona, step_id)
+    return {"ok": True, "status": "approved"}
+
+
+@campaigns_router.patch("/campaigns/{campaign_id}/steps/{step_id}/output")
+def edit_step_output(campaign_id: str, step_id: str, body: EditOutputBody) -> dict:
+    state_mod.edit_step_output(campaign_id, step_id, body.output)
+    state_mod.set_step_review_status(campaign_id, step_id, "edited")
+    state_mod.append_audit_log(campaign_id, "edit", body.persona, step_id)
+    return {"ok": True, "status": "edited"}
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/reject")
+def reject_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
+    if len(body.reason.strip()) < 10:
+        raise HTTPException(status_code=400, detail="Rejection reason must be at least 10 characters.")
+    state_mod.set_step_review_status(campaign_id, step_id, "rejected")
+    state_mod.append_audit_log(campaign_id, "reject", body.persona, step_id, reason=body.reason)
+    return {"ok": True, "status": "rejected"}
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/steps/{step_id}/escalate")
+def escalate_step(campaign_id: str, step_id: str, body: ReviewActionBody) -> dict:
+    state_mod.set_step_review_status(campaign_id, step_id, "escalated")
+    state_mod.add_escalation(campaign_id, step_id, body.persona, body.reason or None)
+    state_mod.append_audit_log(campaign_id, "escalate", body.persona, step_id, reason=body.reason or None)
+    return {"ok": True, "status": "escalated"}
+
+
+@campaigns_router.get("/campaigns/{campaign_id}/audit-log")
+def get_audit_log(campaign_id: str) -> list:
+    return state_mod.get_audit_log(campaign_id)
+
+
+@campaigns_router.get("/escalations")
+def get_escalations() -> list:
+    return state_mod.get_all_escalations()
