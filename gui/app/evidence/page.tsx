@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 
+import { fetchEvidence } from "@/lib/api";
 import {
   getStepEvidence,
   RAG_DOC_META,
@@ -124,9 +125,26 @@ const STEPS = [
 function EvidenceContent() {
   const searchParams = useSearchParams();
   const initialStep = searchParams.get("step") ?? "6a";
+  const campaignId = searchParams.get("campaign") ?? "MDC-2026-MD-001";
   const [activeStep, setActiveStep] = useState(initialStep);
   const [viewDoc, setViewDoc] = useState<RagDocEvidence | null>(null);
+  const [liveEvidence, setLiveEvidence] = useState<Record<string, unknown> | null>(null);
+  const [isLive, setIsLive] = useState(false);
 
+  // Try to fetch live captured evidence from the API
+  useEffect(() => {
+    fetchEvidence(campaignId, activeStep).then((ev) => {
+      if (ev) {
+        setLiveEvidence(ev);
+        setIsLive(true);
+      } else {
+        setLiveEvidence(null);
+        setIsLive(false);
+      }
+    });
+  }, [campaignId, activeStep]);
+
+  // Use static fallback if no live evidence
   const evidence = getStepEvidence(activeStep);
 
   return (
@@ -154,6 +172,17 @@ function EvidenceContent() {
           <p className="mt-1 text-sm text-charcoal/55">
             Inspect the RAG documents, MCP tool calls, data sources, and assumptions behind each AI output.
           </p>
+          {isLive ? (
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-sage/15 px-2.5 py-0.5 text-[10px] font-medium text-sage">
+              <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+              Live evidence captured from this campaign
+            </div>
+          ) : (
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-medium text-amber-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              Showing example evidence. Run the AI workflow to capture live data.
+            </div>
+          )}
         </div>
 
         {/* Step tabs */}

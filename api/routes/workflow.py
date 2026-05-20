@@ -345,3 +345,23 @@ def update_campaign(campaign_id: str, body: CampaignBriefBody) -> dict:
     brief["campaign_id"] = campaign_id
     saved = state_mod.upsert_brief(brief)
     return saved
+
+
+# ---------- evidence capture endpoints ----------
+
+
+@campaigns_router.get("/campaigns/{campaign_id}/evidence/{step_id}")
+def get_evidence(campaign_id: str, step_id: str) -> dict:
+    ev = state_mod.get_evidence(campaign_id, step_id)
+    if ev is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No evidence captured for step {step_id} on campaign {campaign_id}. Run the skill first.",
+        )
+    return ev
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/evidence/{step_id}")
+def store_evidence(campaign_id: str, step_id: str, body: dict) -> dict:
+    state_mod.store_evidence(campaign_id, step_id, body)
+    return {"ok": True, "campaign_id": campaign_id, "step_id": step_id}

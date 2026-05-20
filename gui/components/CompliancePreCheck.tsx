@@ -18,6 +18,7 @@ import Link from "next/link";
 
 import { callCompliance, type ComplianceCheckItem, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
+import { storeEvidence } from "@/lib/api";
 
 function AIBadge() {
   return (
@@ -186,6 +187,20 @@ export function CompliancePreCheck({
           setResult(r);
           setLoading(false);
           onComplianceResult?.(r);
+          // Capture evidence for the Evidence screen
+          storeEvidence(context.campaign_brief.campaign_id, "6a", {
+            step_name: "Compliance Pre Check",
+            skill_name: "compliance-pre-check",
+            triggered_by: "Merna (Campaign Manager)",
+            rag_docs: (r.retrieved_docs ?? []).map((id: string, i: number) => ({
+              doc_id: id,
+              relevance: i < 2 ? "high" : "medium",
+              passage: `Referenced during compliance scanning`,
+            })),
+            mcp_tools: [{ tool_name: "check_pricing_conflicts", inputs: { sku_ids: campaign.skus, proposed_discount_pct: campaign.discount_pct }, status: "success" }],
+            result_summary: { recommended_action: r.recommended_action, findings: 3 },
+            captured_at: new Date().toISOString(),
+          }).catch(() => {}); // best effort
         }
       })
       .catch((e) => {

@@ -49,6 +49,7 @@ def _fresh_state() -> dict[str, Any]:
         "history": [],
         "revisions": {},
         "pending_revision": None,
+        "evidence": {},
     }
 
 
@@ -659,6 +660,39 @@ def list_briefs() -> list[dict[str, Any]]:
     """Return all stored campaign briefs."""
     with _LOCK:
         return list(_BRIEFS.values())
+
+
+# ---------- evidence capture (audit log) ----------
+
+
+def store_evidence(campaign_id: str, step_id: str, evidence: dict[str, Any]) -> None:
+    """Persist evidence for a skill invocation. Capture once, replay forever."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return
+        if "evidence" not in s:
+            s["evidence"] = {}
+        s["evidence"][step_id] = evidence
+    _persist()
+
+
+def get_evidence(campaign_id: str, step_id: str) -> dict[str, Any] | None:
+    """Return captured evidence for a step, or None if not yet captured."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return None
+        return s.get("evidence", {}).get(step_id)
+
+
+def get_all_evidence(campaign_id: str) -> dict[str, dict[str, Any]]:
+    """Return all captured evidence for a campaign, keyed by step_id."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return {}
+        return dict(s.get("evidence", {}))
 
 
 # ---------- demo content (brief + mock per step data) ----------

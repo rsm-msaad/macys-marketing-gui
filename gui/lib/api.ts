@@ -373,6 +373,23 @@ export async function updateCampaign(campaignId: string, data: CampaignBriefInpu
   });
 }
 
+// ----- Evidence capture -----
+
+export async function fetchEvidence(campaignId: string, stepId: string): Promise<Record<string, unknown> | null> {
+  try {
+    return await request<Record<string, unknown>>(`/campaigns/${encodeURIComponent(campaignId)}/evidence/${encodeURIComponent(stepId)}`);
+  } catch {
+    return null; // 404 = not captured yet
+  }
+}
+
+export async function storeEvidence(campaignId: string, stepId: string, evidence: Record<string, unknown>): Promise<void> {
+  await request(`/campaigns/${encodeURIComponent(campaignId)}/evidence/${encodeURIComponent(stepId)}`, {
+    method: "POST",
+    body: JSON.stringify(evidence),
+  });
+}
+
 export async function advanceCampaignWithOutput(
   campaignId: string,
   step: number,

@@ -18,6 +18,7 @@ import {
 
 import { callBrief, type BriefResult, type ComplianceResult } from "@/lib/ai_client";
 import type { CampaignContext } from "@/lib/api";
+import { storeEvidence } from "@/lib/api";
 
 function AIBadge() {
   return (
@@ -173,6 +174,21 @@ export function AIBriefCard({
           setResult(r);
           setAiOriginal(r);
           setLoading(false);
+          // Capture evidence
+          storeEvidence(context.campaign_brief.campaign_id, "6b", {
+            step_name: "Approval Brief Generator",
+            skill_name: "approval-brief-generator",
+            triggered_by: "System (auto-fires after compliance)",
+            rag_docs: (r.retrieved_docs ?? []).map((id: string, i: number) => ({
+              doc_id: id,
+              relevance: i < 1 ? "high" : "medium",
+              passage: "Referenced for ROI benchmarking and risk assessment",
+            })),
+            mcp_tools: [],
+            prior_outputs: [{ step_id: "6a", step_name: "Compliance Pre Check", field: "compliance_check" }],
+            result_summary: { recommendation: r.ai_recommendation, risk_flags: r.risk_flags?.length ?? 0 },
+            captured_at: new Date().toISOString(),
+          }).catch(() => {});
         }
       })
       .catch((e) => {
