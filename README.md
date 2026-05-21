@@ -60,20 +60,20 @@ FastAPI backend (Render)
 
 Every row maps a workflow step to its implementation, data source, and RAG documents.
 
-| Step | Name | Type | Implementation | Data Source | RAG Docs Cited |
+| Step | Name | Type | Reads From | MCP Tool | RAG Docs |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Briefing | Human task | `gui/components/steps/BriefingContent.tsx` | Campaign brief (in memory) | none |
-| 2 | Segmentation | Automation | `ai_engine/automations/audience-segment-builder/segment.py` | `data/macys.db` (customer orders) | none |
-| 3 | SKU Selection | Human task | `gui/components/steps/SKUSelectionContent.tsx` | `api/state.py` (mock SKU list) | none |
-| 4 | Creative Production | Automation | `ai_engine/automations/dam-asset-finder/search.py` | `data/macys.db` (DAM catalog) | none |
-| 5 | Layout Assembly | Human task | `gui/components/steps/LayoutAssemblyContent.tsx` | `api/state.py` (mock layouts) | none |
-| 6a | Compliance Pre Check | **Skill** | `ai_engine/skills/compliance-pre-check/SKILL.md` | Campaign block | BRAND-GL, LEGAL-DIS, PRICE-RULES, COMP-EX |
-| 6b | Approval Brief Generator | **Skill** | `ai_engine/skills/approval-brief-generator/SKILL.md` | Compliance result + campaign | RETRO-Q4, RETRO-SP-BTY |
-| 6c | Revision Router | **Skill** | `ai_engine/skills/revision-router/SKILL.md` | VP comment + campaign context | TICKET-INC-4471, TICKET-INC-0212 |
-| 7 | Localization | Automation | `ai_engine/automations/localization-generator/helpers.py` | Region/language mappings | LOC-STYLE-2025-002 |
-| 8 | Activation | Automation | `ai_engine/automations/activation-scheduler/helpers.py` | Timezone + channel rules | none |
-| 9 | Monitoring | Automation | `ai_engine/automations/campaign-performance-analyzer/analyze.py` | `data/macys.db` (campaign history) | RETRO-Q4, RETRO-SP-BTY |
-| 10 | Reporting | Human task | `gui/components/steps/ReportingContent.tsx` | Step 9 output | none |
+| 1 | Briefing | Human | — | — | — |
+| 2 | Segmentation | Automation | Step 1 brief (category) | — | — |
+| 3 | SKU Selection | Automation + Human | Step 2 segment (top_category) | **check_pricing_conflicts** | — |
+| 4 | Creative Production | Automation + Human | Step 3 SKUs, brief category | **find_dam_assets** | — |
+| 5 | Layout Assembly | Skill + Human | Steps 2-4 (segment, SKUs, assets) | — | — |
+| 6a | Compliance Pre Check | **Skill** | Step 5 copy, Step 3 SKUs | check_pricing_conflicts (via invoker) | BRAND-GL, LEGAL-DIS, PRICE-RULES, COMP-EX |
+| 6b | Approval Brief Generator | **Skill** | Steps 2-5 + 6a compliance | — | RETRO-Q4, RETRO-SP-BTY |
+| 6c | Revision Router | **Skill** | VP comment + campaign context | — | TICKET-INC-4471, TICKET-INC-0212 |
+| 7 | Localization | Automation | Step 5 copy, Step 3 SKUs | **generate_locale_variants** (es + fr-CA) | LOC-STYLE-2025-002 |
+| 8 | Activation | Automation | Step 7 locale variants | — | — |
+| 9 | Monitoring | Automation | Steps 2-3 (segment, SKUs) | — | RETRO-Q4, RETRO-SP-BTY |
+| 10 | Reporting | AI + Human | **All steps 2-9** | — | — |
 
 ## The 4 Skills (LLM Judgment)
 
@@ -150,7 +150,7 @@ Output: { status: "pass"|"warn"|"fail", conflicts: [...], checked_count: int }
 
 MAP enforced brands: Levi's, Coach, Lancome, Estee Lauder, Clinique, La Mer, Dior Beauty, Tag Heuer. Flags any combined promo + proposed discount exceeding 50%.
 
-Used by: compliance-pre-check (Step 6a).
+Used by: **Step 3** (SKU lock-in, via `/skills/check-pricing`) and **Step 6a** (compliance, via skill invoker prefetch).
 
 ### find_dam_assets
 
@@ -163,7 +163,7 @@ Output: { status: str, assets: [...], result_count: int }
 
 Filters out expired model releases. Returns ranked assets by relevance.
 
-Used by: localization-generator (Step 7).
+Used by: **Step 4** (Creative Production, via `/skills/find-dam-assets`).
 
 ### generate_locale_variants
 
@@ -176,7 +176,7 @@ Output: { localized_copy: str, flags: [...] }
 
 Uses a 40+ phrase substitution table for Macy's marketing patterns. Does not call an external translation API.
 
-Used by: localization-generator (Step 7).
+Used by: **Step 7** (Localization, via `/skills/generate-locale-variants`, 2 calls: es + fr-CA).
 
 ## RAG Knowledge Base
 
