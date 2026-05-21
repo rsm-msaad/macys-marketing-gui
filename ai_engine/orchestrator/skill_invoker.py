@@ -77,6 +77,13 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
         "rag_queries": [],
         "mcp_calls": [],
     },
+    "localization-strategist": {
+        "rag_queries": [
+            "localization style guide with cultural norms and holiday calendar",
+        ],
+        # MCP calls handled agentically: Claude calls generate_locale_variants per locale.
+        "mcp_calls": [],
+    },
     "localization-generator": {
         "rag_queries": [
             "localization rules including holidays pricing",

@@ -101,6 +101,42 @@ def run_dam_curate(body: AgenticDamBody) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+class AgenticLocalizeBody(BaseModel):
+    campaign_id: str = Field(default="MDC-2026-MD-001")
+    copy: str = Field(default="Discover the magic of Macy's this season")
+    brief: str = Field(default="Mother's Day Beauty Event")
+    category: str = Field(default="Beauty")
+    channels: list[str] = Field(default_factory=lambda: ["email", "web", "mobile"])
+    regions: list[str] = Field(default_factory=lambda: ["NY", "CA", "FL", "TX", "PR", "QC"])
+
+
+@router.post("/localize-strategy")
+def run_localize_strategy(body: AgenticLocalizeBody) -> dict:
+    """Agentic localization: Claude reasons about cultural nuances per locale
+    and calls generate_locale_variants MCP tool mid-reasoning."""
+    try:
+        from ai_engine.orchestrator.skill_invoker import invoke_skill
+
+        state = {
+            "campaign": {
+                "campaign_id": body.campaign_id,
+                "title": body.brief,
+                "copy": body.copy,
+                "category": body.category,
+                "regions": body.regions,
+                "audience_segment": "General",
+                "skus": [],
+                "discount_pct": 25,
+            },
+            "status": "submitted",
+        }
+        updated = invoke_skill("localization-strategist", state)
+        result = updated.get("locale_strategy", {})
+        return {"ok": True, "result": result}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
 # MCP tool: find_dam_assets — queries DAM by category and region
 class FindDamAssetsBody(BaseModel):
     category: str = Field(default="Beauty")

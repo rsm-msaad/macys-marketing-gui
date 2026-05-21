@@ -688,6 +688,51 @@ export type LocalizeResult = {
   stats: LocalizeStats;
 };
 
+// Agentic localization strategy skill
+export type LocaleVariantResult = {
+  target_language: string;
+  original_copy: string;
+  translated_copy: string;
+  quality_assessment: string;
+  cultural_notes: string;
+  applied_phrases: number;
+  unmatched_words: number;
+};
+
+export type LocalizeStrategyResult = {
+  ok: boolean;
+  result: {
+    locale_variants?: LocaleVariantResult[];
+    strategy_summary?: string;
+    locales_processed?: number;
+    total_tool_calls?: number;
+    _agentic_trace?: Array<Record<string, unknown>>;
+    _agentic_iterations?: number;
+    _agentic_tool_calls?: number;
+  };
+};
+
+export async function runLocalizeStrategy(
+  campaignId: string,
+  copy: string,
+  brief: string,
+  category: string,
+  channels?: string[],
+  regions?: string[],
+): Promise<LocalizeStrategyResult> {
+  return request<LocalizeStrategyResult>("/skills/localize-strategy", {
+    method: "POST",
+    body: JSON.stringify({
+      campaign_id: campaignId,
+      copy,
+      brief,
+      category,
+      channels: channels ?? ["email", "web", "mobile"],
+      regions: regions ?? ["NY", "CA", "FL", "TX", "PR", "QC"],
+    }),
+  });
+}
+
 export async function runLocalize(brief: string, skuIds: number[]): Promise<LocalizeResult> {
   return request<LocalizeResult>("/skills/localize", {
     method: "POST",
