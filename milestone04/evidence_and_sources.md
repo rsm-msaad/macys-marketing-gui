@@ -96,6 +96,16 @@ Every AI output card in the workflow includes an "Evidence" pill button. Clickin
 
 The dedicated Evidence screen at `/evidence` provides the same content with more room to inspect documents in depth. Step tabs (6a Compliance, 6b Brief, 6c Revision Router) let the reviewer navigate between steps to compare evidence across the cascade. A document viewer modal displays the full retrieved passage with the relevant section highlighted. The screen indicates whether the displayed evidence is "live captured" from this campaign run (green indicator) or static example evidence used as a fallback (amber indicator).
 
+### Agentic Trace (Steps 6a and 6b)
+
+The Compliance Pre Check (Step 6a) and Approval Brief Generator (Step 6b) run in agentic mode: Claude decides when to call MCP tools mid-reasoning rather than receiving pre-fetched results. The Evidence panel renders the agentic trace as a timeline showing Claude's actual decision-making process:
+
+1. **Claude's reasoning** (violet quote block) — the text Claude produced before deciding to call a tool, showing why it chose to verify rather than guess.
+2. **Tool call** (teal card) — the MCP tool name, input parameters, and output result. The input shows exactly what Claude asked for; the output shows exactly what came back.
+3. **Claude's final analysis** — how Claude incorporated the tool result into its compliance findings or brief recommendations.
+
+This trace is captured once at invocation time and replayed on subsequent views. It proves that Claude genuinely chose when to call tools based on the campaign data it saw, rather than following a hardcoded pre-fetch sequence. The agentic approach is used only for the most judgment-heavy steps (compliance verification and brief generation) where Claude's decision about whether to verify adds value. Other skills (Layout Copy Generator, Revision Router) continue to use the deterministic pre-fetch pattern where all context is gathered before the LLM call.
+
 ### Capture Once, Replay Forever
 
 Evidence is captured at the moment of AI invocation and persisted to the backend via the `storeEvidence()` API call. The frontend fires this call as soon as the AI skill returns, storing the RAG documents retrieved, MCP tool inputs and outputs, prior step references, and a result summary. This evidence is then available indefinitely — re-reviewing a decision a week later shows the same evidence the AI actually used at decision time, not a reconstructed approximation. The audit log records every Review action (Approve, Edit, Reject, Rerun, Escalate) alongside the evidence that was available when the decision was made.

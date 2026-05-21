@@ -35,11 +35,25 @@ Step 10 (Reporting) → step_outputs["10"]  ← reads ALL upstream steps 2-9
 
 ## MCP Tool Firing Points
 
-| MCP Tool | Fires At | Purpose |
+| MCP Tool | Fires At | Mode | Purpose |
+|---|---|---|---|
+| `check_pricing_conflicts` | Step 3 (SKU lock-in) | Deterministic | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
+| `check_pricing_conflicts` | Step 6a (compliance) | **Agentic** — Claude decides when to call | Claude calls to verify pricing claims mid-reasoning |
+| `find_dam_assets` | Step 4 (Creative Production) | Deterministic | Rights-verified asset lookup by category and region |
+| `generate_locale_variants` | Step 7 (Localization, 2 calls: es + fr-CA) | Deterministic | Simulated transcreation with phrase substitution |
+
+## Agentic vs Pre-fetch Skills
+
+Two skill invocation patterns:
+
+| Skill | Mode | Why |
 |---|---|---|
-| `check_pricing_conflicts` | Step 3 (SKU lock-in), Step 6a (compliance) | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
-| `find_dam_assets` | Step 4 (Creative Production) | Rights-verified asset lookup by category and region |
-| `generate_locale_variants` | Step 7 (Localization, 2 calls: es + fr-CA) | Simulated transcreation with phrase substitution |
+| Compliance Pre Check (6a) | **Agentic** | Claude decides when to call check_pricing_conflicts based on campaign context |
+| Approval Brief Generator (6b) | **Agentic** | Claude may call check_pricing_conflicts to verify pricing flags for risk_flags |
+| Layout Copy Generator (5) | Pre-fetch | Copy generation is creative, not verification-driven |
+| Revision Router (6c) | Pre-fetch | Classification is text-only, no tool verification needed |
+
+Agentic skills still pre-fetch RAG documents deterministically. Only MCP tool calls are agentic — Claude decides when and whether to call them based on the campaign data it sees. The agentic trace (Claude's reasoning + tool calls + results) is captured in the Evidence panel.
 
 ## Component Tally
 
