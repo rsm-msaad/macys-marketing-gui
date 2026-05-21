@@ -1,15 +1,22 @@
 """
-Skill invoker for the M3 orchestrator.
+Skill invoker for the M4 orchestrator.
 
-Loads a SKILL.md, pre fetches the RAG context and any MCP tool data the
-skill needs, builds a prompt, calls Claude, parses the JSON response,
-and merges it into the workflow state.
+Two invocation patterns:
 
-The pre fetch pattern (Option A) keeps the orchestrator deterministic.
-The model receives the context it needs already retrieved, and only
-produces the structured JSON the SKILL.md output schema describes. No
-tool calling loop, no model issued retrieval, no model issued MCP calls.
-The model reasons, the orchestrator routes.
+**Pre-fetch (non-agentic):** Loads SKILL.md, pre-fetches RAG context and
+MCP tool data, builds a single prompt, calls Claude, parses JSON. The
+model receives context already retrieved. Used by Layout Copy Generator,
+Revision Router, Localization Generator, Activation Scheduler.
+
+**Agentic:** Loads SKILL.md, pre-fetches RAG context (deterministic), but
+gives Claude the MCP tools as callable functions. Claude decides when and
+whether to call check_pricing_conflicts, find_dam_assets, or
+generate_locale_variants mid-reasoning. A mini loop (capped at 5
+iterations) handles tool call dispatch. Used by Compliance Pre Check and
+Approval Brief Generator.
+
+Skills opt in to agentic mode via `agentic: true` in their SKILL.md
+frontmatter.
 """
 
 from __future__ import annotations
@@ -49,15 +56,9 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
             "MAP minimum advertised price restrictions",
             "past compliance flag examples",
         ],
-        "mcp_calls": [
-            (
-                "check_pricing_conflicts",
-                lambda s: {
-                    "sku_ids": s["campaign"]["skus"],
-                    "proposed_discount_pct": s["campaign"]["discount_pct"],
-                },
-            ),
-        ],
+        # MCP calls removed: now handled agentically by Claude via tool calling.
+        # Claude decides when to call check_pricing_conflicts mid-reasoning.
+        "mcp_calls": [],
     },
     "approval-brief-generator": {
         "rag_queries": [
@@ -243,6 +244,241 @@ def _call_claude(system: str, user_payload: dict) -> str:
     return response.choices[0].message.content or ""
 
 
+# ---- Agentic tool calling support ----
+# MCP tools exposed to Claude during agentic skill execution. These are
+# the same 3 tools available via the MCP server, described in the OpenAI
+# function calling format so Claude can call them mid-reasoning.
+
+AGENTIC_MCP_TOOLS: list[dict[str, Any]] = [
+    {
+        "type": "function",
+        "function": {
+            "name": "check_pricing_conflicts",
+            "description": (
+                "Check a list of SKUs against MAP enforced brand rules "
+                "(Lancome, Estee Lauder, Clinique, La Mer, Dior, Tag Heuer, "
+                "Coach, Michael Kors, Kate Spade, Levi's, Calvin Klein, "
+                "Tommy Hilfiger, Cole Haan, Ralph Lauren) and the 50 percent "
+                "stacking ceiling per PRICE-RULES-2026-001. Call this tool "
+                "when you need to verify whether specific SKUs in the campaign "
+                "have pricing conflicts before issuing a compliance finding."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "sku_ids": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "SKU identifiers to check.",
+                    },
+                    "proposed_discount_pct": {
+                        "type": "number",
+                        "description": "Proposed discount percentage (e.g. 25 for 25% off).",
+                    },
+                },
+                "required": ["sku_ids", "proposed_discount_pct"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "find_dam_assets",
+            "description": (
+                "Look up DAM assets matching a category and region with "
+                "active model release rights. Call this when you need to "
+                "verify asset availability for a specific region."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "category": {"type": "string"},
+                    "region": {"type": "string"},
+                    "max_results": {"type": "integer", "default": 5},
+                },
+                "required": ["category", "region"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_locale_variants",
+            "description": (
+                "Produce a localized variant of campaign copy in Spanish "
+                "(es) or Quebec French (fr-CA). Call when you need to verify "
+                "transcreation quality."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "copy": {"type": "string"},
+                    "target_language": {"type": "string", "enum": ["es", "fr-CA"]},
+                },
+                "required": ["copy", "target_language"],
+            },
+        },
+    },
+]
+
+AGENTIC_MAX_ITERATIONS = 5
+
+
+def _is_agentic_skill(skill_md: str) -> bool:
+    """Check if SKILL.md declares agentic: true in its frontmatter."""
+    # Look for YAML-style frontmatter between --- delimiters
+    if skill_md.startswith("---"):
+        end = skill_md.find("---", 3)
+        if end != -1:
+            frontmatter = skill_md[3:end].lower()
+            return "agentic: true" in frontmatter or "agentic:true" in frontmatter
+    # Also check for inline declaration
+    first_lines = skill_md[:500].lower()
+    return "agentic: true" in first_lines
+
+
+def _invoke_agentic_skill(skill_name: str, state: dict) -> dict:
+    """Run an agentic LLM skill with tool calling.
+
+    RAG context is pre-fetched deterministically. MCP tools are given to
+    Claude as callable functions. Claude decides when to call them.
+    Returns the updated state with the skill result and an agentic_trace.
+    """
+    from openai import OpenAI
+
+    skill_md = _load_skill_markdown(skill_name)
+    retrieved = _prefetch_rag(skill_name, state)
+    tools = _get_mcp_tools()
+
+    # Build initial messages
+    system_prompt = skill_md + (
+        "\n\n## Available MCP Tools\n\n"
+        "You have access to the following MCP tools. Call them when you need "
+        "to verify data before making a finding. Do NOT guess — if you are "
+        "uncertain about a pricing claim, call check_pricing_conflicts. "
+        "If you need to verify asset availability, call find_dam_assets.\n\n"
+        "After your analysis is complete, respond with ONLY a JSON object "
+        "matching the Output schema. No commentary, no markdown fences."
+    )
+
+    user_payload = {
+        "current_state": state,
+        "retrieved_context": retrieved,
+        "instruction": (
+            "Execute this skill. You have MCP tools available to call if you "
+            "need to verify pricing conflicts, DAM assets, or locale variants. "
+            "Call tools when verification would strengthen your findings. "
+            "When done, return ONLY the JSON output schema."
+        ),
+    }
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False, indent=2)},
+    ]
+
+    client = OpenAI(
+        api_key=os.environ.get("TRITONAI_API_KEY", ""),
+        base_url=TRITONAI_BASE_URL,
+    )
+
+    agentic_trace: list[dict[str, Any]] = []
+
+    for iteration in range(1, AGENTIC_MAX_ITERATIONS + 1):
+        response = client.chat.completions.create(
+            model=CLAUDE_MODEL,
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+            messages=messages,
+            tools=AGENTIC_MCP_TOOLS,
+            tool_choice="auto",
+        )
+
+        choice = response.choices[0]
+        msg = choice.message
+
+        # Capture any reasoning text Claude produced before/alongside tool calls
+        reasoning_text = msg.content or ""
+
+        # If no tool calls, this is the final response
+        if not msg.tool_calls:
+            # Record final reasoning in trace
+            if reasoning_text:
+                agentic_trace.append({
+                    "iteration": iteration,
+                    "type": "final_response",
+                    "reasoning": reasoning_text,
+                })
+            break
+
+        # Process tool calls
+        # Add assistant message with tool calls to conversation
+        messages.append({
+            "role": "assistant",
+            "content": reasoning_text or None,
+            "tool_calls": [
+                {
+                    "id": tc.id,
+                    "type": "function",
+                    "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                }
+                for tc in msg.tool_calls
+            ],
+        })
+
+        for tc in msg.tool_calls:
+            tool_name = tc.function.name
+            try:
+                args = json.loads(tc.function.arguments)
+            except json.JSONDecodeError:
+                args = {}
+
+            # Dispatch to MCP tool
+            tool_fn = tools.get(tool_name)
+            if tool_fn is None:
+                tool_result = {"error": f"Unknown tool: {tool_name}"}
+            else:
+                try:
+                    tool_result = tool_fn(**args)
+                except Exception as exc:
+                    tool_result = {"error": str(exc)}
+
+            # Record in agentic trace
+            agentic_trace.append({
+                "iteration": iteration,
+                "type": "tool_call",
+                "reasoning_before": reasoning_text,
+                "tool_name": tool_name,
+                "tool_input": args,
+                "tool_output": tool_result,
+            })
+
+            # Append tool result to conversation
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "content": json.dumps(tool_result, ensure_ascii=False, default=str),
+            })
+
+    # Extract final text (from the last iteration's response)
+    final_text = reasoning_text
+    cleaned = _strip_json_fences(final_text)
+    try:
+        result = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Agentic skill {skill_name} returned non-JSON after "
+            f"{iteration} iterations:\n{cleaned[:500]}"
+        ) from exc
+
+    # Attach agentic trace to the result for evidence capture
+    result["_agentic_trace"] = agentic_trace
+    result["_agentic_iterations"] = iteration
+    result["_agentic_tool_calls"] = sum(1 for t in agentic_trace if t["type"] == "tool_call")
+
+    return update_state_field(state, skill_name, result)
+
+
 def update_state_field(state: dict, skill_name: str, result: Any) -> dict:
     """Merge the skill result into the matching state field and set status."""
     field = SKILL_OUTPUT_FIELD.get(skill_name)
@@ -377,10 +613,17 @@ def _invoke_llm_skill(skill_name: str, state: dict) -> dict:
 def invoke_skill(skill_name: str, state: dict) -> dict:
     """Run a step (skill or automation) and return the updated state.
 
-    Dispatches to _invoke_automation if the step lives in automations/,
-    otherwise to _invoke_llm_skill. This keeps the api/main.py call
-    sites unchanged.
+    Dispatches to:
+      - _invoke_automation for deterministic automations (no LLM)
+      - _invoke_agentic_skill for skills with agentic: true in SKILL.md
+      - _invoke_llm_skill for standard pre-fetch skills
     """
     if _is_automation(skill_name):
         return _invoke_automation(skill_name, state)
+
+    # Check if the skill opts into agentic mode
+    skill_md = _load_skill_markdown(skill_name)
+    if _is_agentic_skill(skill_md):
+        return _invoke_agentic_skill(skill_name, state)
+
     return _invoke_llm_skill(skill_name, state)
