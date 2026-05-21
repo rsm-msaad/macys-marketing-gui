@@ -61,6 +61,24 @@ export function LayoutAssemblyContent({
   const hasLockedIn =
     existingOutput && Array.isArray(existingOutput.approved_layouts);
 
+  // Read upstream: segment from Step 2, SKUs from Step 3, assets from Step 4
+  const segmentOutput = context.state.step_outputs["2"] as Record<string, unknown> | undefined;
+  const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+  const assetOutput = context.state.step_outputs["4"] as Record<string, unknown> | undefined;
+  const segmentName = segmentOutput?.name as string | undefined;
+  const approvedSkuCount = (skuOutput?.approved_skus as string[] | undefined)?.length ?? 0;
+  const approvedAssetCount = (assetOutput?.approved_asset_count as number | undefined) ?? 0;
+  const upstreamCategory = (skuOutput?.segment_top_category as string | undefined) ?? null;
+
+  const category = (() => {
+    if (upstreamCategory) return upstreamCategory;
+    const text = `${context.campaign_brief.name} ${context.campaign_brief.objective}`.toLowerCase();
+    if (text.includes("beauty")) return "Beauty";
+    if (text.includes("apparel")) return "Apparel";
+    if (text.includes("home")) return "Home";
+    return "Beauty";
+  })();
+
   const [placements, setPlacements] = useState<Record<string, LayoutPlacement> | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +95,7 @@ export function LayoutAssemblyContent({
         objective: brief.objective,
         target_customer: brief.target_customer,
         promotional_offer: brief.promotional_offer,
-        category: "Beauty",
+        category,
       });
       setPlacements(result.placements);
     } catch (e) {
@@ -125,6 +143,21 @@ export function LayoutAssemblyContent({
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
+
+      {/* Upstream context: reading from Steps 2-4 */}
+      {(segmentName || approvedSkuCount > 0 || approvedAssetCount > 0) && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Steps 2-4
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            {segmentName && <>Segment: <strong>{segmentName}</strong> · </>}
+            {approvedSkuCount > 0 && <><strong>{approvedSkuCount} SKUs</strong> · </>}
+            {approvedAssetCount > 0 && <><strong>{approvedAssetCount} assets</strong> · </>}
+            Category: <strong>{category}</strong> — copy generation grounded in upstream selections.
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
@@ -206,6 +239,10 @@ export function LayoutAssemblyContent({
             onApprove("Approve Layout", {
               approved_layouts: PLACEMENT_ORDER.filter((n) => n in placements),
               placements,
+              segment_used: segmentName ?? null,
+              sku_count: approvedSkuCount,
+              asset_count: approvedAssetCount,
+              category,
             })
           }
           onRequestRevisions={() => onRequestRevisions(5, 4)}

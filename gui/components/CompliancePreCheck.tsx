@@ -182,13 +182,33 @@ export function CompliancePreCheck({
     setLoading(true);
     setError(null);
 
+    // Read upstream outputs: copy from Step 5, SKUs from Step 3
+    const layoutOutput = context.state.step_outputs["5"] as Record<string, unknown> | undefined;
+    const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+
+    // Extract actual campaign copy from layout placements
+    let copy = context.campaign_brief.objective;
+    if (layoutOutput?.placements) {
+      const p = layoutOutput.placements as Record<string, { tagline?: string; body?: string }>;
+      const parts: string[] = [];
+      for (const [, val] of Object.entries(p)) {
+        if (val.tagline) parts.push(val.tagline);
+        if (val.body) parts.push(val.body);
+      }
+      if (parts.length > 0) copy = parts.join(" ");
+    }
+
+    // Extract actual SKU IDs from step 3
+    const skus = (skuOutput?.approved_skus as string[] | undefined) ??
+      context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5);
+
     const campaign = {
       campaign_id: context.campaign_brief.campaign_id,
       title: context.campaign_brief.name,
       audience_segment: context.campaign_brief.target_customer,
-      copy: context.campaign_brief.objective,
-      skus: context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5),
-      discount_pct: 15,
+      copy,
+      skus,
+      discount_pct: 25,
       regions: ["NY", "CA", "FL", "TX"],
     };
 
