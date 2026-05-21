@@ -128,12 +128,76 @@ _MCP_TOOLS: dict[str, Callable[..., dict]] | None = None
 
 
 def _get_mcp_tools() -> dict[str, Callable[..., dict]]:
+    """Load MCP tool implementations.
+
+    check_pricing_conflicts uses data/macys.db sku_catalog (the same
+    2,000-SKU source as the SKU Recommender) and the canonical
+    _is_map_brand() function, NOT the legacy macys_m3.db 21-SKU table.
+    """
     global _MCP_TOOLS
     if _MCP_TOOLS is None:
-        from tools import check_pricing_conflicts, find_dam_assets, generate_locale_variants
+        import sqlite3
+
+        # Import from ai_engine/tools/ — add parent to path if needed
+        import sys as _sys
+        _ai_root = str(Path(__file__).resolve().parent.parent)
+        if _ai_root not in _sys.path:
+            _sys.path.insert(0, _ai_root)
+        from tools import find_dam_assets, generate_locale_variants
+
+        _DATA_DB = Path(__file__).resolve().parent.parent.parent / "data" / "macys.db"
+
+        def _check_pricing_via_main_db(
+            sku_ids: list[str],
+            proposed_discount_pct: float,
+        ) -> dict:
+            """Check pricing conflicts against data/macys.db sku_catalog."""
+            # Lazy import to avoid circular dependency at module load
+            import importlib.util as _ilu
+
+            rec_path = AUTOMATIONS_DIR / "sku-recommender" / "recommend.py"
+            spec = _ilu.spec_from_file_location("_rec", rec_path)
+            rec_mod = _ilu.module_from_spec(spec)
+            spec.loader.exec_module(rec_mod)
+
+            conn = sqlite3.connect(str(_DATA_DB))
+            conn.row_factory = sqlite3.Row
+            conflicts: list[dict] = []
+            try:
+                for sid in sku_ids:
+                    row = conn.execute(
+                        "SELECT sku_id, product_name, brand FROM sku_catalog WHERE sku_id = ?",
+                        (sid,),
+                    ).fetchone()
+                    if row is None:
+                        conflicts.append({"sku_id": sid, "issue": "SKU not found in catalog.", "severity": "fail"})
+                        continue
+                    brand = str(row["brand"])
+                    if rec_mod._is_map_brand(brand):
+                        if (proposed_discount_pct / 100.0) > rec_mod.DEFAULT_MAP_FLOOR_PCT:
+                            conflicts.append({
+                                "sku_id": sid,
+                                "brand": brand,
+                                "issue": (
+                                    f"Brand {brand} is MAP-enforced per PRICE-RULES-2026-001. "
+                                    f"Proposed {proposed_discount_pct:.0f}% discount exceeds "
+                                    f"MAP floor of {rec_mod.DEFAULT_MAP_FLOOR_PCT * 100:.0f}%."
+                                ),
+                                "severity": "fail",
+                            })
+            finally:
+                conn.close()
+
+            if any(c["severity"] == "fail" for c in conflicts):
+                status = "fail"
+            elif conflicts:
+                status = "warn"
+            else:
+                status = "pass"
+            return {"status": status, "conflicts": conflicts, "checked_count": len(sku_ids)}
 
         _MCP_TOOLS = {
-            "check_pricing_conflicts": check_pricing_conflicts,
+            "check_pricing_conflicts": _check_pricing_via_main_db,
             "find_dam_assets": find_dam_assets,
             "generate_locale_variants": generate_locale_variants,
         }
@@ -213,6 +277,37 @@ def _strip_json_fences(text: str) -> str:
         if stripped.endswith("```"):
             stripped = stripped[:-3]
     return stripped.strip()
+
+
+def _extract_json_from_text(text: str) -> str:
+    """Extract a JSON object from text that may contain reasoning around it.
+
+    Tries three strategies in order:
+    1. If the text starts with '{', treat as pure JSON (fast path).
+    2. Extract content between ```json ... ``` fences.
+    3. Find the first '{' ... last '}' span (greedy brace match).
+
+    Returns the extracted JSON string for parsing.
+    """
+    stripped = text.strip()
+
+    # Fast path: pure JSON
+    if stripped.startswith("{"):
+        return stripped
+
+    # Strategy 2: markdown fences
+    fence_match = re.search(r"```(?:json)?\s*\n(.*?)```", stripped, re.DOTALL)
+    if fence_match:
+        return fence_match.group(1).strip()
+
+    # Strategy 3: first { to last }
+    first_brace = stripped.find("{")
+    last_brace = stripped.rfind("}")
+    if first_brace != -1 and last_brace > first_brace:
+        return stripped[first_brace : last_brace + 1]
+
+    # Give up — return as-is for the caller to handle
+    return stripped
 
 
 def _call_claude(system: str, user_payload: dict) -> str:
@@ -462,14 +557,27 @@ def _invoke_agentic_skill(skill_name: str, state: dict) -> dict:
 
     # Extract final text (from the last iteration's response)
     final_text = reasoning_text
-    cleaned = _strip_json_fences(final_text)
+    cleaned = _extract_json_from_text(final_text)
     try:
         result = json.loads(cleaned)
-    except json.JSONDecodeError as exc:
-        raise ValueError(
-            f"Agentic skill {skill_name} returned non-JSON after "
-            f"{iteration} iterations:\n{cleaned[:500]}"
-        ) from exc
+    except json.JSONDecodeError:
+        # Graceful fallback: return a placeholder that the UI can render
+        # without crashing, flagged for human review.
+        import logging
+        logging.warning(
+            "Agentic skill %s returned non-JSON after %d iterations. "
+            "Raw response (first 500 chars): %s",
+            skill_name, iteration, final_text[:500],
+        )
+        result = {
+            "brand_alignment": {"status": "warn", "reason": "Agentic analysis could not be parsed. Needs human review.", "cited_doc": "N/A"},
+            "disclaimers": {"status": "warn", "reason": "Agentic analysis could not be parsed. Needs human review.", "cited_doc": "N/A"},
+            "pricing_cross_check": {"status": "warn", "reason": "Agentic analysis could not be parsed. Needs human review.", "cited_doc": "N/A"},
+            "recommended_action": "revise",
+            "retrieved_docs": [],
+            "_parse_error": True,
+            "_raw_response": final_text[:1000],
+        }
 
     # Attach agentic trace to the result for evidence capture
     result["_agentic_trace"] = agentic_trace

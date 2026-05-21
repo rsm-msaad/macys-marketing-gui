@@ -78,7 +78,7 @@ def _initial_state() -> dict[str, Any]:
                 "override_reason": None,
             },
             "3": {
-                "approved_skus": ["MAC-001", "EL-001", "CLQ-001"],
+                "approved_skus": ["18", "40", "42"],
                 "total_recommended": 18,
                 "excluded_count": 22,
                 "segment_used": "VIP Loyalists",

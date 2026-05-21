@@ -49,7 +49,9 @@ The numeric benchmarks come from the retrieved retros. Do not invent or estimate
 | Beauty campaign retro performance benchmarks for Beauty Loyalists | RETRO-SP-2025-BTY |
 | Holiday campaign retro performance benchmarks for cross channel | RETRO-Q4-2025 |
 
-## Output schema
+## Output format
+
+CRITICAL: When you are done analyzing and have called any tools you need, your FINAL response must be ONLY a JSON object. No explanatory text before or after. No markdown code fences. Just the raw JSON object matching this schema:
 
 ```json
 {

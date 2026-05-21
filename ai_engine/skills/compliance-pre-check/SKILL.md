@@ -53,7 +53,9 @@ Run this skill the moment Merna submits a campaign for approval. It is the first
 | MAP minimum advertised price and brand discount exclusions | PRICE-RULES-2026-001 |
 | compliance flag examples for [campaign category] | COMP-EX-2026-001 |
 
-## Output schema
+## Output format
+
+CRITICAL: When you are done analyzing and have called any tools you need, your FINAL response must be ONLY a JSON object. No explanatory text before or after. No markdown code fences. Just the raw JSON object matching this schema:
 
 ```json
 {
