@@ -1,33 +1,48 @@
+---
+agentic: true
+---
+
 # Compliance Pre Check
 
 **Workflow step:** 6a, Compliance Pre Check before VP review
-**Owner persona:** Sarah (the skill runs automatically when she submits)
-**Input from previous step:** campaign block from workflow_state.json (campaign_id, title, copy, tagline, skus, discount_pct, regions, estimated_spend, audience_segment, campaign_manager)
-**Output to next step:** compliance_check object written to workflow_state.json
+**Owner persona:** Merna (the skill runs automatically when she submits)
+**Input from previous step:** campaign block from workflow state (campaign_id, title, copy, tagline, skus, discount_pct, regions, estimated_spend, audience_segment, campaign_manager)
+**Output to next step:** compliance_check object written to workflow state
 **RAG retrieval:** BRAND-GL-2026-001, LEGAL-DIS-2026-002, PRICE-RULES-2026-001, COMP-EX-2026-001
-**MCP tools called:** check_pricing_conflicts
+**MCP tools available:** check_pricing_conflicts (called agentically when you need to verify pricing claims)
+
+## Agentic mode
+
+This skill runs in agentic mode. You have access to MCP tools that you can call mid-reasoning when you need to verify data before issuing a finding. The RAG documents have already been retrieved and are provided in `retrieved_context`. You decide when and whether to call MCP tools.
+
+**Available tools:**
+- `check_pricing_conflicts(sku_ids, proposed_discount_pct)` — Validates SKUs against MAP enforced brand list and the 50% stacking ceiling per PRICE-RULES-2026-001. Call this when the campaign includes SKUs and a discount, and you need to verify whether any SKUs have pricing conflicts before writing the pricing_cross_check finding.
+- `find_dam_assets(category, region)` — Look up DAM assets with active rights. Call this if you need to verify asset availability.
+
+**When to call tools vs. when not to:**
+- If the campaign has SKUs and a discount percentage, you SHOULD call check_pricing_conflicts to verify before writing the pricing_cross_check finding.
+- If you can answer from the retrieved RAG documents alone (brand alignment, disclaimers), do not call a tool.
+- If you are uncertain about a pricing claim, call the tool rather than guessing.
 
 ## When to use this skill
 
-Run this skill the moment Sarah submits a campaign for approval. It is the first stop in the chain. The purpose is to catch the avoidable rework that historically eats two to three days of approval time (see TICKET-INC-2025-4471 for a textbook example). If the campaign passes, the chain moves on to the VP approval brief. If it fails, Sarah gets the campaign back with specific fixes before any VP is paged.
+Run this skill the moment Merna submits a campaign for approval. It is the first stop in the chain. The purpose is to catch the avoidable rework that historically eats two to three days of approval time (see TICKET-INC-2025-4471 for a textbook example). If the campaign passes, the chain moves on to the VP approval brief. If it fails, Merna gets the campaign back with specific fixes before any VP is paged.
 
 ## Instructions
 
-1. Load the campaign block from data/workflow_state.json.
-2. Retrieve brand voice and tagline rules. Call `retrieve("banned words and approved taglines for campaign copy")`. Expect BRAND-GL-2026-001.
-3. Retrieve disclaimer requirements. Call `retrieve("required legal disclaimers for percent off pricing claims and Star Rewards multipliers")`. Expect LEGAL-DIS-2026-002.
-4. Retrieve pricing and promotion rules. Call `retrieve("MAP minimum advertised price and brand discount exclusions")`. Expect PRICE-RULES-2026-001.
-5. Retrieve similar past flags. Call `retrieve("compliance flag examples for [campaign category, for example Beauty or Home]")`. Expect COMP-EX-2026-001.
-6. Call the MCP tool `check_pricing_conflicts` with the SKU list and the discount_pct. The tool returns any SKUs that violate MAP or that fall into an excluded category.
-7. Scan the campaign copy for banned words by calling `helpers.scan_for_banned_words(copy)`. Do not enumerate the banned list from memory, the helper holds the authoritative list.
-8. Check the tagline against the approved list by calling `helpers.check_tagline(tagline)`.
-9. Check that any "up to X percent off" claim includes the required "starting at" minimum by calling `helpers.check_pricing_language(copy)`.
-10. For each of the three findings (brand_alignment, disclaimers, pricing_cross_check) the LLM writes the human readable reason string. Status (pass, warn, fail) is set based on what the helpers and the MCP tool returned.
-11. Call `helpers.assemble_report(brand_alignment, disclaimers, pricing_cross_check, retrieved_docs)`. The helper computes the `recommended_action` value (proceed or revise) and packages the final object.
-12. Write the assembled object to workflow_state.json under `compliance_check`.
-13. Update `status` to `in_compliance_check`. The orchestrator handles the next handoff based on `recommended_action`.
-
-The LLM does not compute `recommended_action` directly. It assembles the inputs and calls the helper.
+1. Read the campaign block from the current_state.
+2. Use the retrieved_context to check brand alignment:
+   - Check that no banned words appear in the campaign copy (reference BRAND-GL-2026-001).
+   - Check that the tagline is on the approved tagline list.
+3. Use the retrieved_context to check disclaimers:
+   - Verify that any "up to X percent off" claim includes the required "starting at" minimum disclosure (reference LEGAL-DIS-2026-002).
+4. For pricing cross-check:
+   - If the campaign has SKUs and a discount, call the `check_pricing_conflicts` tool to verify MAP compliance.
+   - Use the tool result to determine if any SKUs violate MAP rules.
+   - Reference PRICE-RULES-2026-001 in your finding.
+5. For each of the three findings (brand_alignment, disclaimers, pricing_cross_check), set status to pass, warn, or fail based on what you found.
+6. Set `recommended_action` to "revise" if any finding has status "fail", otherwise "proceed".
+7. Return the JSON output schema.
 
 ## RAG retrieval queries
 
@@ -62,49 +77,7 @@ The LLM does not compute `recommended_action` directly. It assembles the inputs 
 }
 ```
 
-## Worked example
-
-Input campaign block:
-
-```json
-{
-  "title": "Spring Beauty Refresh",
-  "copy": "Up to 40 percent off on your favorite Beauty brands. Refresh your routine for spring.",
-  "tagline": "The Magic of Macys",
-  "skus": ["BTY-001", "BTY-045", "BTY-112"],
-  "discount_pct": 40
-}
-```
-
-Retrieval pulls BRAND-GL-2026-001, LEGAL-DIS-2026-002, PRICE-RULES-2026-001, COMP-EX-2026-001.
-
-`helpers.scan_for_banned_words(copy)` returns `[]`. `helpers.check_tagline("The Magic of Macys")` returns `True`. `helpers.check_pricing_language(copy)` returns `{"has_up_to_claim": true, "has_minimum_clause": false, "minimum_required": true}`. The MCP tool `check_pricing_conflicts` flags BTY-001 as Lancome (MAP enforced) where the 40 percent discount requires written Merchandising approval.
-
-`helpers.assemble_report(...)` returns:
-
-```json
-{
-  "brand_alignment": {
-    "status": "pass",
-    "reason": "Tagline matches approved list. No banned words detected.",
-    "cited_doc": "BRAND-GL-2026-001"
-  },
-  "disclaimers": {
-    "status": "fail",
-    "reason": "Up to 40 percent off claim missing required starting at minimum.",
-    "cited_doc": "LEGAL-DIS-2026-002"
-  },
-  "pricing_cross_check": {
-    "status": "warn",
-    "reason": "BTY-001 is Lancome (MAP enforced). 40 percent discount above MAP requires written Merchandising approval.",
-    "cited_doc": "PRICE-RULES-2026-001"
-  },
-  "recommended_action": "revise",
-  "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001", "COMP-EX-2026-001"]
-}
-```
-
 ## Handoff
 
-* If `recommended_action == "proceed"`, set status to `in_vp_review`. Next skill: `approval-brief-generator`.
-* If `recommended_action == "revise"`, set status to `revision_requested` and return the compliance_check object to Sarah. Sarah fixes and resubmits, which loops back to `compliance-pre-check`.
+* If `recommended_action == "proceed"`, next skill: `approval-brief-generator`.
+* If `recommended_action == "revise"`, return the compliance_check to Merna with specific fixes.
