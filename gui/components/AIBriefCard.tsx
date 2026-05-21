@@ -213,17 +213,33 @@ export function AIBriefCard({
           setResult(r);
           setAiOriginal(r);
           setLoading(false);
-          // Capture evidence
+          // Capture evidence (with agentic trace if present)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const rAny = r as any;
+          const agenticTrace = rAny._agentic_trace ?? [];
+          const agenticToolCalls = (agenticTrace as Array<Record<string, unknown>>).filter(
+            (t: Record<string, unknown>) => t.type === "tool_call"
+          );
           storeEvidence(context.campaign_brief.campaign_id, "6b", {
             step_name: "Approval Brief Generator",
             skill_name: "approval-brief-generator",
             triggered_by: "System (auto-fires after compliance)",
+            mode: agenticTrace.length > 0 ? "agentic" : "pre-fetch",
             rag_docs: (r.retrieved_docs ?? []).map((id: string, i: number) => ({
               doc_id: id,
               relevance: i < 1 ? "high" : "medium",
               passage: "Referenced for ROI benchmarking and risk assessment",
             })),
-            mcp_tools: [],
+            mcp_tools: agenticToolCalls.map((tc: Record<string, unknown>) => ({
+              tool_name: tc.tool_name,
+              inputs: tc.tool_input,
+              output_summary: JSON.stringify(tc.tool_output).slice(0, 200),
+              status: "success",
+              called_by: "Claude (agentic)",
+            })),
+            agentic_trace: agenticTrace,
+            agentic_iterations: rAny._agentic_iterations ?? null,
+            agentic_tool_call_count: rAny._agentic_tool_calls ?? 0,
             prior_outputs: [{ step_id: "6a", step_name: "Compliance Pre Check", field: "compliance_check" }],
             result_summary: { recommendation: r.ai_recommendation, risk_flags: r.risk_flags?.length ?? 0 },
             captured_at: new Date().toISOString(),

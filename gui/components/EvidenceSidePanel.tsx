@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   BookOpen,
+  Bot,
   ChevronDown,
   ChevronRight,
   Database,
@@ -13,6 +14,7 @@ import {
   MessageSquare,
   Wrench,
   X,
+  Zap,
 } from "lucide-react";
 
 import { fetchEvidence } from "@/lib/api";
@@ -229,6 +231,68 @@ export function EvidenceSidePanel({
                   ))}
                 </ul>
               </MiniSection>
+
+              {/* Agentic Trace (from live evidence) */}
+              {liveEvidence && Array.isArray((liveEvidence as Record<string, unknown>)?.agentic_trace) && (() => {
+                const trace = (liveEvidence as Record<string, unknown>).agentic_trace as Array<Record<string, unknown>>;
+                const toolCalls = trace.filter((t) => t.type === "tool_call");
+                if (toolCalls.length === 0) return null;
+                return (
+                  <MiniSection icon={Bot} title="Agentic Trace — Claude's Tool Calls" count={toolCalls.length}>
+                    <div className="space-y-3">
+                      {trace.map((entry, i) => {
+                        if (entry.type === "tool_call") {
+                          const reasoning = entry.reasoning_before as string | undefined;
+                          return (
+                            <div key={i} className="rounded border border-teal-200/50 bg-teal-50/20 p-2.5">
+                              {/* Claude's reasoning before the call */}
+                              {reasoning && reasoning.length > 0 && (
+                                <div className="mb-2 rounded border-l-2 border-violet-300 bg-violet-50/30 px-2.5 py-1.5">
+                                  <div className="mb-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-500">
+                                    Claude&apos;s reasoning
+                                  </div>
+                                  <div className="text-[11px] leading-relaxed text-charcoal/65 italic">
+                                    {(reasoning as string).slice(0, 300)}{(reasoning as string).length > 300 ? "..." : ""}
+                                  </div>
+                                </div>
+                              )}
+                              {/* Tool call */}
+                              <div className="flex items-center gap-1.5">
+                                <Zap className="h-3 w-3 text-teal-600" />
+                                <span className="font-mono text-[11px] font-semibold text-teal-700">
+                                  {entry.tool_name as string}
+                                </span>
+                                <span className="text-[9px] text-charcoal/40">
+                                  iteration {entry.iteration as number}
+                                </span>
+                              </div>
+                              <div className="mt-1 text-[10px] text-charcoal/50">
+                                Input: {JSON.stringify(entry.tool_input).slice(0, 120)}
+                              </div>
+                              <div className="mt-0.5 text-[10px] text-charcoal/50">
+                                Output: {JSON.stringify(entry.tool_output).slice(0, 150)}
+                              </div>
+                            </div>
+                          );
+                        }
+                        if (entry.type === "final_response" && entry.reasoning) {
+                          return (
+                            <div key={i} className="rounded border border-charcoal/10 bg-cream/30 p-2.5">
+                              <div className="text-[9px] font-semibold uppercase tracking-wider text-charcoal/40">
+                                Claude&apos;s final analysis
+                              </div>
+                              <div className="mt-0.5 text-[11px] text-charcoal/60 italic">
+                                {(entry.reasoning as string).slice(0, 200)}...
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  </MiniSection>
+                );
+              })()}
             </div>
           ) : (
             <p className="text-sm text-charcoal/45 italic">No evidence data for this step.</p>
