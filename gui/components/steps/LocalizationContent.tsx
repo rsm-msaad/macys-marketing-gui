@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Globe, Play, RotateCcw } from "lucide-react";
 
-import { runLocalize, runGenerateLocaleVariants, type Variant, type LocalizeStats, type GenerateLocaleResult } from "@/lib/api";
+import { runLocalize, runLocalizeStrategy, runGenerateLocaleVariants, storeEvidence, type Variant, type LocalizeStats, type GenerateLocaleResult, type LocalizeStrategyResult } from "@/lib/api";
 import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
 
 function VariantCard({ variant }: { variant: Variant }) {
@@ -72,6 +72,7 @@ export function LocalizationContent({
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
   const [mcpResults, setMcpResults] = useState<GenerateLocaleResult[]>([]);
+  const [strategyResult, setStrategyResult] = useState<LocalizeStrategyResult["result"] | null>(null);
 
   async function handleRun() {
     setRunning(true);
@@ -79,14 +80,43 @@ export function LocalizationContent({
     setVariants(null);
     setStats(null);
     setMcpResults([]);
+    setStrategyResult(null);
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
       const result = await runLocalize(brief, skuIdsForLocalize);
       setVariants(result.variants);
       setStats(result.stats);
 
-      // Fire MCP tool: generate_locale_variants for Spanish and Quebec French
+      // Agentic: Claude strategizes localization via generate_locale_variants MCP tool
       if (layoutCopy) {
+        // Fire agentic strategy in parallel
+        const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+        const cat = (skuOutput?.segment_top_category as string | undefined) ?? "Beauty";
+        runLocalizeStrategy(
+          context.campaign_brief.campaign_id,
+          layoutCopy,
+          brief,
+          cat,
+        ).then((strat) => {
+          setStrategyResult(strat.result);
+          // Capture agentic trace in evidence
+          const trace = strat.result?._agentic_trace ?? [];
+          if (trace.length > 0) {
+            storeEvidence(context.campaign_brief.campaign_id, "7", {
+              step_name: "Localization (Strategist)",
+              skill_name: "localization-strategist",
+              triggered_by: "Anna (Production Artist)",
+              mode: "agentic",
+              agentic_trace: trace,
+              agentic_iterations: strat.result?._agentic_iterations ?? null,
+              agentic_tool_call_count: strat.result?._agentic_tool_calls ?? 0,
+              strategy_summary: strat.result?.strategy_summary ?? null,
+              captured_at: new Date().toISOString(),
+            }).catch(() => {});
+          }
+        }).catch(() => {});
+
+        // Also fire deterministic MCP calls as fallback display
         const mcpCalls = await Promise.allSettled([
           runGenerateLocaleVariants(layoutCopy, "es"),
           runGenerateLocaleVariants(layoutCopy, "fr-CA"),
@@ -274,6 +304,38 @@ export function LocalizationContent({
               <span className="ml-1 text-charcoal/40">({r.applied_phrases} phrases applied)</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Agentic localization strategy result */}
+      {strategyResult && (
+        <div className="rounded-md border border-violet-200/50 bg-violet-50/20 p-3">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-violet-600">
+            Agentic: Localization Strategist — {strategyResult.locales_processed ?? 0} locales
+            {strategyResult._agentic_tool_calls != null && strategyResult._agentic_tool_calls > 0 && (
+              <span className="ml-1 text-violet-400">({strategyResult._agentic_tool_calls} tool calls)</span>
+            )}
+          </div>
+          {strategyResult.strategy_summary && (
+            <div className="mt-1 text-[11px] italic text-charcoal/65">
+              {strategyResult.strategy_summary}
+            </div>
+          )}
+          {strategyResult.locale_variants && strategyResult.locale_variants.length > 0 && (
+            <div className="mt-2 space-y-1">
+              {strategyResult.locale_variants.map((v) => (
+                <div key={v.target_language} className="text-[10px] text-charcoal/55">
+                  <strong>{v.target_language === "es" ? "Spanish" : "Quebec French"}</strong>: {v.quality_assessment}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      {!strategyResult && running && layoutCopy && (
+        <div className="flex items-center gap-2 rounded-md border border-violet-200/30 bg-violet-50/10 px-3 py-2 text-[11px] text-violet-500">
+          <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
+          Claude is strategizing localization (agentic)...
         </div>
       )}
 
