@@ -154,6 +154,12 @@ export function MonitoringContent({
     | undefined;
   const hasLockedIn = existingOutput && typeof existingOutput.top_channel === "string";
 
+  // Read upstream: segment from Step 2, SKUs from Step 3
+  const segmentOutput = context.state.step_outputs["2"] as Record<string, unknown> | undefined;
+  const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+  const segmentName = segmentOutput?.name as string | undefined;
+  const approvedSkuCount = (skuOutput?.approved_skus as string[] | undefined)?.length ?? 0;
+
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -210,6 +216,20 @@ export function MonitoringContent({
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
+
+      {/* Upstream context: reading from Steps 2+3 */}
+      {(segmentName || approvedSkuCount > 0) && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Steps 2 + 3
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            {segmentName && <>Segment: <strong>{segmentName}</strong> · </>}
+            {approvedSkuCount > 0 && <><strong>{approvedSkuCount} SKUs</strong></>}
+            {" "}— performance scoped to campaign selections.
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
@@ -343,6 +363,8 @@ export function MonitoringContent({
               top_channel: analysis.attribution.top_channel,
               top_segment: analysis.attribution.top_segment,
               totals: analysis.totals,
+              segment_used: segmentName ?? null,
+              sku_count: approvedSkuCount,
             })
           }
         />

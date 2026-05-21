@@ -20,9 +20,27 @@ export function ActivationContent({
   onRequestRevisions,
 }: StepContentProps) {
   const schedule = context.mock_data.channel_schedule;
+
+  // Read upstream: localization variants from Step 7
+  const locOutput = context.state.step_outputs["7"] as Record<string, unknown> | undefined;
+  const variantCount = (locOutput?.variant_count as number | undefined) ?? 0;
+  const locRegions = (locOutput?.regions as string[] | undefined) ?? [];
+
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
+
+      {/* Upstream context: reading from Step 7 */}
+      {variantCount > 0 && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Step 7: Localization
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            <strong>{variantCount} variants</strong> across {locRegions.length} regions locked in — activation covers all localized placements.
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-3 flex items-center gap-1.5">
@@ -71,6 +89,8 @@ export function ActivationContent({
         onPrimary={() =>
           onApprove("Activate Campaign", {
             channels: schedule.map((c) => c.channel),
+            locale_variant_count: variantCount,
+            locale_regions: locRegions,
           })
         }
         onRequestRevisions={() => onRequestRevisions(8, 7)}
