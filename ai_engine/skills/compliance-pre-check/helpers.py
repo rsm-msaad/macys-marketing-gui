@@ -14,6 +14,8 @@ BANNED_WORDS = [
     "dirt cheap",
     "unbeatable",
     "lowest prices anywhere",
+    "lowest price",
+    "guaranteed lowest",
     "nobody beats macys",
 ]
 
