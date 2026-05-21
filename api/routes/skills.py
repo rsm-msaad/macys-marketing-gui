@@ -64,6 +64,30 @@ def run_dam(body: DamBody) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+# MCP tool: find_dam_assets — queries DAM by category and region
+class FindDamAssetsBody(BaseModel):
+    category: str = Field(default="Beauty")
+    region: str = Field(default="NY")
+    max_results: int = Field(default=5, ge=1, le=20)
+
+
+@router.post("/find-dam-assets")
+def run_find_dam_assets(body: FindDamAssetsBody) -> dict:
+    """MCP tool firing: find_dam_assets at Step 4 (Creative Production).
+
+    Queries the DAM database by category and region, filtering out assets
+    with expired model releases. Returns assets with active rights.
+    """
+    from ai_engine.tools.find_dam_assets import find_dam_assets
+    result = find_dam_assets(body.category, body.region, max_results=body.max_results)
+    return {
+        "ok": True,
+        "mcp_tool": "find_dam_assets",
+        **result,
+        "input": {"category": body.category, "region": body.region, "max_results": body.max_results},
+    }
+
+
 @router.post("/localize")
 def run_localize(body: LocalizeBody) -> dict:
     try:

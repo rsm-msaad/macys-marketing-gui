@@ -584,6 +584,27 @@ export async function runDam(brief: string, maxResults = 12): Promise<DamResult>
   });
 }
 
+// MCP tool: find_dam_assets
+export type FindDamAssetsResult = {
+  ok: boolean;
+  mcp_tool: string;
+  status: "pass" | "empty";
+  assets: Array<{ asset_id: string; filename: string; tag_list: string; region_rights: string }>;
+  result_count: number;
+  input: { category: string; region: string; max_results: number };
+};
+
+export async function runFindDamAssets(
+  category: string,
+  region: string,
+  maxResults = 5,
+): Promise<FindDamAssetsResult> {
+  return request<FindDamAssetsResult>("/skills/find-dam-assets", {
+    method: "POST",
+    body: JSON.stringify({ category, region, max_results: maxResults }),
+  });
+}
+
 export type Variant = {
   variant_id: string;
   region: string;

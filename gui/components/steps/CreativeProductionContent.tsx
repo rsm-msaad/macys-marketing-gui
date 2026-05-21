@@ -9,7 +9,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-import { API_BASE, runDam, type DamAsset, type DamStats } from "@/lib/api";
+import { API_BASE, runDam, runFindDamAssets, type DamAsset, type DamStats, type FindDamAssetsResult } from "@/lib/api";
 import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
 
 function DamAssetCard({
@@ -103,6 +103,21 @@ export function CreativeProductionContent({
     (Array.isArray(existingOutput.approved_assets) ||
       typeof existingOutput.approved_asset_count === "number");
 
+  // Read upstream: SKUs from Step 3
+  const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+  const approvedSkus = (skuOutput?.approved_skus as string[] | undefined) ?? [];
+  const segmentCategory = (skuOutput?.segment_top_category as string | undefined) ?? null;
+
+  // Derive category from upstream or brief
+  const category = (() => {
+    if (segmentCategory) return segmentCategory;
+    const text = `${context.campaign_brief.name} ${context.campaign_brief.objective}`.toLowerCase();
+    if (text.includes("beauty")) return "Beauty";
+    if (text.includes("apparel")) return "Apparel";
+    if (text.includes("home")) return "Home";
+    return "Beauty";
+  })();
+
   const [assets, setAssets] = useState<DamAsset[] | null>(null);
   const [stats, setStats] = useState<DamStats | null>(null);
   const [included, setIncluded] = useState<Set<number>>(new Set());
@@ -111,19 +126,33 @@ export function CreativeProductionContent({
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
   const [batchCount, setBatchCount] = useState(0);
+  const [mcpResult, setMcpResult] = useState<FindDamAssetsResult | null>(null);
 
   async function handleSearch() {
     setRunning(true);
     setError(null);
     setAssets(null);
     setStats(null);
+    setMcpResult(null);
     setBatchCount(1);
     try {
-      const brief = context.campaign_brief.objective || context.campaign_brief.name;
+      // Build brief string enriched with upstream SKU context
+      let brief = context.campaign_brief.objective || context.campaign_brief.name;
+      if (approvedSkus.length > 0) {
+        brief += ` (${approvedSkus.length} SKUs selected in Step 3)`;
+      }
       const result = await runDam(brief, 12);
       setAssets(result.results);
       setStats(result.stats);
       setIncluded(new Set(result.results.map((a) => a.asset_id)));
+
+      // Fire MCP tool: find_dam_assets for rights-checked assets
+      try {
+        const mcp = await runFindDamAssets(category, "NY", 5);
+        setMcpResult(mcp);
+      } catch {
+        // MCP call is supplementary; don't block on failure
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -210,16 +239,28 @@ export function CreativeProductionContent({
     <div className="space-y-3">
       <ContextStack context={context} />
 
+      {/* Upstream context: reading from Step 3 SKU Selection */}
+      {approvedSkus.length > 0 && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Step 3: SKU Selection
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            <strong>{approvedSkus.length} SKUs</strong> locked in — asset search tuned to <strong>{category}</strong> category.
+          </div>
+        </div>
+      )}
+
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: DAM Asset Finder
+            Automation: DAM Asset Finder + MCP: find_dam_assets
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
           Scans 5,000 DAM records, filters out degraded and expired assets, and ranks
-          the rest by tag relevance. Photo-backed assets appear first with real thumbnails.
+          the rest by tag relevance. Fires <strong>find_dam_assets</strong> MCP tool for rights validation.
         </p>
 
         {/* Run button */}
@@ -318,6 +359,27 @@ export function CreativeProductionContent({
         </div>
       )}
 
+      {/* MCP Tool: find_dam_assets results */}
+      {mcpResult && (
+        <div className={`rounded-md border p-3 ${
+          mcpResult.status === "pass"
+            ? "border-green-300/40 bg-green-50/30"
+            : "border-amber-300/40 bg-amber-50/30"
+        }`}>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-green-700">
+            MCP Tool: find_dam_assets — {mcpResult.result_count} rights-verified assets
+          </div>
+          <div className="text-[11px] text-charcoal/65">
+            Queried DAM for <strong>{mcpResult.input.category}</strong> assets in region <strong>{mcpResult.input.region}</strong> with active model releases.
+          </div>
+          {mcpResult.assets.length > 0 && (
+            <div className="mt-1 text-[10px] text-charcoal/50">
+              {mcpResult.assets.map((a) => a.filename).join(", ")}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Approval footer */}
       {showingResults && includedCount > 0 && (
         <ActionFooter
@@ -332,6 +394,14 @@ export function CreativeProductionContent({
                 .filter((a) => included.has(a.asset_id))
                 .map((a) => a.asset_id),
               approved_asset_count: includedCount,
+              skus_from_step3: approvedSkus,
+              category,
+              mcp_find_dam_assets: mcpResult ? {
+                mcp_tool: mcpResult.mcp_tool,
+                status: mcpResult.status,
+                result_count: mcpResult.result_count,
+                input: mcpResult.input,
+              } : null,
             })
           }
         />
