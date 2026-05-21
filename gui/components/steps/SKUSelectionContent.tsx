@@ -12,8 +12,10 @@ import {
 
 import {
   runSkuRecommend,
+  runCheckPricing,
   type RecommendedSku,
   type ExcludedSku,
+  type CheckPricingResult,
 } from "@/lib/api";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
@@ -117,21 +119,41 @@ export function SKUSelectionContent({
     | undefined;
   const hasLockedIn = existingOutput && Array.isArray(existingOutput.approved_skus);
 
+  // Read upstream: segment from Step 2
+  const segmentOutput = context.state.step_outputs["2"] as
+    | Record<string, unknown>
+    | undefined;
+  const segmentName = segmentOutput?.name as string | undefined;
+  const segmentTopCategory = segmentOutput?.top_category as string | undefined;
+  const segmentCustomerCount = segmentOutput?.customer_count as number | undefined;
+
   const [recommended, setRecommended] = useState<RecommendedSku[] | null>(null);
   const [excluded, setExcluded] = useState<ExcludedSku[]>([]);
   const [included, setIncluded] = useState<Set<string>>(new Set());
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
+  const [pricingCheck, setPricingCheck] = useState<CheckPricingResult | null>(null);
+  const [pricingRunning, setPricingRunning] = useState(false);
+
+  // Derive category from upstream segment or brief
+  const category = (() => {
+    if (segmentTopCategory) return segmentTopCategory;
+    const text = `${context.campaign_brief.name} ${context.campaign_brief.objective}`.toLowerCase();
+    if (text.includes("beauty")) return "Beauty";
+    if (text.includes("apparel")) return "Apparel";
+    if (text.includes("home")) return "Home";
+    return "Beauty";
+  })();
 
   async function handleRecommend() {
     setRunning(true);
     setError(null);
     setRecommended(null);
     setExcluded([]);
+    setPricingCheck(null);
     try {
       const brief = context.campaign_brief;
-      const category = "Beauty";
       const nameLC = (brief.name + " " + brief.objective).toLowerCase();
       let season = "";
       if (nameLC.includes("mother")) season = "mothers-day";
@@ -139,10 +161,20 @@ export function SKUSelectionContent({
       else if (nameLC.includes("summer")) season = "summer";
       else if (nameLC.includes("holiday")) season = "holiday";
 
-      const result = await runSkuRecommend(category, 25, "Q2 2026", season, 18);
+      const result = await runSkuRecommend(category, 25, "Q2 2026", season, 18, segmentTopCategory ?? undefined);
       setRecommended(result.recommended_skus);
       setExcluded(result.excluded_skus);
       setIncluded(new Set(result.recommended_skus.map((s) => s.sku_id)));
+
+      // Auto-fire MCP tool: check_pricing_conflicts on all recommended SKUs
+      setPricingRunning(true);
+      try {
+        const skuIds = result.recommended_skus.map((s) => s.sku_id);
+        const pricing = await runCheckPricing(skuIds, 25);
+        setPricingCheck(pricing);
+      } finally {
+        setPricingRunning(false);
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -199,6 +231,20 @@ export function SKUSelectionContent({
     <div className="space-y-3">
       <ContextStack context={context} />
 
+      {/* Upstream context: reading from Step 2 Segmentation */}
+      {segmentName && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Step 2: Segmentation
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            Segment: <strong>{segmentName}</strong>
+            {segmentCustomerCount != null && <> ({segmentCustomerCount.toLocaleString()} customers)</>}
+            {segmentTopCategory && <> — top category: <strong>{segmentTopCategory}</strong>, biasing SKU selection</>}
+          </div>
+        </div>
+      )}
+
       {/* Automation panel */}
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
@@ -209,7 +255,7 @@ export function SKUSelectionContent({
         </div>
         <p className="text-sm text-charcoal/70">
           Scores 61 catalog SKUs by inventory, margin, vendor commitment, and seasonality.
-          Excludes SKUs that would violate MAP at the campaign discount. Pick which to include.
+          Excludes SKUs that would violate MAP at the campaign discount. Category: <strong>{category}</strong>.
         </p>
 
         {/* Run button */}
@@ -297,26 +343,94 @@ export function SKUSelectionContent({
         </div>
       )}
 
-      {/* Approval footer */}
-      {showingRecommended && includedCount > 0 && (
-        <ApprovalActions
-          canAct={canAct}
-          busy={busy}
-          primaryLabel={`Lock in ${includedCount} SKUs`}
-          secondaryLabel="Request Different SKUs"
-          stepNumber={3}
-          onPrimary={() =>
-            onApprove("Approve SKU List", {
-              approved_skus: recommended
-                .filter((s) => included.has(s.sku_id))
-                .map((s) => s.sku_id),
-              total_recommended: recommended.length,
-              excluded_count: excluded.length,
-            })
-          }
-          onRequestRevisions={() => onRequestRevisions(3, 2)}
-        />
+      {/* MCP Tool: check_pricing_conflicts results */}
+      {pricingRunning && (
+        <div className="flex items-center gap-2 rounded-md border border-charcoal/10 bg-white px-3 py-2 text-sm text-charcoal/60">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+          Running MCP tool: check_pricing_conflicts...
+        </div>
       )}
+      {pricingCheck && (
+        <div className={`rounded-md border p-3 ${
+          pricingCheck.status === "pass"
+            ? "border-green-300/40 bg-green-50/30"
+            : pricingCheck.status === "warn"
+              ? "border-amber-300/40 bg-amber-50/30"
+              : "border-red-300/40 bg-red-50/30"
+        }`}>
+          <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider">
+            <ShieldAlert className="h-3 w-3" />
+            <span className={
+              pricingCheck.status === "pass" ? "text-green-700" :
+              pricingCheck.status === "warn" ? "text-amber-700" : "text-red-700"
+            }>
+              MCP Tool: check_pricing_conflicts — {pricingCheck.status.toUpperCase()}
+            </span>
+          </div>
+          <div className="text-[11px] text-charcoal/65">
+            Checked {pricingCheck.checked_count} SKUs at {pricingCheck.input.proposed_discount_pct}% discount against PRICE-RULES-2026-001.
+          </div>
+          {pricingCheck.conflicts.length > 0 && (
+            <ul className="mt-1.5 space-y-0.5 text-[11px]">
+              {pricingCheck.conflicts.map((c) => (
+                <li key={c.sku_id} className={c.severity === "fail" ? "text-red-700" : "text-amber-700"}>
+                  <span className="font-medium">[{c.severity.toUpperCase()}]</span> {c.sku_id}{c.brand ? ` (${c.brand})` : ""}: {c.issue}
+                </li>
+              ))}
+            </ul>
+          )}
+          {pricingCheck.status === "pass" && (
+            <div className="mt-1 text-[11px] text-green-700">No pricing conflicts detected.</div>
+          )}
+        </div>
+      )}
+
+      {/* Approval footer — block if pricing check has hard failures on included SKUs */}
+      {showingRecommended && includedCount > 0 && (() => {
+        const failedSkuIds = new Set(
+          (pricingCheck?.conflicts ?? [])
+            .filter((c) => c.severity === "fail")
+            .map((c) => c.sku_id)
+        );
+        const includedFailures = [...included].filter((id) => failedSkuIds.has(id));
+        const hasBlockingFailures = includedFailures.length > 0;
+
+        return (
+          <>
+            {hasBlockingFailures && (
+              <div className="rounded-md border border-red-300/40 bg-red-50/30 px-3 py-2 text-[11px] text-red-700">
+                <strong>{includedFailures.length} selected SKU(s)</strong> have pricing rule violations.
+                Deselect them or request different SKUs to proceed.
+              </div>
+            )}
+            <ApprovalActions
+              canAct={canAct && !hasBlockingFailures}
+              busy={busy}
+              primaryLabel={`Lock in ${includedCount} SKUs`}
+              secondaryLabel="Request Different SKUs"
+              stepNumber={3}
+              onPrimary={() =>
+                onApprove("Approve SKU List", {
+                  approved_skus: recommended
+                    .filter((s) => included.has(s.sku_id))
+                    .map((s) => s.sku_id),
+                  total_recommended: recommended.length,
+                  excluded_count: excluded.length,
+                  segment_used: segmentName ?? null,
+                  segment_top_category: segmentTopCategory ?? null,
+                  pricing_check: pricingCheck ? {
+                    mcp_tool: pricingCheck.mcp_tool,
+                    status: pricingCheck.status,
+                    conflicts: pricingCheck.conflicts,
+                    checked_count: pricingCheck.checked_count,
+                  } : null,
+                })
+              }
+              onRequestRevisions={() => onRequestRevisions(3, 2)}
+            />
+          </>
+        );
+      })()}
     </div>
   );
 }

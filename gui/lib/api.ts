@@ -257,6 +257,7 @@ export async function runSkuRecommend(
   campaignPeriod: string,
   season: string,
   maxResults = 18,
+  segmentTopCategory?: string,
 ): Promise<SkuRecommendResult> {
   return request<SkuRecommendResult>("/skills/sku-recommend", {
     method: "POST",
@@ -266,6 +267,37 @@ export async function runSkuRecommend(
       campaign_period: campaignPeriod,
       season,
       max_results: maxResults,
+      segment_top_category: segmentTopCategory ?? null,
+    }),
+  });
+}
+
+// MCP tool: check_pricing_conflicts
+export type PricingConflict = {
+  sku_id: string;
+  brand?: string;
+  issue: string;
+  severity: "fail" | "warn";
+};
+
+export type CheckPricingResult = {
+  ok: boolean;
+  mcp_tool: string;
+  status: "pass" | "warn" | "fail";
+  conflicts: PricingConflict[];
+  checked_count: number;
+  input: { sku_ids: string[]; proposed_discount_pct: number };
+};
+
+export async function runCheckPricing(
+  skuIds: string[],
+  proposedDiscountPct: number,
+): Promise<CheckPricingResult> {
+  return request<CheckPricingResult>("/skills/check-pricing", {
+    method: "POST",
+    body: JSON.stringify({
+      sku_ids: skuIds,
+      proposed_discount_pct: proposedDiscountPct,
     }),
   });
 }

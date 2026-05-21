@@ -193,6 +193,15 @@ export function SegmentationContent({
   const [showRerun, setShowRerun] = useState(false);
   const [overrideComment, setOverrideComment] = useState("");
 
+  // Extract category from brief for context display
+  const briefCategory = (() => {
+    const text = `${context.campaign_brief.name} ${context.campaign_brief.objective}`.toLowerCase();
+    if (text.includes("beauty")) return "Beauty";
+    if (text.includes("apparel")) return "Apparel";
+    if (text.includes("home")) return "Home";
+    return null;
+  })();
+
   async function handleBuildSegments() {
     setRunning(true);
     setError(null);
@@ -273,6 +282,18 @@ export function SegmentationContent({
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
+
+      {/* Upstream context: reading from Step 1 brief */}
+      {briefCategory && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Step 1: Campaign Brief
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            Category: <strong>{briefCategory}</strong> — segmentation will recommend the segment with highest {briefCategory} category lift.
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
