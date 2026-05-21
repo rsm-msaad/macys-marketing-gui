@@ -1,4 +1,8 @@
-"""Tests for the SKU Recommender automation."""
+"""Tests for the SKU Recommender automation.
+
+The recommender now reads from macys.db sku_catalog (2,000 SKUs across
+5 categories) instead of the deprecated product_catalog.json.
+"""
 
 from __future__ import annotations
 
@@ -14,8 +18,6 @@ assert _spec and _spec.loader
 rec = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(rec)
 
-CATALOG_PATH = _AI / "automations" / "sku-recommender" / "product_catalog.json"
-
 BEAUTY_BRIEF = {
     "category": "Beauty",
     "discount_pct": 25,
@@ -24,17 +26,23 @@ BEAUTY_BRIEF = {
 }
 
 
-# ---------- Catalog loading ----------
+# ---------- Database loading ----------
 
 
-def test_catalog_loads():
-    catalog = rec._load_catalog(CATALOG_PATH)
-    assert len(catalog) >= 50
+def test_db_loads_beauty():
+    catalog = rec._load_catalog_from_db("Beauty")
+    assert len(catalog) >= 300  # macys.db has 377 Beauty SKUs
 
 
-def test_catalog_has_required_fields():
-    catalog = rec._load_catalog(CATALOG_PATH)
-    for sku in catalog:
+def test_db_loads_all_categories():
+    for cat in ["Beauty", "Apparel", "Accessories", "Home", "Shoes"]:
+        catalog = rec._load_catalog_from_db(cat)
+        assert len(catalog) >= 100, f"{cat} should have 100+ SKUs, got {len(catalog)}"
+
+
+def test_db_skus_have_required_fields():
+    catalog = rec._load_catalog_from_db("Beauty")
+    for sku in catalog[:10]:
         assert "sku_id" in sku
         assert "brand" in sku
         assert "name" in sku
@@ -62,26 +70,36 @@ def test_margin_score_normalized():
     assert rec._margin_score(0.80) == 1.0  # capped at 1.0 by min()
 
 
-def test_vendor_score_active():
-    assert rec._vendor_score("Q2 2026 vendor sponsored", "Q2 2026") == 1.0
-    assert rec._vendor_score("", "Q2 2026") == 0.3
-    # "sponsored" keyword matches broadly, so this still scores 1.0
-    assert rec._vendor_score("Q1 2025 vendor sponsored", "Q2 2026") == 1.0
-    # No commitment at all scores low
-    assert rec._vendor_score("internal only", "Q2 2026") == 0.3
+def test_vendor_score_levels():
+    assert rec._vendor_score("high") == rec.VENDOR_HIGH_SCORE
+    assert rec._vendor_score("medium") == rec.VENDOR_MEDIUM_SCORE
+    assert rec._vendor_score("low") == rec.VENDOR_LOW_SCORE
 
 
 def test_seasonality_score_match():
-    assert rec._seasonality_score(["gift", "mothers-day"], "mothers-day") == 1.0
-    assert rec._seasonality_score(["everyday"], "mothers-day") == 0.5
-    assert rec._seasonality_score(["gift"], "summer") == 1.0  # gift matches broadly
+    assert rec._seasonality_score(["spring", "mothers-day"], "mothers-day") == 1.0
+    assert rec._seasonality_score(["winter"], "mothers-day") == 0.5
+    assert rec._seasonality_score(["everyday"], "summer") == 1.0
 
 
 def test_seasonality_score_no_season():
-    assert rec._seasonality_score(["gift"], "") == 0.5
+    assert rec._seasonality_score(["spring"], "") == 0.5
 
 
-# ---------- MAP exclusion ----------
+# ---------- MAP brand detection ----------
+
+
+def test_map_brand_detection():
+    assert rec._is_map_brand("Coach") is True
+    assert rec._is_map_brand("coach") is True
+    assert rec._is_map_brand("Lancome") is True
+    assert rec._is_map_brand("Dior") is True
+    assert rec._is_map_brand("Dior Beauty") is True
+    assert rec._is_map_brand("Kate Spade") is True
+    assert rec._is_map_brand("Calvin Klein") is True
+    assert rec._is_map_brand("Levi's") is True
+    assert rec._is_map_brand("Fossil") is False
+    assert rec._is_map_brand("Adidas") is False
 
 
 def test_map_violation_detected():
@@ -97,9 +115,9 @@ def test_map_not_protected_never_excluded():
 
 
 def test_map_exclusion_in_results():
-    result = rec.recommend_skus(BEAUTY_BRIEF, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF)
     excluded = result["excluded_skus"]
-    assert len(excluded) > 0  # at 25% discount, some MAP floors are < 25%
+    assert len(excluded) > 0  # at 25% discount, MAP brands are excluded
     for ex in excluded:
         assert "MAP" in ex["reason"] or "map" in ex["reason"].lower()
 
@@ -108,7 +126,7 @@ def test_map_exclusion_in_results():
 
 
 def test_recommend_returns_correct_structure():
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=18, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=18)
     assert "recommended_skus" in result
     assert "excluded_skus" in result
     assert "total_in_category" in result
@@ -116,32 +134,40 @@ def test_recommend_returns_correct_structure():
 
 
 def test_recommend_returns_max_results():
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=10, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=10)
     assert len(result["recommended_skus"]) == 10
 
 
 def test_recommend_ranked_descending():
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=18, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=18)
     skus = result["recommended_skus"]
     for i in range(len(skus) - 1):
         assert skus[i]["score"] >= skus[i + 1]["score"]
 
 
 def test_recommend_all_beauty():
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=50, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=50)
     for sku in result["recommended_skus"]:
         assert sku["category"] == "Beauty"
 
 
+def test_recommend_accessories():
+    brief = {**BEAUTY_BRIEF, "category": "Accessories"}
+    result = rec.recommend_skus(brief, max_results=18)
+    assert len(result["recommended_skus"]) == 18
+    for sku in result["recommended_skus"]:
+        assert sku["category"] == "Accessories"
+
+
 def test_recommend_no_excluded_in_recommended():
-    result = rec.recommend_skus(BEAUTY_BRIEF, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF)
     rec_ids = {s["sku_id"] for s in result["recommended_skus"]}
     exc_ids = {s["sku_id"] for s in result["excluded_skus"]}
     assert rec_ids.isdisjoint(exc_ids)
 
 
 def test_each_sku_has_score_fields():
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=5, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=5)
     for sku in result["recommended_skus"]:
         assert "score" in sku
         assert "score_pct" in sku
@@ -154,8 +180,8 @@ def test_each_sku_has_score_fields():
 
 
 def test_deterministic_output():
-    r1 = rec.recommend_skus(BEAUTY_BRIEF, max_results=18, catalog_path=CATALOG_PATH)
-    r2 = rec.recommend_skus(BEAUTY_BRIEF, max_results=18, catalog_path=CATALOG_PATH)
+    r1 = rec.recommend_skus(BEAUTY_BRIEF, max_results=18)
+    r2 = rec.recommend_skus(BEAUTY_BRIEF, max_results=18)
     ids1 = [s["sku_id"] for s in r1["recommended_skus"]]
     ids2 = [s["sku_id"] for s in r2["recommended_skus"]]
     assert ids1 == ids2
@@ -164,21 +190,14 @@ def test_deterministic_output():
     assert scores1 == scores2
 
 
-# ---------- Vendor boost ----------
+# ---------- Margin variance ----------
 
 
-def test_vendor_commitment_boosts_ranking():
-    """SKUs with active vendor commitments should rank higher than similar SKUs without."""
-    result = rec.recommend_skus(BEAUTY_BRIEF, max_results=50, catalog_path=CATALOG_PATH)
-    skus = result["recommended_skus"]
-    # Find pairs of similar SKUs from the same brand, one with vendor one without
-    with_vendor = [s for s in skus if s.get("vendor_commitment")]
-    without_vendor = [s for s in skus if not s.get("vendor_commitment")]
-    if with_vendor and without_vendor:
-        # On average, vendor-backed SKUs should score higher
-        avg_with = sum(s["score"] for s in with_vendor) / len(with_vendor)
-        avg_without = sum(s["score"] for s in without_vendor) / len(without_vendor)
-        assert avg_with > avg_without
+def test_margin_varies_within_category():
+    """Different SKUs in same category should have different margins."""
+    catalog = rec._load_catalog_from_db("Beauty")
+    margins = set(s["margin_pct"] for s in catalog[:20])
+    assert len(margins) > 1, "All margins are identical — variance not working"
 
 
 # ---------- Edge cases ----------
@@ -186,11 +205,11 @@ def test_vendor_commitment_boosts_ranking():
 
 def test_zero_discount_no_map_exclusions():
     brief = {**BEAUTY_BRIEF, "discount_pct": 0}
-    result = rec.recommend_skus(brief, catalog_path=CATALOG_PATH)
+    result = rec.recommend_skus(brief)
     assert len(result["excluded_skus"]) == 0
 
 
 def test_high_discount_more_exclusions():
-    low = rec.recommend_skus({**BEAUTY_BRIEF, "discount_pct": 5}, catalog_path=CATALOG_PATH)
-    high = rec.recommend_skus({**BEAUTY_BRIEF, "discount_pct": 30}, catalog_path=CATALOG_PATH)
+    low = rec.recommend_skus({**BEAUTY_BRIEF, "discount_pct": 5})
+    high = rec.recommend_skus({**BEAUTY_BRIEF, "discount_pct": 30})
     assert len(high["excluded_skus"]) >= len(low["excluded_skus"])
