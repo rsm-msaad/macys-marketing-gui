@@ -652,6 +652,34 @@ export async function runLocalize(brief: string, skuIds: number[]): Promise<Loca
   });
 }
 
+// MCP tool: generate_locale_variants
+export type GenerateLocaleResult = {
+  ok: boolean;
+  mcp_tool: string;
+  status: string;
+  original_copy: string;
+  translated_copy: string;
+  target_language: string;
+  applied_phrases: number;
+  unmatched_words: number;
+  input: { copy: string; target_language: string };
+};
+
+export async function runGenerateLocaleVariants(
+  copy: string,
+  targetLanguage: string,
+  regionalPricing?: Record<string, unknown>,
+): Promise<GenerateLocaleResult> {
+  return request<GenerateLocaleResult>("/skills/generate-locale-variants", {
+    method: "POST",
+    body: JSON.stringify({
+      source_copy: copy,
+      target_language: targetLanguage,
+      regional_pricing: regionalPricing ?? null,
+    }),
+  });
+}
+
 export type ChannelAttribution = {
   channel: string;
   revenue: number;

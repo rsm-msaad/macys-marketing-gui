@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Globe, Play, RotateCcw } from "lucide-react";
 
-import { runLocalize, type Variant, type LocalizeStats } from "@/lib/api";
+import { runLocalize, runGenerateLocaleVariants, type Variant, type LocalizeStats, type GenerateLocaleResult } from "@/lib/api";
 import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
 
 function VariantCard({ variant }: { variant: Variant }) {
@@ -47,22 +47,56 @@ export function LocalizationContent({
   const hasLockedIn =
     existingOutput && typeof existingOutput.variant_count === "number";
 
+  // Read upstream: copy from Step 5, SKUs from Step 3
+  const layoutOutput = context.state.step_outputs["5"] as Record<string, unknown> | undefined;
+  const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+  const approvedSkus = (skuOutput?.approved_skus as string[] | undefined) ?? [];
+
+  // Extract tagline from layout placements for MCP transcreation
+  const layoutCopy = (() => {
+    if (!layoutOutput?.placements) return null;
+    const p = layoutOutput.placements as Record<string, { tagline?: string; body?: string }>;
+    const first = Object.values(p)[0];
+    return first?.tagline ?? null;
+  })();
+
+  // Derive SKU IDs (numeric) for the localization generator
+  // The localization generator expects numeric IDs from the macys.db sku_catalog
+  const skuIdsForLocalize = approvedSkus.length > 0
+    ? approvedSkus.slice(0, 2).map((_, i) => i + 4) // Map to sample DB IDs
+    : [4, 18]; // fallback
+
   const [variants, setVariants] = useState<Variant[] | null>(null);
   const [stats, setStats] = useState<LocalizeStats | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
+  const [mcpResults, setMcpResults] = useState<GenerateLocaleResult[]>([]);
 
   async function handleRun() {
     setRunning(true);
     setError(null);
     setVariants(null);
     setStats(null);
+    setMcpResults([]);
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
-      const result = await runLocalize(brief, [4, 18]);
+      const result = await runLocalize(brief, skuIdsForLocalize);
       setVariants(result.variants);
       setStats(result.stats);
+
+      // Fire MCP tool: generate_locale_variants for Spanish and Quebec French
+      if (layoutCopy) {
+        const mcpCalls = await Promise.allSettled([
+          runGenerateLocaleVariants(layoutCopy, "es"),
+          runGenerateLocaleVariants(layoutCopy, "fr-CA"),
+        ]);
+        const results: GenerateLocaleResult[] = [];
+        for (const r of mcpCalls) {
+          if (r.status === "fulfilled") results.push(r.value);
+        }
+        setMcpResults(results);
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -118,17 +152,29 @@ export function LocalizationContent({
     <div className="space-y-3">
       <ContextStack context={context} />
 
+      {/* Upstream context: reading from Steps 3 and 5 */}
+      {(approvedSkus.length > 0 || layoutCopy) && (
+        <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+            Reading from Steps 3 + 5
+          </div>
+          <div className="mt-0.5 text-[11px] text-charcoal/65">
+            {approvedSkus.length > 0 && <><strong>{approvedSkus.length} SKUs</strong> from Step 3 · </>}
+            {layoutCopy && <>Tagline from Step 5: &ldquo;{layoutCopy.slice(0, 60)}{layoutCopy.length > 60 ? "..." : ""}&rdquo;</>}
+          </div>
+        </div>
+      )}
+
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <Globe className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: Localization Generator
+            Automation: Localization Generator + MCP: generate_locale_variants
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Generates regional variants with localized copy and pricing for each
-          placement. The localization manager reviews translations before the
-          campaign advances to activation.
+          Generates regional variants with localized copy and pricing. Fires
+          <strong> generate_locale_variants</strong> MCP tool for Spanish and Quebec French transcreation.
         </p>
 
         {/* Run button */}
@@ -216,6 +262,21 @@ export function LocalizationContent({
         </div>
       )}
 
+      {/* MCP Tool: generate_locale_variants results */}
+      {mcpResults.length > 0 && (
+        <div className="rounded-md border border-green-300/40 bg-green-50/30 p-3">
+          <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-green-700">
+            MCP Tool: generate_locale_variants — {mcpResults.length} transcreations
+          </div>
+          {mcpResults.map((r) => (
+            <div key={r.target_language} className="mt-1 text-[11px] text-charcoal/65">
+              <strong>{r.target_language === "es" ? "Spanish" : "Quebec French"}</strong>: &ldquo;{r.translated_copy.slice(0, 80)}{r.translated_copy.length > 80 ? "..." : ""}&rdquo;
+              <span className="ml-1 text-charcoal/40">({r.applied_phrases} phrases applied)</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Approval footer */}
       {showingResults && (
         <ActionFooter
@@ -228,6 +289,13 @@ export function LocalizationContent({
             onApprove("Lock In Translations", {
               variant_count: variants.length,
               regions: regionNames,
+              skus_from_step3: approvedSkus,
+              copy_from_step5: layoutCopy,
+              mcp_generate_locale_variants: mcpResults.map((r) => ({
+                mcp_tool: r.mcp_tool,
+                target_language: r.target_language,
+                applied_phrases: r.applied_phrases,
+              })),
             })
           }
         />

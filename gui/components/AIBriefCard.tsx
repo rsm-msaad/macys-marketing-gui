@@ -174,13 +174,35 @@ export function AIBriefCard({
     setLoading(true);
     setError(null);
 
+    // Read upstream: actual copy from Step 5, SKUs from Step 3, segment from Step 2
+    const layoutOutput = context.state.step_outputs["5"] as Record<string, unknown> | undefined;
+    const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
+    const segmentOutput = context.state.step_outputs["2"] as Record<string, unknown> | undefined;
+
+    let copy = context.campaign_brief.objective;
+    if (layoutOutput?.placements) {
+      const p = layoutOutput.placements as Record<string, { tagline?: string; body?: string }>;
+      const parts: string[] = [];
+      for (const [, val] of Object.entries(p)) {
+        if (val.tagline) parts.push(val.tagline);
+        if (val.body) parts.push(val.body);
+      }
+      if (parts.length > 0) copy = parts.join(" ");
+    }
+
+    const skus = (skuOutput?.approved_skus as string[] | undefined) ??
+      context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5);
+
+    const audience = (segmentOutput?.name as string | undefined) ??
+      context.campaign_brief.target_customer;
+
     const campaign = {
       campaign_id: context.campaign_brief.campaign_id,
       title: context.campaign_brief.name,
-      audience_segment: context.campaign_brief.target_customer,
-      copy: context.campaign_brief.objective,
-      skus: context.mock_data.sku_suggestions.map((s) => s.name).slice(0, 5),
-      discount_pct: 15,
+      audience_segment: audience,
+      copy,
+      skus,
+      discount_pct: 25,
       regions: ["NY", "CA", "FL", "TX"],
       compliance_check: complianceCheck,
     };

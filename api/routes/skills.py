@@ -212,6 +212,30 @@ def run_check_pricing(body: CheckPricingBody) -> dict:
     }
 
 
+# MCP tool: generate_locale_variants — simulated transcreation
+class GenerateLocaleBody(BaseModel):
+    source_copy: str = Field(default="Discover the magic of Macy's this season")
+    target_language: str = Field(default="es")
+    regional_pricing: dict | None = Field(default=None)
+
+
+@router.post("/generate-locale-variants")
+def run_generate_locale(body: GenerateLocaleBody) -> dict:
+    """MCP tool firing: generate_locale_variants at Step 7 (Localization).
+
+    Simulated transcreation to Spanish (es) or Quebec French (fr-CA)
+    with optional regional pricing overlay.
+    """
+    from ai_engine.tools.generate_locale_variants import generate_locale_variants
+    result = generate_locale_variants(body.source_copy, body.target_language, body.regional_pricing)
+    return {
+        "ok": True,
+        "mcp_tool": "generate_locale_variants",
+        **result,
+        "input": {"copy": body.source_copy, "target_language": body.target_language},
+    }
+
+
 # Layout Copy Generator (LLM skill with deterministic fallback)
 _LAYOUT_HELPERS = None
 
