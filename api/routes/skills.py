@@ -142,11 +142,8 @@ def run_sku_recommend(body: SkuRecommendBody) -> dict:
 
 
 # MCP tool: check_pricing_conflicts — validates SKUs against MAP rules
-# Uses the same product catalog as the SKU Recommender so IDs match.
-_MAP_ENFORCED_BRANDS: set[str] = {
-    "Levi's", "Coach", "Lancome", "Estee Lauder",
-    "Clinique", "La Mer", "Dior Beauty", "Tag Heuer",
-}
+# Now reads from macys.db sku_catalog (same source as SKU Recommender).
+# Use the lazy-loaded SKU_RECOMMEND module for MAP brand checking.
 
 
 class CheckPricingBody(BaseModel):
@@ -160,40 +157,39 @@ def run_check_pricing(body: CheckPricingBody) -> dict:
 
     Validates selected SKUs against MAP-enforced brand list from
     PRICE-RULES-2026-001 and checks for discount floor violations.
+    Reads from macys.db sku_catalog so SKU IDs match the recommender.
     """
-    import json
+    import sqlite3
 
-    catalog_path = REPO_ROOT / "ai_engine" / "automations" / "sku-recommender" / "product_catalog.json"
-    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
-    by_id = {s["sku_id"]: s for s in catalog}
+    db_path = REPO_ROOT / "data" / "macys.db"
+    conn = sqlite3.connect(str(db_path))
+    conn.row_factory = sqlite3.Row
 
     conflicts: list[dict] = []
-    for sku_id in body.sku_ids:
-        sku = by_id.get(sku_id)
-        if sku is None:
-            conflicts.append({"sku_id": sku_id, "issue": "SKU not found in catalog.", "severity": "fail"})
-            continue
-        if sku.get("brand") in _MAP_ENFORCED_BRANDS:
-            conflicts.append({
-                "sku_id": sku_id,
-                "brand": sku["brand"],
-                "issue": (
-                    f"Brand {sku['brand']} is on the MAP enforced list "
-                    "per PRICE-RULES-2026-001. Discount requires Merchandising approval."
-                ),
-                "severity": "fail",
-            })
-            continue
-        if sku.get("map_protected") and (body.proposed_discount_pct / 100.0) > sku.get("map_floor_pct", 0):
-            conflicts.append({
-                "sku_id": sku_id,
-                "brand": sku["brand"],
-                "issue": (
-                    f"Proposed {body.proposed_discount_pct:.0f}% discount exceeds "
-                    f"MAP floor of {sku['map_floor_pct'] * 100:.0f}%."
-                ),
-                "severity": "fail",
-            })
+    try:
+        for sku_id in body.sku_ids:
+            row = conn.execute(
+                "SELECT sku_id, product_name, brand FROM sku_catalog WHERE sku_id = ?",
+                (sku_id,),
+            ).fetchone()
+            if row is None:
+                conflicts.append({"sku_id": sku_id, "issue": "SKU not found in catalog.", "severity": "fail"})
+                continue
+            brand = str(row["brand"])
+            if SKU_RECOMMEND._is_map_brand(brand):
+                if (body.proposed_discount_pct / 100.0) > SKU_RECOMMEND.DEFAULT_MAP_FLOOR_PCT:
+                    conflicts.append({
+                        "sku_id": sku_id,
+                        "brand": brand,
+                        "issue": (
+                            f"Brand {brand} is MAP-enforced per PRICE-RULES-2026-001. "
+                            f"Proposed {body.proposed_discount_pct:.0f}% discount exceeds "
+                            f"MAP floor of {SKU_RECOMMEND.DEFAULT_MAP_FLOOR_PCT * 100:.0f}%."
+                        ),
+                        "severity": "fail",
+                    })
+    finally:
+        conn.close()
 
     if any(c["severity"] == "fail" for c in conflicts):
         status = "fail"
