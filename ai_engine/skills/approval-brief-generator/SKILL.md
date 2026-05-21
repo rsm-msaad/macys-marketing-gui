@@ -1,11 +1,27 @@
+---
+agentic: true
+---
+
 # Approval Brief Generator
 
 **Workflow step:** 6b, generate the VP approval brief
 **Owner persona:** VP (the skill runs automatically when the VP opens the approval modal)
-**Input from previous step:** campaign block plus compliance_check from workflow_state.json
-**Output to next step:** approval_brief object written to workflow_state.json
-**RAG retrieval:** light. Past campaign retros for ROI benchmarks. Typical hits: RETRO-SP-2025-BTY, RETRO-Q4-2025
-**MCP tools called:** none
+**Input from previous step:** campaign block plus compliance_check from workflow state
+**Output to next step:** approval_brief object written to workflow state
+**RAG retrieval:** past campaign retros for ROI benchmarks (RETRO-SP-2025-BTY, RETRO-Q4-2025)
+**MCP tools available:** check_pricing_conflicts (for any pricing verification the compliance check may have missed)
+
+## Agentic mode
+
+This skill runs in agentic mode. You have access to MCP tools that you can call mid-reasoning if you need to verify data. The RAG documents (campaign retros with ROI benchmarks) have already been retrieved and are in `retrieved_context`. You decide when and whether to call MCP tools.
+
+**Available tools:**
+- `check_pricing_conflicts(sku_ids, proposed_discount_pct)` — Validates SKUs against MAP enforced brand list. Call this if the compliance_check flagged pricing issues and you want to double-check the SKU list before writing risk_flags.
+- `find_dam_assets(category, region)` — Look up DAM assets with active rights. Rarely needed for brief generation, but available if you need to verify asset readiness for a risk flag.
+
+**When to call tools vs. when not to:**
+- If compliance_check already has a pricing_cross_check finding with status "warn" or "fail", you MAY call check_pricing_conflicts to get the latest data for the risk_flags section.
+- For most briefs, the retrieved retros and compliance_check are sufficient. Do not call tools unless verification adds value.
 
 ## When to use this skill
 
@@ -13,21 +29,18 @@ Run this skill the moment the VP opens the approval modal for a campaign that ha
 
 ## Instructions
 
-1. Load the campaign block and compliance_check from data/workflow_state.json.
-2. Retrieve past campaign retros for the campaign category and audience segment. Call `retrieve("[campaign category] campaign retro performance benchmarks for [audience segment]")`. Expect RETRO-SP-2025-BTY for Beauty campaigns or RETRO-Q4-2025 for Holiday campaigns.
-3. Call `helpers.extract_roi_benchmark(retrieved_retros, audience_segment)` to pull representative ROAS and lift numbers from the retrieved retros. The helper does the numeric extraction. The LLM does not estimate.
-4. The LLM writes the five fields of the brief.
+1. Read the campaign block and compliance_check from the current_state.
+2. Use the retrieved_context (campaign retros) to extract ROI benchmarks for the campaign's category and audience segment.
+3. If the compliance_check has pricing warnings and you need to verify the current state of SKU conflicts, call check_pricing_conflicts.
+4. Write the five fields of the brief:
    * `campaign_goal`: one sentence summary of the campaign purpose
    * `target_audience`: one sentence describing the segment
-   * `expected_roi`: one sentence with the benchmark numbers returned by the helper
-   * `risk_flags`: list of compliance warnings carried over from compliance_check plus any business risks the model can identify
-   * `ai_recommendation`: approve, revise, or reject with a one sentence rationale
-5. Call `helpers.decide_recommendation(compliance_check, risk_flags)` to compute the `ai_recommendation` value (approve or revise). The helper applies the rule: any fail in compliance_check triggers revise, any warn keeps approve but the warning belongs in risk_flags, all pass produces approve. The LLM adds the one sentence rationale after the value is decided.
-6. Call `helpers.assemble_brief(...)` to package the five fields plus the retrieved doc IDs.
-7. Write the brief to workflow_state.json under `approval_brief`.
-8. Update `status` to `in_vp_review`.
+   * `expected_roi`: one sentence with benchmark numbers from the retrieved retros
+   * `risk_flags`: list of compliance warnings from compliance_check plus any business risks you identify
+   * `ai_recommendation`: approve, revise, or reject with a one sentence rationale. Rule: any "fail" in compliance_check triggers "revise"; all pass produces "approve"; warn keeps "approve" but the warning belongs in risk_flags.
+5. Return the JSON output schema.
 
-The numeric benchmarks are pulled from retrieved retros by the helper. The LLM does not invent or estimate numbers.
+The numeric benchmarks come from the retrieved retros. Do not invent or estimate numbers.
 
 ## RAG retrieval queries
 
@@ -49,31 +62,9 @@ The numeric benchmarks are pulled from retrieved retros by the helper. The LLM d
 }
 ```
 
-## Worked example
-
-Input compliance_check: recommended_action is `proceed`. One warn on pricing_cross_check (MAP brand needs Merchandising approval).
-
-Retrieval pulls RETRO-SP-2025-BTY. `helpers.extract_roi_benchmark(...)` returns `{"paid_social_roas": 4.2, "email_open_rate": 0.32, "in_store_uplift": 0.18}`.
-
-`helpers.decide_recommendation(...)` returns `approve`.
-
-Output approval_brief:
-
-```json
-{
-  "campaign_goal": "Drive Beauty Loyalists to refresh their spring skincare routine with a 40 percent off offer across qualifying brands.",
-  "target_audience": "Beauty Loyalists, customers who purchased prestige Beauty in the prior 12 months with an active Star Rewards account.",
-  "expected_roi": "Based on Spring 2025 Beauty benchmarks, expect paid social ROAS around 4.2 and email open rate around 32 percent for the Loyalist segment.",
-  "risk_flags": ["BTY-001 is Lancome, MAP enforced. Confirm Merchandising approval before launch."],
-  "ai_recommendation": "approve, the only flag is a procedural MAP confirmation that can be cleared before production.",
-  "retrieved_docs": ["RETRO-SP-2025-BTY"]
-}
-```
-
 ## Handoff
 
-The VP reads the brief and picks one of three actions.
-
-* `approve`, set `approval_decision` to `approve` and `status` to `approved`. Next skill: `localization-generator`.
-* `revise`, set `approval_decision` to `revise`, capture the VP's `revision_comment`, set `status` to `revision_requested`. Next skill: `revision-router`.
-* `reject`, set `approval_decision` to `reject` and `status` to `rejected`. The chain stops.
+The VP reads the brief and picks one of three actions:
+* `approve`: next skill is `localization-generator`.
+* `revise`: capture revision_comment, next skill is `revision-router`.
+* `reject`: the chain stops.
