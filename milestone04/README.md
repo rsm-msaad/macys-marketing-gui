@@ -38,26 +38,27 @@ Step 10 (Reporting) → step_outputs["10"]  ← reads ALL upstream steps 2-9
 | MCP Tool | Fires At | Mode | Purpose |
 |---|---|---|---|
 | `check_pricing_conflicts` | Step 3 (SKU lock-in) | Deterministic | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
-| `check_pricing_conflicts` | Step 6a (compliance) | **Agentic** — Claude decides when to call | Claude calls to verify pricing claims mid-reasoning |
-| `find_dam_assets` | Step 4 (Creative Production) | Deterministic | Rights-verified asset lookup by category and region |
-| `generate_locale_variants` | Step 7 (Localization, 2 calls: es + fr-CA) | Deterministic | Simulated transcreation with phrase substitution |
+| `check_pricing_conflicts` | Step 6a (compliance) | **Agentic** | Claude calls to verify pricing claims mid-reasoning |
+| `check_pricing_conflicts` | Step 6b (brief) | **Agentic** | Claude may re-verify pricing for risk_flags |
+| `find_dam_assets` | Step 4 (creative) | **Agentic** | Claude curates assets by reasoning about campaign mood, then calls tool |
+| `generate_locale_variants` | Step 7 (localization) | **Agentic** | Claude reasons about cultural nuances per locale, then calls tool |
 
 ## Agentic vs Pre-fetch Skills
 
-Two skill invocation patterns:
+| Skill | Step | Mode | MCP Tools | Why Agentic |
+|---|---|---|---|---|
+| DAM Asset Curator | 4 | **Agentic** | find_dam_assets | Claude reasons about mood/brand/season before searching DAM |
+| Layout Copy Generator | 5 | Pre-fetch | — | Creative generation, no tool verification needed |
+| Compliance Pre Check | 6a | **Agentic** | check_pricing_conflicts | Claude decides when to verify pricing claims |
+| Approval Brief Generator | 6b | **Agentic** | check_pricing_conflicts | Claude may verify pricing for risk_flags |
+| Revision Router | 6c | Pre-fetch | — | Classification is text-only |
+| Localization Strategist | 7 | **Agentic** | generate_locale_variants | Claude reasons about cultural nuances per locale |
 
-| Skill | Mode | Why |
-|---|---|---|
-| Compliance Pre Check (6a) | **Agentic** | Claude decides when to call check_pricing_conflicts based on campaign context |
-| Approval Brief Generator (6b) | **Agentic** | Claude may call check_pricing_conflicts to verify pricing flags for risk_flags |
-| Layout Copy Generator (5) | Pre-fetch | Copy generation is creative, not verification-driven |
-| Revision Router (6c) | Pre-fetch | Classification is text-only, no tool verification needed |
-
-Agentic skills still pre-fetch RAG documents deterministically. Only MCP tool calls are agentic — Claude decides when and whether to call them based on the campaign data it sees. The agentic trace (Claude's reasoning + tool calls + results) is captured in the Evidence panel.
+All agentic skills pre-fetch RAG documents deterministically. Only MCP tool calls are agentic — Claude decides when and whether to call them. The agentic trace (reasoning + tool calls + results) is captured in the Evidence panel for full transparency.
 
 ## Component Tally
 
-- **4 LLM Skills:** Compliance Pre Check, Approval Brief Generator, Revision Router, Layout Copy Generator
-- **7 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder, Localization Generator, Activation Scheduler, Campaign Performance Analyzer, Report Generator
-- **3 MCP Tools:** check_pricing_conflicts, find_dam_assets, generate_locale_variants (all actively firing)
+- **6 LLM Skills:** DAM Asset Curator, Layout Copy Generator, Compliance Pre Check, Approval Brief Generator, Revision Router, Localization Strategist
+- **7 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder (fallback), Localization Generator (fallback), Activation Scheduler, Campaign Performance Analyzer, Report Generator
+- **3 MCP Tools:** check_pricing_conflicts, find_dam_assets, generate_locale_variants — all 3 fire agentically at Steps 4, 6a/6b, and 7
 - **12 RAG Documents:** BRAND-GL through TEAM-FAQ in HyQ FAISS index (381 entries)
