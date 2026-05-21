@@ -51,7 +51,7 @@ FastAPI backend (Render)
    |      |
    |      +--- Orchestrator (8 deterministic routing rules)
    |
-   +--- SQLite database (macys.db: customers, SKUs, DAM assets)
+   +--- SQLite database (macys.db: 50K customers, 2K SKUs across 5 categories, 5K DAM assets)
    |
    +--- Eval suite (DeepEval, 67 tests, Claude as judge)
 ```
@@ -64,7 +64,7 @@ Every row maps a workflow step to its implementation, data source, and RAG docum
 | --- | --- | --- | --- | --- | --- |
 | 1 | Briefing | Human | — | — | — |
 | 2 | Segmentation | Automation | Step 1 brief (category) | — | — |
-| 3 | SKU Selection | Automation + Human | Step 2 segment (top_category) | **check_pricing_conflicts** | — |
+| 3 | SKU Selection | Automation + Human | Step 2 segment (top_category), macys.db sku_catalog (2K SKUs) | **check_pricing_conflicts** | — |
 | 4 | Creative Production | Automation + Human | Step 3 SKUs, brief category | **find_dam_assets** | — |
 | 5 | Layout Assembly | Skill + Human | Steps 2-4 (segment, SKUs, assets) | — | — |
 | 6a | Compliance Pre Check | **Skill** | Step 5 copy, Step 3 SKUs | check_pricing_conflicts (via invoker) | BRAND-GL, LEGAL-DIS, PRICE-RULES, COMP-EX |
@@ -129,6 +129,7 @@ No LLM is called. Automations use math, lookups, and templates.
 | Automation | Purpose | Key Input | Key Output | Why Not a Skill |
 | --- | --- | --- | --- | --- |
 | Audience Segment Builder | k-means clustering on RFM features | `data/macys.db` (50K customers) | 3 segments with profiles | Math: k-means is deterministic |
+| SKU Recommender | Score and rank SKUs by inventory, margin, vendor, season | `data/macys.db` sku_catalog (2,000 SKUs, 5 categories) | Top 18 ranked SKUs with MAP exclusions | Deterministic scoring formula |
 | DAM Asset Finder | Score and rank DAM images by relevance | Campaign brief + `data/macys.db` | Top 12 assets with quality flags | Scoring rules, no judgment needed |
 | Localization Generator v1 | Generate 40 regional/placement variants | Approved SKUs + 10 regions x 4 placements | Variant matrix with copy and dimensions | Template expansion, no creativity |
 | Localization Generator | Region/language mapping, pricing overrides | Region codes | Language, pricing multiplier, holidays | Lookup table, deterministic |

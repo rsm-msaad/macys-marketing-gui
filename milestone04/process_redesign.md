@@ -85,7 +85,7 @@ The AI coworker draws on three categories of inputs documented in `evidence_and_
 | Source | Scale (M3 Prototype) | Scale (M1 Production Spec) |
 |---|---|---|
 | Customer database (`macys.db`) | 50,000 synthetic customers with RFM features | Star Rewards loyalty database, nearly 30 million members |
-| Product catalog (`product_catalog.json`) | 61 SKUs across 27 brands | Pricing Engine API with real-time inventory and MAP data |
+| Product catalog (`macys.db` sku_catalog) | 2,000 SKUs across 5 categories, 33 brands | Pricing Engine API with real-time inventory and MAP data |
 | DAM assets (`macys.db` dam_assets table) | 5,000 records with tags, rights, and metadata | Xinet WebNative DAM, 100,000+ production images |
 
 **Tools.** Three MCP tools registered via FastMCP connect AI skills to external data:

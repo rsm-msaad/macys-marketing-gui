@@ -11,7 +11,7 @@ The AI coworker draws on three structured data sources, each connected to specif
 | Source | Records | Used By | Step |
 |---|---|---|---|
 | `macys.db` customers table | 50,000 synthetic customers with RFM features (recency, frequency, monetary value) | Audience Segment Builder automation | Step 2: Segmentation |
-| `product_catalog.json` | 61 SKUs across 27 brands with inventory depth, margin, vendor commitment, MAP floor price | SKU Recommender automation, `check_pricing_conflicts` MCP tool | Step 3: SKU Selection, Step 6a: Compliance |
+| `macys.db` sku_catalog table | 2,000 SKUs across 5 categories (Beauty, Apparel, Accessories, Home, Shoes), 33 brands with derived margins, MAP protection, vendor commitment | SKU Recommender automation, `check_pricing_conflicts` MCP tool | Step 3: SKU Selection, Step 6a: Compliance |
 | `macys.db` dam_assets table | 5,000 DAM assets with tags, region rights, and category metadata | DAM Asset Finder automation, `find_dam_assets` MCP tool | Step 4: Creative Production |
 
 The M1 design called for Macy's real Star Rewards loyalty database (nearly 30 million members), the Xinet WebNative DAM (100,000+ production images), and the Pricing Engine API. The M3 implementation simulates these with SQLite and JSON to make the system reproducible for the class context. The architecture is designed so swapping in real data sources requires changing only the data layer, not the skill or automation interfaces. The AI skills and MCP tools consume data through defined contracts, not direct database queries.
