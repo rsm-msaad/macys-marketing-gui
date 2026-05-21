@@ -23,6 +23,7 @@ class SegmentBody(BaseModel):
 class DamBody(BaseModel):
     brief: str = Field(default="Mother's Day Beauty Event")
     max_results: int = Field(default=12, ge=1, le=50)
+    category: str | None = Field(default=None)
 
 
 class LocalizeBody(BaseModel):
@@ -52,7 +53,7 @@ def run_segment(body: SegmentBody) -> dict:
 @router.post("/dam-search")
 def run_dam(body: DamBody) -> dict:
     try:
-        results, stats = DAM.search_with_stats(body.brief, max_results=body.max_results)
+        results, stats = DAM.search_with_stats(body.brief, max_results=body.max_results, category=body.category)
         return {
             "ok": True,
             "brief": body.brief,

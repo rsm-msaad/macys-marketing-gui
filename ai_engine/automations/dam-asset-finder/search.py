@@ -65,6 +65,18 @@ STOPWORDS = frozenset(
 )
 
 
+# Category-to-DAM-tag mapping. DAM assets use tags like "womens", "mens",
+# "dresses" rather than the catalog category "Apparel". This mapping ensures
+# the DAM finder returns relevant results for all 5 catalog categories.
+CATEGORY_TO_DAM_TAGS: dict[str, list[str]] = {
+    "beauty": ["beauty", "skincare", "fragrance"],
+    "accessories": ["accessories"],
+    "home": ["home"],
+    "shoes": ["shoes"],
+    "apparel": ["womens", "mens", "dresses", "outerwear", "denim", "apparel"],
+}
+
+
 # ---------- DB ----------
 
 
@@ -145,8 +157,15 @@ def compute_relevance(
     brief_tokens: list[str],
     tags: list[str],
     asset_type: str | None,
+    category_tags: list[str] | None = None,
 ) -> float:
-    """Fraction of brief tokens present in the asset's tag/type haystack."""
+    """Fraction of search tokens present in the asset's tag/type haystack.
+
+    If `category_tags` is provided, any asset whose tags overlap with the
+    category tag set gets a 0.3 bonus (capped at 1.0). This ensures that
+    category-relevant assets rank higher even when the brief text itself
+    doesn't contain the exact DAM tag (e.g., "Apparel" → "womens"/"dresses").
+    """
     if not brief_tokens:
         return 0.0
     haystack: set[str] = set()
@@ -154,7 +173,15 @@ def compute_relevance(
         haystack.update(_tokenize(tag))
     haystack.update(_tokenize(asset_type))
     matched = sum(1 for tok in brief_tokens if tok in haystack)
-    return matched / len(brief_tokens)
+    base = matched / len(brief_tokens)
+
+    # Category boost: if any of the mapped DAM tags appear in asset tags
+    if category_tags:
+        tag_lower = {t.lower() for t in tags}
+        if any(ct in tag_lower for ct in category_tags):
+            base = min(1.0, base + 0.3)
+
+    return base
 
 
 def _scan_images_dir(images_dir: Path | str | None) -> frozenset[str]:
@@ -203,6 +230,7 @@ def _row_to_asset(
     brief_tokens: list[str],
     today: date,
     available_filenames: frozenset[str] = frozenset(),
+    category_tags: list[str] | None = None,
 ) -> dict:
     (
         asset_id,
@@ -221,7 +249,7 @@ def _row_to_asset(
     ) = row
 
     tags = _parse_tags(tags_json)
-    raw_relevance = compute_relevance(brief_tokens, tags, asset_type)
+    raw_relevance = compute_relevance(brief_tokens, tags, asset_type, category_tags)
     has_photo = filename in available_filenames
     photo_boost = PHOTO_BOOST if has_photo else 0.0
     boost = _recency_boost(created_date, today) + _resolution_boost(resolution) + photo_boost
@@ -247,8 +275,13 @@ def search_with_stats(
     max_results: int = DEFAULT_MAX_RESULTS,
     db_path: Path | str = DEFAULT_DB_PATH,
     images_dir: Path | str | None = None,
+    category: str | None = None,
 ) -> tuple[list[dict], dict]:
     """Run the full pipeline. Returns (top_results, stats).
+
+    `category` is an optional catalog category (Beauty, Apparel, etc.).
+    When provided, assets whose tags overlap with the mapped DAM tags
+    (e.g., Apparel → womens, mens, dresses) receive a relevance boost.
 
     `images_dir` defaults to `data/images/dam/` at the repo root. Assets whose
     filename is present in that directory get a `PHOTO_BOOST` added to their
@@ -260,6 +293,11 @@ def search_with_stats(
     if images_dir is None:
         images_dir = DEFAULT_IMAGES_DIR
     available_filenames = _scan_images_dir(images_dir)
+
+    # Resolve category to DAM tag set
+    category_tags: list[str] | None = None
+    if category:
+        category_tags = CATEGORY_TO_DAM_TAGS.get(category.lower())
 
     conn = connect_db(db_path)
     try:
@@ -289,7 +327,7 @@ def search_with_stats(
         if reason is not None:
             filtered_counts[reason] += 1
             continue
-        candidates.append(_row_to_asset(row, brief_tokens, today, available_filenames))
+        candidates.append(_row_to_asset(row, brief_tokens, today, available_filenames, category_tags))
 
     # Bucket photo backed assets above non photo backed, then by relevance,
     # then by asset_id. This guarantees the demo's top results render real
@@ -323,9 +361,10 @@ def find_assets(
     max_results: int = DEFAULT_MAX_RESULTS,
     db_path: Path | str = DEFAULT_DB_PATH,
     images_dir: Path | str | None = None,
+    category: str | None = None,
 ) -> list[dict]:
     """Public entry point: top ranked candidate assets for the brief."""
-    top, _stats = search_with_stats(brief_description, max_results, db_path, images_dir)
+    top, _stats = search_with_stats(brief_description, max_results, db_path, images_dir, category)
     return top
 
 

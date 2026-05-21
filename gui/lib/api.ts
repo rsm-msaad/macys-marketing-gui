@@ -577,10 +577,10 @@ export type DamResult = {
   stats: DamStats;
 };
 
-export async function runDam(brief: string, maxResults = 12): Promise<DamResult> {
+export async function runDam(brief: string, maxResults = 12, category?: string): Promise<DamResult> {
   return request<DamResult>("/skills/dam-search", {
     method: "POST",
-    body: JSON.stringify({ brief, max_results: maxResults }),
+    body: JSON.stringify({ brief, max_results: maxResults, category: category ?? null }),
   });
 }
 
