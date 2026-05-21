@@ -9,7 +9,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-import { API_BASE, runDam, runFindDamAssets, type DamAsset, type DamStats, type FindDamAssetsResult } from "@/lib/api";
+import { API_BASE, runDam, runDamCurate, runFindDamAssets, storeEvidence, type DamAsset, type DamStats, type DamCurateResult, type FindDamAssetsResult } from "@/lib/api";
 import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
 
 function DamAssetCard({
@@ -127,6 +127,7 @@ export function CreativeProductionContent({
   const [showRerun, setShowRerun] = useState(false);
   const [batchCount, setBatchCount] = useState(0);
   const [mcpResult, setMcpResult] = useState<FindDamAssetsResult | null>(null);
+  const [curateResult, setCurateResult] = useState<DamCurateResult["result"] | null>(null);
 
   async function handleSearch() {
     setRunning(true);
@@ -134,9 +135,10 @@ export function CreativeProductionContent({
     setAssets(null);
     setStats(null);
     setMcpResult(null);
+    setCurateResult(null);
     setBatchCount(1);
     try {
-      // Build brief string enriched with upstream SKU context
+      // Primary: deterministic DAM search (fast, always works)
       let brief = context.campaign_brief.objective || context.campaign_brief.name;
       if (approvedSkus.length > 0) {
         brief += ` (${approvedSkus.length} SKUs selected in Step 3)`;
@@ -146,12 +148,43 @@ export function CreativeProductionContent({
       setStats(result.stats);
       setIncluded(new Set(result.results.map((a) => a.asset_id)));
 
-      // Fire MCP tool: find_dam_assets for rights-checked assets
+      // Agentic: Claude curates assets via find_dam_assets MCP tool
+      // Runs in parallel as supplementary enrichment
+      const segName = (context.state.step_outputs["2"] as Record<string, unknown> | undefined)?.name as string | undefined;
+      runDamCurate(
+        context.campaign_brief.campaign_id,
+        brief,
+        category,
+        segName,
+        approvedSkus.length,
+      ).then((curate) => {
+        setCurateResult(curate.result);
+        // Capture agentic trace in evidence
+        const trace = curate.result?._agentic_trace ?? [];
+        if (trace.length > 0) {
+          storeEvidence(context.campaign_brief.campaign_id, "4", {
+            step_name: "Creative Production (DAM Asset Curator)",
+            skill_name: "dam-asset-curator",
+            triggered_by: "Abdullah (Senior Designer)",
+            mode: "agentic",
+            agentic_trace: trace,
+            agentic_iterations: curate.result?._agentic_iterations ?? null,
+            agentic_tool_call_count: curate.result?._agentic_tool_calls ?? 0,
+            visual_direction: curate.result?.visual_direction ?? null,
+            search_summary: curate.result?.search_summary ?? null,
+            captured_at: new Date().toISOString(),
+          }).catch(() => {});
+        }
+      }).catch(() => {
+        // Agentic curation is supplementary; don't block on failure
+      });
+
+      // Also fire deterministic MCP tool for rights check
       try {
         const mcp = await runFindDamAssets(category, "NY", 5);
         setMcpResult(mcp);
       } catch {
-        // MCP call is supplementary; don't block on failure
+        // MCP call is supplementary
       }
     } catch (e) {
       setError((e as Error).message);
@@ -377,6 +410,34 @@ export function CreativeProductionContent({
               {mcpResult.assets.map((a) => a.filename).join(", ")}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Agentic curation result */}
+      {curateResult && (
+        <div className="rounded-md border border-violet-200/50 bg-violet-50/20 p-3">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-violet-600">
+            Agentic: DAM Asset Curator — Claude curated {curateResult.total_curated ?? 0} assets
+            {curateResult._agentic_tool_calls != null && curateResult._agentic_tool_calls > 0 && (
+              <span className="ml-1 text-violet-400">({curateResult._agentic_tool_calls} tool calls)</span>
+            )}
+          </div>
+          {curateResult.visual_direction && (
+            <div className="mt-1 text-[11px] italic text-charcoal/65">
+              Visual direction: {curateResult.visual_direction}
+            </div>
+          )}
+          {curateResult.search_summary && (
+            <div className="mt-0.5 text-[10px] text-charcoal/50">
+              {curateResult.search_summary}
+            </div>
+          )}
+        </div>
+      )}
+      {!curateResult && running && (
+        <div className="flex items-center gap-2 rounded-md border border-violet-200/30 bg-violet-50/10 px-3 py-2 text-[11px] text-violet-500">
+          <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
+          Claude is curating assets (agentic)...
         </div>
       )}
 
