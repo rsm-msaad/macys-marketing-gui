@@ -66,6 +66,13 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
         ],
         "mcp_calls": [],
     },
+    "dam-asset-curator": {
+        "rag_queries": [
+            "DAM asset tagging policy and rights management",
+        ],
+        # MCP calls handled agentically: Claude calls find_dam_assets mid-reasoning.
+        "mcp_calls": [],
+    },
     "revision-router": {
         "rag_queries": [],
         "mcp_calls": [],
@@ -106,8 +113,10 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
 SKILL_OUTPUT_FIELD: dict[str, str] = {
     "compliance-pre-check": "compliance_check",
     "approval-brief-generator": "approval_brief",
+    "dam-asset-curator": "curated_assets",
     "revision-router": "revision_routing",
     "localization-generator": "localized_variants",
+    "localization-strategist": "locale_strategy",
     "activation-scheduler": "activation_schedule",
 }
 
@@ -117,8 +126,10 @@ SKILL_OUTPUT_FIELD: dict[str, str] = {
 SKILL_STATUS_AFTER: dict[str, str] = {
     "compliance-pre-check": "compliance_check_complete",
     "approval-brief-generator": "in_vp_review",
+    "dam-asset-curator": "assets_curated",
     "revision-router": "revision_requested",
     "localization-generator": "in_localization",
+    "localization-strategist": "localization_complete",
     "activation-scheduler": "scheduled",
 }
 

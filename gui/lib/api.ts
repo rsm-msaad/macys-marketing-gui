@@ -584,6 +584,49 @@ export async function runDam(brief: string, maxResults = 12, category?: string):
   });
 }
 
+// Agentic DAM curation skill
+export type CuratedAsset = {
+  asset_id: string;
+  filename: string;
+  tags: string[];
+  region_rights: string;
+  rationale: string;
+};
+
+export type DamCurateResult = {
+  ok: boolean;
+  result: {
+    curated_assets?: CuratedAsset[];
+    visual_direction?: string;
+    search_summary?: string;
+    total_curated?: number;
+    _agentic_trace?: Array<Record<string, unknown>>;
+    _agentic_iterations?: number;
+    _agentic_tool_calls?: number;
+  };
+};
+
+export async function runDamCurate(
+  campaignId: string,
+  brief: string,
+  category: string,
+  segmentName?: string,
+  skuCount?: number,
+  regions?: string[],
+): Promise<DamCurateResult> {
+  return request<DamCurateResult>("/skills/dam-curate", {
+    method: "POST",
+    body: JSON.stringify({
+      campaign_id: campaignId,
+      brief,
+      category,
+      segment_name: segmentName ?? null,
+      sku_count: skuCount ?? 0,
+      regions: regions ?? ["NY", "CA", "FL", "TX"],
+    }),
+  });
+}
+
 // MCP tool: find_dam_assets
 export type FindDamAssetsResult = {
   ok: boolean;

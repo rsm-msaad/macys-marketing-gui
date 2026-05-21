@@ -65,6 +65,42 @@ def run_dam(body: DamBody) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+class AgenticDamBody(BaseModel):
+    campaign_id: str = Field(default="MDC-2026-MD-001")
+    brief: str = Field(default="Mother's Day Beauty Event")
+    category: str = Field(default="Beauty")
+    segment_name: str | None = Field(default=None)
+    sku_count: int = Field(default=0)
+    regions: list[str] = Field(default_factory=lambda: ["NY", "CA", "FL", "TX"])
+
+
+@router.post("/dam-curate")
+def run_dam_curate(body: AgenticDamBody) -> dict:
+    """Agentic DAM asset curation: Claude reasons about what assets fit
+    the campaign and calls find_dam_assets MCP tool mid-reasoning."""
+    try:
+        from ai_engine.orchestrator.skill_invoker import invoke_skill
+
+        state = {
+            "campaign": {
+                "campaign_id": body.campaign_id,
+                "title": body.brief,
+                "copy": body.brief,
+                "category": body.category,
+                "regions": body.regions,
+                "audience_segment": body.segment_name or "General",
+                "skus": [],
+                "discount_pct": 25,
+            },
+            "status": "submitted",
+        }
+        updated = invoke_skill("dam-asset-curator", state)
+        result = updated.get("curated_assets", {})
+        return {"ok": True, "result": result}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
 # MCP tool: find_dam_assets — queries DAM by category and region
 class FindDamAssetsBody(BaseModel):
     category: str = Field(default="Beauty")
