@@ -139,11 +139,11 @@ export function ReportingContent({
         <div className="mb-2 flex items-center gap-1.5">
           <FileEdit className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Auto-drafted executive summary from audit trail
+            Skill · Report Generator (LLM, pre-fetch)
           </span>
         </div>
         <p className="text-[12px] text-charcoal/65">
-          Generated from actual step outputs across the workflow. Merna
+          Auto-drafted from the full audit trail (Steps 1-9). Single LLM call, no tool use. Merna
           edits in business context before sending to leadership.
         </p>
         <textarea

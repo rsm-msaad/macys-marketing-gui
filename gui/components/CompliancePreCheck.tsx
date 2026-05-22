@@ -285,7 +285,7 @@ export function CompliancePreCheck({
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            AI Compliance Pre Check
+            Agentic Skill · Compliance Pre Check
           </span>
           {confidence && <ConfidenceBadge confidence={confidence} />}
         </div>

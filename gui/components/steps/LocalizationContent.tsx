@@ -169,12 +169,12 @@ export function LocalizationContent({
         <div className="mb-2 flex items-center gap-1.5">
           <Globe className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: Localization Generator
+            Automation · Localization Generator
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Generates regional variants with localized copy and pricing. Calls
-          <strong>generate_locale_variants</strong> helper for Spanish and Quebec French transcreation.
+          Creates regional variants via deterministic template expansion. Calls
+          <strong>generate_locale_variants</strong> helper (exposed via MCP) for Spanish and Quebec French transcreation.
         </p>
 
         {/* Run button */}
@@ -262,11 +262,11 @@ export function LocalizationContent({
         </div>
       )}
 
-      {/* MCP Tool: generate_locale_variants results */}
+      {/* Transcreation helper: generate_locale_variants (deterministic, exposed via MCP) */}
       {mcpResults.length > 0 && (
         <div className="rounded-md border border-green-300/40 bg-green-50/30 p-3">
           <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-green-700">
-            MCP Tool: generate_locale_variants — {mcpResults.length} transcreations
+            Transcreation helper: generate_locale_variants — {mcpResults.length} locales
           </div>
           {mcpResults.map((r) => (
             <div key={r.target_language} className="mt-1 text-[11px] text-charcoal/65">

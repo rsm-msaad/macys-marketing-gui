@@ -299,7 +299,7 @@ export function AIBriefCard({
         <div className="flex items-center gap-1.5">
           <FileText className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            AI Approval Brief
+            Agentic Skill · Approval Brief Generator
           </span>
           {result && !loading && <BriefConfidence result={result} />}
           {wasEdited && (

@@ -163,13 +163,11 @@ export function LayoutAssemblyContent({
         <div className="mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Skill: Layout Copy Generator
+            Skill · Layout Copy Generator (LLM, pre-fetch)
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Generates marketing copy (tagline, body, CTA, visual direction) for 4 ad
-          placements based on the campaign brief, audience, and SKUs. The designer
-          reviews and approves.
+          Uses Claude to draft copy for 4 placements. Pre-fetches RAG context, single LLM call. No tool calling.
         </p>
 
         {/* Generate button */}

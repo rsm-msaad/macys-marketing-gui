@@ -255,12 +255,12 @@ export function CreativeProductionContent({
         <div className="mb-2 flex items-center gap-1.5">
           <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: DAM Asset Finder
+            Automation · DAM Asset Finder
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Scans 5,000 DAM records, filters out degraded and expired assets, and ranks
-          the rest by tag relevance. Calls <strong>find_dam_assets</strong> helper for rights validation.
+          Filters 5,000 DAM assets by category, tags, and quality. Deterministic ranking with category boost.
+          Calls <strong>find_dam_assets</strong> helper (exposed via MCP) for rights validation.
         </p>
 
         {/* Run button */}
@@ -359,7 +359,7 @@ export function CreativeProductionContent({
         </div>
       )}
 
-      {/* MCP Tool: find_dam_assets results */}
+      {/* DAM helper: find_dam_assets (deterministic, exposed via MCP) */}
       {mcpResult && (
         <div className={`rounded-md border p-3 ${
           mcpResult.status === "pass"
@@ -367,7 +367,7 @@ export function CreativeProductionContent({
             : "border-amber-300/40 bg-amber-50/30"
         }`}>
           <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-green-700">
-            MCP Tool: find_dam_assets — {mcpResult.result_count} rights-verified assets
+            DAM helper: find_dam_assets — {mcpResult.result_count} rights-verified assets
           </div>
           <div className="text-[11px] text-charcoal/65">
             Queried DAM for <strong>{mcpResult.input.category}</strong> assets in region <strong>{mcpResult.input.region}</strong> with active model releases.

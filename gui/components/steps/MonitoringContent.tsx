@@ -235,12 +235,11 @@ export function MonitoringContent({
         <div className="mb-2 flex items-center gap-1.5">
           <BarChart3 className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: Campaign Performance Analyzer
+            Automation · Campaign Performance Analyzer
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Pulls campaign data, runs last-touch attribution by channel and segment,
-          and forecasts the next 14 days with 80% confidence intervals.
+          Last-touch attribution and linear regression forecast. Deterministic — same campaign data produces the same analysis.
         </p>
 
         {/* Run button */}

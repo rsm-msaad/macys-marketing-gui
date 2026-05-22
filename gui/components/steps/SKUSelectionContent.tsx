@@ -250,12 +250,12 @@ export function SKUSelectionContent({
         <div className="mb-2 flex items-center gap-1.5">
           <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: SKU Recommender
+            Automation · SKU Recommender
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Scores 61 catalog SKUs by inventory, margin, vendor commitment, and seasonality.
-          Excludes SKUs that would violate MAP at the campaign discount. Category: <strong>{category}</strong>.
+          Scores 2,000 catalog SKUs by margin, inventory, vendor commitment, and seasonality.
+          Deterministic scoring formula. Category: <strong>{category}</strong>.
         </p>
 
         {/* Run button */}
@@ -343,7 +343,7 @@ export function SKUSelectionContent({
         </div>
       )}
 
-      {/* MCP Tool: check_pricing_conflicts results */}
+      {/* Pricing helper: check_pricing_conflicts (deterministic, exposed via MCP for agentic use at Step 6) */}
       {pricingRunning && (
         <div className="flex items-center gap-2 rounded-md border border-charcoal/10 bg-white px-3 py-2 text-sm text-charcoal/60">
           <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
@@ -364,7 +364,7 @@ export function SKUSelectionContent({
               pricingCheck.status === "pass" ? "text-green-700" :
               pricingCheck.status === "warn" ? "text-amber-700" : "text-red-700"
             }>
-              MCP Tool: check_pricing_conflicts — {pricingCheck.status.toUpperCase()}
+              Pricing helper: check_pricing_conflicts — {pricingCheck.status.toUpperCase()}
             </span>
           </div>
           <div className="text-[11px] text-charcoal/65">

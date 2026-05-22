@@ -299,12 +299,11 @@ export function SegmentationContent({
         <div className="mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Automation: Audience Segment Builder
+            Automation · Audience Segment Builder
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Runs RFM clustering (k-means, k=3) on 50,000 customers. Returns 3
-          behavior-based segments. Pick the one that best matches the campaign brief.
+          Runs k-means clustering on 50,000 customer RFM profiles. Deterministic — same data produces the same 3 segments every time.
         </p>
 
         {/* Before segments are built */}
