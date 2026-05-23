@@ -838,6 +838,44 @@ export async function runAnalyze(campaignId: number, forecastDays = 14): Promise
   });
 }
 
+// Report Generator skill
+export type GenerateReportResult = {
+  ok: boolean;
+  report: {
+    executive_summary: string;
+    key_metrics: Record<string, unknown>;
+    recommendations: string[];
+    risks_and_concerns: string[];
+    retrieved_docs: string[];
+  };
+  generation_metadata: {
+    skill: string;
+    method: string;
+    duration_ms: number;
+  };
+};
+
+export async function runGenerateReport(
+  campaignId: string,
+  campaignName: string,
+  stepOutputs: Record<string, unknown>,
+  auditLog: Array<Record<string, unknown>>,
+  category?: string,
+  segmentName?: string,
+): Promise<GenerateReportResult> {
+  return request<GenerateReportResult>("/skills/generate-report", {
+    method: "POST",
+    body: JSON.stringify({
+      campaign_id: campaignId,
+      campaign_name: campaignName,
+      step_outputs: stepOutputs,
+      audit_log: auditLog,
+      category: category ?? "Beauty",
+      segment_name: segmentName ?? null,
+    }),
+  });
+}
+
 // MCP tool: send_campaign_summary (Gmail)
 export type SendSummaryResult = {
   ok: boolean;

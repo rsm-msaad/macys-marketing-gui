@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { CheckCircle2, FileEdit, Mail, Send, X } from "lucide-react";
+import { CheckCircle2, FileEdit, Mail, Play, Send, Sparkles, X } from "lucide-react";
 
-import { runSendSummary } from "@/lib/api";
+import { runGenerateReport, runSendSummary } from "@/lib/api";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const FALLBACK_SUMMARY =
@@ -115,6 +115,8 @@ export function ReportingContent({
   );
 
   const [draft, setDraft] = useState(generatedSummary);
+  const [generating, setGenerating] = useState(false);
+  const [genMethod, setGenMethod] = useState<string | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState("merna.sa.saad@gmail.com");
   const [emailSubject, setEmailSubject] = useState(`Campaign Complete: ${context.campaign_brief.name}`);
@@ -145,6 +147,30 @@ export function ReportingContent({
     }
   }
 
+  async function handleGenerate() {
+    setGenerating(true);
+    setGenMethod(null);
+    try {
+      const segName = (context.state.step_outputs["2"] as Record<string, unknown> | undefined)?.name as string | undefined;
+      const result = await runGenerateReport(
+        context.campaign_brief.campaign_id,
+        context.campaign_brief.name,
+        context.state.step_outputs as Record<string, unknown>,
+        (context.state.history ?? []) as Array<Record<string, unknown>>,
+        "Beauty",
+        segName,
+      );
+      if (result.report?.executive_summary) {
+        setDraft(result.report.executive_summary);
+      }
+      setGenMethod(result.generation_metadata?.method ?? "unknown");
+    } catch {
+      // Keep existing draft on error
+    } finally {
+      setGenerating(false);
+    }
+  }
+
   return (
     <div className="space-y-3">
       <ContextStack context={context} />
@@ -168,9 +194,36 @@ export function ReportingContent({
           </span>
         </div>
         <p className="text-[12px] text-charcoal/65">
-          Auto-drafted from the full audit trail (Steps 1-9). Single LLM call, no tool use. Merna
-          edits in business context before sending to leadership.
+          Generates an executive summary from the full audit trail (Steps 1-9) via Claude.
+          Click Generate to produce a fresh AI-written report, then edit before sending.
         </p>
+
+        {/* Generate button */}
+        {canAct && (
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={generating}
+            className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+          >
+            {generating ? (
+              <>
+                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Generating executive summary...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-3.5 w-3.5" />
+                Generate Report via Claude
+              </>
+            )}
+          </button>
+        )}
+        {genMethod && (
+          <div className="mt-1 text-[10px] text-charcoal/40">
+            Generated via: {genMethod === "claude_via_skill_invoker" ? "Claude (TritonAI)" : genMethod}
+          </div>
+        )}
         <textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value)}

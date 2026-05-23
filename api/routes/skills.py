@@ -106,6 +106,75 @@ def run_localize(body: LocalizeBody) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+class GenerateReportBody(BaseModel):
+    campaign_id: str = Field(default="MDC-2026-MD-001")
+    campaign_name: str = Field(default="Mother's Day Beauty Event")
+    step_outputs: dict = Field(default_factory=dict)
+    audit_log: list = Field(default_factory=list)
+    category: str = Field(default="Beauty")
+    segment_name: str | None = Field(default=None)
+
+
+@router.post("/generate-report")
+def run_generate_report(body: GenerateReportBody) -> dict:
+    """Generate executive report via Claude from the full audit trail."""
+    import time as _time
+    started = _time.monotonic()
+
+    # Try Claude via skill_invoker
+    try:
+        from ai_engine.orchestrator.skill_invoker import invoke_skill
+        state = {
+            "campaign": {
+                "campaign_id": body.campaign_id,
+                "title": body.campaign_name,
+                "category": body.category,
+                "audience_segment": body.segment_name or "General",
+                "copy": "",
+                "skus": [],
+                "discount_pct": 25,
+            },
+            "step_outputs": body.step_outputs,
+            "audit_log": body.audit_log,
+            "status": "submitted",
+        }
+        updated = invoke_skill("report-generator", state)
+        result = updated.get("executive_report", {})
+        elapsed = round((_time.monotonic() - started) * 1000, 1)
+        return {
+            "ok": True,
+            "report": result,
+            "generation_metadata": {
+                "skill": "report-generator",
+                "method": "claude_via_skill_invoker",
+                "duration_ms": elapsed,
+            },
+        }
+    except Exception as exc:
+        # Fallback: return a stub report
+        elapsed = round((_time.monotonic() - started) * 1000, 1)
+        return {
+            "ok": True,
+            "report": {
+                "executive_summary": (
+                    f"# {body.campaign_name} — Executive Report\n\n"
+                    f"This report was generated from {len(body.step_outputs)} step outputs. "
+                    f"Claude was unavailable; this is a placeholder summary.\n\n"
+                    f"Category: {body.category}. Segment: {body.segment_name or 'N/A'}."
+                ),
+                "key_metrics": {},
+                "recommendations": ["Run with TritonAI API key for a full AI-generated report."],
+                "risks_and_concerns": [f"Fallback mode: {str(exc)[:100]}"],
+                "retrieved_docs": [],
+            },
+            "generation_metadata": {
+                "skill": "report-generator",
+                "method": "deterministic_fallback",
+                "duration_ms": elapsed,
+            },
+        }
+
+
 @router.post("/analyze")
 def run_analyze(body: AnalyzeBody) -> dict:
     try:
