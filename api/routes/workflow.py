@@ -86,7 +86,7 @@ STEPS = [
         "name": "Reporting",
         "owner": "Marketing Analyst",
         "owner_persona_id": "marketing-analyst",
-        "label": "HUMAN_ONLY",
+        "label": "HUMAN_PLUS_AUTOMATION",
     },
 ]
 
