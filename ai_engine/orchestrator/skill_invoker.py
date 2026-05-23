@@ -196,10 +196,13 @@ def _get_mcp_tools() -> dict[str, Callable[..., dict]]:
                 status = "pass"
             return {"status": status, "conflicts": conflicts, "checked_count": len(sku_ids)}
 
+        from tools import send_campaign_summary
+
         _MCP_TOOLS = {
             "check_pricing_conflicts": _check_pricing_via_main_db,
             "find_dam_assets": find_dam_assets,
             "generate_locale_variants": generate_locale_variants,
+            "send_campaign_summary": send_campaign_summary,
         }
     return _MCP_TOOLS
 
@@ -411,6 +414,41 @@ AGENTIC_MCP_TOOLS: list[dict[str, Any]] = [
                     "target_language": {"type": "string", "enum": ["es", "fr-CA"]},
                 },
                 "required": ["copy", "target_language"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "send_campaign_summary",
+            "description": (
+                "Send a campaign summary email to the specified recipients "
+                "via Gmail. Use this when the campaign report is finalized "
+                "and the team needs to be notified. Requires GMAIL_USER and "
+                "GMAIL_APP_PASSWORD to be configured."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "recipients": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Email addresses to send the summary to.",
+                    },
+                    "campaign_name": {
+                        "type": "string",
+                        "description": "Campaign name for the email header.",
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "Email subject line.",
+                    },
+                    "summary_body": {
+                        "type": "string",
+                        "description": "Plain text body of the campaign summary.",
+                    },
+                },
+                "required": ["recipients", "campaign_name", "subject", "summary_body"],
             },
         },
     },
