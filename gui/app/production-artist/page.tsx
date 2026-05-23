@@ -9,7 +9,7 @@ export default function ProductionArtistPage() {
       leftNav={[
         { label: "Dashboard", href: "/dashboard" },
         { label: "Campaigns", href: "/campaigns" },
-        { label: "Segments", href: "/segments" },
+        { label: "Knowledge Base", href: "/knowledge" },
         { label: "Analytics", href: "/analytics" },
       ]}
       skills={["segment", "sku-recommend", "dam", "layout-copy", "localize", "analyze"]}
