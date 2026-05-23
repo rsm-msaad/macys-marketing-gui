@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { FileEdit, Send } from "lucide-react";
+import { CheckCircle2, FileEdit, Mail, Send, X } from "lucide-react";
 
+import { runSendSummary } from "@/lib/api";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
 const FALLBACK_SUMMARY =
@@ -114,11 +115,35 @@ export function ReportingContent({
   );
 
   const [draft, setDraft] = useState(generatedSummary);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailRecipients, setEmailRecipients] = useState("merna.sa.saad@gmail.com");
+  const [emailSubject, setEmailSubject] = useState(`Campaign Complete: ${context.campaign_brief.name}`);
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailResult, setEmailResult] = useState<{ status: string; error?: string | null } | null>(null);
 
   // Count how many upstream steps have outputs
   const upstreamSteps = ["2", "3", "4", "5", "6", "7", "8", "9"].filter(
     (k) => context.state.step_outputs[k] != null
   );
+
+  async function handleSendEmail() {
+    setEmailSending(true);
+    setEmailResult(null);
+    try {
+      const recipients = emailRecipients.split(",").map((e) => e.trim()).filter(Boolean);
+      const result = await runSendSummary(
+        recipients,
+        context.campaign_brief.name,
+        emailSubject,
+        draft,
+      );
+      setEmailResult({ status: result.status, error: result.error });
+    } catch (e) {
+      setEmailResult({ status: "error", error: (e as Error).message });
+    } finally {
+      setEmailSending(false);
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -158,6 +183,90 @@ export function ReportingContent({
           one-pager.
         </div>
       </div>
+
+      {/* Send to Team via email (MCP: send_campaign_summary) */}
+      {canAct && (
+        <button
+          type="button"
+          onClick={() => { setEmailOpen(true); setEmailResult(null); }}
+          className="inline-flex items-center gap-1.5 rounded-md border border-violet-300/50 bg-violet-50/30 px-3.5 py-2 text-sm font-medium text-violet-700 hover:bg-violet-100/50"
+        >
+          <Mail className="h-3.5 w-3.5" />
+          Send to Team via Email
+          <span className="ml-1 rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-violet-500">MCP</span>
+        </button>
+      )}
+
+      {emailResult && (
+        <div className={`rounded-md border px-3 py-2 text-[11px] ${
+          emailResult.status === "sent"
+            ? "border-green-300/40 bg-green-50/30 text-green-700"
+            : "border-red-300/40 bg-red-50/30 text-red-700"
+        }`}>
+          {emailResult.status === "sent" ? (
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-3 w-3" /> Email sent successfully via send_campaign_summary MCP tool.
+            </span>
+          ) : (
+            <span>Email failed: {emailResult.error}</span>
+          )}
+        </div>
+      )}
+
+      {/* Email modal */}
+      {emailOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={() => setEmailOpen(false)} />
+          <div className="fixed inset-x-4 top-[15%] z-50 mx-auto max-w-lg rounded-lg border border-charcoal/10 bg-white p-5 shadow-xl animate-modal-in">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-violet-600" />
+                <span className="text-sm font-semibold text-charcoal">Send Campaign Summary</span>
+                <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-violet-500">MCP: send_campaign_summary</span>
+              </div>
+              <button type="button" onClick={() => setEmailOpen(false)} className="rounded p-1 text-charcoal/50 hover:bg-cream">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Recipients</label>
+                <input
+                  type="text"
+                  value={emailRecipients}
+                  onChange={(e) => setEmailRecipients(e.target.value)}
+                  placeholder="email1@example.com, email2@example.com"
+                  className="mt-1 w-full rounded-md border border-charcoal/15 bg-cream/30 px-3 py-2 text-[12px] text-charcoal focus:border-teal-600 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Subject</label>
+                <input
+                  type="text"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-charcoal/15 bg-cream/30 px-3 py-2 text-[12px] text-charcoal focus:border-teal-600 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Preview</label>
+                <div className="mt-1 max-h-40 overflow-y-auto rounded-md border border-charcoal/10 bg-cream/20 p-3 text-[11px] leading-relaxed text-charcoal/65 whitespace-pre-wrap">
+                  {draft.slice(0, 500)}{draft.length > 500 ? "..." : ""}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleSendEmail}
+                disabled={emailSending || !emailRecipients.trim()}
+                className="w-full rounded-md bg-violet-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+              >
+                {emailSending ? "Sending..." : "Send Email"}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       <ApprovalActions
         canAct={canAct}

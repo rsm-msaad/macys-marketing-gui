@@ -837,3 +837,30 @@ export async function runAnalyze(campaignId: number, forecastDays = 14): Promise
     body: JSON.stringify({ campaign_id: campaignId, forecast_days: forecastDays }),
   });
 }
+
+// MCP tool: send_campaign_summary (Gmail)
+export type SendSummaryResult = {
+  ok: boolean;
+  mcp_tool: string;
+  status: "sent" | "error";
+  recipients_count: number;
+  message_id: string | null;
+  error: string | null;
+};
+
+export async function runSendSummary(
+  recipients: string[],
+  campaignName: string,
+  subject: string,
+  summaryBody: string,
+): Promise<SendSummaryResult> {
+  return request<SendSummaryResult>("/skills/send-summary", {
+    method: "POST",
+    body: JSON.stringify({
+      recipients,
+      campaign_name: campaignName,
+      subject,
+      summary_body: summaryBody,
+    }),
+  });
+}
