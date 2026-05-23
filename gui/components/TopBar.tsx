@@ -119,6 +119,12 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
           Evidence
         </Link>
         <Link
+          href="/impact"
+          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+        >
+          Impact
+        </Link>
+        <Link
           href="/docs"
           className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
         >
