@@ -141,7 +141,9 @@ function ReviewContent() {
   const refresh = useCallback(async () => {
     try {
       const state = await fetchCampaignState(campaignId);
-      const stepOutput = (state.step_outputs as Record<string, unknown>)?.[stepId] ?? null;
+      const stepOutput = (state.step_outputs as Record<string, unknown>)?.[stepId]
+        ?? (state.evidence as Record<string, unknown>)?.[stepId + "_output"]
+        ?? null;
       setOutput(stepOutput as Record<string, unknown> | null);
       const statuses = (state as Record<string, unknown>).step_review_status as Record<string, string> | undefined;
       setReviewStatus(statuses?.[stepId] ?? "pending");
