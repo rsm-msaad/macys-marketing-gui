@@ -35,7 +35,7 @@ if _AI_ENGINE_DIR not in sys.path:
     sys.path.insert(0, _AI_ENGINE_DIR)
 
 from api._skill_loader import DB_PATH, IMAGES_DIR  # noqa: E402
-from api.routes import auth, chat, images, impact, personas, rag_compare, skills, slides_admin, workflow  # noqa: E402
+from api.routes import auth, chat, images, impact, personas, rag_compare, sidebar, skills, slides_admin, workflow  # noqa: E402
 
 # Try to import the M3 skill invoker. If the M3 deps are missing on this
 # host (sentence-transformers, faiss, openai, etc), the M2 endpoints still
@@ -140,6 +140,7 @@ app.include_router(images.router)
 app.include_router(auth.router)
 app.include_router(rag_compare.router)
 app.include_router(impact.router)
+app.include_router(sidebar.router)
 app.include_router(slides_admin.router)
 
 # Static images (DAM thumbnails). Files live in data/images/dam/ but may not
