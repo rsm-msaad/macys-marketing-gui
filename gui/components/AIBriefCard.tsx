@@ -474,10 +474,9 @@ export function AIBriefCard({
           <div className="flex items-center gap-4 pt-2">
             <Link
               href="/evidence?step=6b"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
             >
-              <BookOpen className="h-3 w-3" />
-              Evidence
+              Full Evidence View &rarr;
             </Link>
             <Link
               href={`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`}

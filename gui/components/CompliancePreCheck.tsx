@@ -370,10 +370,9 @@ export function CompliancePreCheck({
           <div className="mt-2 flex items-center gap-4">
             <Link
               href="/evidence?step=6a"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 hover:text-teal-700 hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
             >
-              <BookOpen className="h-3 w-3" />
-              Evidence
+              Full Evidence View &rarr;
             </Link>
             <Link
               href={`/review?step=6a&campaign=${context.campaign_brief.campaign_id}`}
