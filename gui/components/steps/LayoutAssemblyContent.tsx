@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { LayoutGrid, Play, RotateCcw, Sparkles } from "lucide-react";
 
-import { runLayoutCopy, type LayoutPlacement } from "@/lib/api";
+import { API_BASE, runLayoutCopy, type LayoutPlacement, type DamAsset } from "@/lib/api";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
+import { PlacementMockup, selectPlacementAssets } from "@/components/PlacementMockup";
 
 const PLACEMENT_META: Record<string, { label: string; dimensions: string }> = {
   web_banner: { label: "Web Banner", dimensions: "1200x628" },
@@ -80,9 +81,11 @@ export function LayoutAssemblyContent({
   })();
 
   const [placements, setPlacements] = useState<Record<string, LayoutPlacement> | null>(null);
+  const [damAssets, setDamAssets] = useState<Array<{ asset_id: number; filename: string; has_photo: boolean }>>([]);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
+  const [showRawCopy, setShowRawCopy] = useState(false);
 
   async function handleGenerate() {
     setRunning(true);
@@ -98,6 +101,24 @@ export function LayoutAssemblyContent({
         category,
       });
       setPlacements(result.placements);
+
+      // Fetch DAM asset details for mockup backgrounds
+      const assetOutput = context.state.step_outputs["4"] as Record<string, unknown> | undefined;
+      const assetIds = (assetOutput?.approved_assets as number[] | undefined) ?? [];
+      if (assetIds.length > 0) {
+        try {
+          // Re-run a quick DAM search to get filenames for approved assets
+          const { runDam } = await import("@/lib/api");
+          const damResult = await runDam(brief.objective || brief.name, Math.min(assetIds.length, 12), category);
+          setDamAssets(damResult.results.map((a: DamAsset) => ({
+            asset_id: a.asset_id,
+            filename: a.filename,
+            has_photo: true, // DAM search returns photo-backed assets first
+          })));
+        } catch {
+          // Non-critical — mockups will render without photos
+        }
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -201,27 +222,61 @@ export function LayoutAssemblyContent({
           </div>
         )}
 
-        {/* Placement cards */}
+        {/* Visual mockups */}
+        {showingResults && (() => {
+          const assetMap = selectPlacementAssets(damAssets);
+          return (
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              {PLACEMENT_ORDER.map((name) => {
+                const p = placements[name];
+                if (!p) return null;
+                const asset = assetMap[name as keyof typeof assetMap];
+                return (
+                  <PlacementMockup
+                    key={name}
+                    placement={name as "web_banner" | "email" | "mobile" | "in_store_signage"}
+                    copy={p}
+                    assetFilename={asset?.filename ?? null}
+                    assetId={asset?.asset_id ?? null}
+                  />
+                );
+              })}
+            </div>
+          );
+        })()}
+
+        {/* Raw copy toggle */}
         {showingResults && (
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="mt-3 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowRawCopy((v) => !v)}
+              className="text-[11px] font-medium text-teal-600 hover:text-teal-700"
+            >
+              {showRawCopy ? "Hide raw copy" : "Show raw copy"}
+            </button>
+            {canAct && (
+              <button
+                type="button"
+                onClick={handleGenerate}
+                className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Regenerate copy
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Raw copy cards (expandable) */}
+        {showRawCopy && showingResults && (
+          <div className="mt-2 grid gap-3 md:grid-cols-2">
             {PLACEMENT_ORDER.map((name) => {
               const p = placements[name];
               if (!p) return null;
               return <PlacementCard key={name} name={name} placement={p} />;
             })}
           </div>
-        )}
-
-        {/* Regenerate button (after results shown) */}
-        {showingResults && canAct && (
-          <button
-            type="button"
-            onClick={handleGenerate}
-            className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
-          >
-            <RotateCcw className="h-3 w-3" />
-            Regenerate copy
-          </button>
         )}
       </div>
 
