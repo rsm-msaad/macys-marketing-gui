@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { API_BASE } from "@/lib/api";
+import { PageTransition } from "@/components/motion";
 
 type CampaignMetric = {
   campaign_id: string;
@@ -78,7 +79,7 @@ export default function AnalyticsPage() {
   const totalMcp = Object.values(data.mcp_by_tool).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="min-h-screen bg-cream/30">
+    <PageTransition className="min-h-screen bg-cream/30">
       <div className="border-b border-charcoal/10 bg-white px-6 py-4">
         <div className="mx-auto max-w-6xl">
           <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
@@ -230,6 +231,6 @@ export default function AnalyticsPage() {
           </table>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

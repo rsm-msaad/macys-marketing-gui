@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { API_BASE } from "@/lib/api";
+import { PageTransition, PulsingDots } from "@/components/motion";
 
 type DashboardData = {
   stats: {
@@ -52,7 +53,7 @@ function StatCard({ icon: Icon, label, value, sub, accent }: {
   accent?: boolean;
 }) {
   return (
-    <div className={`rounded-lg border p-4 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
+    <div className={`card-hover rounded-lg border p-4 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
       <Icon className={`h-4 w-4 ${accent ? "text-teal-600" : "text-charcoal/40"}`} />
       <div className={`mt-2 font-serif text-2xl font-bold ${accent ? "text-teal-700" : "text-charcoal"}`}>{value}</div>
       <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">{label}</div>
@@ -74,13 +75,13 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-cream/30">
-        <span className="h-5 w-5 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+        <PulsingDots text="Loading dashboard" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream/30">
+    <PageTransition className="min-h-screen bg-cream/30">
       <div className="border-b border-charcoal/10 bg-white px-6 py-4">
         <div className="mx-auto max-w-6xl">
           <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
@@ -175,6 +176,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }

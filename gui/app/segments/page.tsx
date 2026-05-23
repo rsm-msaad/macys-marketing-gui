@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Users } from "lucide-react";
 
 import { API_BASE } from "@/lib/api";
+import { PageTransition, PulsingDots } from "@/components/motion";
 
 type Segment = {
   name: string;
@@ -51,7 +52,7 @@ export default function SegmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream/30">
+    <PageTransition className="min-h-screen bg-cream/30">
       <div className="border-b border-charcoal/10 bg-white px-6 py-4">
         <div className="mx-auto max-w-6xl">
           <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
@@ -71,7 +72,7 @@ export default function SegmentsPage() {
             const color = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
             const tiers = Object.entries(seg.loyalty_mix).sort(([, a], [, b]) => b - a);
             return (
-              <div key={seg.name} className={`rounded-lg border ${color.border} ${color.bg} p-5`}>
+              <div key={seg.name} className={`card-hover rounded-lg border ${color.border} ${color.bg} p-5`}>
                 <div className="flex items-start justify-between">
                   <div>
                     <Users className={`h-5 w-5 ${color.accent}`} />
@@ -140,6 +141,6 @@ export default function SegmentsPage() {
           </p>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

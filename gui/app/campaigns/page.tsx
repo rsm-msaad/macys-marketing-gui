@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
 
 import { API_BASE, fetchCampaigns, type Campaign } from "@/lib/api";
+import { PageTransition, PulsingDots } from "@/components/motion";
 
 type Filter = "all" | "active" | "planned" | "completed";
 
@@ -25,7 +26,7 @@ export default function CampaignsPage() {
   const filtered = campaigns?.filter((c) => filter === "all" || c.status === filter) ?? [];
 
   return (
-    <div className="min-h-screen bg-cream/30">
+    <PageTransition className="min-h-screen bg-cream/30">
       <div className="border-b border-charcoal/10 bg-white px-6 py-4">
         <div className="mx-auto max-w-6xl">
           <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
@@ -90,7 +91,7 @@ export default function CampaignsPage() {
                 <Link
                   key={c.id}
                   href="/campaign-manager"
-                  className="block rounded-lg border border-charcoal/10 bg-white p-5 transition-all hover:border-teal-300 hover:shadow-md"
+                  className="card-hover block rounded-lg border border-charcoal/10 bg-white p-5 transition-all hover:border-teal-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
@@ -130,6 +131,6 @@ export default function CampaignsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }
