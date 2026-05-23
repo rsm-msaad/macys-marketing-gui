@@ -66,6 +66,18 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
         ],
         "mcp_calls": [],
     },
+    "layout-copy-generator": {
+        "rag_queries": [
+            "brand voice guidelines and approved taglines for campaign copy",
+        ],
+        "mcp_calls": [],
+    },
+    "report-generator": {
+        "rag_queries": [
+            "campaign retro performance benchmarks",
+        ],
+        "mcp_calls": [],
+    },
     "revision-router": {
         "rag_queries": [],
         "mcp_calls": [],
@@ -106,6 +118,8 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
 SKILL_OUTPUT_FIELD: dict[str, str] = {
     "compliance-pre-check": "compliance_check",
     "approval-brief-generator": "approval_brief",
+    "layout-copy-generator": "layout_copy",
+    "report-generator": "executive_report",
     "revision-router": "revision_routing",
     "localization-generator": "localized_variants",
     "activation-scheduler": "activation_schedule",
@@ -117,6 +131,8 @@ SKILL_OUTPUT_FIELD: dict[str, str] = {
 SKILL_STATUS_AFTER: dict[str, str] = {
     "compliance-pre-check": "compliance_check_complete",
     "approval-brief-generator": "in_vp_review",
+    "layout-copy-generator": "layout_complete",
+    "report-generator": "report_complete",
     "revision-router": "revision_requested",
     "localization-generator": "in_localization",
     "activation-scheduler": "scheduled",

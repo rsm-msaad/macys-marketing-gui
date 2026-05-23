@@ -289,19 +289,51 @@ class LayoutCopyBody(BaseModel):
 
 @router.post("/generate-layout-copy")
 def run_layout_copy(body: LayoutCopyBody) -> dict:
+    helpers = _get_layout_helpers()
+    started = time.monotonic()
+    brief = {
+        "name": body.name,
+        "objective": body.objective,
+        "target_customer": body.target_customer,
+        "promotional_offer": body.promotional_offer,
+        "category": body.category,
+    }
+
+    # Try Claude via skill_invoker first; fall back to deterministic if unavailable
     try:
-        helpers = _get_layout_helpers()
-        started = time.monotonic()
-        brief = {
-            "name": body.name,
-            "objective": body.objective,
-            "target_customer": body.target_customer,
-            "promotional_offer": body.promotional_offer,
-            "category": body.category,
+        from ai_engine.orchestrator.skill_invoker import invoke_skill
+        state = {
+            "campaign": {
+                "title": body.name,
+                "copy": body.objective,
+                "category": body.category,
+                "audience_segment": body.target_customer,
+                "promotional_offer": body.promotional_offer,
+            },
+            "status": "submitted",
         }
-        # Use the deterministic fallback. When the LLM is available via
-        # TritonAI, the orchestrator's skill_invoker handles the real call.
-        # This endpoint provides the demo path that always works.
+        updated = invoke_skill("layout-copy-generator", state)
+        result = updated.get("layout_copy", {})
+        # If Claude returned valid placements, use them
+        if isinstance(result, dict) and any(k in result for k in ("web_banner", "email", "mobile", "in_store_signage", "placements")):
+            placements = result.get("placements", result)
+            elapsed = round((time.monotonic() - started) * 1000, 1)
+            errors = helpers.validate_placements(placements) if isinstance(placements, dict) else []
+            return {
+                "ok": True,
+                "placements": placements,
+                "validation_errors": errors,
+                "generation_metadata": {
+                    "skill": "layout-copy-generator",
+                    "method": "claude_via_skill_invoker",
+                    "duration_ms": elapsed,
+                },
+            }
+    except Exception:
+        pass  # Fall through to deterministic fallback
+
+    # Deterministic fallback (always works, no API key needed)
+    try:
         placements = helpers.generate_fallback(brief)
         errors = helpers.validate_placements(placements)
         elapsed = round((time.monotonic() - started) * 1000, 1)
