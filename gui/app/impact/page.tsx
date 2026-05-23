@@ -15,6 +15,15 @@ import {
 } from "lucide-react";
 
 import { API_BASE } from "@/lib/api";
+import {
+  PageTransition,
+  FadeInView,
+  StaggerContainer,
+  StaggerItem,
+  AnimatedBar,
+  CountUp,
+  PulsingDots,
+} from "@/components/motion";
 
 /* ---- Types ---- */
 
@@ -75,28 +84,31 @@ type Portfolio = {
 
 /* ---- Components ---- */
 
-function HeroCard({ icon: Icon, label, value, sub, accent = false }: {
+function HeroCard({ icon: Icon, label, value, countUp, sub, accent = false }: {
   icon: typeof Clock;
   label: string;
   value: string;
+  countUp?: { end: number; prefix?: string; suffix?: string; decimals?: number; duration?: number };
   sub?: string;
   accent?: boolean;
 }) {
   return (
-    <div className={`rounded-lg border p-5 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
+    <div className={`card-hover rounded-lg border p-5 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
       <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
         <Icon className={`h-4 w-4 ${accent ? "text-teal-600" : "text-charcoal/40"}`} />
         {label}
       </div>
       <div className={`mt-2 font-serif text-3xl font-bold ${accent ? "text-teal-700" : "text-charcoal"}`}>
-        {value}
+        {countUp ? (
+          <CountUp end={countUp.end} prefix={countUp.prefix} suffix={countUp.suffix} decimals={countUp.decimals} duration={countUp.duration} />
+        ) : value}
       </div>
       {sub && <div className="mt-1 text-[11px] text-charcoal/50">{sub}</div>}
     </div>
   );
 }
 
-function StepBar({ step, maxBaseline }: { step: StepImpact; maxBaseline: number }) {
+function StepBar({ step, maxBaseline, index }: { step: StepImpact; maxBaseline: number; index: number }) {
   const baselinePct = maxBaseline > 0 ? (step.baseline_days.mid / maxBaseline) * 100 : 0;
   const aiPct = maxBaseline > 0 ? (step.ai_supported_days.mid / maxBaseline) * 100 : 0;
   return (
@@ -115,8 +127,10 @@ function StepBar({ step, maxBaseline }: { step: StepImpact; maxBaseline: number 
       <td className="py-2.5 text-right text-[11px] font-medium text-teal-700">{step.ai_supported_days.mid.toFixed(1)}d</td>
       <td className="py-2.5 pl-3 w-40">
         <div className="relative h-4">
-          <div className="absolute inset-y-0 left-0 rounded bg-charcoal/10" style={{ width: `${baselinePct}%` }} />
-          <div className="absolute inset-y-0 left-0 rounded bg-teal-500/70" style={{ width: `${aiPct}%` }} />
+          <AnimatedBar pct={baselinePct} color="rgba(45,45,45,0.1)" delay={index * 0.08} />
+          <div className="absolute inset-y-0 left-0">
+            <AnimatedBar pct={aiPct} color="rgba(13,148,136,0.7)" height="h-4" delay={index * 0.08 + 0.1} />
+          </div>
         </div>
       </td>
       <td className="py-2.5 text-right text-[11px] font-semibold text-charcoal">{step.hours_saved}h</td>
@@ -139,7 +153,7 @@ function QualityCard({ icon: Icon, label, value, color = "teal" }: {
   };
   const c = colors[color] ?? colors.teal;
   return (
-    <div className={`rounded-lg border border-charcoal/10 ${c.bg} p-4`}>
+    <div className={`card-hover rounded-lg border border-charcoal/10 ${c.bg} p-4`}>
       <Icon className={`h-4 w-4 ${c.icon}`} />
       <div className={`mt-2 font-serif text-2xl font-bold ${c.text}`}>{value}</div>
       <div className="mt-0.5 text-[10px] font-medium text-charcoal/50">{label}</div>
@@ -208,7 +222,7 @@ export default function ImpactPage() {
   const maxBaseline = selected ? Math.max(...selected.steps.map((s) => s.baseline_days.mid)) : 10;
 
   return (
-    <div className="min-h-screen bg-cream/30">
+    <PageTransition className="min-h-screen bg-cream/30">
       {/* Header */}
       <div className="border-b border-charcoal/10 bg-white px-6 py-4">
         <div className="mx-auto max-w-6xl">
@@ -225,9 +239,8 @@ export default function ImpactPage() {
 
       <div className="mx-auto max-w-6xl px-6 py-6 space-y-8">
         {loading && (
-          <div className="flex items-center gap-2 text-sm text-charcoal/50">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
-            Loading impact data...
+          <div className="flex items-center justify-center py-12 text-sm text-charcoal/50">
+            <PulsingDots text="Computing impact metrics" />
           </div>
         )}
 
@@ -252,16 +265,24 @@ export default function ImpactPage() {
                 )}
               </div>
 
-              {/* Hero cards */}
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                <HeroCard icon={Clock} label="Hours Saved" value={`${selected.hero.hours_saved}h`} sub={`${selected.hero.days_saved} business days`} accent />
-                <HeroCard icon={DollarSign} label="Dollar Savings" value={`$${selected.hero.dollars_saved.toLocaleString()}`} sub="at $75/hr fully loaded" accent />
-                <HeroCard icon={TrendingUp} label="Cycle Reduction" value={`${selected.hero.pct_reduction}%`} sub={`${selected.hero.baseline_days}d → ${selected.hero.ai_supported_days}d`} />
-                <HeroCard icon={Zap} label="Steps Completed" value={`${selected.completed_step_count}/10`} sub={selected.is_complete ? "Campaign complete" : `Currently at Step ${selected.current_step}`} />
-              </div>
+              {/* Hero cards with count-up animation */}
+              <StaggerContainer className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <StaggerItem>
+                  <HeroCard icon={Clock} label="Hours Saved" value="" countUp={{ end: selected.hero.hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`${selected.hero.days_saved} business days`} accent />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={DollarSign} label="Dollar Savings" value="" countUp={{ end: selected.hero.dollars_saved, prefix: "$", duration: 1.8 }} sub="at $75/hr fully loaded" accent />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={TrendingUp} label="Cycle Reduction" value="" countUp={{ end: selected.hero.pct_reduction, suffix: "%", duration: 1.2 }} sub={`${selected.hero.baseline_days}d → ${selected.hero.ai_supported_days}d`} />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={Zap} label="Steps Completed" value={`${selected.completed_step_count}/10`} sub={selected.is_complete ? "Campaign complete" : `Currently at Step ${selected.current_step}`} />
+                </StaggerItem>
+              </StaggerContainer>
 
               {/* Per-step table */}
-              <div className="mt-6 rounded-lg border border-charcoal/10 bg-white p-5">
+              <FadeInView className="mt-6 rounded-lg border border-charcoal/10 bg-white p-5">
                 <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">Per-Step Breakdown</h3>
                 <table className="w-full">
                   <thead>
@@ -275,33 +296,41 @@ export default function ImpactPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {selected.steps.map((s) => (
-                      <StepBar key={s.step} step={s} maxBaseline={maxBaseline} />
+                    {selected.steps.map((s, i) => (
+                      <StepBar key={s.step} step={s} maxBaseline={maxBaseline} index={i} />
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </FadeInView>
 
               {/* Quality measures */}
-              <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+              <FadeInView delay={0.2} className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
                 <QualityCard icon={ShieldCheck} label="Compliance Findings" value={String(selected.quality.compliance_findings)} color="teal" />
                 <QualityCard icon={BarChart3} label="Revision Rounds" value={String(selected.quality.revision_rounds)} color="amber" />
                 <QualityCard icon={CheckCircle2} label="Evidence Coverage" value={`${selected.quality.evidence_coverage_pct}%`} color="sage" />
                 <QualityCard icon={Wrench} label="MCP Tool Invocations" value={String(selected.quality.mcp_invocations)} color="violet" />
-              </div>
+              </FadeInView>
             </section>
 
             {/* ===== SECTION B: Portfolio Aggregate ===== */}
-            <section>
+            <FadeInView>
               <h2 className="font-serif text-lg font-semibold text-charcoal mb-4">Portfolio Aggregate</h2>
 
               {/* Aggregate hero cards */}
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                <HeroCard icon={DollarSign} label="Total Savings" value={`$${portfolio.aggregate.total_dollars_saved.toLocaleString()}`} sub={`across ${portfolio.campaign_count} campaigns`} accent />
-                <HeroCard icon={Clock} label="Total Hours Saved" value={`${portfolio.aggregate.total_hours_saved}h`} sub={`avg $${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()}/campaign`} accent />
-                <HeroCard icon={TrendingUp} label="Projected Annual" value={`$${(portfolio.aggregate.projected_annual_savings / 1_000_000).toFixed(1)}M`} sub={`at ${portfolio.aggregate.annual_campaign_volume} campaigns/year`} accent />
-                <HeroCard icon={Wrench} label="MCP Invocations" value={String(portfolio.quality_aggregate.total_mcp_invocations)} sub={`${portfolio.quality_aggregate.total_compliance_findings} compliance findings`} />
-              </div>
+              <StaggerContainer className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <StaggerItem>
+                  <HeroCard icon={DollarSign} label="Total Savings" value="" countUp={{ end: portfolio.aggregate.total_dollars_saved, prefix: "$", duration: 2 }} sub={`across ${portfolio.campaign_count} campaigns`} accent />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={Clock} label="Total Hours Saved" value="" countUp={{ end: portfolio.aggregate.total_hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`avg $${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()}/campaign`} accent />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={TrendingUp} label="Projected Annual" value="" countUp={{ end: portfolio.aggregate.projected_annual_savings / 1_000_000, prefix: "$", suffix: "M", decimals: 1, duration: 2.2 }} sub={`at ${portfolio.aggregate.annual_campaign_volume} campaigns/year`} accent />
+                </StaggerItem>
+                <StaggerItem>
+                  <HeroCard icon={Wrench} label="MCP Invocations" value={String(portfolio.quality_aggregate.total_mcp_invocations)} sub={`${portfolio.quality_aggregate.total_compliance_findings} compliance findings`} />
+                </StaggerItem>
+              </StaggerContainer>
 
               {/* Campaign comparison bars */}
               <div className="mt-4 grid gap-3 md:grid-cols-3">
@@ -321,10 +350,10 @@ export default function ImpactPage() {
                   This is a class-context estimate using industry-standard assumptions, not a guaranteed projection.
                 </p>
               </div>
-            </section>
+            </FadeInView>
           </>
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }
