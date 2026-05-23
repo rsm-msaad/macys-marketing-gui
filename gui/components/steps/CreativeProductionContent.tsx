@@ -397,7 +397,7 @@ export function CreativeProductionContent({
               skus_from_step3: approvedSkus,
               category,
               find_dam_assets_result: mcpResult ? {
-                mcp_tool: mcpResult.mcp_tool,
+                helper: "find_dam_assets",
                 status: mcpResult.status,
                 result_count: mcpResult.result_count,
                 input: mcpResult.input,

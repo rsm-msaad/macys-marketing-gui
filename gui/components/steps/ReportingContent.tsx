@@ -67,10 +67,10 @@ function buildSummaryFromUpstream(
   const loc = outputs["7"] as Record<string, unknown> | undefined;
   if (loc?.variant_count) {
     parts.push(`Localization: ${loc.variant_count} variants across ${(loc.regions as string[])?.length ?? "?"} regions.`);
-    if (loc.mcp_generate_locale_variants) {
-      const mcps = loc.mcp_generate_locale_variants as Array<Record<string, unknown>>;
-      const langs = mcps.map((m) => m.target_language).join(", ");
-      parts.push(`  MCP generate_locale_variants: ${langs}.`);
+    if (loc.locale_variant_results) {
+      const variants = loc.locale_variant_results as Array<Record<string, unknown>>;
+      const langs = variants.map((m) => m.target_language).join(", ");
+      parts.push(`  Localization helpers: ${langs}.`);
     }
   }
 

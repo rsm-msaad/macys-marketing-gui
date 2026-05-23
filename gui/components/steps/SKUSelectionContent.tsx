@@ -166,7 +166,7 @@ export function SKUSelectionContent({
       setExcluded(result.excluded_skus);
       setIncluded(new Set(result.recommended_skus.map((s) => s.sku_id)));
 
-      // Auto-fire MCP tool: check_pricing_conflicts on all recommended SKUs
+      // Auto-fire pricing helper: check_pricing_conflicts on all recommended SKUs
       setPricingRunning(true);
       try {
         const skuIds = result.recommended_skus.map((s) => s.sku_id);
@@ -347,7 +347,7 @@ export function SKUSelectionContent({
       {pricingRunning && (
         <div className="flex items-center gap-2 rounded-md border border-charcoal/10 bg-white px-3 py-2 text-sm text-charcoal/60">
           <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
-          Running MCP tool: check_pricing_conflicts...
+          Running pricing helper: check_pricing_conflicts...
         </div>
       )}
       {pricingCheck && (

@@ -292,7 +292,7 @@ export function LocalizationContent({
               skus_from_step3: approvedSkus,
               copy_from_step5: layoutCopy,
               locale_variant_results: mcpResults.map((r) => ({
-                mcp_tool: r.mcp_tool,
+                helper: "generate_locale_variants",
                 target_language: r.target_language,
                 applied_phrases: r.applied_phrases,
               })),

@@ -23,33 +23,40 @@ const STEP_AI_NOTE: Record<number, string> = {
   8: "The Activation Scheduler automation fires automatically after VP approval. Timezone math and send time computation are deterministic, so no LLM is needed.",
 };
 
-// MCP tools that fire on each step.
-type McpToolMeta = {
+// Tools that fire on each step. Only check_pricing_conflicts and
+// send_campaign_summary are real MCP tools used by AI agents.
+// find_dam_assets and generate_locale_variants are Python helper
+// functions called directly by automations.
+type ToolMeta = {
   name: string;
   description: string;
   calledBy: string;
+  kind: "mcp" | "helper";
 };
 
-const STEP_MCP_TOOLS: Record<number, McpToolMeta[]> = {
+const STEP_TOOL_META: Record<number, ToolMeta[]> = {
   4: [
     {
       name: "find_dam_assets",
-      description: "Searches the DAM database for images matching campaign keywords, filtered by resolution, rights status, and recency.",
-      calledBy: "DAM Asset Finder",
+      description: "Searches the DAM database by category and tags, filtered by resolution, rights status, and recency.",
+      calledBy: "DAM Asset Finder automation",
+      kind: "helper",
     },
   ],
   6: [
     {
       name: "check_pricing_conflicts",
-      description: "Validates SKUs against MAP (Minimum Advertised Price) rules at the campaign discount. Returns which SKUs would violate MAP and why.",
-      calledBy: "Compliance Pre Check",
+      description: "Validates SKUs against MAP (Minimum Advertised Price) rules at the campaign discount. Claude calls this tool agentically mid-reasoning.",
+      calledBy: "Compliance Pre Check (agentic)",
+      kind: "mcp",
     },
   ],
   7: [
     {
       name: "generate_locale_variants",
-      description: "Generates Spanish and Quebec French translations of ad copy following the Macy's localization style guide.",
-      calledBy: "Localization Generator",
+      description: "Generates Spanish and Quebec French translations of ad copy via phrase substitution.",
+      calledBy: "Localization Generator automation",
+      kind: "helper",
     },
   ],
 };
@@ -237,7 +244,7 @@ function StepToolsSection({
   const allowedKinds = STEP_TOOLS[step] ?? [];
   const visibleSkills = skills.filter((k) => allowedKinds.includes(k));
   const aiNote = STEP_AI_NOTE[step];
-  const mcpTools = STEP_MCP_TOOLS[step] ?? [];
+  const mcpTools = STEP_TOOL_META[step] ?? [];
   const hasAnything = visibleSkills.length > 0 || aiNote || mcpTools.length > 0;
 
   return (
@@ -298,7 +305,7 @@ function StepToolsSection({
         </div>
       )}
 
-      {/* MCP Tools */}
+      {/* Tools (MCP or Python helpers) */}
       {mcpTools.length > 0 && (
         <div className={visibleSkills.length > 0 || aiNote ? "mt-3" : ""}>
           <div className="grid gap-3 md:grid-cols-2">
@@ -307,16 +314,20 @@ function StepToolsSection({
                 key={tool.name}
                 className="rounded-lg border border-charcoal/10 bg-cream/30 p-4"
               >
-                <div
-                  className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
-                  style={{ backgroundColor: "#4338CA1A", color: "#4338CA" }}
-                >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: "#4338CA" }}
-                  />
-                  MCP Tool
-                </div>
+                {tool.kind === "mcp" ? (
+                  <div
+                    className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                    style={{ backgroundColor: "#4338CA1A", color: "#4338CA" }}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#4338CA" }} />
+                    MCP Tool (Agentic)
+                  </div>
+                ) : (
+                  <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-charcoal/5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-charcoal/50">
+                    <span className="h-1.5 w-1.5 rounded-full bg-charcoal/30" />
+                    Python Helper
+                  </div>
+                )}
                 <h4 className="font-mono text-sm font-semibold text-charcoal">
                   {tool.name}
                 </h4>
@@ -324,7 +335,7 @@ function StepToolsSection({
                   {tool.description}
                 </p>
                 <p className="mt-2 text-[11px] italic text-charcoal/45">
-                  Called by {tool.calledBy}. Standard tool calling protocol with structured input/output.
+                  Called by {tool.calledBy}.{tool.kind === "mcp" ? " Claude decides when to call this tool." : " Called as a Python function, not via MCP."}
                 </p>
               </div>
             ))}

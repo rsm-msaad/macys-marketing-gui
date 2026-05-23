@@ -101,9 +101,10 @@ const LAYERS: Layer[] = [
       { name: "Activation Scheduler", badge: "automation", description: "Timezone math, send time computation, frequency cap rules for channel scheduling.", path: "ai_engine/automations/activation-scheduler/helpers.py" },
       { name: "Campaign Performance Analyzer", badge: "automation", description: "Last-touch attribution + linear regression forecast with 80% confidence intervals.", path: "ai_engine/automations/campaign-performance-analyzer/analyze.py" },
       { name: "Localization Generator v1", badge: "automation", description: "Generates 40 regional/placement variant records from templates (10 regions x 4 placements).", path: "ai_engine/automations/localization-generator-v1/generate.py" },
-      { name: "check_pricing_conflicts", badge: "mcp", description: "Validates SKU list against MAP rules. Used by Compliance Pre Check at Step 6.", path: "ai_engine/tools/check_pricing_conflicts.py" },
-      { name: "find_dam_assets", badge: "mcp", description: "DAM lookup by category and region with active rights filter. Used at Step 4.", path: "ai_engine/tools/find_dam_assets.py" },
-      { name: "generate_locale_variants", badge: "mcp", description: "Simulated transcreation to Spanish or Quebec French via phrase substitution. Used at Step 7.", path: "ai_engine/tools/generate_locale_variants.py" },
+      { name: "check_pricing_conflicts", badge: "mcp", description: "MCP Tool: Validates SKU list against MAP rules. Called agentically by Claude at Steps 6a/6b.", path: "ai_engine/tools/check_pricing_conflicts.py" },
+      { name: "send_campaign_summary", badge: "mcp", description: "MCP Tool: Sends campaign report via Gmail SMTP. Triggered by user at Step 10.", path: "ai_engine/tools/send_campaign_summary.py" },
+      { name: "find_dam_assets", badge: "automation", description: "Python helper: DAM lookup by category and region. Called by DAM Asset Finder automation at Step 4.", path: "ai_engine/tools/find_dam_assets.py" },
+      { name: "generate_locale_variants", badge: "automation", description: "Python helper: Phrase substitution for Spanish/Quebec French. Called by Localization Generator at Step 7.", path: "ai_engine/tools/generate_locale_variants.py" },
     ],
   },
   {
