@@ -8,9 +8,9 @@ export default function ProductionArtistPage() {
       subhead="You spin up 40 regional variants per master ad. The skill handles regional pricing, regional inventory, and regionally voiced copy in one shot."
       leftNav={[
         { label: "Dashboard", href: "/dashboard" },
-        { label: "Variants" },
-        { label: "Master Ads" },
-        { label: "Traffic Handoff" },
+        { label: "Campaigns", href: "/campaigns" },
+        { label: "Segments", href: "/segments" },
+        { label: "Analytics", href: "/analytics" },
       ]}
       skills={["segment", "sku-recommend", "dam", "layout-copy", "localize", "analyze"]}
     />

@@ -161,7 +161,7 @@ export default function DashboardPage() {
 
         {/* Escalations */}
         {data.escalations.length > 0 && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50/30 p-5">
+          <div id="escalations" className="rounded-lg border border-amber-200 bg-amber-50/30 p-5 scroll-mt-20">
             <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-amber-600">
               <AlertTriangle className="mr-1 inline h-3 w-3" />
               Pending Escalations ({data.escalations.length})

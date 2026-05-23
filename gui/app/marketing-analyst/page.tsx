@@ -8,9 +8,9 @@ export default function MarketingAnalystPage() {
       subhead="You pull the numbers, attribute revenue, and draft the readout. The skill produces attribution + a 14 day forecast; you add business context."
       leftNav={[
         { label: "Dashboard", href: "/dashboard" },
-        { label: "Campaigns" },
-        { label: "Reports" },
-        { label: "Forecasts" },
+        { label: "Campaigns", href: "/campaigns" },
+        { label: "Segments", href: "/segments" },
+        { label: "Analytics", href: "/analytics" },
       ]}
       skills={["segment", "sku-recommend", "dam", "layout-copy", "localize", "analyze"]}
     />
