@@ -41,13 +41,14 @@ The RAG retrieval pipeline works as follows: the skill sends a natural-language 
 
 ### MCP Tools
 
-Three MCP tools wrap Python functions that connect AI skills to external data. Each tool is registered via FastMCP and invoked by the orchestrator's skill invoker during pre-fetch:
+Four MCP tools wrap Python functions that connect AI skills to external data and services. Each tool is registered via FastMCP and callable by the orchestrator's skill invoker:
 
 | Tool | Python Function | Used By | What It Returns |
 |---|---|---|---|
-| `check_pricing_conflicts` | MAP validation against a hardcoded brand list (Levi's, Coach, Lancome, Estee Lauder, Clinique, La Mer, Dior Beauty, Tag Heuer) | Compliance Pre Check | Pass/warn/fail per SKU with conflict details and the MAP floor price that was violated |
-| `find_dam_assets` | DAM lookup with rights filtering and relevance scoring | DAM Asset Finder, Localization Generator | Ranked asset list with tags, rights status, and relevance scores |
-| `generate_locale_variants` | Phrase substitution table with regional pricing and language mappings | Localization Generator | Translated copy per region with quality flags for manual review |
+| `check_pricing_conflicts` | MAP validation against 14-brand enforced list | Compliance Pre Check (agentic), SKU Recommender (helper) | Pass/warn/fail per SKU with conflict details |
+| `find_dam_assets` | DAM lookup with rights filtering and relevance scoring | DAM Asset Finder (helper) | Ranked asset list with tags and rights status |
+| `generate_locale_variants` | Phrase substitution with regional pricing | Localization Generator (helper) | Translated copy per region with quality flags |
+| `send_campaign_summary` | Gmail SMTP via App Password | Report Generator at Step 10 (user-triggered) | Sent/error status with recipient count |
 
 The Evidence screen shows every MCP tool call with its exact input parameters and output JSON, so the reviewer can verify what the tool was asked and what it returned. This is the primary mitigation for Failure Case 3 (MCP tool returns stale or incomplete data): the tool's output is not hidden behind the AI's summary, it is visible in full.
 
