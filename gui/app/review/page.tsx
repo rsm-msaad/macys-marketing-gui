@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Check,
+  CheckCircle2,
   Clock,
   Edit3,
   Loader2,
@@ -13,6 +14,9 @@ import {
   ShieldAlert,
   ThumbsDown,
   X,
+  XCircle,
+  AlertTriangle,
+  Zap,
 } from "lucide-react";
 
 import {
@@ -273,30 +277,171 @@ function ReviewContent() {
         )}
 
         {/* Section 2: AI Output (read mode or edit mode) */}
-        {output && !loading && !editing && (
-          <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
-              {reviewStatus === "edited" && (
-                <span className="text-[10px] italic text-amber-600">(manually edited)</span>
-              )}
-            </div>
-            <div className="space-y-2">
-              {Object.entries(output).filter(([k]) => k !== "retrieved_docs").map(([key, value]) => (
-                <div key={key} className="rounded-md border border-charcoal/5 bg-cream/20 p-3">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
-                  <div className="mt-0.5 text-sm text-charcoal/75">
-                    {typeof value === "object" && value !== null
-                      ? Array.isArray(value)
-                        ? (value as string[]).map((v, i) => <div key={i} className="flex items-start gap-1.5"><span className="mt-1.5 h-1 w-1 rounded-full bg-charcoal/30 flex-shrink-0" />{String(v)}</div>)
-                        : <pre className="text-[11px] whitespace-pre-wrap font-mono text-charcoal/60">{JSON.stringify(value, null, 2)}</pre>
-                      : String(value)}
+        {output && !loading && !editing && (() => {
+          // Detect compliance findings (has brand_alignment, disclaimers, pricing_cross_check)
+          const isCompliance = "brand_alignment" in output || "disclaimers" in output || "pricing_cross_check" in output;
+          // Detect brief (has campaign_goal, target_audience)
+          const isBrief = "campaign_goal" in output || "target_audience" in output;
+          const recommendedAction = output.recommended_action as string | undefined ?? output.ai_recommendation as string | undefined;
+          const agenticTrace = output._agentic_trace as Array<Record<string, unknown>> | undefined;
+          const FINDING_KEYS = ["brand_alignment", "disclaimers", "pricing_cross_check"];
+          const SKIP_KEYS = new Set(["retrieved_docs", "_agentic_trace", "_agentic_iterations", "_agentic_tool_calls", "_parse_error", "_raw_response", "recommended_action"]);
+
+          const statusStyle = (s: string) => {
+            const lower = (s ?? "").toLowerCase();
+            if (lower === "pass" || lower === "approved" || lower === "proceed" || lower === "approve")
+              return { icon: CheckCircle2, bg: "bg-green-100", text: "text-green-700", label: s };
+            if (lower === "fail" || lower === "reject" || lower === "block")
+              return { icon: XCircle, bg: "bg-red-100", text: "text-red-700", label: s };
+            return { icon: AlertTriangle, bg: "bg-amber-100", text: "text-amber-700", label: s };
+          };
+
+          return (
+            <>
+              {/* Recommended action banner */}
+              {recommendedAction && (
+                <div className={`mb-4 flex items-center gap-2 rounded-lg px-4 py-3 ${
+                  recommendedAction.toLowerCase().includes("proceed") || recommendedAction.toLowerCase().includes("approve")
+                    ? "border border-green-200 bg-green-50"
+                    : "border border-amber-200 bg-amber-50"
+                }`}>
+                  {recommendedAction.toLowerCase().includes("proceed") || recommendedAction.toLowerCase().includes("approve")
+                    ? <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    : <AlertTriangle className="h-5 w-5 text-amber-600" />}
+                  <div>
+                    <div className="text-sm font-semibold text-charcoal">
+                      {recommendedAction.toLowerCase().includes("revise") ? "Revisions Needed" : "Ready to Proceed"}
+                    </div>
+                    <div className="text-[11px] text-charcoal/60">
+                      AI recommendation: <strong>{recommendedAction}</strong>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              )}
+
+              <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
+                  {reviewStatus === "edited" && (
+                    <span className="text-[10px] italic text-amber-600">(manually edited)</span>
+                  )}
+                </div>
+
+                {/* Compliance findings as styled cards */}
+                {isCompliance && (
+                  <div className="space-y-3">
+                    {FINDING_KEYS.map((key) => {
+                      const finding = output[key] as Record<string, unknown> | undefined;
+                      if (!finding || typeof finding !== "object") return null;
+                      const st = statusStyle(String(finding.status ?? "warn"));
+                      const Icon = st.icon;
+                      return (
+                        <div key={key} className="rounded-md border border-charcoal/8 p-4">
+                          <div className="flex items-start gap-3">
+                            <Icon className={`mt-0.5 h-4 w-4 flex-shrink-0 ${st.text}`} />
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[12px] font-semibold text-charcoal">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}</span>
+                                <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${st.bg} ${st.text}`}>{st.label}</span>
+                              </div>
+                              <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">{String(finding.reason ?? "")}</p>
+                              {finding.cited_doc ? (
+                                <div className="mt-1.5 text-[10px] text-charcoal/40">Source: {String(finding.cited_doc)}</div>
+                              ) : null}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Brief fields as styled sections */}
+                {isBrief && (
+                  <div className="space-y-3">
+                    {Object.entries(output).filter(([k]) => !SKIP_KEYS.has(k) && !k.startsWith("_")).map(([key, value]) => (
+                      <div key={key} className="rounded-md border border-charcoal/8 p-3">
+                        <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
+                        <div className="mt-1 text-[12px] leading-relaxed text-charcoal/75">
+                          {Array.isArray(value)
+                            ? (value as string[]).map((v, i) => (
+                              <div key={i} className="flex items-start gap-1.5 mt-0.5">
+                                <span className="mt-1.5 h-1 w-1 rounded-full bg-charcoal/30 flex-shrink-0" />
+                                <span>{String(v)}</span>
+                              </div>
+                            ))
+                            : String(value ?? "")}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Generic output (non-compliance, non-brief) */}
+                {!isCompliance && !isBrief && (
+                  <div className="space-y-2">
+                    {Object.entries(output).filter(([k]) => !SKIP_KEYS.has(k) && !k.startsWith("_")).map(([key, value]) => (
+                      <div key={key} className="rounded-md border border-charcoal/5 bg-cream/20 p-3">
+                        <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
+                        <div className="mt-0.5 text-sm text-charcoal/75">
+                          {typeof value === "object" && value !== null
+                            ? Array.isArray(value)
+                              ? (value as string[]).map((v, i) => <div key={i} className="flex items-start gap-1.5"><span className="mt-1.5 h-1 w-1 rounded-full bg-charcoal/30 flex-shrink-0" />{String(v)}</div>)
+                              : <pre className="text-[11px] whitespace-pre-wrap font-mono text-charcoal/60">{JSON.stringify(value, null, 2)}</pre>
+                            : String(value ?? "")}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Agentic trace timeline */}
+              {agenticTrace && agenticTrace.length > 0 && (
+                <div className="mb-6 rounded-lg border border-violet-200/50 bg-violet-50/10 p-5">
+                  <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-violet-500">
+                    Agentic Trace — Claude&apos;s Reasoning ({agenticTrace.filter((t) => t.type === "tool_call").length} tool calls)
+                  </h2>
+                  <div className="space-y-3">
+                    {agenticTrace.map((entry, i) => {
+                      if (entry.type === "tool_call") {
+                        const reasoning = entry.reasoning_before as string | undefined;
+                        return (
+                          <div key={i} className="rounded-md border border-violet-200/40 bg-white p-3">
+                            {reasoning && reasoning.length > 0 && (
+                              <div className="mb-2 rounded border-l-2 border-violet-300 bg-violet-50/30 px-3 py-2">
+                                <div className="mb-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-400">Claude&apos;s reasoning</div>
+                                <div className="text-[11px] leading-relaxed text-charcoal/65 italic">{reasoning.slice(0, 400)}{reasoning.length > 400 ? "..." : ""}</div>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1.5">
+                              <Zap className="h-3 w-3 text-teal-600" />
+                              <span className="font-mono text-[11px] font-semibold text-teal-700">{String(entry.tool_name)}</span>
+                              <span className="text-[9px] text-charcoal/40">iteration {String(entry.iteration)}</span>
+                            </div>
+                            <div className="mt-1 rounded bg-charcoal/3 p-2 text-[10px] font-mono text-charcoal/55">
+                              <div><strong>Input:</strong> {JSON.stringify(entry.tool_input, null, 1).slice(0, 200)}</div>
+                              <div className="mt-1"><strong>Output:</strong> {JSON.stringify(entry.tool_output, null, 1).slice(0, 200)}</div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      if (entry.type === "final_response" && entry.reasoning) {
+                        return (
+                          <div key={i} className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
+                            <div className="text-[9px] font-semibold uppercase tracking-wider text-charcoal/40">Final analysis</div>
+                            <div className="mt-0.5 text-[11px] text-charcoal/60 italic">{String(entry.reasoning).slice(0, 300)}...</div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()}
 
         {/* Edit mode */}
         {output && !loading && editing && (
@@ -345,24 +490,24 @@ function ReviewContent() {
         {output && !loading && !editing && !rerunning && (
           <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
             <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Review Actions</h2>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => setModal("approve")} className="inline-flex items-center gap-1.5 rounded-md bg-sage px-4 py-2 text-sm font-medium text-white hover:bg-sage/90">
-                <Check className="h-3.5 w-3.5" /> Approve
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={() => setModal("approve")} className="inline-flex items-center gap-1.5 rounded-md bg-sage px-5 py-2.5 text-sm font-medium text-white hover:bg-sage/90">
+                <Check className="h-4 w-4" /> Approve
               </button>
-              <button type="button" onClick={startEditing} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2 text-sm font-medium text-charcoal/65 hover:bg-cream">
-                <Edit3 className="h-3.5 w-3.5" /> Edit
+              <button type="button" onClick={startEditing} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2.5 text-sm font-medium text-charcoal/65 hover:bg-cream">
+                <Edit3 className="h-4 w-4" /> Edit
               </button>
-              <Link href={`/evidence?step=${stepId}&campaign=${campaignId}`} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2 text-sm font-medium text-charcoal/65 hover:bg-cream">
+              <Link href={`/evidence?step=${stepId}&campaign=${campaignId}`} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2.5 text-sm font-medium text-charcoal/65 hover:bg-cream">
                 Evidence
               </Link>
-              <button type="button" onClick={() => setModal("rerun")} className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-white px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-50">
-                <RotateCcw className="h-3.5 w-3.5" /> Rerun
+              <button type="button" onClick={() => setModal("rerun")} className="inline-flex items-center gap-1.5 rounded-md border border-teal-600/30 bg-white px-4 py-2.5 text-sm font-medium text-teal-700 hover:bg-teal-50">
+                <RotateCcw className="h-4 w-4" /> Rerun
               </button>
-              <button type="button" onClick={() => setModal("reject")} className="inline-flex items-center gap-1.5 rounded-md border border-soft_red/30 bg-white px-4 py-2 text-sm font-medium text-soft_red hover:bg-soft_red/5">
-                <ThumbsDown className="h-3.5 w-3.5" /> Reject
+              <button type="button" onClick={() => setModal("reject")} className="inline-flex items-center gap-1.5 rounded-md border border-soft_red/30 bg-white px-4 py-2.5 text-sm font-medium text-soft_red hover:bg-soft_red/5">
+                <ThumbsDown className="h-4 w-4" /> Reject
               </button>
-              <button type="button" onClick={() => setModal("escalate")} className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-50">
-                <ShieldAlert className="h-3.5 w-3.5" /> Escalate to CEO
+              <button type="button" onClick={() => setModal("escalate")} className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-4 py-2.5 text-sm font-medium text-purple-700 hover:bg-purple-50">
+                <ShieldAlert className="h-4 w-4" /> Escalate to CEO
               </button>
             </div>
           </div>
