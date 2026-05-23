@@ -54,7 +54,11 @@ STEP_NAMES: dict[str, str] = {
 }
 
 HOURS_PER_DAY = 6  # productive hours per business day
-ANNUAL_CAMPAIGN_VOLUME = 200
+# Reasoned estimate: 65-100 distinct campaigns per year. See the
+# breakdown on /impact and in estimates.md for how this range is derived.
+ANNUAL_CAMPAIGN_VOLUME_LOW = 65
+ANNUAL_CAMPAIGN_VOLUME_HIGH = 100
+ANNUAL_CAMPAIGN_VOLUME = 82  # midpoint for single-number projections
 
 
 def _midpoint(r: tuple[float, float]) -> float:
@@ -201,6 +205,10 @@ def get_portfolio_impact() -> dict:
             "avg_dollars_per_campaign": round(avg_savings_per_campaign),
             "projected_annual_savings": projected_annual,
             "annual_campaign_volume": ANNUAL_CAMPAIGN_VOLUME,
+            "annual_campaign_volume_low": ANNUAL_CAMPAIGN_VOLUME_LOW,
+            "annual_campaign_volume_high": ANNUAL_CAMPAIGN_VOLUME_HIGH,
+            "projected_annual_low": round(avg_savings_per_campaign * ANNUAL_CAMPAIGN_VOLUME_LOW),
+            "projected_annual_high": round(avg_savings_per_campaign * ANNUAL_CAMPAIGN_VOLUME_HIGH),
             "hourly_rate": HOURLY_RATE,
         },
         "quality_aggregate": {

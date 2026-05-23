@@ -6,6 +6,8 @@ import {
   ArrowLeft,
   BarChart3,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   Clock,
   DollarSign,
   ShieldCheck,
@@ -72,6 +74,10 @@ type Portfolio = {
     avg_dollars_per_campaign: number;
     projected_annual_savings: number;
     annual_campaign_volume: number;
+    annual_campaign_volume_low: number;
+    annual_campaign_volume_high: number;
+    projected_annual_low: number;
+    projected_annual_high: number;
     hourly_rate: number;
   };
   quality_aggregate: {
@@ -206,6 +212,7 @@ export default function ImpactPage() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [selectedId, setSelectedId] = useState<string>("MDC-2026-MD-001");
   const [loading, setLoading] = useState(true);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -325,7 +332,7 @@ export default function ImpactPage() {
                   <HeroCard icon={Clock} label="Total Hours Saved" value="" countUp={{ end: portfolio.aggregate.total_hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`avg $${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()}/campaign`} accent />
                 </StaggerItem>
                 <StaggerItem>
-                  <HeroCard icon={TrendingUp} label="Projected Annual" value="" countUp={{ end: portfolio.aggregate.projected_annual_savings / 1_000_000, prefix: "$", suffix: "M", decimals: 1, duration: 2.2 }} sub={`at ${portfolio.aggregate.annual_campaign_volume} campaigns/year`} accent />
+                  <HeroCard icon={TrendingUp} label="Projected Annual" value="" countUp={{ end: portfolio.aggregate.projected_annual_savings / 1_000_000, prefix: "$", suffix: "M", decimals: 1, duration: 2.2 }} sub={`at ${portfolio.aggregate.annual_campaign_volume_low}-${portfolio.aggregate.annual_campaign_volume_high} campaigns/year`} accent />
                 </StaggerItem>
                 <StaggerItem>
                   <HeroCard icon={Wrench} label="MCP Invocations" value={String(portfolio.quality_aggregate.total_mcp_invocations)} sub={`${portfolio.quality_aggregate.total_compliance_findings} compliance findings`} />
@@ -343,12 +350,72 @@ export default function ImpactPage() {
               <div className="mt-4 rounded-lg border border-teal-200/50 bg-teal-50/30 p-4">
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">Extrapolation</div>
                 <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
-                  If Macy&apos;s runs {portfolio.aggregate.annual_campaign_volume} campaigns per year at this
-                  efficiency rate (avg ${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()} saved per campaign
+                  At {portfolio.aggregate.annual_campaign_volume_low} to {portfolio.aggregate.annual_campaign_volume_high} campaigns
+                  per year (avg ${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()} saved per campaign
                   at ${portfolio.aggregate.hourly_rate}/hr), projected annual labor savings
-                  approach <strong>${(portfolio.aggregate.projected_annual_savings / 1_000_000).toFixed(1)}M</strong>.
-                  This is a class-context estimate using industry-standard assumptions, not a guaranteed projection.
+                  range from <strong>${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M</strong> to{" "}
+                  <strong>${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M</strong>.
+                  This is a class-context estimate using reasoned assumptions, not a guaranteed projection.
                 </p>
+              </div>
+
+              {/* Campaign volume breakdown (expandable) */}
+              <div className="mt-3 rounded-lg border border-charcoal/8 bg-white">
+                <button
+                  type="button"
+                  onClick={() => setBreakdownOpen((v) => !v)}
+                  className="flex w-full items-center gap-2 px-4 py-3 text-left"
+                >
+                  {breakdownOpen
+                    ? <ChevronDown className="h-3.5 w-3.5 text-charcoal/40" />
+                    : <ChevronRight className="h-3.5 w-3.5 text-charcoal/40" />}
+                  <span className="text-[12px] font-medium text-charcoal/70">
+                    Where does the {portfolio.aggregate.annual_campaign_volume_low} to {portfolio.aggregate.annual_campaign_volume_high} campaigns per year estimate come from?
+                  </span>
+                </button>
+                {breakdownOpen && (
+                  <div className="border-t border-charcoal/5 px-4 py-4">
+                    <table className="w-full text-[11px]">
+                      <thead className="text-[10px] uppercase text-charcoal/40">
+                        <tr>
+                          <th className="pb-2 text-left font-medium">Campaign source</th>
+                          <th className="pb-2 text-right font-medium">Annual count</th>
+                          <th className="pb-2 text-left pl-4 font-medium">Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-t border-charcoal/5">
+                          <td className="py-2 text-charcoal/70">Weekly promotional campaigns</td>
+                          <td className="py-2 text-right font-medium text-charcoal">~52</td>
+                          <td className="py-2 pl-4 text-charcoal/50">Macy&apos;s documented weekly promo slot running through the year</td>
+                        </tr>
+                        <tr className="border-t border-charcoal/5">
+                          <td className="py-2 text-charcoal/70">Major event-driven campaigns</td>
+                          <td className="py-2 text-right font-medium text-charcoal">10-15</td>
+                          <td className="py-2 pl-4 text-charcoal/50">Mother&apos;s Day, Black Friday, Christmas, Valentine&apos;s Day, and similar tentpole events</td>
+                        </tr>
+                        <tr className="border-t border-charcoal/5">
+                          <td className="py-2 text-charcoal/70">Brand-specific launches</td>
+                          <td className="py-2 text-right font-medium text-charcoal">5-10</td>
+                          <td className="py-2 pl-4 text-charcoal/50">New product launches, exclusive collections, vendor co-op events (e.g., Lancome Spring, Coach Capsule)</td>
+                        </tr>
+                        <tr className="border-t border-charcoal/5 font-semibold">
+                          <td className="py-2 text-charcoal">Total distinct campaigns</td>
+                          <td className="py-2 text-right text-teal-700">65-100</td>
+                          <td className="py-2 pl-4 text-charcoal/60">Each unique campaign counted once, regardless of overlapping classifications</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="mt-3 text-[11px] leading-relaxed text-charcoal/55">
+                      A single Macy&apos;s campaign can be classified multiple ways simultaneously. The Mother&apos;s Day
+                      Beauty Event, for example, is a weekly campaign slot, a seasonal Spring campaign, a vendor co-op
+                      campaign (Lancome and Estee Lauder share funding), an event-driven campaign (Mother&apos;s Day),
+                      and a Star Rewards loyalty campaign. We count each distinct campaign once. This range is a reasoned
+                      estimate from Macy&apos;s documented operations, public reporting, and industry norms. Actual volume
+                      would require internal data to confirm.
+                    </p>
+                  </div>
+                )}
               </div>
             </FadeInView>
           </>

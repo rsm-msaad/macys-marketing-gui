@@ -45,7 +45,18 @@ All numbers in this document use the following assumptions:
 
 **Labor cost per campaign (current):** At $75/hour fully loaded and conservatively 30 business days at 6 productive hours per day, a campaign consumes roughly 180 person-hours across all roles (campaign manager, designer, production artist, analyst, legal reviewer). Total labor cost per campaign: approximately $13,500. This is the cost of one campaign for one team. Macy's runs dozens of campaigns concurrently across categories and seasons, so total annual marketing operations labor runs into the millions.
 
-**Labor cost per campaign (AI-supported):** At the same $75/hour and our estimated 5 to 10 business days at 4 productive hours per day (less time on manual coordination, more concentrated on judgment and review), a campaign consumes roughly 30 person-hours. Total labor cost per campaign: approximately $2,250. Estimated savings per campaign: approximately $11,000. At 200 campaigns per year (a reasonable annual cadence for a retailer of Macy's scale based on industry norms for seasonal, holiday, loyalty, and category-specific promotions), annual labor savings could approach $2 million. This is a class-context estimate based on reasonable assumptions, not a guaranteed projection.
+**Labor cost per campaign (AI-supported):** At the same $75/hour and our estimated 5 to 10 business days at 4 productive hours per day (less time on manual coordination, more concentrated on judgment and review), a campaign consumes roughly 30 person-hours. Total labor cost per campaign: approximately $2,250. Estimated savings per campaign: approximately $11,000. At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $715,000 to $1.1 million. This is a class-context estimate based on reasoned assumptions, not a guaranteed projection.
+
+### Where does the 65 to 100 campaigns per year estimate come from?
+
+| Campaign source | Annual count | Notes |
+|---|---:|---|
+| Weekly promotional campaigns | ~52 | Macy's documented weekly promo slot running through the year |
+| Major event-driven campaigns | 10-15 | Mother's Day, Father's Day, Back to School, Black Friday, Christmas, Valentine's Day, and similar tentpole events that may fall outside the weekly slot |
+| Brand-specific launches | 5-10 | New product launches, exclusive collections, vendor co-op events outside the weekly cadence (e.g., Lancome Spring launch, Coach Capsule Collection) |
+| **Total distinct campaigns** | **65-100** | Each unique campaign counted once, regardless of overlapping classifications |
+
+A single Macy's campaign can be classified multiple ways simultaneously. The Mother's Day Beauty Event, for example, is a weekly campaign slot, a seasonal Spring campaign, a vendor co-op campaign (Lancome and Estee Lauder share funding), an event-driven campaign (Mother's Day), and a Star Rewards loyalty campaign. We count each distinct campaign once. This range is a reasoned estimate from Macy's documented operations, public reporting, and industry norms. Actual volume would require internal data to confirm.
 
 **Cost note:** This excludes the cost of AI API calls. In our M3 implementation, TritonAI and Claude are provided by the course at no cost. In a production deployment, Claude API costs for the 4 LLM skills (compliance, brief, revision routing, layout copy) would be on the order of $0.50 to $2.00 per campaign run, a fraction of the labor savings. The 7 deterministic automations use no LLM calls and run at negligible compute cost.
 
