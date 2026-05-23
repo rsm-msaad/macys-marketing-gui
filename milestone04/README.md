@@ -49,18 +49,24 @@ We follow the principle: **deterministic where rules are enough, agentic where j
 | Step | Component | Mode | Why |
 |---|---|---|---|
 | 4 | DAM Asset Finder | **Automation** | Tag matching and rights filtering is deterministic scoring |
-| 5 | Layout Copy Generator | **Skill** (pre-fetch) | Creative generation, no tool verification needed |
+| 5 | Layout Copy Generator | **Skill** (pre-fetch, Claude) | Claude generates copy; deterministic fallback if API unavailable |
 | 6a | Compliance Pre Check | **Skill** (agentic) | Claude decides when to call check_pricing_conflicts based on campaign context |
 | 6b | Approval Brief Generator | **Skill** (agentic) | Claude may call check_pricing_conflicts to verify pricing flags |
 | 6c | Revision Router | **Skill** (pre-fetch) | Classification is text-only, no tool needed |
 | 7 | Localization Generator | **Automation** | Phrase substitution is a lookup table, not judgment |
+| 10 | Report Generator | **Skill** (pre-fetch, Claude) | Claude writes executive summary from full audit trail |
 
 Agentic skills pre-fetch RAG documents deterministically. Only MCP tool calls at Steps 6a/6b are agentic. The agentic trace (Claude's reasoning + tool calls + results) is captured in the Evidence panel.
 
 ## Component Tally
 
-- **4 LLM Skills:** Layout Copy Generator, Compliance Pre Check (agentic), Approval Brief Generator (agentic), Revision Router
-- **7 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder, Localization Generator, Activation Scheduler, Campaign Performance Analyzer, Report Generator
+- **5 LLM Skills (all verified calling Claude via TritonAI):**
+  - Layout Copy Generator (pre-fetch, Step 5)
+  - Compliance Pre Check (agentic, Step 6a)
+  - Approval Brief Generator (agentic, Step 6b)
+  - Revision Router (pre-fetch, Step 6c)
+  - Report Generator (pre-fetch, Step 10)
+- **6 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder, Localization Generator, Activation Scheduler, Campaign Performance Analyzer
 - **2 MCP Tools:**
   - `check_pricing_conflicts` — agentic at Steps 6a/6b (Claude decides when to call), also used as Python helper at Step 3
   - `send_campaign_summary` — real Gmail SMTP integration at Step 10, sends campaign reports to team via email
