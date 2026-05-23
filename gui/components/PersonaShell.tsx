@@ -39,7 +39,7 @@ import {
   isStepOwnedBy,
 } from "@/lib/authorities";
 
-type LeftNavItem = { label: string; active?: boolean };
+type LeftNavItem = { label: string; active?: boolean; href?: string };
 
 const DEFAULT_CAMPAIGN_ID = "MDC-2026-MD-001";
 const POLL_INTERVAL_MS = 5_000;
@@ -368,16 +368,29 @@ export function PersonaShell({
             <ul className="space-y-1 text-sm">
               {leftNav.map((item) => (
                 <li key={item.label}>
-                  <button
-                    type="button"
-                    className={`block w-full rounded-md px-3 py-2 text-left ${
-                      item.active
-                        ? "bg-cream font-semibold text-charcoal"
-                        : "text-charcoal/60 hover:bg-cream"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
+                        item.active
+                          ? "bg-cream font-semibold text-charcoal"
+                          : "text-charcoal/60 hover:bg-cream"
+                      }`}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      className={`block w-full rounded-md px-3 py-2 text-left ${
+                        item.active
+                          ? "bg-cream font-semibold text-charcoal"
+                          : "text-charcoal/60 hover:bg-cream"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

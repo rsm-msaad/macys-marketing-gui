@@ -7,7 +7,7 @@ export default function CeoPage() {
       headline="CEO · Prof. Vincent"
       subhead="Full visibility across every workflow step. Can approve, edit, or override any action at any stage."
       leftNav={[
-        { label: "Dashboard", active: true },
+        { label: "Dashboard", href: "/dashboard" },
         { label: "All Campaigns" },
         { label: "All Steps" },
         { label: "Overrides" },

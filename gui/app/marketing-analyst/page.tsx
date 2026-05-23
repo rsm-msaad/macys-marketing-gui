@@ -7,7 +7,7 @@ export default function MarketingAnalystPage() {
       headline="Marketing Analyst · Anna"
       subhead="You pull the numbers, attribute revenue, and draft the readout. The skill produces attribution + a 14 day forecast; you add business context."
       leftNav={[
-        { label: "Dashboard", active: true },
+        { label: "Dashboard", href: "/dashboard" },
         { label: "Campaigns" },
         { label: "Reports" },
         { label: "Forecasts" },

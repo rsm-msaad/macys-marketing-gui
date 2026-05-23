@@ -7,10 +7,10 @@ export default function CampaignManagerPage() {
       headline="Campaign Manager · Merna"
       subhead="You own the brief, build the audience, pick the SKUs, and shepherd the campaign through Brand and Legal review."
       leftNav={[
-        { label: "Dashboard", active: true },
-        { label: "Campaigns" },
-        { label: "Segments" },
-        { label: "Analytics" },
+        { label: "Dashboard", href: "/dashboard" },
+        { label: "Campaigns", href: "/campaigns" },
+        { label: "Segments", href: "/segments" },
+        { label: "Analytics", href: "/analytics" },
       ]}
       skills={["segment", "sku-recommend", "dam", "layout-copy", "localize", "analyze"]}
     />
