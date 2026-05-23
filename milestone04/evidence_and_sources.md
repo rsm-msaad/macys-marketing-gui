@@ -41,14 +41,21 @@ The RAG retrieval pipeline works as follows: the skill sends a natural-language 
 
 ### MCP Tools
 
-Four MCP tools wrap Python functions that connect AI skills to external data and services. Each tool is registered via FastMCP and callable by the orchestrator's skill invoker:
+Two MCP tools are used as genuine tool-calling interfaces where an AI agent or user triggers the call. Two additional Python helper functions are called directly by automations (not via MCP).
 
-| Tool | Python Function | Used By | What It Returns |
-|---|---|---|---|
-| `check_pricing_conflicts` | MAP validation against 14-brand enforced list | Compliance Pre Check (agentic), SKU Recommender (helper) | Pass/warn/fail per SKU with conflict details |
-| `find_dam_assets` | DAM lookup with rights filtering and relevance scoring | DAM Asset Finder (helper) | Ranked asset list with tags and rights status |
-| `generate_locale_variants` | Phrase substitution with regional pricing | Localization Generator (helper) | Translated copy per region with quality flags |
-| `send_campaign_summary` | Gmail SMTP via App Password | Report Generator at Step 10 (user-triggered) | Sent/error status with recipient count |
+**MCP Tools (AI-agent or user-triggered):**
+
+| Tool | Used By | What It Does |
+|---|---|---|
+| `check_pricing_conflicts` | Compliance Pre Check (agentic, Steps 6a/6b) | Claude calls mid-reasoning to validate SKUs against MAP-enforced brand list |
+| `send_campaign_summary` | Report Generator (user-triggered, Step 10) | Sends campaign report via Gmail SMTP to team members |
+
+**Python Helper Functions (called directly by automations, not MCP):**
+
+| Function | Used By | What It Does |
+|---|---|---|
+| `find_dam_assets` | DAM Asset Finder automation (Step 4) | DAM lookup with rights filtering and relevance scoring |
+| `generate_locale_variants` | Localization Generator automation (Step 7) | Phrase substitution with regional pricing for Spanish and Quebec French |
 
 The Evidence screen shows every MCP tool call with its exact input parameters and output JSON, so the reviewer can verify what the tool was asked and what it returned. This is the primary mitigation for Failure Case 3 (MCP tool returns stale or incomplete data): the tool's output is not hidden behind the AI's summary, it is visible in full.
 

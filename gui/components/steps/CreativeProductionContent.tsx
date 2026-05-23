@@ -146,7 +146,7 @@ export function CreativeProductionContent({
       setStats(result.stats);
       setIncluded(new Set(result.results.map((a) => a.asset_id)));
 
-      // MCP helper: find_dam_assets for rights-verified lookup
+      // Python helper: find_dam_assets for rights-verified lookup
       try {
         const mcp = await runFindDamAssets(category, "NY", 5);
         setMcpResult(mcp);
@@ -260,7 +260,7 @@ export function CreativeProductionContent({
         </div>
         <p className="text-sm text-charcoal/70">
           Filters 5,000 DAM assets by category, tags, and quality. Deterministic ranking with category boost.
-          Calls <strong>find_dam_assets</strong> helper (exposed via MCP) for rights validation.
+          Calls <strong>find_dam_assets</strong> Python helper for rights validation.
         </p>
 
         {/* Run button */}
@@ -359,7 +359,7 @@ export function CreativeProductionContent({
         </div>
       )}
 
-      {/* DAM helper: find_dam_assets (deterministic, exposed via MCP) */}
+      {/* DAM helper: find_dam_assets (deterministic Python function) */}
       {mcpResult && (
         <div className={`rounded-md border p-3 ${
           mcpResult.status === "pass"
@@ -367,7 +367,7 @@ export function CreativeProductionContent({
             : "border-amber-300/40 bg-amber-50/30"
         }`}>
           <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-green-700">
-            DAM helper: find_dam_assets — {mcpResult.result_count} rights-verified assets
+            Python helper: find_dam_assets — {mcpResult.result_count} rights-verified assets
           </div>
           <div className="text-[11px] text-charcoal/65">
             Queried DAM for <strong>{mcpResult.input.category}</strong> assets in region <strong>{mcpResult.input.region}</strong> with active model releases.
@@ -396,7 +396,7 @@ export function CreativeProductionContent({
               approved_asset_count: includedCount,
               skus_from_step3: approvedSkus,
               category,
-              mcp_find_dam_assets: mcpResult ? {
+              find_dam_assets_result: mcpResult ? {
                 mcp_tool: mcpResult.mcp_tool,
                 status: mcpResult.status,
                 result_count: mcpResult.result_count,

@@ -37,12 +37,10 @@ Step 10 (Reporting) → step_outputs["10"]  ← reads ALL upstream steps 2-9
 
 | MCP Tool | Fires At | Mode | Purpose |
 |---|---|---|---|
-| `check_pricing_conflicts` | Step 3 (SKU lock-in) | Deterministic helper | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
-| `check_pricing_conflicts` | Step 6a (compliance) | **Agentic** — Claude decides when to call | Claude calls mid-reasoning to verify pricing claims |
-| `check_pricing_conflicts` | Step 6b (brief) | **Agentic** — Claude decides when to call | Claude may re-verify pricing for risk_flags |
-| `find_dam_assets` | Step 4 (creative) | Deterministic helper | Rights-verified asset lookup by category and region |
-| `generate_locale_variants` | Step 7 (localization) | Deterministic helper | Phrase-level transcreation to Spanish and Quebec French |
-| `send_campaign_summary` | Step 10 (reporting) | User-triggered (MCP) | Sends campaign report via Gmail SMTP to team members |
+| `check_pricing_conflicts` | Step 3 (SKU lock-in) | Python helper | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
+| `check_pricing_conflicts` | Step 6a (compliance) | **MCP — Agentic** | Claude calls mid-reasoning to verify pricing claims |
+| `check_pricing_conflicts` | Step 6b (brief) | **MCP — Agentic** | Claude may re-verify pricing for risk_flags |
+| `send_campaign_summary` | Step 10 (reporting) | **MCP — User-triggered** | Sends campaign report via Gmail SMTP to team members |
 
 ## Agentic vs Deterministic
 
@@ -63,9 +61,10 @@ Agentic skills pre-fetch RAG documents deterministically. Only MCP tool calls at
 
 - **4 LLM Skills:** Layout Copy Generator, Compliance Pre Check (agentic), Approval Brief Generator (agentic), Revision Router
 - **7 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder, Localization Generator, Activation Scheduler, Campaign Performance Analyzer, Report Generator
-- **4 MCP Tools:**
-  - check_pricing_conflicts — agentic at Steps 6a/6b, helper at Step 3
-  - find_dam_assets — helper at Step 4
-  - generate_locale_variants — helper at Step 7
-  - **send_campaign_summary** — real Gmail SMTP integration at Step 10, sends campaign reports to team via email
+- **2 MCP Tools:**
+  - `check_pricing_conflicts` — agentic at Steps 6a/6b (Claude decides when to call), also used as Python helper at Step 3
+  - `send_campaign_summary` — real Gmail SMTP integration at Step 10, sends campaign reports to team via email
+- **2 Python Helper Functions** (not MCP, called directly by automations):
+  - `find_dam_assets` — DAM lookup at Step 4
+  - `generate_locale_variants` — phrase-level transcreation at Step 7
 - **12 RAG Documents:** BRAND-GL through TEAM-FAQ in HyQ FAISS index (381 entries)

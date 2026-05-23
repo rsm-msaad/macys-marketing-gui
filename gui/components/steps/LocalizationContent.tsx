@@ -85,7 +85,7 @@ export function LocalizationContent({
       setVariants(result.variants);
       setStats(result.stats);
 
-      // MCP helper: generate_locale_variants for Spanish and Quebec French
+      // Python helper: generate_locale_variants for Spanish and Quebec French
       if (layoutCopy) {
         const mcpCalls = await Promise.allSettled([
           runGenerateLocaleVariants(layoutCopy, "es"),
@@ -174,7 +174,7 @@ export function LocalizationContent({
         </div>
         <p className="text-sm text-charcoal/70">
           Creates regional variants via deterministic template expansion. Calls
-          <strong>generate_locale_variants</strong> helper (exposed via MCP) for Spanish and Quebec French transcreation.
+          <strong>generate_locale_variants</strong> Python helper for Spanish and Quebec French transcreation.
         </p>
 
         {/* Run button */}
@@ -262,11 +262,11 @@ export function LocalizationContent({
         </div>
       )}
 
-      {/* Transcreation helper: generate_locale_variants (deterministic, exposed via MCP) */}
+      {/* Transcreation helper: generate_locale_variants (deterministic Python function) */}
       {mcpResults.length > 0 && (
         <div className="rounded-md border border-green-300/40 bg-green-50/30 p-3">
           <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-green-700">
-            Transcreation helper: generate_locale_variants — {mcpResults.length} locales
+            Python helper: generate_locale_variants — {mcpResults.length} locales
           </div>
           {mcpResults.map((r) => (
             <div key={r.target_language} className="mt-1 text-[11px] text-charcoal/65">
@@ -291,7 +291,7 @@ export function LocalizationContent({
               regions: regionNames,
               skus_from_step3: approvedSkus,
               copy_from_step5: layoutCopy,
-              mcp_generate_locale_variants: mcpResults.map((r) => ({
+              locale_variant_results: mcpResults.map((r) => ({
                 mcp_tool: r.mcp_tool,
                 target_language: r.target_language,
                 applied_phrases: r.applied_phrases,
