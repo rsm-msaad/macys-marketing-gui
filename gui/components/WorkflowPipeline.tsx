@@ -10,7 +10,8 @@ const PERSONA_ROLE: Record<string, { name: string; title: string; avatar: string
   "senior-designer": { name: "Abdullah", title: "Senior Designer", avatar: "/avatars/abdullah.png" },
   "production-artist": { name: "Shankar", title: "Production Artist", avatar: "/avatars/shankar.png" },
   "marketing-analyst": { name: "Anna", title: "Marketing Analyst", avatar: "/avatars/anna.png" },
-  "ceo": { name: "Prof. Vincent", title: "CEO", avatar: "/avatars/vincent.png" },
+  "ceo": { name: "Prof. Vincent", title: "Co-CEO", avatar: "/avatars/vincent.png" },
+  "thales": { name: "Prof. Thales", title: "Co-CEO", avatar: "/avatars/thales.png" },
 };
 
 const LABEL_STYLE: Record<WorkflowStep["label"], { bg: string; text: string; label: string }> = {
@@ -165,7 +166,7 @@ export function WorkflowPipeline({
               {/* Floating owner avatar */}
               {ownerMeta && (
                 <div
-                  className={`absolute -bottom-2 h-7 w-7 overflow-hidden rounded-full border-2 border-white shadow-sm ${personaId === "ceo" && isActive ? "-right-5" : "-right-2"}`}
+                  className={`absolute -bottom-2 h-7 w-7 overflow-hidden rounded-full border-2 border-white shadow-sm ${(personaId === "ceo" || personaId === "thales") && isActive ? "-right-5" : "-right-2"}`}
                   title={`${ownerMeta.name} (${ownerMeta.title})`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -177,15 +178,15 @@ export function WorkflowPipeline({
                 </div>
               )}
               {/* CEO floating avatar (only on the active step) */}
-              {personaId === "ceo" && isActive && (
+              {(personaId === "ceo" || personaId === "thales") && isActive && (
                 <div
                   className="absolute -bottom-2 -right-1 h-7 w-7 overflow-hidden rounded-full border-2 border-purple-400 shadow-sm"
-                  title="Prof. Vincent (CEO)"
+                  title={`${PERSONA_ROLE[personaId]?.name ?? "Co-CEO"} (Co-CEO)`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/avatars/vincent.png"
-                    alt="Prof. Vincent"
+                    src={PERSONA_ROLE[personaId]?.avatar ?? "/avatars/vincent.png"}
+                    alt={PERSONA_ROLE[personaId]?.name ?? "Co-CEO"}
                     className="h-full w-full object-cover"
                   />
                 </div>

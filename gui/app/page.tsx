@@ -12,10 +12,14 @@ const OPERATIONAL_ORDER = [
   "production-artist",
 ];
 
+const CEO_IDS = ["ceo", "thales"];
+
 export default function LandingPage() {
   const { personas, loading, error } = usePersonas();
 
-  const ceo = personas.find((p) => p.id === "ceo");
+  const ceos = CEO_IDS
+    .map((id) => personas.find((p) => p.id === id))
+    .filter(Boolean) as typeof personas;
   const operational = OPERATIONAL_ORDER
     .map((id) => personas.find((p) => p.id === id))
     .filter(Boolean) as typeof personas;
@@ -40,43 +44,44 @@ export default function LandingPage() {
         </div>
       )}
 
-      {/* CEO card: featured, wider, centered */}
-      {ceo && (
-        <div className="mb-6 flex justify-center">
-          <Link
-            href={`/${ceo.id}`}
-            className="group flex w-full max-w-2xl flex-col rounded-xl border-2 border-purple-300/50 bg-white p-8 shadow-md transition-all hover:border-purple-400/70 hover:shadow-lg"
-          >
-            <div className="flex items-center gap-5">
-              <span
-                className="flex h-20 w-20 items-center justify-center rounded-full ring-[3px] ring-purple-400 ring-offset-2"
+      {/* Co-CEOs: side-by-side, equal sizing */}
+      {ceos.length > 0 && (
+        <>
+          <div className="mb-3 flex items-center gap-4">
+            <div className="h-px flex-1 bg-purple-200/50" />
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-purple-500">
+              <Shield className="h-3 w-3" />
+              Executive Leadership
+            </span>
+            <div className="h-px flex-1 bg-purple-200/50" />
+          </div>
+          <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            {ceos.map((ceo) => (
+              <Link
+                key={ceo.id}
+                href={`/${ceo.id}`}
+                className="card-hover group flex flex-col rounded-xl border-2 border-purple-300/50 bg-white p-6 shadow-md transition-all hover:border-purple-400/70"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={ceo.avatar}
-                  alt={ceo.name}
-                  className="h-20 w-20 rounded-full object-cover"
-                />
-              </span>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700">
-                    <Shield className="h-3 w-3" />
-                    Executive
+                <div className="flex items-center gap-4">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full ring-[3px] ring-purple-400 ring-offset-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ceo.avatar} alt={ceo.name} className="h-16 w-16 rounded-full object-cover" />
                   </span>
+                  <div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-purple-700">
+                      <Shield className="h-2.5 w-2.5" /> Co-CEO
+                    </span>
+                    <div className="mt-1 font-serif text-2xl font-semibold text-charcoal">{ceo.name}</div>
+                  </div>
                 </div>
-                <div className="mt-1 font-serif text-3xl font-semibold text-charcoal">{ceo.name}</div>
-                <div className="text-sm text-charcoal/55">{ceo.title}</div>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-charcoal/70">
-              {ceo.tagline}
-            </p>
-            <div className="mt-5 inline-flex items-center text-sm font-medium text-purple-600 group-hover:text-purple-700">
-              Continue as {ceo.name} →
-            </div>
-          </Link>
-        </div>
+                <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{ceo.tagline}</p>
+                <div className="mt-4 inline-flex items-center text-sm font-medium text-purple-600 group-hover:text-purple-700">
+                  Continue as {ceo.name} →
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Divider */}

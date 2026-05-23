@@ -10,7 +10,8 @@ export type PersonaId =
   | "senior-designer"
   | "production-artist"
   | "marketing-analyst"
-  | "ceo";
+  | "ceo"
+  | "thales";
 
 type Authority = {
   ownerPersonaId: PersonaId;
@@ -72,8 +73,8 @@ export const STEP_AUTHORITIES: Record<number, Authority> = {
 };
 
 export function isStepOwnedBy(stepNumber: number, personaId: string): boolean {
-  // CEO can act on every step.
-  if (personaId === "ceo") return true;
+  // Either co-CEO can act on every step.
+  if (personaId === "ceo" || personaId === "thales") return true;
   const a = STEP_AUTHORITIES[stepNumber];
   return a !== undefined && a.ownerPersonaId === personaId;
 }

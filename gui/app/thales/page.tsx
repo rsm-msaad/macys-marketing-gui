@@ -1,10 +1,10 @@
 import { PersonaShell } from "@/components/PersonaShell";
 
-export default function CeoPage() {
+export default function ThalesPage() {
   return (
     <PersonaShell
-      personaId="ceo"
-      headline="Co-CEO · Prof. Vincent"
+      personaId="thales"
+      headline="Co-CEO · Prof. Thales"
       subhead="Full visibility across every workflow step. Can approve, edit, or override any action at any stage."
       leftNav={[
         { label: "Dashboard", href: "/dashboard" },

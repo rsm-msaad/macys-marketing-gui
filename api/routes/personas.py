@@ -45,12 +45,21 @@ PERSONAS = [
     },
     {
         "id": "ceo",
-        "title": "CEO",
+        "title": "Co-CEO",
         "name": "Prof. Vincent",
         "initial": "V",
         "color": "#6D28D9",
-        "tagline": "Sees everything. Overrides every step. Final authority.",
+        "tagline": "Co-CEO with executive authority over campaign approvals and overrides.",
         "avatar": "/avatars/vincent.png",
+    },
+    {
+        "id": "thales",
+        "title": "Co-CEO",
+        "name": "Prof. Thales",
+        "initial": "T",
+        "color": "#4338CA",
+        "tagline": "Co-CEO with executive authority over campaign approvals and overrides.",
+        "avatar": "/avatars/thales.png",
     },
 ]
 
