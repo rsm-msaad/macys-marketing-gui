@@ -1,35 +1,64 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Play, RotateCcw } from "lucide-react";
+import { CheckCircle2, Globe, Play, RotateCcw } from "lucide-react";
 
 import { runLocalize, runGenerateLocaleVariants, type Variant, type LocalizeStats, type GenerateLocaleResult } from "@/lib/api";
 import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
 
-function VariantCard({ variant }: { variant: Variant }) {
+function VariantCard({
+  variant,
+  included,
+  onToggle,
+}: {
+  variant: Variant;
+  included: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold text-charcoal/80">
-          {variant.region} / {variant.placement}
-        </span>
-        <span className="text-[10px] text-charcoal/45">{variant.placement_dimensions}</span>
-      </div>
-      <div className="mt-1.5 font-serif text-sm font-semibold text-charcoal">
-        {variant.copy_headline}
-      </div>
-      <div className="mt-0.5 text-[12px] text-charcoal/65">{variant.copy_subhead}</div>
-      <div className="mt-1.5 flex items-center gap-3 text-[10px]">
-        <span className="font-medium text-teal-700">CTA: {variant.cta_text}</span>
-        <span className="text-charcoal/45">
-          ${variant.regional_price.toFixed(0)}
-          {variant.price_difference_pct !== 0 && (
-            <span className={variant.price_difference_pct > 0 ? "text-amber-600" : "text-sage"}>
-              {" "}({variant.price_difference_pct > 0 ? "+" : ""}{variant.price_difference_pct.toFixed(1)}%)
+    <div
+      className={`rounded-md border p-3 transition-all ${
+        included
+          ? "border-charcoal/10 bg-cream/30"
+          : "border-charcoal/10 bg-charcoal/5 opacity-60"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold text-charcoal/80">
+              {variant.region} / {variant.placement}
             </span>
-          )}
-        </span>
-        <span className="text-charcoal/40">{variant.sku_name}</span>
+            <span className="text-[10px] text-charcoal/45">{variant.placement_dimensions}</span>
+          </div>
+          <div className="mt-1.5 font-serif text-sm font-semibold text-charcoal">
+            {variant.copy_headline}
+          </div>
+          <div className="mt-0.5 text-[12px] text-charcoal/65">{variant.copy_subhead}</div>
+          <div className="mt-1.5 flex items-center gap-3 text-[10px]">
+            <span className="font-medium text-teal-700">CTA: {variant.cta_text}</span>
+            <span className="text-charcoal/45">
+              ${variant.regional_price.toFixed(0)}
+              {variant.price_difference_pct !== 0 && (
+                <span className={variant.price_difference_pct > 0 ? "text-amber-600" : "text-sage"}>
+                  {" "}({variant.price_difference_pct > 0 ? "+" : ""}{variant.price_difference_pct.toFixed(1)}%)
+                </span>
+              )}
+            </span>
+            <span className="text-charcoal/40">{variant.sku_name}</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onToggle}
+          className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border transition-colors ${
+            included
+              ? "border-teal-600 bg-teal-600 text-white"
+              : "border-charcoal/25 bg-white text-transparent hover:border-charcoal/40"
+          }`}
+        >
+          {included && <CheckCircle2 className="h-3.5 w-3.5" />}
+        </button>
       </div>
     </div>
   );
@@ -52,7 +81,7 @@ export function LocalizationContent({
   const skuOutput = context.state.step_outputs["3"] as Record<string, unknown> | undefined;
   const approvedSkus = (skuOutput?.approved_skus as string[] | undefined) ?? [];
 
-  // Extract tagline from layout placements for MCP transcreation
+  // Extract tagline from layout placements for transcreation helper
   const layoutCopy = (() => {
     if (!layoutOutput?.placements) return null;
     const p = layoutOutput.placements as Record<string, { tagline?: string; body?: string }>;
@@ -61,29 +90,41 @@ export function LocalizationContent({
   })();
 
   // Derive SKU IDs (numeric) for the localization generator
-  // The localization generator expects numeric IDs from the macys.db sku_catalog
   const skuIdsForLocalize = approvedSkus.length > 0
-    ? approvedSkus.slice(0, 2).map((_, i) => i + 4) // Map to sample DB IDs
-    : [4, 18]; // fallback
+    ? approvedSkus.slice(0, 2).map((_, i) => i + 4)
+    : [4, 18];
 
   const [variants, setVariants] = useState<Variant[] | null>(null);
   const [stats, setStats] = useState<LocalizeStats | null>(null);
+  const [included, setIncluded] = useState<Set<string>>(new Set());
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
   const [mcpResults, setMcpResults] = useState<GenerateLocaleResult[]>([]);
+
+  function toggleVariant(variantId: string) {
+    setIncluded((prev) => {
+      const next = new Set(prev);
+      if (next.has(variantId)) next.delete(variantId);
+      else next.add(variantId);
+      return next;
+    });
+  }
 
   async function handleRun() {
     setRunning(true);
     setError(null);
     setVariants(null);
     setStats(null);
+    setIncluded(new Set());
     setMcpResults([]);
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
       const result = await runLocalize(brief, skuIdsForLocalize);
       setVariants(result.variants);
       setStats(result.stats);
+      // Select all by default
+      setIncluded(new Set(result.variants.map((v) => v.variant_id)));
 
       // Python helper: generate_locale_variants for Spanish and Quebec French
       if (layoutCopy) {
@@ -138,6 +179,7 @@ export function LocalizationContent({
   }
 
   const showingResults = variants !== null && variants.length > 0;
+  const includedCount = included.size;
 
   // Group variants by region for display
   const grouped: Record<string, Variant[]> = {};
@@ -174,7 +216,7 @@ export function LocalizationContent({
         </div>
         <p className="text-sm text-charcoal/70">
           Creates regional variants via deterministic template expansion. Calls
-          <strong>generate_locale_variants</strong> Python helper for Spanish and Quebec French transcreation.
+          <strong> generate_locale_variants</strong> Python helper for Spanish and Quebec French transcreation.
         </p>
 
         {/* Run button */}
@@ -208,21 +250,52 @@ export function LocalizationContent({
           </div>
         )}
 
-        {/* Results grouped by region */}
+        {/* Selection controls */}
         {showingResults && (
-          <div className="mt-3 space-y-3">
-            {regionNames.map((region) => (
-              <div key={region}>
-                <h4 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">
-                  {region} ({grouped[region].length} variants)
-                </h4>
-                <div className="grid gap-2 md:grid-cols-2">
-                  {grouped[region].map((v) => (
-                    <VariantCard key={v.variant_id} variant={v} />
-                  ))}
+          <div className="mt-3 flex items-center justify-between">
+            <span className="text-[11px] text-charcoal/55">
+              {includedCount} of {variants.length} selected
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setIncluded(
+                  includedCount === variants.length
+                    ? new Set()
+                    : new Set(variants.map((v) => v.variant_id)),
+                )
+              }
+              className="text-[11px] font-medium text-teal-600 hover:text-teal-700"
+            >
+              {includedCount === variants.length ? "Deselect all" : "Select all"}
+            </button>
+          </div>
+        )}
+
+        {/* Results grouped by region with toggles */}
+        {showingResults && (
+          <div className="mt-2 space-y-3">
+            {regionNames.map((region) => {
+              const regionVariants = grouped[region];
+              const regionSelected = regionVariants.filter((v) => included.has(v.variant_id)).length;
+              return (
+                <div key={region}>
+                  <h4 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">
+                    {region} ({regionSelected}/{regionVariants.length} selected)
+                  </h4>
+                  <div className="grid gap-2 md:grid-cols-2">
+                    {regionVariants.map((v) => (
+                      <VariantCard
+                        key={v.variant_id}
+                        variant={v}
+                        included={included.has(v.variant_id)}
+                        onToggle={() => toggleVariant(v.variant_id)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -278,17 +351,19 @@ export function LocalizationContent({
       )}
 
       {/* Approval footer */}
-      {showingResults && (
+      {showingResults && includedCount > 0 && (
         <ActionFooter
           canAct={canAct}
           busy={busy}
-          cta={`Lock in ${variants.length} translations`}
+          cta={`Lock in ${includedCount} translations`}
           ctaKind="approve"
           stepNumber={7}
           onClick={() =>
             onApprove("Lock In Translations", {
-              variant_count: variants.length,
+              variant_count: includedCount,
+              total_generated: variants.length,
               regions: regionNames,
+              selected_variant_ids: [...included],
               skus_from_step3: approvedSkus,
               copy_from_step5: layoutCopy,
               locale_variant_results: mcpResults.map((r) => ({
