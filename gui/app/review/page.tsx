@@ -492,7 +492,7 @@ function ReviewContent() {
             <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Review Actions</h2>
             <div className="flex flex-wrap gap-3">
               <button type="button" onClick={() => setModal("approve")} className="inline-flex items-center gap-1.5 rounded-md bg-sage px-5 py-2.5 text-sm font-medium text-white hover:bg-sage/90">
-                <Check className="h-4 w-4" /> Approve
+                <Check className="h-4 w-4" /> {stepId === "6a" ? "Accept Findings" : stepId === "6b" ? "Accept Brief" : "Approve"}
               </button>
               <button type="button" onClick={startEditing} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-4 py-2.5 text-sm font-medium text-charcoal/65 hover:bg-cream">
                 <Edit3 className="h-4 w-4" /> Edit
@@ -529,9 +529,13 @@ function ReviewContent() {
       {/* Modals */}
       {modal === "approve" && (
         <ConfirmModal
-          title="Approve this output?"
-          description="This marks the step as approved and continues the workflow."
-          confirmLabel="Approve"
+          title={stepId === "6a" ? "Accept these compliance findings?" : stepId === "6b" ? "Accept this brief?" : "Approve this output?"}
+          description={
+            stepId === "6a" || stepId === "6b"
+              ? `This locks Step ${stepId} as accepted but does not advance the campaign. Use "Final Approval" at the bottom of Step 6 to advance the workflow.`
+              : "This marks the step as approved and continues the workflow."
+          }
+          confirmLabel={stepId === "6a" ? "Accept Findings" : stepId === "6b" ? "Accept Brief" : "Approve"}
           confirmColor="bg-sage hover:bg-sage/90"
           onConfirm={() => handleAction("approve")}
           onCancel={() => setModal(null)}

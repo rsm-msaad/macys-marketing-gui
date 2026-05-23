@@ -310,24 +310,14 @@ export function AIBriefCard({
         </div>
         <div className="flex items-center gap-2">
           {result && !loading && !editing && (
-            <>
-              <button
-                type="button"
-                onClick={() => setEvidenceOpen(true)}
-                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-medium text-teal-700 hover:bg-teal-100 transition-colors"
-              >
-                <BookOpen className="h-3 w-3" />
-                Evidence
-              </button>
-              <button
-                type="button"
-                onClick={startEditing}
-                className="rounded p-1 text-charcoal/40 hover:bg-cream hover:text-charcoal/70"
-                title="Edit brief manually"
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={startEditing}
+              className="rounded p-1 text-charcoal/40 hover:bg-cream hover:text-charcoal/70"
+              title="Edit brief manually"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
           )}
           <AIBadge />
         </div>
@@ -470,17 +460,25 @@ export function AIBriefCard({
           {/* Sources panel */}
           <BriefSourcesPanel docs={result.retrieved_docs ?? []} />
 
-          {/* View Evidence + Review links */}
-          <div className="flex items-center gap-4 pt-2">
+          {/* Action row: Evidence (peek), Full Evidence View, Review */}
+          <div className="mt-3 flex items-center gap-3 border-t border-charcoal/5 pt-3">
+            <button
+              type="button"
+              onClick={() => setEvidenceOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100"
+            >
+              <BookOpen className="h-3 w-3" />
+              Evidence
+            </button>
             <Link
               href="/evidence?step=6b"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
+              className="text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
             >
-              Full Evidence View &rarr;
+              Full View &rarr;
             </Link>
             <Link
               href={`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`}
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-purple-600 hover:text-purple-700 hover:underline"
+              className="inline-flex items-center gap-1.5 rounded-md border border-purple-200 bg-purple-50 px-3 py-1.5 text-[11px] font-medium text-purple-700 hover:bg-purple-100"
             >
               Review
             </Link>
