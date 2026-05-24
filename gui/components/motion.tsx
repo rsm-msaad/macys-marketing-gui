@@ -126,14 +126,18 @@ export function CountUp({ end, duration = 1.5, prefix = "", suffix = "", decimal
 }) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
+  const prevEndRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
+    // Skip if end hasn't actually changed (prevents poll-triggered re-runs)
+    if (prevEndRef.current === end) return;
+    prevEndRef.current = end;
 
+    setValue(0);
     const startTime = performance.now();
+    let cancelled = false;
     const step = (now: number) => {
+      if (cancelled) return;
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / (duration * 1000), 1);
       // Ease out cubic
@@ -142,6 +146,7 @@ export function CountUp({ end, duration = 1.5, prefix = "", suffix = "", decimal
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
+    return () => { cancelled = true; };
   }, [end, duration]);
 
   const formatted = decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString();
