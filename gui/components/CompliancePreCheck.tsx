@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   BookOpen,
@@ -168,16 +168,30 @@ export function CompliancePreCheck({
   const [result, setResult] = useState<ComplianceResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const firedRef = useRef<string | null>(null);
 
   useEffect(() => {
+    const cid = context.campaign_brief.campaign_id;
+
     // If we have a non-empty cached output, use it directly — skip the API call.
     if (cachedOutput && Object.keys(cachedOutput).length > 0) {
       setResult(cachedOutput);
       setLoading(false);
       onComplianceResult?.(cachedOutput);
+      firedRef.current = cid;
       return;
     }
 
+    // Already have a local result for this campaign? Don't re-fire.
+    if (result && firedRef.current === cid) {
+      setLoading(false);
+      return;
+    }
+
+    // Already fired for this campaign (in-flight or done)? Skip.
+    if (firedRef.current === cid) return;
+
+    firedRef.current = cid;
     let cancelled = false;
     setLoading(true);
     setError(null);

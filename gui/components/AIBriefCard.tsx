@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -151,14 +151,18 @@ export function AIBriefCard({
   const [wasEdited, setWasEdited] = useState(false);
   const [aiOriginal, setAiOriginal] = useState<BriefResult | null>(null);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const firedRef = useRef<string | null>(null);
 
   useEffect(() => {
+    const cid = context.campaign_brief.campaign_id;
+
     // If we have a non-empty cached output, use it directly — skip the API call.
     if (cachedOutput && Object.keys(cachedOutput).length > 0) {
       setResult(cachedOutput);
       setAiOriginal(cachedOutput);
       setWaitingForCompliance(false);
       setLoading(false);
+      firedRef.current = cid;
       return;
     }
 
@@ -168,7 +172,17 @@ export function AIBriefCard({
       return;
     }
 
+    // Already have a local result for this campaign? Don't re-fire.
+    if (result && firedRef.current === cid) {
+      setLoading(false);
+      return;
+    }
+
+    // Already fired for this campaign? Skip.
+    if (firedRef.current === cid) return;
+
     // Compliance is done, no cache — fire the brief skill.
+    firedRef.current = cid;
     setWaitingForCompliance(false);
     let cancelled = false;
     setLoading(true);
