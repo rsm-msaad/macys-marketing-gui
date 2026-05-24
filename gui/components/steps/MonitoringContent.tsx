@@ -170,7 +170,16 @@ export function MonitoringContent({
     setError(null);
     setAnalysis(null);
     try {
-      const result = await runAnalyze(7, 14);
+      // Map campaign string ID to a numeric DB campaign_id for the performance table
+      // Mother's Day=7, Spring=5, Summer=9 (seeded in campaign_performance)
+      const campaignIdMap: Record<string, number> = {
+        "MDC-2026-MD-001": 7,
+        "MDC-2025-SP-BTY": 5,
+        "MDC-2026-SS-003": 9,
+      };
+      const briefId = context.campaign_brief.campaign_id;
+      const dbCampaignId = campaignIdMap[briefId] ?? 7;
+      const result = await runAnalyze(dbCampaignId, 14);
       setAnalysis(result.analysis);
     } catch (e) {
       setError((e as Error).message);

@@ -131,7 +131,7 @@ export default function LandingPage() {
       </div>
 
       <footer className="mt-12 space-y-2 text-center text-xs text-charcoal/50">
-        <p>4 skills, 7 automations, 12 RAG documents, live AI chat powered by TritonAI.</p>
+        <p>5 skills, 6 automations, 2 MCP tools, 12 RAG documents, powered by TritonAI.</p>
         <p>
           <Link href="/story" className="text-teal-600 hover:text-teal-700">
             Watch the Story (75 slides)

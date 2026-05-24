@@ -6,11 +6,13 @@ import { CheckCircle2, FileEdit, Mail, Play, Send, Sparkles, X } from "lucide-re
 import { runGenerateReport, runSendSummary } from "@/lib/api";
 import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
 
-const FALLBACK_SUMMARY =
-  "The Mother's Day Beauty Event generated $1.27M in revenue across 10 days, " +
-  "exceeding budget by 12 percent. Email was the strongest channel " +
-  "(56x ROAS), while display underperformed (1.1x ROAS) and we recommend " +
-  "pausing it next cycle.";
+function makeFallbackSummary(campaignName: string): string {
+  return (
+    `${campaignName} — Executive Summary (draft)\n\n` +
+    "This is a placeholder summary. Click 'Generate Report via Claude' above " +
+    "to produce an AI-written executive report from the full audit trail."
+  );
+}
 
 function buildSummaryFromUpstream(
   outputs: Record<string, unknown>,
@@ -91,7 +93,7 @@ function buildSummaryFromUpstream(
   }
 
   if (parts.length <= 2) {
-    return FALLBACK_SUMMARY;
+    return makeFallbackSummary(briefName);
   }
 
   parts.push("");

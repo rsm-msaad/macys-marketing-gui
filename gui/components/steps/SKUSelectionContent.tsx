@@ -160,8 +160,19 @@ export function SKUSelectionContent({
       else if (nameLC.includes("spring")) season = "spring";
       else if (nameLC.includes("summer")) season = "summer";
       else if (nameLC.includes("holiday")) season = "holiday";
+      else if (nameLC.includes("fall") || nameLC.includes("autumn")) season = "fall";
+      else if (nameLC.includes("winter")) season = "winter";
 
-      const result = await runSkuRecommend(category, 25, "Q2 2026", season, 18, segmentTopCategory ?? undefined);
+      // Derive discount from brief promotional_offer or budget, default 25%
+      const offerText = (brief.promotional_offer ?? []).join(" ").toLowerCase();
+      const discountMatch = offerText.match(/(\d+)\s*%/);
+      const discountPct = discountMatch ? parseInt(discountMatch[1], 10) : 25;
+
+      // Derive campaign period from brief launch window
+      const launchDate = brief.campaign_window?.soft_launch ?? brief.campaign_window?.peak ?? "";
+      const campaignPeriod = launchDate ? `${launchDate.slice(0, 4)}` : "2026";
+
+      const result = await runSkuRecommend(category, discountPct, campaignPeriod, season, 18, segmentTopCategory ?? undefined);
       setRecommended(result.recommended_skus);
       setExcluded(result.excluded_skus);
       setIncluded(new Set(result.recommended_skus.map((s) => s.sku_id)));

@@ -90,8 +90,9 @@ export function LocalizationContent({
   })();
 
   // Derive SKU IDs (numeric) for the localization generator
+  // Use actual approved SKU IDs from Step 3, converted to integers for the DB query
   const skuIdsForLocalize = approvedSkus.length > 0
-    ? approvedSkus.slice(0, 2).map((_, i) => i + 4)
+    ? approvedSkus.slice(0, 2).map((id) => parseInt(id, 10) || 4)
     : [4, 18];
 
   const [variants, setVariants] = useState<Variant[] | null>(null);

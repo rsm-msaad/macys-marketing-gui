@@ -117,7 +117,7 @@ export default function KnowledgePage() {
             <h1 className="font-serif text-2xl font-bold text-charcoal">Knowledge Base</h1>
           </div>
           <p className="mt-1 text-[13px] text-charcoal/60">
-            12 documents the AI uses to ground its decisions. Browse the same source material the team and AI share.
+            The documents the AI uses to ground its decisions. Browse the same source material the team and AI share.
           </p>
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function KnowledgePage() {
 
         <div className="text-[10px] text-charcoal/35">
           {filtered.length} of {docs.length} documents shown.
-          All documents are indexed in the HyQ FAISS vector store (381 entries) for semantic retrieval by AI skills.
+          {docs.length} documents indexed in the HyQ FAISS vector store for semantic retrieval by AI skills.
         </div>
       </div>
 

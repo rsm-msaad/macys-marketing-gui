@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Settings, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { usePersona, usePersonas } from "@/components/PersonaContext";
 
@@ -124,13 +124,6 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
         >
           Docs
         </Link>
-        <button
-          type="button"
-          title="Settings (placeholder)"
-          className="rounded-md p-2 text-charcoal/60 hover:bg-cream hover:text-charcoal"
-        >
-          <Settings className="h-5 w-5" />
-        </button>
       </div>
     </header>
   );

@@ -46,7 +46,7 @@ export function ActivationContent({
         <div className="mb-3 flex items-center gap-1.5">
           <Radio className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
-            Channel deployment schedule ({schedule.length})
+            Automation · Activation Scheduler ({schedule.length} channels)
           </span>
         </div>
         <div className="space-y-2">
