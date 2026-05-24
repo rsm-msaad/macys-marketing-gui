@@ -41,6 +41,13 @@ MAX_TOKENS = 2000
 TEMPERATURE = 0.2
 TRITONAI_BASE_URL = "https://tritonai-api.ucsd.edu/v1"
 
+# Per-skill model overrides. Skills not listed use CLAUDE_MODEL.
+# Brief generation is structured output that doesn't need claude-opus
+# quality — gemini-3-flash cuts first-run time from ~30s to ~10s.
+SKILL_MODEL_OVERRIDE: dict[str, str] = {
+    "approval-brief-generator": "gemini-3-flash",
+}
+
 
 # Per skill pre fetch configuration. Each entry:
 #   rag_queries: list of query strings. May contain {dotted.path}
@@ -329,7 +336,12 @@ def _extract_json_from_text(text: str) -> str:
     return stripped
 
 
-def _call_claude(system: str, user_payload: dict) -> str:
+def _model_for_skill(skill_name: str) -> str:
+    """Return the model to use for a skill, checking per-skill overrides."""
+    return SKILL_MODEL_OVERRIDE.get(skill_name, CLAUDE_MODEL)
+
+
+def _call_claude(system: str, user_payload: dict, skill_name: str = "") -> str:
     """Call Claude via the TritonAI proxy and return the response text.
 
     TritonAI is the UCSD course provided LLM proxy. It speaks the OpenAI
@@ -343,8 +355,9 @@ def _call_claude(system: str, user_payload: dict) -> str:
         api_key=os.environ["TRITONAI_API_KEY"],
         base_url=TRITONAI_BASE_URL,
     )
+    model = _model_for_skill(skill_name)
     response = client.chat.completions.create(
-        model=CLAUDE_MODEL,
+        model=model,
         max_tokens=MAX_TOKENS,
         temperature=TEMPERATURE,
         messages=[
@@ -530,12 +543,13 @@ def _invoke_agentic_skill(skill_name: str, state: dict) -> dict:
         api_key=os.environ.get("TRITONAI_API_KEY", ""),
         base_url=TRITONAI_BASE_URL,
     )
+    skill_model = _model_for_skill(skill_name)
 
     agentic_trace: list[dict[str, Any]] = []
 
     for iteration in range(1, AGENTIC_MAX_ITERATIONS + 1):
         response = client.chat.completions.create(
-            model=CLAUDE_MODEL,
+            model=skill_model,
             max_tokens=MAX_TOKENS,
             temperature=TEMPERATURE,
             messages=messages,
@@ -763,7 +777,7 @@ def _invoke_llm_skill(skill_name: str, state: dict) -> dict:
             "schema in the SKILL.md. No commentary, no markdown fences."
         ),
     }
-    text = _call_claude(skill_md, user_payload)
+    text = _call_claude(skill_md, user_payload, skill_name=skill_name)
     cleaned = _strip_json_fences(text)
     try:
         result = json.loads(cleaned)
