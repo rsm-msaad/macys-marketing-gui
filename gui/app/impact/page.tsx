@@ -288,28 +288,6 @@ export default function ImpactPage() {
                 </StaggerItem>
               </StaggerContainer>
 
-              {/* Per-step table */}
-              <FadeInView className="mt-6 rounded-lg border border-charcoal/10 bg-white p-5">
-                <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">Per-Step Breakdown</h3>
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-[10px] font-medium uppercase tracking-wider text-charcoal/40">
-                      <th className="pb-2 text-left">Step</th>
-                      <th className="pb-2 text-right">Baseline</th>
-                      <th className="pb-2 text-right">AI-Supported</th>
-                      <th className="pb-2 pl-3">Comparison</th>
-                      <th className="pb-2 text-right">Hours Saved</th>
-                      <th className="pb-2 text-right">$ Saved</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selected.steps.map((s, i) => (
-                      <StepBar key={s.step} step={s} maxBaseline={maxBaseline} index={i} />
-                    ))}
-                  </tbody>
-                </table>
-              </FadeInView>
-
               {/* Quality measures */}
               <FadeInView delay={0.2} className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
                 <QualityCard icon={ShieldCheck} label="Compliance Findings" value={String(selected.quality.compliance_findings)} color="teal" />
@@ -344,6 +322,33 @@ export default function ImpactPage() {
                 {portfolio.campaigns.map((c) => (
                   <CampaignComparisonBar key={c.campaign_id} campaign={c} />
                 ))}
+              </div>
+
+              {/* Per-step estimates (global, applies to all campaigns) */}
+              <div className="mt-4 rounded-lg border border-charcoal/10 bg-white p-5">
+                <h3 className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  Per-Step Savings Estimates
+                </h3>
+                <p className="mb-3 text-[11px] text-charcoal/45">
+                  Industry benchmarks from estimates.md. These apply to every campaign — the per-campaign hero numbers above sum these across whatever steps the campaign has completed.
+                </p>
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-[10px] font-medium uppercase tracking-wider text-charcoal/40">
+                      <th className="pb-2 text-left">Step</th>
+                      <th className="pb-2 text-right">Baseline</th>
+                      <th className="pb-2 text-right">AI-Supported</th>
+                      <th className="pb-2 pl-3">Comparison</th>
+                      <th className="pb-2 text-right">Hours Saved</th>
+                      <th className="pb-2 text-right">$ Saved</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(portfolio.campaigns[0]?.steps ?? []).map((s, i) => (
+                      <StepBar key={s.step} step={s} maxBaseline={maxBaseline} index={i} />
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
               {/* Extrapolation note */}
