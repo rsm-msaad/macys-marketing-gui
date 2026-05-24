@@ -166,7 +166,7 @@ export function CompliancePreCheck({
   cachedOutput?: ComplianceResult | null;
 }) {
   const [result, setResult] = useState<ComplianceResult | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!cachedOutput || Object.keys(cachedOutput).length === 0);
   const [error, setError] = useState<string | null>(null);
   const firedRef = useRef<string | null>(null);
 
