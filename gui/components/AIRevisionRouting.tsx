@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2, CheckCircle2, ArrowLeftCircle } from "lucide-react";
 
 import { callRouteRevision, type RouteRevisionResult } from "@/lib/ai_client";
@@ -55,8 +55,15 @@ export function AIRevisionRouting({
   const [error, setError] = useState<string | null>(null);
   const [overrideMode, setOverrideMode] = useState(false);
   const [overrideOwner, setOverrideOwner] = useState("");
+  const firedRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Guard: only fire once per campaign + comment combination
+    const fireKey = `${campaignId}:${revisionComment}`;
+    if (firedRef.current === fireKey) return;
+    if (result) return; // Already have a result locally
+    firedRef.current = fireKey;
+
     let cancelled = false;
     setLoading(true);
     setError(null);

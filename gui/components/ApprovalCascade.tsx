@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 
 import { callCascade, type CascadeResult } from "@/lib/ai_client";
@@ -49,8 +49,13 @@ export function ApprovalCascade({
   const [result, setResult] = useState<CascadeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stages, setStages] = useState<StageStatus[]>(["done", "running", "pending"]);
+  const firedRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Already fired for this campaign? Skip re-firing.
+    if (firedRef.current === campaignId) return;
+    firedRef.current = campaignId;
+
     let cancelled = false;
 
     callCascade({
