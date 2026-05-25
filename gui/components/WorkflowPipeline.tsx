@@ -146,20 +146,31 @@ export function WorkflowPipeline({
               initial={{ opacity: 0, y: 16, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.2 } }}
-              className={`relative flex h-36 w-48 flex-shrink-0 flex-col justify-between rounded-xl p-3.5 cursor-default backdrop-blur-md ${
+              whileHover={{ scale: 1.05, y: -6, transition: { duration: 0.2 } }}
+              className={`step-card relative flex h-36 w-48 flex-shrink-0 flex-col justify-between rounded-2xl p-3.5 cursor-default overflow-hidden ${
                 isActive
-                  ? "bg-teal-50/80 border-2 border-teal-500/40 shadow-lg shadow-teal-500/10 ring-1 ring-teal-400/20"
+                  ? "border-2 border-teal-400/50"
                   : isComplete
-                    ? "bg-white/60 border border-charcoal/8"
+                    ? "border border-white/60"
                     : farPending
-                      ? "bg-charcoal/[0.03] border border-charcoal/8 opacity-50"
-                      : "bg-white/50 border border-charcoal/10"
+                      ? "border border-charcoal/6 opacity-45"
+                      : "border border-white/40"
               } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
               style={{
+                background: isActive
+                  ? "linear-gradient(135deg, rgba(224,242,241,0.9) 0%, rgba(178,223,219,0.7) 100%)"
+                  : isComplete
+                    ? "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(245,245,245,0.7) 100%)"
+                    : farPending
+                      ? "linear-gradient(135deg, rgba(250,250,250,0.4) 0%, rgba(240,240,240,0.3) 100%)"
+                      : "linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(248,248,248,0.6) 100%)",
+                backdropFilter: "blur(20px) saturate(1.4)",
+                WebkitBackdropFilter: "blur(20px) saturate(1.4)",
                 boxShadow: isActive
-                  ? "0 8px 32px rgba(11,123,138,0.12), 0 2px 8px rgba(0,0,0,0.06)"
-                  : "0 2px 12px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.04)",
+                  ? "0 12px 40px rgba(11,123,138,0.15), 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.03)"
+                  : isComplete
+                    ? "0 6px 24px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.02)"
+                    : "0 4px 16px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -1px 0 rgba(0,0,0,0.02)",
               }}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
