@@ -505,10 +505,11 @@ export function PersonaShell({
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="fab-primary flex h-12 w-12 items-center justify-center rounded-full text-white"
+            className="fab-primary flex items-center gap-2 rounded-full px-4 py-3 text-white"
             title="Open Claude Chat"
           >
-            <MessageCircle className="h-5 w-5" />
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-xs font-semibold">Chat with Claude</span>
           </button>
         </div>
       )}
