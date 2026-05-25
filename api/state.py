@@ -57,49 +57,13 @@ def _fresh_state() -> dict[str, Any]:
 
 
 def _initial_state() -> dict[str, Any]:
-    """Demo campaign seeds at Step 6 with Steps 1-5 pre-completed so the
-    Step 6 AI cascade is immediately reachable after every deploy."""
+    """Demo campaign starts at Step 1 so the full workflow is walkable."""
     return {
-        "current_step": 6,
-        "completed_steps": [1, 2, 3, 4, 5],
-        "step_outputs": {
-            "1": {"summary": "Brief approved by Marketing Leadership."},
-            "2": {
-                "name": "VIP Loyalists",
-                "customer_count": 9590,
-                "top_category": "Beauty",
-                "top_category_lift": 0.0866,
-                "definition": "Star Rewards members with multiple purchases in the last 12 months",
-                "avg_recency_days": 45.2,
-                "avg_frequency": 8.3,
-                "avg_monetary": 487.50,
-                "recommended_segment": "VIP Loyalists",
-                "was_override": False,
-                "override_reason": None,
-            },
-            "3": {
-                "approved_skus": ["18", "40", "42"],
-                "total_recommended": 18,
-                "excluded_count": 22,
-                "segment_used": "VIP Loyalists",
-                "segment_top_category": "Beauty",
-            },
-            "4": {"approved_asset_count": 12, "category": "Beauty"},
-            "5": {"approved_layouts": ["web_banner", "email", "mobile", "in_store_signage"]},
-        },
-        "history": [
-            {
-                "step": i,
-                "step_name": STEP_NAMES.get(i, ""),
-                "action": "Approved",
-                "ts": "2026-05-18T10:00:00Z",
-                "metadata": {},
-            }
-            for i in range(1, 6)
-        ],
-        # Revision tracking: per-step list of past revision requests.
+        "current_step": 1,
+        "completed_steps": [],
+        "step_outputs": {},
+        "history": [],
         "revisions": {},
-        # When a revision is in flight, holds the metadata; None otherwise.
         "pending_revision": None,
     }
 
