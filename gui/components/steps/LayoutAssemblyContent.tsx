@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LayoutGrid, Play, RotateCcw, Sparkles } from "lucide-react";
 
 import { API_BASE, runLayoutCopy, type LayoutPlacement, type DamAsset } from "@/lib/api";
-import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 import { PlacementMockup, selectPlacementAssets } from "@/components/PlacementMockup";
 
 const PLACEMENT_META: Record<string, { label: string; dimensions: string }> = {
@@ -130,38 +130,41 @@ export function LayoutAssemblyContent({
   if (hasLockedIn && !showRerun && placements === null) {
     const layouts = existingOutput.approved_layouts as string[];
     return (
-      <div className="space-y-3">
-        <ContextStack context={context} />
-        <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
-          <div className="flex items-start gap-2">
-            <LayoutGrid className="mt-0.5 h-4 w-4 text-sage" />
-            <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
-                Layouts locked in
-              </div>
-              <div className="font-serif text-base font-semibold text-charcoal">
-                {layouts.length} placements approved
+      <StepVideoBackground stepNumber={5}>
+        <div className="space-y-3">
+          <ContextStack context={context} />
+          <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
+            <div className="flex items-start gap-2">
+              <LayoutGrid className="mt-0.5 h-4 w-4 text-sage" />
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                  Layouts locked in
+                </div>
+                <div className="font-serif text-base font-semibold text-charcoal">
+                  {layouts.length} placements approved
+                </div>
               </div>
             </div>
+            {canAct && (
+              <button
+                type="button"
+                onClick={() => setShowRerun(true)}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Regenerate layout copy
+              </button>
+            )}
           </div>
-          {canAct && (
-            <button
-              type="button"
-              onClick={() => setShowRerun(true)}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Regenerate layout copy
-            </button>
-          )}
         </div>
-      </div>
+      </StepVideoBackground>
     );
   }
 
   const showingResults = placements !== null;
 
   return (
+    <StepVideoBackground stepNumber={5}>
     <div className="space-y-3">
       <ContextStack context={context} />
 
@@ -302,5 +305,6 @@ export function LayoutAssemblyContent({
         />
       )}
     </div>
+    </StepVideoBackground>
   );
 }

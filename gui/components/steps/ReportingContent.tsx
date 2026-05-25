@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { CheckCircle2, FileEdit, Mail, Play, Send, Sparkles, X } from "lucide-react";
 
 import { runGenerateReport, runSendSummary } from "@/lib/api";
-import { ApprovalActions, ContextStack, type StepContentProps } from "./shared";
+import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
 function makeFallbackSummary(campaignName: string): string {
   return (
@@ -174,6 +174,7 @@ export function ReportingContent({
   }
 
   return (
+    <StepVideoBackground stepNumber={10}>
     <div className="space-y-3">
       <ContextStack context={context} />
 
@@ -339,5 +340,6 @@ export function ReportingContent({
         onRequestRevisions={() => onRequestRevisions(10, 10)}
       />
     </div>
+    </StepVideoBackground>
   );
 }

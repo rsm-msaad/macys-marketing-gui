@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, Globe, Play, RotateCcw } from "lucide-react";
 
 import { runLocalize, runGenerateLocaleVariants, type Variant, type LocalizeStats, type GenerateLocaleResult } from "@/lib/api";
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
 function VariantCard({
   variant,
@@ -150,32 +150,34 @@ export function LocalizationContent({
   if (hasLockedIn && !showRerun && variants === null) {
     const count = existingOutput.variant_count as number;
     return (
-      <div className="space-y-3">
-        <ContextStack context={context} />
-        <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
-          <div className="flex items-start gap-2">
-            <Globe className="mt-0.5 h-4 w-4 text-sage" />
-            <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
-                Translations locked in
-              </div>
-              <div className="font-serif text-base font-semibold text-charcoal">
-                {count} regional variants approved
+      <StepVideoBackground stepNumber={7}>
+        <div className="space-y-3">
+          <ContextStack context={context} />
+          <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
+            <div className="flex items-start gap-2">
+              <Globe className="mt-0.5 h-4 w-4 text-sage" />
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                  Translations locked in
+                </div>
+                <div className="font-serif text-base font-semibold text-charcoal">
+                  {count} regional variants approved
+                </div>
               </div>
             </div>
+            {canAct && (
+              <button
+                type="button"
+                onClick={() => setShowRerun(true)}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Re-run Localization
+              </button>
+            )}
           </div>
-          {canAct && (
-            <button
-              type="button"
-              onClick={() => setShowRerun(true)}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Re-run Localization
-            </button>
-          )}
         </div>
-      </div>
+      </StepVideoBackground>
     );
   }
 
@@ -192,6 +194,7 @@ export function LocalizationContent({
   const regionNames = Object.keys(grouped);
 
   return (
+    <StepVideoBackground stepNumber={7}>
     <div className="space-y-3">
       <ContextStack context={context} />
 
@@ -377,5 +380,6 @@ export function LocalizationContent({
         />
       )}
     </div>
+    </StepVideoBackground>
   );
 }

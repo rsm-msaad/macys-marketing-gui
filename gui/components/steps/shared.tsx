@@ -27,6 +27,45 @@ import { useState } from "react";
 import type { CampaignContext } from "@/lib/api";
 import { getStepOwnerName, getStepOwnerTitle } from "@/lib/authorities";
 
+// Step video background — renders a looping video behind step content.
+const STEP_VIDEO: Record<number, string> = {
+  1: "/step1-briefing.mp4",
+  2: "/step2-segments.mp4",
+  3: "/step3-products.mp4",
+  4: "/step4-studio.mp4",
+  5: "/step5-layout.mp4",
+  6: "/robot-army.mp4",
+  7: "/step7-globe.mp4",
+  8: "/robot-runner.mp4",
+  9: "/step9-dashboard.mp4",
+  10: "/step10-report.mp4",
+};
+
+export function StepVideoBackground({
+  stepNumber,
+  children,
+}: {
+  stepNumber: number;
+  children: React.ReactNode;
+}) {
+  const src = STEP_VIDEO[stepNumber];
+  if (!src) return <div className="space-y-3">{children}</div>;
+  return (
+    <div className="relative space-y-3 overflow-hidden">
+      <video
+        autoPlay loop muted playsInline
+        className="absolute inset-0 h-full w-full object-cover rounded-xl pointer-events-none"
+        style={{ opacity: 0.07, zIndex: 0 }}
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+      <div className="relative" style={{ zIndex: 1 }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // Common props every step content component receives.
 export type StepContentProps = {
   context: CampaignContext;

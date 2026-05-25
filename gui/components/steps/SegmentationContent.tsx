@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Clock, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
 
 import { runSegment, type Segment, type CampaignBrief } from "@/lib/api";
-import { ActionFooter, ContextStack, type StepContentProps } from "./shared";
+import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
 /**
  * Pick the segment whose top_category best matches the campaign brief.
@@ -228,51 +228,53 @@ export function SegmentationContent({
         "Selected by campaign manager.",
     );
     return (
-      <div className="space-y-3">
-        <ContextStack context={context} />
+      <StepVideoBackground stepNumber={2}>
+        <div className="space-y-3">
+          <ContextStack context={context} />
 
-        <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
-          <div className="flex items-start gap-2">
-            <Users className="mt-0.5 h-4 w-4 text-sage" />
-            <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
-                Selected segment
-              </div>
-              <div className="font-serif text-base font-semibold text-charcoal">
-                {name}
-                {count > 0 && (
-                  <span className="ml-2 text-[12px] font-normal text-charcoal/55">
-                    {count.toLocaleString()} customers
-                  </span>
+          <div className="rounded-md border border-sage/30 bg-sage/5 p-4">
+            <div className="flex items-start gap-2">
+              <Users className="mt-0.5 h-4 w-4 text-sage" />
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                  Selected segment
+                </div>
+                <div className="font-serif text-base font-semibold text-charcoal">
+                  {name}
+                  {count > 0 && (
+                    <span className="ml-2 text-[12px] font-normal text-charcoal/55">
+                      {count.toLocaleString()} customers
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
+                  {why}
+                </p>
+                {existingOutput.was_override === true && typeof existingOutput.override_reason === "string" && (
+                  <div className="mt-2 rounded border border-amber-200/50 bg-amber-50/30 px-2.5 py-1.5">
+                    <div className="text-[9px] font-semibold uppercase tracking-wider text-amber-600">
+                      Override reason (recommended: {String(existingOutput.recommended_segment)})
+                    </div>
+                    <div className="mt-0.5 text-[11px] italic text-charcoal/65">
+                      &ldquo;{String(existingOutput.override_reason)}&rdquo;
+                    </div>
+                  </div>
                 )}
               </div>
-              <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
-                {why}
-              </p>
-              {existingOutput.was_override === true && typeof existingOutput.override_reason === "string" && (
-                <div className="mt-2 rounded border border-amber-200/50 bg-amber-50/30 px-2.5 py-1.5">
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-amber-600">
-                    Override reason (recommended: {String(existingOutput.recommended_segment)})
-                  </div>
-                  <div className="mt-0.5 text-[11px] italic text-charcoal/65">
-                    &ldquo;{String(existingOutput.override_reason)}&rdquo;
-                  </div>
-                </div>
-              )}
             </div>
+            {canAct && (
+              <button
+                type="button"
+                onClick={() => setShowRerun(true)}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Re-run segmentation
+              </button>
+            )}
           </div>
-          {canAct && (
-            <button
-              type="button"
-              onClick={() => setShowRerun(true)}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Re-run segmentation
-            </button>
-          )}
         </div>
-      </div>
+      </StepVideoBackground>
     );
   }
 
@@ -280,6 +282,7 @@ export function SegmentationContent({
   const selectedSegment = segments && selectedIdx !== null ? segments[selectedIdx] : null;
 
   return (
+    <StepVideoBackground stepNumber={2}>
     <div className="space-y-3">
       <ContextStack context={context} />
 
@@ -415,5 +418,6 @@ export function SegmentationContent({
       })()}
 
     </div>
+    </StepVideoBackground>
   );
 }
