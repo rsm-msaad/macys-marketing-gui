@@ -642,7 +642,7 @@ function StepOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 animate-backdrop-in"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-[3vh] p-4 animate-backdrop-in"
       style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
@@ -673,7 +673,7 @@ function StepOverlay({
       </motion.div>
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-3 w-full max-w-[900px]" style={{ maxHeight: "calc(90vh - 60px)" }}>
+      <div className="flex gap-3 w-full max-w-[1200px]" style={{ maxHeight: "calc(93vh - 60px)" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
@@ -791,7 +791,66 @@ function StepOverlay({
             />
           </div>
         </motion.div>
+
+        {/* FAR RIGHT — Step type info card */}
+        <motion.div
+          initial={{ opacity: 0, x: 20, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: 10, scale: 0.95 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="w-[180px] flex-shrink-0 overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-3"
+        >
+          <StepTypeCard stepNumber={state.current_step} label={steps.find(s => s.number === state.current_step)?.label ?? "HUMAN_ONLY"} />
+        </motion.div>
       </div>
+    </div>
+  );
+}
+
+const STEP_TYPE_INFO: Record<string, { icon: string; title: string; color: string; desc: string }> = {
+  HUMAN_ONLY: { icon: "👤", title: "Human Task", color: "#8C2727", desc: "This step is performed entirely by a human. No AI, automation, or tools are involved." },
+  HUMAN_PLUS_AI: { icon: "🤖", title: "Human + AI Skill", color: "#3F5A1F", desc: "A human initiates and reviews, but an LLM skill provides AI-generated analysis or content." },
+  HUMAN_PLUS_AUTOMATION: { icon: "⚙️", title: "Human + Automation", color: "#57534E", desc: "A human reviews results from a deterministic automation — rule-based code, no LLM needed." },
+  HUMAN_PLUS_SKILL: { icon: "🧠", title: "Human + AI Skill", color: "#0B7B8A", desc: "An AI skill uses LLM judgment (Claude) because the task requires reasoning, not just rules." },
+  FULLY_AUTOMATED: { icon: "🏭", title: "Fully Automated", color: "#444444", desc: "Runs without human involvement. Deterministic code handles the entire step." },
+};
+
+const STEP_TOOLS: Record<number, string[]> = {
+  2: ["Segmentation Engine (automation)"],
+  3: ["SKU Recommender (automation)", "macys.db catalog"],
+  4: ["find_dam_assets (Python helper)"],
+  5: ["Layout + Copy Generator (LLM skill)"],
+  6: ["Compliance Pre-Check (agentic LLM)", "check_pricing_conflicts (MCP tool)", "Approval Brief Generator (agentic LLM)"],
+  7: ["generate_locale_variants (Python helper)"],
+  8: ["Activation Scheduler (automation)"],
+  9: ["Analytics Engine (automation)"],
+  10: ["Campaign Summary (LLM skill)", "send_campaign_summary (MCP tool)"],
+};
+
+function StepTypeCard({ stepNumber, label }: { stepNumber: number; label: string }) {
+  const info = STEP_TYPE_INFO[label] ?? STEP_TYPE_INFO.HUMAN_ONLY;
+  const tools = STEP_TOOLS[stepNumber] ?? [];
+  return (
+    <div>
+      <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Step Type</div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">{info.icon}</span>
+        <span className="text-[11px] font-bold" style={{ color: info.color }}>{info.title}</span>
+      </div>
+      <p className="text-[9px] leading-relaxed text-charcoal/50 mb-3">{info.desc}</p>
+      {tools.length > 0 && (
+        <>
+          <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-1.5">Tools Used</div>
+          <div className="space-y-1">
+            {tools.map((t) => (
+              <div key={t} className="flex items-start gap-1.5">
+                <span className="mt-0.5 h-1 w-1 rounded-full bg-teal-500 flex-shrink-0" />
+                <span className="text-[9px] text-charcoal/55 leading-tight">{t}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
