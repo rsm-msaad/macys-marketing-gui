@@ -181,14 +181,15 @@ export function WorkflowPipeline({
               {/* Owner avatar */}
               {ownerMeta && (
                 <div
-                  className="absolute -bottom-1.5 -right-1.5 h-7 w-7 overflow-hidden rounded-full border-2 border-white shadow-md"
+                  className={`absolute -bottom-1.5 h-7 w-7 rounded-full border-2 border-white shadow-md ${isCeo && isActive ? "right-5" : "-right-1.5"}`}
                   title={`${ownerMeta.name} (${ownerMeta.title})`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ownerMeta.avatar}
                     alt={ownerMeta.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full rounded-full object-cover"
+                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600", "flex", "items-center", "justify-center", "text-[10px]", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = ownerMeta.name.charAt(0); }}
                   />
                 </div>
               )}
@@ -196,14 +197,15 @@ export function WorkflowPipeline({
               {/* CEO overlay avatar on the active step */}
               {isCeo && isActive && (
                 <div
-                  className="absolute -bottom-1.5 right-5 h-7 w-7 overflow-hidden rounded-full border-2 border-purple-400 shadow-md"
+                  className="absolute -bottom-1.5 -right-1.5 h-7 w-7 rounded-full border-2 border-purple-400 shadow-md"
                   title={`${PERSONA_ROLE[personaId]?.name ?? "Co-CEO"} reviewing`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={PERSONA_ROLE[personaId]?.avatar ?? "/avatars/vincent.png"}
                     alt={PERSONA_ROLE[personaId]?.name ?? "Co-CEO"}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full rounded-full object-cover"
+                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-purple-600", "flex", "items-center", "justify-center", "text-[10px]", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = (PERSONA_ROLE[personaId]?.name ?? "C").charAt(0); }}
                   />
                 </div>
               )}

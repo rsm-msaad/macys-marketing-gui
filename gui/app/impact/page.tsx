@@ -230,17 +230,27 @@ export default function ImpactPage() {
 
   return (
     <PageTransition className="min-h-screen bg-cream/30">
-      {/* Header */}
-      <div className="border-b border-charcoal/10 bg-white px-6 py-4">
-        <div className="mx-auto max-w-6xl">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
-            <ArrowLeft className="h-3 w-3" /> Back to campaigns
-          </Link>
-          <h1 className="font-serif text-2xl font-bold text-charcoal">Impact Analysis</h1>
-          <p className="mt-1 text-[13px] text-charcoal/60">
-            Time, cost, and quality impact of AI-supported campaign operations vs manual baseline.
-            Numbers computed live from campaign state. Baseline: $75/hr fully loaded, 30-40 business days per campaign.
-          </p>
+      {/* Hero banner with coins video */}
+      <div className="relative overflow-hidden border-b border-charcoal/10">
+        <video
+          autoPlay loop muted playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0.2 }}
+        >
+          <source src="/coin-float.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/80" />
+        <div className="relative px-6 py-6">
+          <div className="mx-auto max-w-6xl">
+            <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
+              <ArrowLeft className="h-3 w-3" /> Back to campaigns
+            </Link>
+            <h1 className="font-serif text-2xl font-bold text-charcoal">Impact Analysis</h1>
+            <p className="mt-1 text-[13px] text-charcoal/60">
+              Time, cost, and quality impact of AI-supported campaign operations vs manual baseline.
+              Numbers computed live from campaign state. Baseline: $75/hr fully loaded, 30-40 business days per campaign.
+            </p>
+          </div>
         </div>
       </div>
 
