@@ -350,18 +350,19 @@ export function AIBriefCard({
         </div>
       )}
 
-      {/* Actively running — compliance done, brief firing */}
+      {/* Actively running — miniature robot working */}
       {loading && !waitingForCompliance && (
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs text-charcoal/55">
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
-            Drafting approval brief from compliance findings...
+        <div className="relative overflow-hidden rounded-xl">
+          <video autoPlay loop muted playsInline className="h-44 w-full object-cover rounded-xl">
+            <source src="/Miniature_robot.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-xl" />
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="flex items-center gap-2 text-white text-xs font-medium">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Drafting approval brief from compliance findings...
+            </div>
           </div>
-          <SkeletonField />
-          <SkeletonField />
-          <SkeletonField />
-          <SkeletonField />
-          <SkeletonField />
         </div>
       )}
 
