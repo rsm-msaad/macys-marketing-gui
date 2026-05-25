@@ -48,11 +48,8 @@ export function WorkflowPipeline({
 }: {
   personaId: string;
   steps?: WorkflowStep[];
-  // step number -> revision count (only steps with > 0 revisions are interesting)
   revisionCounts?: Record<string, number>;
 }) {
-  // If a parent passes steps in, use them. Otherwise self-fetch (legacy path,
-  // kept so the component stays drop-in friendly).
   const [fetched, setFetched] = useState<WorkflowStep[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,26 +74,23 @@ export function WorkflowPipeline({
     return <p className="text-sm text-soft_red">Failed to load workflow: {error}</p>;
   }
 
-  // The "current" step is whatever has status = active. Steps two or more
-  // beyond the current step render with a subtle lock icon to make the
-  // sequential dependency obvious.
   const activeNumber = steps?.find((s) => s.status === "active")?.number;
-
   const role = PERSONA_ROLE[personaId];
+  const isCeo = personaId === "ceo" || personaId === "thales";
 
   return (
-    <section className="pipeline-container p-5">
+    <section className="glass-card p-5">
       <header className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-lg font-semibold text-white">Campaign Workflow</h2>
+          <h2 className="font-serif text-lg font-semibold text-charcoal">Campaign Workflow</h2>
           {role && (
-            <div className="mt-0.5 text-[11px] text-white/60">
-              Viewing as <span className="font-medium text-white/80">{role.name}</span> ({role.title})
+            <div className="mt-0.5 text-[11px] text-charcoal/50">
+              Viewing as <span className="font-medium text-charcoal/70">{role.name}</span> ({role.title})
             </div>
           )}
         </div>
         {steps && (
-          <span className="text-xs text-white/50">
+          <span className="text-xs text-charcoal/50">
             {steps.filter((s) => s.status === "complete").length} of {steps.length} complete
           </span>
         )}
@@ -104,7 +98,7 @@ export function WorkflowPipeline({
 
       {/* Animated progress bar */}
       {steps && (
-        <div className="mb-4 progress-energy">
+        <div className="mb-4 progress-energy-light">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(steps.filter((s) => s.status === "complete").length / steps.length) * 100}%` }}
@@ -118,7 +112,7 @@ export function WorkflowPipeline({
         {(steps ?? Array.from({ length: 10 })).map((step, i) => {
           if (!step) {
             return (
-              <div key={i} className="h-28 rounded-xl border border-dashed border-white/10" />
+              <div key={i} className="h-32 rounded-xl border border-dashed border-charcoal/10" />
             );
           }
           const styleSet = LABEL_STYLE[step.label];
@@ -128,6 +122,8 @@ export function WorkflowPipeline({
             step.status === "pending" &&
             activeNumber !== undefined &&
             step.number > activeNumber + 1;
+          const ownerMeta = PERSONA_ROLE[step.owner_persona_id];
+
           return (
             <motion.div
               key={step.number}
@@ -135,30 +131,30 @@ export function WorkflowPipeline({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
-              className={`step-card relative flex h-28 flex-col justify-between p-3 cursor-default ${
+              className={`step-card-light relative flex h-32 flex-col justify-between p-3 cursor-default ${
                 isActive
-                  ? "step-card-active"
+                  ? "step-card-light-active"
                   : isComplete
-                    ? "step-card-complete"
+                    ? "step-card-light-complete"
                     : farPending
-                      ? "step-card-locked"
+                      ? "step-card-light-locked"
                       : ""
-              } ${step.my_step && !isActive ? "ring-1 ring-teal-400/30" : ""}`}
+              } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
               <div className="flex items-start justify-between">
-                <span className={`font-serif text-xl font-bold ${isActive ? "text-teal-300" : isComplete ? "text-teal-400/50" : "text-white/20"}`}>
+                <span className={`font-serif text-xl font-bold ${isActive ? "text-teal-600" : isComplete ? "text-teal-600/40" : "text-charcoal/15"}`}>
                   {step.number}
                 </span>
                 {farPending ? (
-                  <Lock className="h-3.5 w-3.5 text-white/25" />
+                  <Lock className="h-3.5 w-3.5 text-charcoal/20" />
                 ) : (
                   <StatusDot status={step.status} />
                 )}
               </div>
               <div>
-                <div className="text-[12px] font-bold text-white leading-tight">{step.name}</div>
-                <div className="mt-0.5 text-[10px] text-white/50">{step.owner}</div>
+                <div className="text-[12px] font-bold text-charcoal leading-tight">{step.name}</div>
+                <div className="mt-0.5 text-[10px] text-charcoal/50">{step.owner}</div>
               </div>
               <div className="flex items-center justify-between gap-1">
                 <span
@@ -168,19 +164,49 @@ export function WorkflowPipeline({
                   {styleSet.label}
                 </span>
                 {isActive && (
-                  <span className="rounded-full bg-teal-400 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-charcoal animate-soft-pulse">
+                  <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white animate-soft-pulse">
                     ACTIVE
                   </span>
                 )}
                 {!isActive && (revisionCounts?.[String(step.number)] ?? 0) > 0 && (
                   <span
-                    className="rounded-full bg-mustard/30 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-mustard"
+                    className="rounded-full bg-mustard/20 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-mustard"
                     title="Number of revision requests on this step"
                   >
                     {revisionCounts![String(step.number)]} rev
                   </span>
                 )}
               </div>
+
+              {/* Owner avatar */}
+              {ownerMeta && (
+                <div
+                  className="absolute -bottom-1.5 -right-1.5 h-7 w-7 overflow-hidden rounded-full border-2 border-white shadow-md"
+                  title={`${ownerMeta.name} (${ownerMeta.title})`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={ownerMeta.avatar}
+                    alt={ownerMeta.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
+
+              {/* CEO overlay avatar on the active step */}
+              {isCeo && isActive && (
+                <div
+                  className="absolute -bottom-1.5 right-5 h-7 w-7 overflow-hidden rounded-full border-2 border-purple-400 shadow-md"
+                  title={`${PERSONA_ROLE[personaId]?.name ?? "Co-CEO"} reviewing`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={PERSONA_ROLE[personaId]?.avatar ?? "/avatars/vincent.png"}
+                    alt={PERSONA_ROLE[personaId]?.name ?? "Co-CEO"}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
             </motion.div>
           );
         })}
