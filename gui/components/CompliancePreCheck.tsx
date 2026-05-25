@@ -415,7 +415,7 @@ export function CompliancePreCheck({
           style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setFloatingUrl(null); }}
         >
-          <div className="relative w-full max-w-4xl h-[85vh] rounded-2xl overflow-hidden shadow-2xl border border-white/50 bg-white">
+          <div className="relative w-full max-w-[95vw] h-[92vh] rounded-2xl overflow-hidden shadow-2xl border border-white/50 bg-white">
             <button
               type="button"
               onClick={() => setFloatingUrl(null)}

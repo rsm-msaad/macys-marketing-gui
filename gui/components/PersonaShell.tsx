@@ -673,7 +673,7 @@ function StepOverlay({
       </motion.div>
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-3 w-full max-w-[1200px]" style={{ maxHeight: "calc(93vh - 60px)" }}>
+      <div className="flex gap-3 w-full max-w-[1400px]" style={{ maxHeight: "calc(93vh - 60px)" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
