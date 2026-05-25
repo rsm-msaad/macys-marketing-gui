@@ -85,18 +85,18 @@ export function WorkflowPipeline({
   const role = PERSONA_ROLE[personaId];
 
   return (
-    <section className="glass-card p-5">
-      <header className="mb-4 flex items-center justify-between">
+    <section className="pipeline-container p-5">
+      <header className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-lg font-semibold text-charcoal">Campaign Workflow</h2>
+          <h2 className="font-serif text-lg font-semibold text-white">Campaign Workflow</h2>
           {role && (
-            <div className="mt-0.5 text-[11px] text-charcoal/50">
-              Viewing as <span className="font-medium text-charcoal/70">{role.name}</span> ({role.title})
+            <div className="mt-0.5 text-[11px] text-white/60">
+              Viewing as <span className="font-medium text-white/80">{role.name}</span> ({role.title})
             </div>
           )}
         </div>
         {steps && (
-          <span className="text-xs text-charcoal/50">
+          <span className="text-xs text-white/50">
             {steps.filter((s) => s.status === "complete").length} of {steps.length} complete
           </span>
         )}
@@ -114,11 +114,11 @@ export function WorkflowPipeline({
         </div>
       )}
 
-      <div className="flex gap-3 overflow-x-auto pb-2 pipeline-track">
+      <div className="grid grid-cols-5 gap-2.5">
         {(steps ?? Array.from({ length: 10 })).map((step, i) => {
           if (!step) {
             return (
-              <div key={i} className="h-32 w-44 flex-shrink-0 rounded-md border border-dashed border-charcoal/15" />
+              <div key={i} className="h-28 rounded-xl border border-dashed border-white/10" />
             );
           }
           const styleSet = LABEL_STYLE[step.label];
@@ -128,97 +128,59 @@ export function WorkflowPipeline({
             step.status === "pending" &&
             activeNumber !== undefined &&
             step.number > activeNumber + 1;
-          const ownerMeta = PERSONA_ROLE[step.owner_persona_id];
           return (
             <motion.div
               key={step.number}
               initial={{ opacity: 0, y: 16, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ scale: 1.05, y: -6, transition: { duration: 0.25 } }}
-              className={`step-card ${isActive ? "step-card-active" : isComplete ? "step-card-complete" : farPending ? "step-card-locked" : ""} relative flex h-36 w-48 flex-shrink-0 flex-col justify-between p-3.5 cursor-default ${
+              whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
+              className={`step-card relative flex h-28 flex-col justify-between p-3 cursor-default ${
                 isActive
-                  ? "border-2 border-teal-500/50"
+                  ? "step-card-active"
                   : isComplete
-                    ? "border border-sage/20"
+                    ? "step-card-complete"
                     : farPending
-                      ? "border border-charcoal/5"
-                      : "border border-charcoal/8"
-              } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
-              style={{
-                background: isActive
-                  ? "linear-gradient(145deg, rgba(200,240,236,1) 0%, rgba(175,228,222,0.95) 50%, rgba(195,236,232,0.98) 100%)"
-                  : isComplete
-                    ? "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(245,250,245,0.9) 100%)"
-                  : farPending
-                    ? "linear-gradient(145deg, rgba(248,248,248,0.6) 0%, rgba(244,244,244,0.45) 100%)"
-                    : "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.88) 100%)",
-              }}
+                      ? "step-card-locked"
+                      : ""
+              } ${step.my_step && !isActive ? "ring-1 ring-teal-400/30" : ""}`}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
               <div className="flex items-start justify-between">
-                <span className={`font-serif text-2xl font-bold ${isActive ? "text-teal-600" : isComplete ? "text-teal-600/40" : "text-charcoal/20"}`}>
+                <span className={`font-serif text-xl font-bold ${isActive ? "text-teal-300" : isComplete ? "text-teal-400/50" : "text-white/20"}`}>
                   {step.number}
                 </span>
                 {farPending ? (
-                  <Lock className="h-4 w-4 text-charcoal/30" />
+                  <Lock className="h-3.5 w-3.5 text-white/25" />
                 ) : (
                   <StatusDot status={step.status} />
                 )}
               </div>
               <div>
-                <div className="text-sm font-semibold text-charcoal leading-tight">{step.name}</div>
-                <div className="mt-1 text-xs text-charcoal/55">{step.owner}</div>
+                <div className="text-[12px] font-bold text-white leading-tight">{step.name}</div>
+                <div className="mt-0.5 text-[10px] text-white/50">{step.owner}</div>
               </div>
               <div className="flex items-center justify-between gap-1">
                 <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide"
+                  className="rounded-full px-1.5 py-0.5 text-[8px] font-bold tracking-wide"
                   style={{ backgroundColor: styleSet.bg, color: styleSet.text }}
                 >
                   {styleSet.label}
                 </span>
                 {isActive && (
-                  <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-white animate-soft-pulse">
+                  <span className="rounded-full bg-teal-400 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-charcoal animate-soft-pulse">
                     ACTIVE
                   </span>
                 )}
                 {!isActive && (revisionCounts?.[String(step.number)] ?? 0) > 0 && (
                   <span
-                    className="rounded-full bg-mustard/20 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-mustard"
+                    className="rounded-full bg-mustard/30 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-mustard"
                     title="Number of revision requests on this step"
                   >
                     {revisionCounts![String(step.number)]} rev
                   </span>
                 )}
               </div>
-              {/* Floating owner avatar */}
-              {ownerMeta && (
-                <div
-                  className={`absolute -bottom-2 h-7 w-7 overflow-hidden rounded-full border-2 border-white shadow-sm ${(personaId === "ceo" || personaId === "thales") && isActive ? "-right-5" : "-right-2"}`}
-                  title={`${ownerMeta.name} (${ownerMeta.title})`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={ownerMeta.avatar}
-                    alt={ownerMeta.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              )}
-              {/* CEO floating avatar (only on the active step) */}
-              {(personaId === "ceo" || personaId === "thales") && isActive && (
-                <div
-                  className="absolute -bottom-2 -right-1 h-7 w-7 overflow-hidden rounded-full border-2 border-purple-400 shadow-sm"
-                  title={`${PERSONA_ROLE[personaId]?.name ?? "Co-CEO"} (Co-CEO)`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={PERSONA_ROLE[personaId]?.avatar ?? "/avatars/vincent.png"}
-                    alt={PERSONA_ROLE[personaId]?.name ?? "Co-CEO"}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              )}
             </motion.div>
           );
         })}
