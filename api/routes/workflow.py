@@ -96,6 +96,7 @@ VALID_PERSONAS = {
     "production-artist",
     "marketing-analyst",
     "ceo",
+    "thales",
 }
 
 
