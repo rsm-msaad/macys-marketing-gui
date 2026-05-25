@@ -673,7 +673,7 @@ function StepOverlay({
       </motion.div>
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-3 w-full max-w-[1400px]" style={{ maxHeight: "calc(93vh - 60px)" }}>
+      <div className="flex gap-3 w-full" style={{ maxHeight: "calc(95vh - 50px)", maxWidth: "96vw" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
@@ -762,12 +762,12 @@ function StepOverlay({
               key={state.current_step}
               autoPlay loop muted playsInline
               className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.3, zIndex: 0 }}
+              style={{ opacity: 0.45, zIndex: 0 }}
             >
               <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
             </video>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/40 to-white/50" style={{ zIndex: 1 }} />
+          <div className="absolute inset-0 bg-white/10" style={{ zIndex: 1 }} />
           {/* Close button */}
           <button
             type="button"
@@ -784,7 +784,7 @@ function StepOverlay({
             </div>
           </div>
           {/* Scrollable content */}
-          <div className="relative flex-1 overflow-y-auto px-5 pb-5" style={{ zIndex: 2, maxHeight: "calc(100% - 60px)" }}>
+          <div className="relative flex-1 overflow-y-auto px-5 pb-5 step-content-glass" style={{ zIndex: 2, maxHeight: "calc(100% - 60px)" }}>
             <ActionPanel
               personaId={personaId}
               campaignId={campaignId}
