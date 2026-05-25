@@ -406,8 +406,8 @@ export function PersonaShell({
           </nav>
         </motion.aside>
 
-        {/* Main area — split layout */}
-        <main className="flex-1 flex overflow-hidden relative">
+        {/* Center — simple page with header + pipeline */}
+        <main className="flex-1 overflow-y-auto px-6 py-6 relative">
           {/* Ambient floating orbs */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="ambient-orb ambient-orb-teal" style={{ width: 400, height: 400, top: '-10%', left: '15%' }} />
@@ -415,131 +415,64 @@ export function PersonaShell({
             <div className="ambient-orb ambient-orb-gold" style={{ width: 280, height: 280, top: '40%', left: '60%' }} />
           </div>
 
-          {/* LEFT: Pipeline + header (always visible) */}
-          <div className="relative w-[55%] flex-shrink-0 overflow-y-auto px-5 py-5">
-            <motion.header
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mb-4 flex items-start justify-between gap-4">
-              <div>
-                <h1 className="font-serif text-xl font-semibold text-charcoal tracking-wide">
-                  {context && !isActiveCampaign ? context.campaign_brief.name : headline}
-                </h1>
-                <p className="mt-1 text-sm text-charcoal/65">
-                  {context && !isActiveCampaign
-                    ? context.campaign_brief.objective
-                    : subhead}
-                </p>
-              </div>
-              {isActiveCampaign && (
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  disabled={resetting}
-                  className="btn-reset-glass inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:text-soft_red disabled:opacity-50"
-                  title="Reset the demo campaign back to step 1"
-                >
-                  <RotateCcw className="h-3 w-3" />
-                  {resetting ? "Resetting..." : "Reset Demo"}
-                </button>
-              )}
-            </motion.header>
-
-            {pollError && (
-              <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
-                Sync issue: {pollError}
-              </div>
+          <motion.header
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="relative mb-5 flex items-start justify-between gap-4">
+            <div>
+              <h1 className="font-serif text-2xl font-semibold text-charcoal tracking-wide">
+                {context && !isActiveCampaign ? context.campaign_brief.name : headline}
+              </h1>
+              <p className="mt-1 text-sm text-charcoal/65">
+                {context && !isActiveCampaign
+                  ? context.campaign_brief.objective
+                  : subhead}
+              </p>
+            </div>
+            {isActiveCampaign && (
+              <button
+                type="button"
+                onClick={handleReset}
+                disabled={resetting}
+                className="btn-reset-glass inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:text-soft_red disabled:opacity-50"
+                title="Reset the demo campaign back to step 1"
+              >
+                <RotateCcw className="h-3 w-3" />
+                {resetting ? "Resetting..." : "Reset Demo"}
+              </button>
             )}
+          </motion.header>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <WorkflowPipeline
-                personaId={personaId}
-                steps={steps ?? undefined}
-                revisionCounts={revisionCounts}
-                onStepClick={() => setStepPanelOpen(true)}
-              />
-            </motion.div>
+          {pollError && (
+            <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
+              Sync issue: {pollError}
+            </div>
+          )}
 
-            {centerExtras}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mb-4"
+          >
+            <WorkflowPipeline
+              personaId={personaId}
+              steps={steps ?? undefined}
+              revisionCounts={revisionCounts}
+              onStepClick={() => setStepPanelOpen(true)}
+            />
+          </motion.div>
 
-            <section className="mt-4">
-              <AICoworkerPanel
-                skills={skills}
-                campaignId={campaignId}
-                currentStep={state?.is_complete ? null : state?.current_step ?? null}
-              />
-            </section>
-          </div>
+          {centerExtras}
 
-          {/* RIGHT: Step detail card (always visible) */}
-          <div className="relative w-[45%] overflow-y-auto py-5 pr-5">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="h-full flex flex-col"
-            >
-              {state && !state.is_complete && state.current_step <= 10 && (
-                <div className="flex flex-col h-full overflow-hidden rounded-2xl shadow-xl border border-white/50">
-                  {/* Video header */}
-                  {STEP_VIDEO[state.current_step] && (
-                    <div className="relative h-36 flex-shrink-0">
-                      <video
-                        key={state.current_step}
-                        autoPlay loop muted playsInline
-                        className="absolute inset-0 h-full w-full object-cover"
-                      >
-                        <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-                      </video>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
-                      <div className="absolute bottom-3 left-4 z-10">
-                        <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-                          Step {state.current_step}
-                        </div>
-                        <div className="text-lg font-serif font-semibold text-white">
-                          {steps?.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {/* Scrollable content */}
-                  <div className="flex-1 overflow-y-auto bg-white/90 backdrop-blur-sm p-5">
-                    <ActionPanel
-                      personaId={personaId}
-                      campaignId={campaignId}
-                      state={state}
-                      steps={steps ?? []}
-                      context={context}
-                      onLaunchSkill={launchSkillFromActionPanel}
-                      onRequestRevisions={handleOpenRevisionModal}
-                      onAdvanced={refresh}
-                      onInterceptApproval={handleInterceptApproval}
-                    />
-                  </div>
-                </div>
-              )}
-              {state?.is_complete && (
-                <div className="flex-1 overflow-y-auto rounded-2xl shadow-xl border border-white/50 bg-white/90 backdrop-blur-sm p-5">
-                  <ActionPanel
-                    personaId={personaId}
-                    campaignId={campaignId}
-                    state={state}
-                    steps={steps ?? []}
-                    context={context}
-                    onLaunchSkill={launchSkillFromActionPanel}
-                    onRequestRevisions={handleOpenRevisionModal}
-                    onAdvanced={refresh}
-                    onInterceptApproval={handleInterceptApproval}
-                  />
-                </div>
-              )}
-            </motion.div>
-          </div>
+          <section className="mt-5">
+            <AICoworkerPanel
+              skills={skills}
+              campaignId={campaignId}
+              currentStep={state?.is_complete ? null : state?.current_step ?? null}
+            />
+          </section>
         </main>
 
       </div>
@@ -587,6 +520,84 @@ export function PersonaShell({
           </div>
         </div>
       )}
+
+      {/* Dual floating card overlay — pipeline left + step detail right */}
+      <AnimatePresence>
+        {stepPanelOpen && state && !state.is_complete && state.current_step <= 10 && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center gap-4 p-6 animate-backdrop-in"
+            style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
+            onClick={(e) => { if (e.target === e.currentTarget) setStepPanelOpen(false); }}
+          >
+            {/* LEFT — Pipeline card */}
+            <motion.div
+              initial={{ opacity: 0, x: -30, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -20, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="w-[520px] max-h-[85vh] overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-5"
+            >
+              <WorkflowPipeline
+                personaId={personaId}
+                steps={steps ?? undefined}
+                revisionCounts={revisionCounts}
+              />
+            </motion.div>
+
+            {/* RIGHT — Step detail card */}
+            <motion.div
+              initial={{ opacity: 0, x: 30, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.95 }}
+              transition={{ duration: 0.3, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="w-[540px] max-h-[85vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
+            >
+              {/* Video header */}
+              {STEP_VIDEO[state.current_step] && (
+                <div className="relative h-40 flex-shrink-0">
+                  <video
+                    key={state.current_step}
+                    autoPlay loop muted playsInline
+                    className="absolute inset-0 h-full w-full object-cover"
+                  >
+                    <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
+                  <button
+                    type="button"
+                    onClick={() => setStepPanelOpen(false)}
+                    className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <div className="absolute bottom-3 left-5 z-10">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+                      Step {state.current_step}
+                    </div>
+                    <div className="text-xl font-serif font-semibold text-white">
+                      {steps?.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* Scrollable step content */}
+              <div className="flex-1 overflow-y-auto bg-white/95 backdrop-blur-sm p-5">
+                <ActionPanel
+                  personaId={personaId}
+                  campaignId={campaignId}
+                  state={state}
+                  steps={steps ?? []}
+                  context={context}
+                  onLaunchSkill={launchSkillFromActionPanel}
+                  onRequestRevisions={handleOpenRevisionModal}
+                  onAdvanced={refresh}
+                  onInterceptApproval={handleInterceptApproval}
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <ResultsModal
         state={modal}
