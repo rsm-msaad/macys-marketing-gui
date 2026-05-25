@@ -96,7 +96,7 @@ export default function LandingPage() {
       <div className="relative z-10 flex h-full flex-col px-4 sm:px-8">
 
         {/* ━━━ TOP: Title + Stats ━━━ */}
-        <div className="flex flex-col items-center pt-[4vh] sm:pt-[5vh]">
+        <div className="flex flex-col items-center pt-[2.5vh] sm:pt-[3vh]">
 
           {/* Title */}
           <motion.h1
@@ -124,7 +124,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.6 }}
-            className="mt-4 sm:mt-5 flex flex-wrap justify-center gap-4 sm:gap-7"
+            className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-4 sm:gap-7"
           >
             {STATS.map((s) => (
               <div key={s.label} className="text-center min-w-[48px]">
@@ -147,7 +147,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="flex items-center gap-5 sm:gap-8 mb-5 sm:mb-7"
+                className="flex items-center gap-5 sm:gap-8 mb-3 sm:mb-5"
               >
                 {ceos.map((c) => (
                   <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
@@ -178,7 +178,7 @@ export default function LandingPage() {
                 className="w-full max-w-4xl"
               >
                 {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "clamp(240px, 38vh, 380px)" }}>
+                <div className="relative flex items-center justify-center" style={{ height: "clamp(260px, 44vh, 420px)" }}>
 
                   {/* ── Left persona ── */}
                   <AnimatePresence mode="popLayout">
@@ -223,16 +223,16 @@ export default function LandingPage() {
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
                           </div>
-                          <h2 className="mt-3 sm:mt-4 font-serif text-2xl sm:text-4xl font-semibold text-white tracking-wide">
+                          <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-white tracking-wide">
                             {cur.name}
                           </h2>
                           <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/40 font-medium">
                             {cur.title}
                           </p>
-                          <p className="mt-2 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-white/30">
+                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-white/30">
                             {cur.tagline}
                           </p>
-                          <span className="mt-3 sm:mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2 text-[11px] sm:text-xs font-medium text-white/60 transition-all duration-300 group-hover:border-white/40 group-hover:bg-white/5 group-hover:text-white/90">
+                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2 text-[11px] sm:text-xs font-medium text-white/60 transition-all duration-300 group-hover:border-white/40 group-hover:bg-white/5 group-hover:text-white/90">
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -310,7 +310,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: entered ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="pb-4 sm:pb-5 flex flex-col items-center gap-2"
+          className="pb-3 sm:pb-4 flex flex-col items-center gap-1.5"
         >
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {NAV.map((l) => (
