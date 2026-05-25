@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Check, Circle, Lock } from "lucide-react";
 
 import { fetchWorkflow, type WorkflowStep } from "@/lib/api";
@@ -84,7 +85,7 @@ export function WorkflowPipeline({
   const role = PERSONA_ROLE[personaId];
 
   return (
-    <section className="rounded-lg border border-charcoal/10 bg-white p-5">
+    <section className="rounded-lg glass-card p-5">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="font-serif text-lg font-semibold text-charcoal">Campaign Workflow</h2>
@@ -100,6 +101,29 @@ export function WorkflowPipeline({
           </span>
         )}
       </header>
+
+      {/* Animated progress bar */}
+      {steps && (
+        <div className="mb-3 relative h-1.5 rounded-full bg-charcoal/8 overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${(steps.filter((s) => s.status === "complete").length / steps.length) * 100}%` }}
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="absolute inset-y-0 left-0 rounded-full"
+            style={{ background: "linear-gradient(90deg, #0B7B8A, #0EA5A0, #87A96B)" }}
+          />
+          {/* Active step pulse dot on the progress line */}
+          {activeNumber && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="absolute top-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-mustard shadow-lg shadow-mustard/40 animate-soft-pulse"
+              style={{ left: `${((activeNumber - 0.5) / steps.length) * 100}%` }}
+            />
+          )}
+        </div>
+      )}
 
       <div className="flex gap-3 overflow-x-auto pb-2">
         {(steps ?? Array.from({ length: 10 })).map((step, i) => {
@@ -117,14 +141,16 @@ export function WorkflowPipeline({
             step.number > activeNumber + 1;
           const ownerMeta = PERSONA_ROLE[step.owner_persona_id];
           return (
-            <div
+            <motion.div
               key={step.number}
-              className={`relative flex h-32 w-44 flex-shrink-0 flex-col justify-between rounded-md border p-3 transition-shadow ${
+              initial={{ opacity: 0, y: 12, scale: 0.95 }}
+              animate={{ opacity: isComplete ? 0.8 : step.status === "pending" ? 0.65 : 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.15 + i * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              className={`relative flex h-32 w-44 flex-shrink-0 flex-col justify-between rounded-md border p-3 transition-shadow cursor-default ${
                 isActive
                   ? "border-teal-600 shadow-md ring-2 ring-teal-600/20 ring-offset-1 ring-offset-cream"
                   : "border-charcoal/15"
-              } ${isComplete ? "opacity-80" : ""} ${
-                step.status === "pending" ? "opacity-65" : ""
               } ${step.my_step && !isActive ? "ring-1 ring-teal-600/30" : ""}`}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
@@ -191,7 +217,7 @@ export function WorkflowPipeline({
                   />
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
       </div>

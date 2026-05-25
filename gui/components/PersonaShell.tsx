@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowRightCircle, Database, MessageCircle, RotateCcw, X } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
@@ -348,8 +349,13 @@ export function PersonaShell({
       <TopBar activePersonaId={personaId} />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left sidebar */}
-        <aside className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto border-r border-charcoal/10 bg-white md:flex">
+        {/* Left sidebar — slides in from left */}
+        <motion.aside
+          initial={{ x: -240, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
+          className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto border-r border-charcoal/10 bg-white md:flex"
+        >
           <CampaignSidebar
             campaigns={campaigns ?? undefined}
             activeOwnerName={
@@ -394,11 +400,16 @@ export function PersonaShell({
               ))}
             </ul>
           </nav>
-        </aside>
+        </motion.aside>
 
         {/* Center */}
         <main className="flex-1 overflow-y-auto px-6 py-6">
-          <header className="mb-5 flex items-start justify-between gap-4">
+          {/* Header — fades in */}
+          <motion.header
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mb-5 flex items-start justify-between gap-4">
             <div>
               <h1 className="font-serif text-2xl font-semibold text-charcoal">
                 {context && !isActiveCampaign ? context.campaign_brief.name : headline}
@@ -421,7 +432,7 @@ export function PersonaShell({
                 {resetting ? "Resetting..." : "Reset Demo"}
               </button>
             )}
-          </header>
+          </motion.header>
 
           {pollError && (
             <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
@@ -429,15 +440,25 @@ export function PersonaShell({
             </div>
           )}
 
-          <div className="mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mb-4"
+          >
             <WorkflowPipeline
               personaId={personaId}
               steps={steps ?? undefined}
               revisionCounts={revisionCounts}
             />
-          </div>
+          </motion.div>
 
-          <div className="mb-5">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="mb-5"
+          >
             <ActionPanel
               personaId={personaId}
               campaignId={campaignId}
@@ -449,7 +470,7 @@ export function PersonaShell({
               onAdvanced={refresh}
               onInterceptApproval={handleInterceptApproval}
             />
-          </div>
+          </motion.div>
 
           {centerExtras}
 

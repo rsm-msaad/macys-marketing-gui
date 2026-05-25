@@ -62,3 +62,28 @@ h1, h2, h3, h4 {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
+
+/* Glassmorphism effect for premium cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Approve button ripple pulse */
+@keyframes approve-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(135, 169, 107, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(135, 169, 107, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(135, 169, 107, 0); }
+}
+.approve-pulse {
+  animation: approve-pulse 0.6s ease-out;
+}
