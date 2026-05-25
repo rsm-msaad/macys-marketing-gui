@@ -9,7 +9,16 @@ import {
   type CampaignState,
   type WorkflowStep,
 } from "@/lib/api";
-import { isStepOwnedBy, getStepOwnerName, getStepOwnerTitle } from "@/lib/authorities";
+import { isStepOwnedBy, getStepOwner, getStepOwnerName, getStepOwnerTitle } from "@/lib/authorities";
+
+const OWNER_AVATAR: Record<string, string> = {
+  "campaign-manager": "/avatars/merna.png",
+  "senior-designer": "/avatars/abdullah.png",
+  "production-artist": "/avatars/shankar.png",
+  "marketing-analyst": "/avatars/anna.png",
+  "ceo": "/avatars/vincent.png",
+  "thales": "/avatars/thales.png",
+};
 import type { SkillKind } from "@/components/SkillCard";
 
 import { BriefingContent } from "@/components/steps/BriefingContent";
@@ -386,8 +395,14 @@ export function ActionPanel({
         </h3>
 
         <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-teal-600/15 bg-teal-50/40 px-3 py-1">
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-600 text-[10px] font-bold text-white">
-            {getStepOwnerName(stepNumber).charAt(0)}
+          <div className="h-5 w-5 rounded-full overflow-hidden bg-teal-600 flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={OWNER_AVATAR[getStepOwner(stepNumber) ?? ""] ?? ""}
+              alt={getStepOwnerName(stepNumber)}
+              className="h-full w-full object-cover"
+              onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("flex","items-center","justify-center","text-[10px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = getStepOwnerName(stepNumber).charAt(0); }}
+            />
           </div>
           <span className="text-[11px] text-charcoal/70">
             <span className="font-medium text-charcoal/85">{getStepOwnerName(stepNumber)}</span>
