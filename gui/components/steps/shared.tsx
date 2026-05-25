@@ -71,13 +71,16 @@ function ViewOnlyMessage({ stepNumber }: { stepNumber: number }) {
   const owner = getStepOwnerName(stepNumber);
   const title = getStepOwnerTitle(stepNumber);
   return (
-    <div className="mt-4 flex items-start gap-2 rounded-md border border-charcoal/10 bg-cream/30 px-3 py-2 text-sm text-charcoal/65">
+    <div className="mt-4 flex items-start gap-2 rounded-md border border-charcoal/10 bg-cream/30 px-3 py-3 text-sm text-charcoal/65">
       <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-charcoal/45" />
       <div>
         <div className="font-semibold text-charcoal/80">View only</div>
         <div className="text-xs">
           Waiting on <span className="font-medium text-charcoal/85">{owner}</span>{" "}
           <span className="text-charcoal/50">({title})</span> to take action.
+        </div>
+        <div className="mt-2 text-xs font-bold text-teal-700">
+          Please login as {owner} to take action on this step.
         </div>
       </div>
     </div>

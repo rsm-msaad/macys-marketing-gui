@@ -77,16 +77,16 @@ export function PlacementMockup({
         />
       )}
       {/* Dark gradient overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/15" />
 
       {/* Copy overlay */}
       <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6">
         {/* Tagline */}
-        <h3 className={`${config.taglineSize} font-serif font-bold leading-tight text-white drop-shadow-lg`}>
+        <h3 className={`${config.taglineSize} font-serif font-bold leading-tight text-white`} style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)" }}>
           {copy.tagline}
         </h3>
         {/* Body */}
-        <p className={`mt-1.5 ${config.bodySize} leading-relaxed text-white/85 drop-shadow`}>
+        <p className={`mt-1.5 ${config.bodySize} leading-relaxed text-white/95 font-medium`} style={{ textShadow: "0 1px 6px rgba(0,0,0,0.8)" }}>
           {copy.body}
         </p>
         {/* CTA button */}
