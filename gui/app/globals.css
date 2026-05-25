@@ -420,6 +420,48 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
+/* Fix buttons inside step overlay — force visible styling */
+.step-content-glass button,
+.step-content-glass a[role="button"],
+.step-content-glass .btn-primary-glass,
+.step-content-glass .btn-glass {
+  color: #1a1a1a !important;
+  border: 1.5px solid rgba(0,0,0,0.2) !important;
+  background: rgba(255,255,255,0.75) !important;
+  font-weight: 700 !important;
+  backdrop-filter: blur(8px);
+}
+.step-content-glass button:hover,
+.step-content-glass a[role="button"]:hover {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.3) !important;
+}
+/* Teal primary buttons stay teal */
+.step-content-glass .bg-teal-600,
+.step-content-glass .bg-teal-700,
+.step-content-glass [class*="bg-teal-6"] {
+  background: #0B7B8A !important;
+  color: white !important;
+  border-color: #0B7B8A !important;
+}
+.step-content-glass .bg-teal-600:hover,
+.step-content-glass [class*="bg-teal-6"]:hover {
+  background: #096d7a !important;
+  color: white !important;
+}
+/* Fix badges and pills — keep their colors */
+.step-content-glass .rounded-full {
+  font-weight: 700;
+}
+.step-content-glass .bg-teal-50 {
+  background: rgba(204, 251, 241, 0.8) !important;
+}
+.step-content-glass .bg-cream,
+.step-content-glass .bg-cream\/30,
+.step-content-glass .bg-white {
+  background: rgba(255,255,255,0.7) !important;
+}
+
 /* ═══════════════════════════════════════════
    BUTTONS — SATISFYING INTERACTIONS
    ═══════════════════════════════════════════ */
