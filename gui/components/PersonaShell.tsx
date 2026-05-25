@@ -510,16 +510,16 @@ export function PersonaShell({
         </div>
       )}
 
-      {/* Chat modal */}
+      {/* Chat modal — z-[70] so it layers above everything */}
       {chatOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-backdrop-in"
-          style={{ backgroundColor: "rgba(45,45,45,0.35)" }}
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4 animate-backdrop-in"
+          style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
           onClick={(e) => {
             if (e.target === e.currentTarget) setChatOpen(false);
           }}
         >
-          <div className="relative flex h-[80vh] w-full max-w-[480px] flex-col overflow-hidden chat-modal-glass animate-modal-in">
+          <div className="relative flex h-[85vh] w-full max-w-[520px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl border border-white/50 animate-modal-in">
             <button
               type="button"
               onClick={() => setChatOpen(false)}
@@ -546,6 +546,7 @@ export function PersonaShell({
             onRequestRevisions={handleOpenRevisionModal}
             onAdvanced={refresh}
             onInterceptApproval={handleInterceptApproval}
+            onOpenChat={() => setChatOpen(true)}
           />
         )}
       </AnimatePresence>
@@ -622,6 +623,7 @@ function StepOverlay({
   onRequestRevisions,
   onAdvanced,
   onInterceptApproval,
+  onOpenChat,
 }: {
   personaId: string;
   campaignId: string;
@@ -633,6 +635,7 @@ function StepOverlay({
   onRequestRevisions: (from: number, to: number) => void;
   onAdvanced: () => void;
   onInterceptApproval: (step: number, action: string, output?: Record<string, unknown>) => boolean;
+  onOpenChat: () => void;
 }) {
   const { personas } = usePersonas();
   const router = useRouter();
@@ -812,7 +815,7 @@ function StepOverlay({
           <div className="mt-4 pt-3 border-t border-charcoal/8">
             <button
               type="button"
-              onClick={() => { onClose(); setTimeout(() => document.querySelector<HTMLButtonElement>('[title="Open Claude Chat"]')?.click(), 100); }}
+              onClick={onOpenChat}
               className="flex w-full items-center gap-2 rounded-lg bg-teal-600 px-3 py-2 text-[10px] font-semibold text-white hover:bg-teal-700 transition-colors"
             >
               <MessageCircle className="h-3.5 w-3.5" />
