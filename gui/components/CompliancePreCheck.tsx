@@ -312,7 +312,7 @@ export function CompliancePreCheck({
       {loading && (
         <div className="relative overflow-hidden rounded-xl">
           <video autoPlay loop muted playsInline className="h-40 w-full object-cover rounded-xl">
-            <source src="/robot-army.mp4" type="video/mp4" />
+            <source src="/Robots_working.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-xl" />
           <div className="absolute bottom-4 left-4 right-4">
