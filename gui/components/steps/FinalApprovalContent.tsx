@@ -48,28 +48,18 @@ export function FinalApprovalContent({
   const shouldBlockSubmit = aiRecommendsRevise && !overrideSubmit;
 
   return (
-    <div className="space-y-3">
-      <ContextStack context={context} />
+    <div className="relative space-y-3 overflow-hidden">
+      {/* Robot army — full background behind all Step 6 content */}
+      <video
+        autoPlay loop muted playsInline
+        className="absolute inset-0 h-full w-full object-cover rounded-xl pointer-events-none"
+        style={{ opacity: 0.08, zIndex: 0 }}
+      >
+        <source src="/robot-army.mp4" type="video/mp4" />
+      </video>
+      <div className="relative" style={{ zIndex: 1 }}>
 
-      {/* Robot army accent — AI skills firing */}
-      <div className="relative overflow-hidden rounded-xl border border-teal-600/20 bg-gradient-to-r from-[#0d1f24] to-[#1a2a2e]">
-        <video
-          autoPlay loop muted playsInline
-          className="h-28 w-full object-cover opacity-60"
-        >
-          <source src="/robot-army.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-[#0d1f24]/80 via-transparent to-transparent">
-          <div className="text-center">
-            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-teal-400">
-              3 AI Skills Firing
-            </div>
-            <div className="mt-0.5 text-[9px] text-white/50">
-              Compliance · Brief Generator · Revision Router
-            </div>
-          </div>
-        </div>
-      </div>
+      <ContextStack context={context} />
 
       {/* AI Compliance Pre Check fires first */}
       <CompliancePreCheck
@@ -118,6 +108,8 @@ export function FinalApprovalContent({
         }
         onRequestRevisions={() => onRequestRevisions(6, 5)}
       />
+
+      </div>{/* close relative z-1 wrapper */}
     </div>
   );
 }
