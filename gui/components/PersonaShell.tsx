@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { ArrowRightCircle, Check, Circle, Database, Lock, MessageCircle, RotateCcw, X } from "lucide-react";
@@ -33,7 +34,17 @@ import {
   type CampaignState,
   type WorkflowStep,
 } from "@/lib/api";
+import { usePersona, usePersonas } from "@/components/PersonaContext";
 import { STEP_VIDEO } from "@/components/steps/shared";
+
+const OWNER_AVATAR: Record<string, { name: string; avatar: string }> = {
+  "campaign-manager": { name: "Merna", avatar: "/avatars/merna.png" },
+  "senior-designer": { name: "Abdullah", avatar: "/avatars/abdullah.png" },
+  "production-artist": { name: "Shankar", avatar: "/avatars/shankar.png" },
+  "marketing-analyst": { name: "Anna", avatar: "/avatars/anna.png" },
+  "ceo": { name: "Prof. Vincent", avatar: "/avatars/vincent.png" },
+  "thales": { name: "Prof. Thales", avatar: "/avatars/thales.png" },
+};
 import { ACTION_TO_SKILL } from "@/lib/scripted-chat";
 import {
   getStepOwnerName,
@@ -521,113 +532,21 @@ export function PersonaShell({
         </div>
       )}
 
-      {/* Dual floating card overlay — pipeline left + step detail right */}
+      {/* Floating card overlay — persona switcher top, workflow left, detail right */}
       <AnimatePresence>
         {stepPanelOpen && state && !state.is_complete && state.current_step <= 10 && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center gap-4 p-6 animate-backdrop-in"
-            style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
-            onClick={(e) => { if (e.target === e.currentTarget) setStepPanelOpen(false); }}
-          >
-            {/* LEFT — Slim step list */}
-            <motion.div
-              initial={{ opacity: 0, x: -30, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -20, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="w-[280px] flex-shrink-0 max-h-[85vh] overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-4"
-            >
-              <h3 className="font-serif text-sm font-semibold text-charcoal mb-3">Workflow</h3>
-              <div className="space-y-1.5">
-                {(steps ?? []).map((step) => {
-                  const isActive = step.status === "active";
-                  const isComplete = step.status === "complete";
-                  return (
-                    <div
-                      key={step.number}
-                      className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-all ${
-                        isActive
-                          ? "bg-teal-50 border border-teal-500/30"
-                          : isComplete
-                            ? "bg-sage/5 border border-sage/15"
-                            : "border border-transparent hover:bg-charcoal/3"
-                      }`}
-                    >
-                      <span className={`font-serif text-base font-bold w-5 text-center ${isActive ? "text-teal-600" : isComplete ? "text-sage" : "text-charcoal/20"}`}>
-                        {step.number}
-                      </span>
-                      {isComplete && <Check className="h-3.5 w-3.5 text-sage flex-shrink-0" />}
-                      {isActive && <Circle className="h-3.5 w-3.5 text-mustard fill-mustard flex-shrink-0" />}
-                      {!isComplete && !isActive && <Lock className="h-3 w-3 text-charcoal/15 flex-shrink-0" />}
-                      <div className="min-w-0 flex-1">
-                        <div className={`text-[11px] font-semibold leading-tight truncate ${isActive ? "text-teal-700" : isComplete ? "text-charcoal/70" : "text-charcoal/40"}`}>
-                          {step.name}
-                        </div>
-                        <div className="text-[9px] text-charcoal/40 truncate">{step.owner}</div>
-                      </div>
-                      {isActive && (
-                        <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[7px] font-bold tracking-wider text-white flex-shrink-0">
-                          ACTIVE
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-
-            {/* RIGHT — Step detail card (wider) */}
-            <motion.div
-              initial={{ opacity: 0, x: 30, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 20, scale: 0.95 }}
-              transition={{ duration: 0.3, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="flex-1 max-w-3xl max-h-[85vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
-            >
-              {/* Video header */}
-              {STEP_VIDEO[state.current_step] && (
-                <div className="relative h-40 flex-shrink-0">
-                  <video
-                    key={state.current_step}
-                    autoPlay loop muted playsInline
-                    className="absolute inset-0 h-full w-full object-cover"
-                  >
-                    <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-                  </video>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
-                  <button
-                    type="button"
-                    onClick={() => setStepPanelOpen(false)}
-                    className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                  <div className="absolute bottom-3 left-5 z-10">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-                      Step {state.current_step}
-                    </div>
-                    <div className="text-xl font-serif font-semibold text-white">
-                      {steps?.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {/* Scrollable step content */}
-              <div className="flex-1 overflow-y-auto bg-white/95 backdrop-blur-sm p-5">
-                <ActionPanel
-                  personaId={personaId}
-                  campaignId={campaignId}
-                  state={state}
-                  steps={steps ?? []}
-                  context={context}
-                  onLaunchSkill={launchSkillFromActionPanel}
-                  onRequestRevisions={handleOpenRevisionModal}
-                  onAdvanced={refresh}
-                  onInterceptApproval={handleInterceptApproval}
-                />
-              </div>
-            </motion.div>
-          </div>
+          <StepOverlay
+            personaId={personaId}
+            campaignId={campaignId}
+            state={state}
+            steps={steps ?? []}
+            context={context}
+            onClose={() => setStepPanelOpen(false)}
+            onLaunchSkill={launchSkillFromActionPanel}
+            onRequestRevisions={handleOpenRevisionModal}
+            onAdvanced={refresh}
+            onInterceptApproval={handleInterceptApproval}
+          />
         )}
       </AnimatePresence>
 
@@ -686,6 +605,193 @@ export function PersonaShell({
           onDone={handleCascadeDone}
         />
       )}
+    </div>
+  );
+}
+
+/* ─── Step Overlay: persona switcher + workflow list + detail card ─── */
+
+function StepOverlay({
+  personaId,
+  campaignId,
+  state,
+  steps,
+  context,
+  onClose,
+  onLaunchSkill,
+  onRequestRevisions,
+  onAdvanced,
+  onInterceptApproval,
+}: {
+  personaId: string;
+  campaignId: string;
+  state: CampaignState;
+  steps: WorkflowStep[];
+  context: CampaignContext | null;
+  onClose: () => void;
+  onLaunchSkill: (skill: import("@/components/SkillCard").SkillKind) => void;
+  onRequestRevisions: (from: number, to: number) => void;
+  onAdvanced: () => void;
+  onInterceptApproval: (step: number, action: string, output?: Record<string, unknown>) => boolean;
+}) {
+  const { personas } = usePersonas();
+  const router = useRouter();
+  const isCeo = personaId === "ceo" || personaId === "thales";
+  const completedCount = state.completed_steps?.length ?? 0;
+  const pct = Math.round((completedCount / 10) * 100);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 animate-backdrop-in"
+      style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      {/* TOP — Persona switcher bar */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.25 }}
+        className="mb-3 flex items-center gap-2 rounded-full bg-white/95 backdrop-blur-md shadow-xl border border-white/50 px-2 py-1.5"
+      >
+        {personas.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => { onClose(); router.push(`/${p.id}`); }}
+            className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
+              p.id === personaId
+                ? "bg-teal-50 text-teal-700 ring-1 ring-teal-500/30"
+                : "text-charcoal/50 hover:bg-charcoal/5 hover:text-charcoal/70"
+            }`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.avatar} alt={p.name} className="h-5 w-5 rounded-full object-cover" />
+            {p.name}
+          </button>
+        ))}
+      </motion.div>
+
+      {/* BOTTOM — Workflow list + detail card side by side */}
+      <div className="flex gap-3 w-full max-w-[1100px]" style={{ maxHeight: "calc(85vh - 60px)" }}>
+        {/* LEFT — Slim workflow list */}
+        <motion.div
+          initial={{ opacity: 0, x: -30, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: -20, scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+          className="w-[260px] flex-shrink-0 overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-4"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-serif text-sm font-semibold text-charcoal">Workflow</h3>
+            <span className="text-[10px] font-bold text-teal-600">{pct}%</span>
+          </div>
+          {/* Mini progress bar */}
+          <div className="mb-3 h-1.5 rounded-full bg-charcoal/5 overflow-hidden">
+            <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-sage transition-all duration-700" style={{ width: `${pct}%` }} />
+          </div>
+          <div className="space-y-1">
+            {steps.map((step) => {
+              const isActive = step.status === "active";
+              const isComplete = step.status === "complete";
+              const ownerMeta = OWNER_AVATAR[step.owner_persona_id];
+              const ceoMeta = isCeo ? OWNER_AVATAR[personaId] : null;
+              return (
+                <div
+                  key={step.number}
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 transition-all ${
+                    isActive
+                      ? "bg-teal-50 border border-teal-500/25"
+                      : isComplete
+                        ? "bg-sage/5 border border-sage/10"
+                        : "border border-transparent"
+                  }`}
+                >
+                  <span className={`font-serif text-sm font-bold w-4 text-center ${isActive ? "text-teal-600" : isComplete ? "text-sage" : "text-charcoal/15"}`}>
+                    {step.number}
+                  </span>
+                  {isComplete && <Check className="h-3 w-3 text-sage flex-shrink-0" />}
+                  {isActive && <Circle className="h-3 w-3 text-mustard fill-mustard flex-shrink-0" />}
+                  {!isComplete && !isActive && <Lock className="h-2.5 w-2.5 text-charcoal/12 flex-shrink-0" />}
+                  <div className="min-w-0 flex-1">
+                    <div className={`text-[10px] font-semibold leading-tight truncate ${isActive ? "text-teal-700" : isComplete ? "text-charcoal/65" : "text-charcoal/30"}`}>
+                      {step.name}
+                    </div>
+                  </div>
+                  {/* Owner avatar */}
+                  <div className="flex items-center -space-x-1.5 flex-shrink-0">
+                    {ownerMeta && (
+                      <div className="h-5 w-5 rounded-full border-[1.5px] border-white overflow-hidden" title={ownerMeta.name}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={ownerMeta.avatar} alt={ownerMeta.name} className="h-full w-full object-cover"
+                          onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600","flex","items-center","justify-center","text-[7px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = ownerMeta.name.charAt(0); }}
+                        />
+                      </div>
+                    )}
+                    {ceoMeta && isActive && (
+                      <div className="h-5 w-5 rounded-full border-[1.5px] border-purple-300 overflow-hidden" title={`${ceoMeta.name} reviewing`}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={ceoMeta.avatar} alt={ceoMeta.name} className="h-full w-full object-cover"
+                          onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-purple-600","flex","items-center","justify-center","text-[7px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = ceoMeta.name.charAt(0); }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {isActive && (
+                    <span className="rounded-full bg-teal-600 px-1 py-0.5 text-[6px] font-bold tracking-wider text-white flex-shrink-0">
+                      ACTIVE
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* RIGHT — Step detail card */}
+        <motion.div
+          initial={{ opacity: 0, x: 30, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: 20, scale: 0.95 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
+        >
+          {STEP_VIDEO[state.current_step] && (
+            <div className="relative h-40 flex-shrink-0">
+              <video key={state.current_step} autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
+                <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
+              <button
+                type="button"
+                onClick={onClose}
+                className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="absolute bottom-3 left-5 z-10">
+                <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
+                <div className="text-xl font-serif font-semibold text-white">
+                  {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="flex-1 overflow-y-auto bg-white/95 backdrop-blur-sm p-5">
+            <ActionPanel
+              personaId={personaId}
+              campaignId={campaignId}
+              state={state}
+              steps={steps}
+              context={context}
+              onLaunchSkill={onLaunchSkill}
+              onRequestRevisions={onRequestRevisions}
+              onAdvanced={onAdvanced}
+              onInterceptApproval={onInterceptApproval}
+            />
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
