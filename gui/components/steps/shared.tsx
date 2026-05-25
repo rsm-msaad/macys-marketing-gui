@@ -55,7 +55,7 @@ export function StepVideoBackground({
       <video
         autoPlay loop muted playsInline
         className="absolute inset-0 h-full w-full object-cover rounded-xl pointer-events-none"
-        style={{ opacity: 0.07, zIndex: 0 }}
+        style={{ opacity: 0.18, zIndex: 0 }}
       >
         <source src={src} type="video/mp4" />
       </video>
