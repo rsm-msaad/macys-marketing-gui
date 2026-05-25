@@ -352,17 +352,22 @@ export function AIBriefCard({
         </div>
       )}
 
-      {/* Actively running — miniature robot working */}
+      {/* Actively running — miniature robot in background */}
       {loading && !waitingForCompliance && (
-        <div className="relative overflow-hidden rounded-xl">
-          <video autoPlay loop muted playsInline className="h-44 w-full object-cover rounded-xl">
+        <div className="relative overflow-hidden rounded-xl border border-charcoal/8 p-4">
+          <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover rounded-xl" style={{ opacity: 0.1 }}>
             <source src="/Miniature_robot.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-xl" />
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="flex items-center gap-2 text-white text-xs font-medium">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <div className="absolute inset-0 bg-white/60 rounded-xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-xs text-charcoal/65 font-medium">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
               Drafting approval brief from compliance findings...
+            </div>
+            <div className="mt-3 space-y-2">
+              {[1,2,3].map((i) => (
+                <div key={i} className="h-3 rounded bg-charcoal/6 animate-pulse" style={{ width: `${70 - i * 15}%` }} />
+              ))}
             </div>
           </div>
         </div>

@@ -748,36 +748,43 @@ function StepOverlay({
           </div>
         </motion.div>
 
-        {/* RIGHT — Step detail card */}
+        {/* RIGHT — Step detail card with video background */}
         <motion.div
           initial={{ opacity: 0, x: 30, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 20, scale: 0.95 }}
           transition={{ duration: 0.3, delay: 0.05 }}
-          className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
+          className="flex-1 relative overflow-hidden rounded-2xl shadow-2xl border border-white/50"
         >
+          {/* Video background — like landing page */}
           {STEP_VIDEO[state.current_step] && (
-            <div className="relative h-28 flex-shrink-0">
-              <video key={state.current_step} autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
-                <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
-              <button
-                type="button"
-                onClick={onClose}
-                className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <div className="absolute bottom-3 left-5 z-10">
-                <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
-                <div className="text-xl font-serif font-semibold text-white">
-                  {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
-                </div>
-              </div>
-            </div>
+            <video
+              key={state.current_step}
+              autoPlay loop muted playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ opacity: 0.15, zIndex: 0 }}
+            >
+              <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
+            </video>
           )}
-          <div className="flex-1 overflow-y-auto bg-white/95 backdrop-blur-sm p-5">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/80 to-white/90" style={{ zIndex: 1 }} />
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-3 right-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-charcoal/10 text-charcoal/50 hover:bg-charcoal/20 hover:text-charcoal transition-colors"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+          {/* Step title */}
+          <div className="relative px-5 pt-4 pb-2" style={{ zIndex: 2 }}>
+            <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-teal-600/60">Step {state.current_step}</div>
+            <div className="text-lg font-serif font-semibold text-charcoal">
+              {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+            </div>
+          </div>
+          {/* Scrollable content */}
+          <div className="relative flex-1 overflow-y-auto px-5 pb-5" style={{ zIndex: 2, maxHeight: "calc(100% - 60px)" }}>
             <ActionPanel
               personaId={personaId}
               campaignId={campaignId}

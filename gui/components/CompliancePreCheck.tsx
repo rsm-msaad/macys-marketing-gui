@@ -308,21 +308,21 @@ export function CompliancePreCheck({
         <AIBadge />
       </div>
 
-      {/* Progress state — robot army working */}
+      {/* Progress state — robot working in background */}
       {loading && (
-        <div className="relative overflow-hidden rounded-xl">
-          <video autoPlay loop muted playsInline className="h-40 w-full object-cover rounded-xl">
+        <div className="relative overflow-hidden rounded-xl border border-charcoal/8 p-4">
+          <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover rounded-xl" style={{ opacity: 0.1 }}>
             <source src="/Robots_working.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-xl" />
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="flex items-center gap-2 text-white text-xs font-medium">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              AI robots scanning for compliance issues...
+          <div className="absolute inset-0 bg-white/60 rounded-xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-xs text-charcoal/65 font-medium">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
+              Scanning copy for compliance issues...
             </div>
-            <div className="mt-2 flex gap-2">
+            <div className="mt-3 flex gap-2">
               {["Brand guidelines", "Legal disclaimers", "Pricing rules"].map((label) => (
-                <span key={label} className="rounded-full bg-white/15 backdrop-blur-sm px-2.5 py-1 text-[9px] font-medium text-white/80 animate-pulse">
+                <span key={label} className="rounded-full border border-charcoal/8 bg-white/70 px-2.5 py-1 text-[9px] font-medium text-charcoal/50 animate-pulse">
                   {label}
                 </span>
               ))}
