@@ -306,23 +306,25 @@ export function CompliancePreCheck({
         <AIBadge />
       </div>
 
-      {/* Progress state */}
+      {/* Progress state — robot army working */}
       {loading && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs text-charcoal/55">
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
-            Scanning copy for compliance issues...
-          </div>
-          <div className="space-y-1.5">
-            {["Brand guidelines", "Legal disclaimers", "Pricing rules"].map((label) => (
-              <div key={label} className="flex items-center gap-3 rounded-md border border-charcoal/5 bg-cream/20 p-3">
-                <div className="h-5 w-14 animate-pulse rounded-full bg-charcoal/8" />
-                <div className="flex-1 space-y-1">
-                  <div className="text-[11px] text-charcoal/30">{label}</div>
-                  <div className="h-2.5 w-3/4 animate-pulse rounded bg-charcoal/6" />
-                </div>
-              </div>
-            ))}
+        <div className="relative overflow-hidden rounded-xl">
+          <video autoPlay loop muted playsInline className="h-40 w-full object-cover rounded-xl">
+            <source src="/robot-army.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-xl" />
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="flex items-center gap-2 text-white text-xs font-medium">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              AI robots scanning for compliance issues...
+            </div>
+            <div className="mt-2 flex gap-2">
+              {["Brand guidelines", "Legal disclaimers", "Pricing rules"].map((label) => (
+                <span key={label} className="rounded-full bg-white/15 backdrop-blur-sm px-2.5 py-1 text-[9px] font-medium text-white/80 animate-pulse">
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       )}

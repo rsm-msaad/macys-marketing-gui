@@ -673,7 +673,7 @@ function StepOverlay({
       </motion.div>
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-3 w-full max-w-[1300px]" style={{ maxHeight: "calc(85vh - 60px)" }}>
+      <div className="flex gap-3 w-full max-w-[900px]" style={{ maxHeight: "calc(90vh - 60px)" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
@@ -757,7 +757,7 @@ function StepOverlay({
           className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
         >
           {STEP_VIDEO[state.current_step] && (
-            <div className="relative h-40 flex-shrink-0">
+            <div className="relative h-28 flex-shrink-0">
               <video key={state.current_step} autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
                 <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
               </video>
