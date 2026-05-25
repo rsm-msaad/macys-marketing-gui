@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { ArrowRightCircle, Database, MessageCircle, RotateCcw, X } from "lucide-react";
+import { ArrowRightCircle, Check, Circle, Database, Lock, MessageCircle, RotateCcw, X } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { FloatingPersonaAvatar } from "@/components/FloatingPersonaAvatar";
@@ -529,28 +529,60 @@ export function PersonaShell({
             style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
             onClick={(e) => { if (e.target === e.currentTarget) setStepPanelOpen(false); }}
           >
-            {/* LEFT — Pipeline card */}
+            {/* LEFT — Slim step list */}
             <motion.div
               initial={{ opacity: 0, x: -30, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -20, scale: 0.95 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="w-[520px] max-h-[85vh] overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-5"
+              className="w-[280px] flex-shrink-0 max-h-[85vh] overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-4"
             >
-              <WorkflowPipeline
-                personaId={personaId}
-                steps={steps ?? undefined}
-                revisionCounts={revisionCounts}
-              />
+              <h3 className="font-serif text-sm font-semibold text-charcoal mb-3">Workflow</h3>
+              <div className="space-y-1.5">
+                {(steps ?? []).map((step) => {
+                  const isActive = step.status === "active";
+                  const isComplete = step.status === "complete";
+                  return (
+                    <div
+                      key={step.number}
+                      className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-all ${
+                        isActive
+                          ? "bg-teal-50 border border-teal-500/30"
+                          : isComplete
+                            ? "bg-sage/5 border border-sage/15"
+                            : "border border-transparent hover:bg-charcoal/3"
+                      }`}
+                    >
+                      <span className={`font-serif text-base font-bold w-5 text-center ${isActive ? "text-teal-600" : isComplete ? "text-sage" : "text-charcoal/20"}`}>
+                        {step.number}
+                      </span>
+                      {isComplete && <Check className="h-3.5 w-3.5 text-sage flex-shrink-0" />}
+                      {isActive && <Circle className="h-3.5 w-3.5 text-mustard fill-mustard flex-shrink-0" />}
+                      {!isComplete && !isActive && <Lock className="h-3 w-3 text-charcoal/15 flex-shrink-0" />}
+                      <div className="min-w-0 flex-1">
+                        <div className={`text-[11px] font-semibold leading-tight truncate ${isActive ? "text-teal-700" : isComplete ? "text-charcoal/70" : "text-charcoal/40"}`}>
+                          {step.name}
+                        </div>
+                        <div className="text-[9px] text-charcoal/40 truncate">{step.owner}</div>
+                      </div>
+                      {isActive && (
+                        <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[7px] font-bold tracking-wider text-white flex-shrink-0">
+                          ACTIVE
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </motion.div>
 
-            {/* RIGHT — Step detail card */}
+            {/* RIGHT — Step detail card (wider) */}
             <motion.div
               initial={{ opacity: 0, x: 30, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.95 }}
               transition={{ duration: 0.3, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="w-[540px] max-h-[85vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
+              className="flex-1 max-w-3xl max-h-[85vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50"
             >
               {/* Video header */}
               {STEP_VIDEO[state.current_step] && (
