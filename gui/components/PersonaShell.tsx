@@ -762,12 +762,12 @@ function StepOverlay({
               key={state.current_step}
               autoPlay loop muted playsInline
               className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.15, zIndex: 0 }}
+              style={{ opacity: 0.3, zIndex: 0 }}
             >
               <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
             </video>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/80 to-white/90" style={{ zIndex: 1 }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/40 to-white/50" style={{ zIndex: 1 }} />
           {/* Close button */}
           <button
             type="button"
