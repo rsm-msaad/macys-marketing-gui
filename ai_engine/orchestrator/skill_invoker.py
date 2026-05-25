@@ -45,6 +45,7 @@ TRITONAI_BASE_URL = "https://tritonai-api.ucsd.edu/v1"
 # Brief generation is structured output that doesn't need claude-opus
 # quality — gemini-3-flash cuts first-run time from ~30s to ~10s.
 SKILL_MODEL_OVERRIDE: dict[str, str] = {
+    "compliance-pre-check": "gemini-3-flash",
     "approval-brief-generator": "gemini-3-flash",
 }
 

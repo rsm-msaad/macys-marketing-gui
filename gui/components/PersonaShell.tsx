@@ -807,6 +807,18 @@ function StepOverlay({
             ))}
           </div>
           <StepTypeCard stepNumber={state.current_step} label={steps.find(s => s.number === state.current_step)?.label ?? "HUMAN_ONLY"} />
+
+          {/* Chat with Claude */}
+          <div className="mt-4 pt-3 border-t border-charcoal/8">
+            <button
+              type="button"
+              onClick={() => { onClose(); setTimeout(() => document.querySelector<HTMLButtonElement>('[title="Open Claude Chat"]')?.click(), 100); }}
+              className="flex w-full items-center gap-2 rounded-lg bg-teal-600 px-3 py-2 text-[10px] font-semibold text-white hover:bg-teal-700 transition-colors"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              Chat with Claude
+            </button>
+          </div>
         </motion.div>
       </div>
     </div>
