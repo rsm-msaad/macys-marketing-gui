@@ -649,7 +649,7 @@ function StepOverlay({
       {/* Persona switcher moved to right panel */}
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-2 w-full" style={{ maxHeight: "calc(97vh - 50px)", maxWidth: "99vw" }}>
+      <div className="flex gap-2 w-full" style={{ maxHeight: "98vh", maxWidth: "99vw" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
@@ -732,35 +732,38 @@ function StepOverlay({
           transition={{ duration: 0.3, delay: 0.05 }}
           className="flex-1 relative overflow-hidden rounded-2xl shadow-2xl border border-white/50"
         >
-          {/* Video background — like landing page */}
+          {/* Layer 1: Solid background to block main page */}
+          <div className="absolute inset-0 bg-[#F0ECE4]" style={{ zIndex: 0 }} />
+          {/* Layer 2: Video playing on top of solid bg */}
           {STEP_VIDEO[state.current_step] && (
             <video
               key={state.current_step}
               autoPlay loop muted playsInline
               className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.45, zIndex: 0 }}
+              style={{ opacity: 0.35, zIndex: 1 }}
             >
               <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
             </video>
           )}
-          <div className="absolute inset-0 bg-white/10" style={{ zIndex: 1 }} />
+          {/* Layer 3: Slight white wash for readability */}
+          <div className="absolute inset-0 bg-white/20" style={{ zIndex: 2 }} />
           {/* Close button */}
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-charcoal/10 text-charcoal/50 hover:bg-charcoal/20 hover:text-charcoal transition-colors"
+            className="absolute top-3 right-3 z-30 flex h-7 w-7 items-center justify-center rounded-full bg-charcoal/15 text-charcoal/60 hover:bg-charcoal/25 hover:text-charcoal transition-colors"
           >
             <X className="h-3.5 w-3.5" />
           </button>
           {/* Step title */}
-          <div className="relative px-5 pt-4 pb-2" style={{ zIndex: 2 }}>
+          <div className="relative px-5 pt-4 pb-2" style={{ zIndex: 3 }}>
             <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-teal-600/60">Step {state.current_step}</div>
             <div className="text-lg font-serif font-semibold text-charcoal">
               {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
             </div>
           </div>
           {/* Scrollable content */}
-          <div className="relative flex-1 overflow-y-auto px-5 pb-5 step-content-glass" style={{ zIndex: 2, maxHeight: "calc(100% - 60px)" }}>
+          <div className="relative flex-1 overflow-y-auto px-5 pb-5 step-content-glass" style={{ zIndex: 3, maxHeight: "calc(100% - 60px)" }}>
             <ActionPanel
               personaId={personaId}
               campaignId={campaignId}
