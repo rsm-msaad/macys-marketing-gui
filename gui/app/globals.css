@@ -387,9 +387,37 @@ h1, h2, h3, h4 {
 /* Make all inner cards transparent when inside the step overlay */
 .step-content-glass .rounded-md,
 .step-content-glass .rounded-lg {
-  background: rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Darken and bold all text inside the step overlay */
+.step-content-glass {
+  color: #1a1a1a !important;
+  font-weight: 500;
+}
+.step-content-glass * {
+  color: inherit;
+}
+.step-content-glass .text-charcoal\/55,
+.step-content-glass .text-charcoal\/60,
+.step-content-glass .text-charcoal\/65,
+.step-content-glass .text-charcoal\/70,
+.step-content-glass .text-charcoal\/75 {
+  color: #2d2d2d !important;
+}
+.step-content-glass .text-charcoal\/40,
+.step-content-glass .text-charcoal\/45,
+.step-content-glass .text-charcoal\/50 {
+  color: #444444 !important;
+}
+.step-content-glass .text-xs,
+.step-content-glass .text-sm,
+.step-content-glass .text-\[11px\],
+.step-content-glass .text-\[12px\],
+.step-content-glass .text-\[13px\] {
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════
