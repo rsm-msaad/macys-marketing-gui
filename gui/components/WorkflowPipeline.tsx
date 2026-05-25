@@ -131,6 +131,7 @@ export function WorkflowPipeline({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
+              style={{ animationDelay: `${i * 0.3}s` }}
               className={`step-card-light relative flex h-32 flex-col justify-between p-3 cursor-default ${
                 isActive
                   ? "step-card-light-active"
