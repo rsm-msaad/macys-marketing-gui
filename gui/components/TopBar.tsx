@@ -87,7 +87,7 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 pr-14">
         <Link
           href="/story"
           className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
