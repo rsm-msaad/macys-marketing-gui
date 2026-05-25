@@ -464,58 +464,7 @@ export function PersonaShell({
             />
           </motion.div>
 
-          {/* Floating step detail modal */}
-          <AnimatePresence>
-            {stepPanelOpen && state && (
-              <motion.div
-                initial={{ opacity: 0, y: 24, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 16, scale: 0.97 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="mb-5 relative"
-              >
-                {/* Video header banner */}
-                {state.current_step <= 10 && STEP_VIDEO[state.current_step] && (
-                  <div className="relative overflow-hidden rounded-t-2xl h-28">
-                    <video
-                      key={state.current_step}
-                      autoPlay loop muted playsInline
-                      className="absolute inset-0 h-full w-full object-cover"
-                    >
-                      <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-                    </video>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-                    <button
-                      type="button"
-                      onClick={() => setStepPanelOpen(false)}
-                      className="absolute top-3 right-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                    <div className="absolute bottom-3 left-4 z-10">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
-                        Step {state.current_step}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {/* Action panel content */}
-                <div className={`action-panel-glass p-5 ${state.current_step <= 10 && STEP_VIDEO[state.current_step] ? "rounded-t-none rounded-b-2xl" : "rounded-2xl"}`}>
-                  <ActionPanel
-                    personaId={personaId}
-                    campaignId={campaignId}
-                    state={state}
-                    steps={steps ?? []}
-                    context={context}
-                    onLaunchSkill={launchSkillFromActionPanel}
-                    onRequestRevisions={handleOpenRevisionModal}
-                    onAdvanced={refresh}
-                    onInterceptApproval={handleInterceptApproval}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Step detail overlay is rendered as a fixed modal below */}
 
           {centerExtras}
 
@@ -573,6 +522,68 @@ export function PersonaShell({
           </div>
         </div>
       )}
+
+      {/* Step detail overlay modal */}
+      <AnimatePresence>
+        {stepPanelOpen && state && !state.is_complete && state.current_step <= 10 && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-6 animate-backdrop-in"
+            style={{ backgroundColor: "rgba(30,30,30,0.4)" }}
+            onClick={(e) => { if (e.target === e.currentTarget) setStepPanelOpen(false); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="relative w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl"
+            >
+              {/* Video header */}
+              {STEP_VIDEO[state.current_step] && (
+                <div className="relative h-36 flex-shrink-0">
+                  <video
+                    key={state.current_step}
+                    autoPlay loop muted playsInline
+                    className="absolute inset-0 h-full w-full object-cover"
+                  >
+                    <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+                  <button
+                    type="button"
+                    onClick={() => setStepPanelOpen(false)}
+                    className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white/80 hover:bg-black/50 hover:text-white transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <div className="absolute bottom-3 left-5 z-10">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+                      Step {state.current_step}
+                    </div>
+                    <div className="text-lg font-serif font-semibold text-white">
+                      {steps?.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto bg-white/95 backdrop-blur-sm p-5">
+                <ActionPanel
+                  personaId={personaId}
+                  campaignId={campaignId}
+                  state={state}
+                  steps={steps ?? []}
+                  context={context}
+                  onLaunchSkill={launchSkillFromActionPanel}
+                  onRequestRevisions={handleOpenRevisionModal}
+                  onAdvanced={refresh}
+                  onInterceptApproval={handleInterceptApproval}
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <ResultsModal
         state={modal}
