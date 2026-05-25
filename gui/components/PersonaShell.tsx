@@ -642,38 +642,14 @@ function StepOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-[3vh] p-4 animate-backdrop-in"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-[1vh] p-2 animate-backdrop-in"
       style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* TOP — Persona switcher bar */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.25 }}
-        className="mb-3 flex items-center gap-2 rounded-full bg-white/95 backdrop-blur-md shadow-xl border border-white/50 px-2 py-1.5"
-      >
-        {personas.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => { onClose(); router.push(`/${p.id}`); }}
-            className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
-              p.id === personaId
-                ? "bg-teal-50 text-teal-700 ring-1 ring-teal-500/30"
-                : "text-charcoal/50 hover:bg-charcoal/5 hover:text-charcoal/70"
-            }`}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.avatar} alt={p.name} className="h-5 w-5 rounded-full object-cover" />
-            {p.name}
-          </button>
-        ))}
-      </motion.div>
+      {/* Persona switcher moved to right panel */}
 
       {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-3 w-full" style={{ maxHeight: "calc(95vh - 50px)", maxWidth: "96vw" }}>
+      <div className="flex gap-2 w-full" style={{ maxHeight: "calc(97vh - 50px)", maxWidth: "99vw" }}>
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
@@ -799,7 +775,7 @@ function StepOverlay({
           </div>
         </motion.div>
 
-        {/* FAR RIGHT — Step type info card */}
+        {/* FAR RIGHT — Persona switcher + Step type info */}
         <motion.div
           initial={{ opacity: 0, x: 20, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -807,6 +783,28 @@ function StepOverlay({
           transition={{ duration: 0.3, delay: 0.1 }}
           className="w-[180px] flex-shrink-0 overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-3"
         >
+          {/* Persona switcher */}
+          <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Team</div>
+          <div className="space-y-1 mb-4 pb-3 border-b border-charcoal/8">
+            {personas.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => { onClose(); router.push(`/${p.id}`); }}
+                className={`flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-[10px] font-medium transition-all ${
+                  p.id === personaId
+                    ? "bg-teal-50 text-teal-700 ring-1 ring-teal-500/25"
+                    : "text-charcoal/50 hover:bg-charcoal/5"
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.avatar} alt={p.name} className="h-5 w-5 rounded-full object-cover flex-shrink-0"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+                {p.name}
+              </button>
+            ))}
+          </div>
           <StepTypeCard stepNumber={state.current_step} label={steps.find(s => s.number === state.current_step)?.label ?? "HUMAN_ONLY"} />
         </motion.div>
       </div>
