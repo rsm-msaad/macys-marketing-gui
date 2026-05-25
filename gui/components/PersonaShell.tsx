@@ -345,6 +345,7 @@ export function PersonaShell({
 
   return (
     <div className="flex min-h-screen flex-col bg-cream">
+      <div className="workspace-grain" />
       <FloatingPersonaAvatar personaId={personaId} />
       <TopBar activePersonaId={personaId} />
 
@@ -354,7 +355,7 @@ export function PersonaShell({
           initial={{ x: -240, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
-          className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto border-r border-charcoal/10 bg-white md:flex"
+          className="hidden w-[240px] flex-shrink-0 flex-col overflow-y-auto sidebar-glass md:flex"
         >
           <CampaignSidebar
             campaigns={campaigns ?? undefined}
@@ -376,10 +377,10 @@ export function PersonaShell({
                   {item.href ? (
                     <a
                       href={item.href}
-                      className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
+                      className={`block w-full px-3 py-2 text-left text-sm nav-item-glass ${
                         item.active
-                          ? "bg-cream font-semibold text-charcoal"
-                          : "text-charcoal/60 hover:bg-cream"
+                          ? "nav-item-active font-semibold text-charcoal"
+                          : "text-charcoal/60"
                       }`}
                     >
                       {item.label}
@@ -387,10 +388,10 @@ export function PersonaShell({
                   ) : (
                     <button
                       type="button"
-                      className={`block w-full rounded-md px-3 py-2 text-left ${
+                      className={`block w-full px-3 py-2 text-left nav-item-glass ${
                         item.active
-                          ? "bg-cream font-semibold text-charcoal"
-                          : "text-charcoal/60 hover:bg-cream"
+                          ? "nav-item-active font-semibold text-charcoal"
+                          : "text-charcoal/60"
                       }`}
                     >
                       {item.label}
@@ -404,10 +405,12 @@ export function PersonaShell({
 
         {/* Center */}
         <main className="flex-1 overflow-y-auto px-6 py-6 relative">
-          {/* Subtle ambient gradient */}
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: "radial-gradient(ellipse at 30% 0%, rgba(11,123,138,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 100%, rgba(135,169,107,0.03) 0%, transparent 50%)",
-          }} />
+          {/* Ambient floating orbs */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="ambient-orb ambient-orb-teal" style={{ width: 400, height: 400, top: '-10%', left: '15%' }} />
+            <div className="ambient-orb ambient-orb-sage" style={{ width: 350, height: 350, bottom: '5%', right: '10%' }} />
+            <div className="ambient-orb ambient-orb-gold" style={{ width: 280, height: 280, top: '40%', left: '60%' }} />
+          </div>
           {/* Header — fades in */}
           <motion.header
             initial={{ opacity: 0, y: 12 }}
@@ -429,7 +432,7 @@ export function PersonaShell({
                 type="button"
                 onClick={handleReset}
                 disabled={resetting}
-                className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-soft_red/40 hover:text-soft_red disabled:opacity-50"
+                className="btn-reset-glass inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:text-soft_red disabled:opacity-50"
                 title="Reset the demo campaign back to step 1"
               >
                 <RotateCcw className="h-3 w-3" />
@@ -494,7 +497,7 @@ export function PersonaShell({
         <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
           <Link
             href="/rag-compare"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-teal-600/30 bg-white text-teal-600 shadow-md transition-transform hover:scale-105 hover:bg-teal-50"
+            className="fab-glass flex h-10 w-10 items-center justify-center rounded-full text-teal-600"
             title="RAG Comparison Demo"
           >
             <Database className="h-4 w-4" />
@@ -502,7 +505,7 @@ export function PersonaShell({
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-teal-700"
+            className="fab-primary flex h-12 w-12 items-center justify-center rounded-full text-white"
             title="Open Claude Chat"
           >
             <MessageCircle className="h-5 w-5" />
@@ -519,7 +522,7 @@ export function PersonaShell({
             if (e.target === e.currentTarget) setChatOpen(false);
           }}
         >
-          <div className="relative flex h-[80vh] w-full max-w-[480px] flex-col overflow-hidden rounded-lg bg-white shadow-xl animate-modal-in">
+          <div className="relative flex h-[80vh] w-full max-w-[480px] flex-col overflow-hidden chat-modal-glass animate-modal-in">
             <button
               type="button"
               onClick={() => setChatOpen(false)}
@@ -633,7 +636,7 @@ function ToastBanner({ toast, onClose }: { toast: Toast; onClose: () => void }) 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center">
       <div
-        className={`pointer-events-auto flex items-start gap-3 rounded-lg border ${borderClass} bg-white px-4 py-3 shadow-lg`}
+        className={`pointer-events-auto flex items-start gap-3 border ${borderClass} toast-glass px-4 py-3`}
       >
         <ArrowRightCircle className={`mt-0.5 h-5 w-5 flex-shrink-0 ${iconClass}`} />
         <div className="max-w-sm text-sm">

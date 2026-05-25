@@ -107,10 +107,10 @@ export function CampaignSidebar({
                 onClick={() => setSelectedId(c.id)}
                 onKeyDown={(e) => { if (e.key === "Enter") setSelectedId(c.id); }}
                 title={c.name}
-                className={`relative block w-full cursor-pointer rounded-md border px-2.5 py-2 text-left transition-colors ${
+                className={`relative block w-full cursor-pointer rounded-xl border px-2.5 py-2 text-left transition-all duration-300 ${
                   selected
-                    ? "border-teal-600 bg-teal-50"
-                    : "border-charcoal/10 bg-white hover:border-charcoal/25"
+                    ? "sidebar-campaign-active border-teal-600/30"
+                    : "border-white/50 bg-white/60 backdrop-blur-sm hover:bg-white/80 hover:border-charcoal/20"
                 }`}
               >
                 {/* Edit icon */}

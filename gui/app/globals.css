@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════
+   MACY'S AI COWORKER — LUXURY EDITORIAL GLASS SYSTEM
+   ═══════════════════════════════════════════════════════ */
+
 :root {
   color-scheme: light;
+  --glass-white: rgba(255, 255, 255, 0.72);
+  --glass-white-hover: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(24px) saturate(1.5);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --glass-edge: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.06);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.06);
+  --teal: #0B7B8A;
+  --teal-glow: rgba(11, 123, 138, 0.15);
 }
 
 html, body {
@@ -17,19 +33,250 @@ h1, h2, h3, h4 {
   letter-spacing: -0.005em;
 }
 
-/* Custom scrollbar in chat panes */
-.chat-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(45, 45, 45, 0.18);
-  border-radius: 3px;
-}
-.chat-scroll::-webkit-scrollbar-track {
-  background: transparent;
+/* ── Scrollbar ── */
+.chat-scroll::-webkit-scrollbar { width: 6px; }
+.chat-scroll::-webkit-scrollbar-thumb { background: rgba(45,45,45,0.18); border-radius: 3px; }
+.chat-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Ambient background for workspace ── */
+@keyframes mesh-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-/* Pulsing dot for the active workflow step */
+.bg-cream {
+  position: relative;
+}
+
+/* ── Grain overlay (workspace pages inherit this from PersonaShell) ── */
+.workspace-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ═══════════════════════════════════════════
+   GLASS CARD SYSTEM
+   ═══════════════════════════════════════════ */
+
+/* Base glass card */
+.glass-card {
+  background: var(--glass-white);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md), var(--glass-highlight), var(--glass-edge);
+  border-radius: 16px;
+  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.glass-card:hover {
+  background: var(--glass-white-hover);
+  box-shadow: var(--shadow-lg), var(--glass-highlight), var(--glass-edge);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════
+   3D STEP CARDS
+   ═══════════════════════════════════════════ */
+
+.step-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  transition: all 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+/* Top glossy reflection */
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.15) 40%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 16px 16px 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Floor shadow / reflection */
+.step-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 8%;
+  right: 8%;
+  height: 40%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.08) 0%,
+    transparent 70%
+  );
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 300ms ease;
+}
+
+.step-card:hover::after {
+  opacity: 0.6;
+}
+
+.step-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* 3D tilt on hover */
+.step-card:hover {
+  transform: translateY(-6px) rotateX(2deg) rotateY(-1deg);
+}
+
+/* Active step card — teal glow */
+.step-card-active {
+  box-shadow:
+    0 0 0 1px rgba(11, 123, 138, 0.3),
+    0 0 20px rgba(11, 123, 138, 0.12),
+    0 8px 32px rgba(11, 123, 138, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    var(--glass-highlight);
+}
+.step-card-active:hover {
+  box-shadow:
+    0 0 0 1px rgba(11, 123, 138, 0.4),
+    0 0 30px rgba(11, 123, 138, 0.18),
+    0 12px 40px rgba(11, 123, 138, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    var(--glass-highlight);
+}
+
+/* Pulsing glow ring behind active card */
+@keyframes active-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(11,123,138,0.1), 0 0 40px rgba(11,123,138,0.05); }
+  50% { box-shadow: 0 0 25px rgba(11,123,138,0.18), 0 0 50px rgba(11,123,138,0.08); }
+}
+.step-card-active {
+  animation: active-glow 3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   PROGRESS BAR — ENERGY LINE
+   ═══════════════════════════════════════════ */
+
+.progress-energy {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(45, 45, 45, 0.06);
+  overflow: visible;
+}
+
+.progress-energy-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #0B7B8A, #0EA5A0, #87A96B);
+  box-shadow: 0 0 12px rgba(11, 123, 138, 0.3), 0 0 4px rgba(11, 123, 138, 0.5);
+  position: relative;
+}
+
+/* Glow at the leading edge */
+.progress-energy-fill::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0EA5A0;
+  box-shadow: 0 0 8px rgba(14, 165, 160, 0.6), 0 0 20px rgba(14, 165, 160, 0.3);
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR GLASS
+   ═══════════════════════════════════════════ */
+
+.sidebar-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-campaign-active {
+  background: rgba(11, 123, 138, 0.06);
+  border-color: rgba(11, 123, 138, 0.25);
+  box-shadow: 0 0 12px rgba(11, 123, 138, 0.06), var(--glass-highlight);
+}
+
+/* ═══════════════════════════════════════════
+   ACTION PANEL GLASS
+   ═══════════════════════════════════════════ */
+
+.action-panel-glass {
+  background: var(--glass-white);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg), var(--glass-highlight), var(--glass-edge);
+}
+
+/* ═══════════════════════════════════════════
+   BUTTONS — SATISFYING INTERACTIONS
+   ═══════════════════════════════════════════ */
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-sm), var(--glass-highlight);
+  transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-md), var(--glass-highlight);
+  transform: translateY(-1px);
+}
+.btn-glass:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Primary action button (teal) */
+.btn-primary-glass {
+  background: linear-gradient(135deg, #0B7B8A 0%, #0EA5A0 100%);
+  border: 1px solid rgba(11, 123, 138, 0.3);
+  color: white;
+  box-shadow: 0 4px 14px rgba(11, 123, 138, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-primary-glass:hover {
+  box-shadow: 0 6px 20px rgba(11, 123, 138, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+.btn-primary-glass:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════ */
+
 @keyframes soft-pulse {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 0.45; }
@@ -38,14 +285,14 @@ h1, h2, h3, h4 {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
 
-/* Chat modal fade + scale */
 @keyframes modal-in {
   from { opacity: 0; transform: scale(0.96) translateY(8px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .animate-modal-in {
-  animation: modal-in 0.2s ease both;
+  animation: modal-in 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
+
 @keyframes backdrop-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -54,72 +301,256 @@ h1, h2, h3, h4 {
   animation: backdrop-in 0.15s ease both;
 }
 
-/* Subtle card hover lift — apply via .card-hover class */
-.card-hover {
-  transition: transform 200ms ease, box-shadow 200ms ease;
-}
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-/* Glassmorphism effect for premium cards */
-.glass-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px) saturate(1.3);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.04),
-    0 1px 3px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  transition: transform 250ms ease, box-shadow 250ms ease, background 250ms ease;
-}
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: translateY(-2px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.06),
-    0 4px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-/* Glass step card reflection shine */
-.step-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 45%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
-  border-radius: 16px 16px 0 0;
-  pointer-events: none;
-  z-index: 1;
-}
-.step-card::after {
-  content: '';
-  position: absolute;
-  bottom: -50%;
-  left: 10%;
-  right: 10%;
-  height: 50%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, transparent 70%);
-  filter: blur(8px);
-  pointer-events: none;
-  z-index: -1;
-}
-.step-card > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* Approve button ripple pulse */
 @keyframes approve-pulse {
   0% { box-shadow: 0 0 0 0 rgba(135, 169, 107, 0.5); }
-  70% { box-shadow: 0 0 0 12px rgba(135, 169, 107, 0); }
+  70% { box-shadow: 0 0 0 14px rgba(135, 169, 107, 0); }
   100% { box-shadow: 0 0 0 0 rgba(135, 169, 107, 0); }
 }
 .approve-pulse {
   animation: approve-pulse 0.6s ease-out;
+}
+
+/* Subtle card hover lift */
+.card-hover {
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ═══════════════════════════════════════════
+   TOP BAR — FROSTED GLASS HEADER
+   ═══════════════════════════════════════════ */
+
+.topbar-glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.02),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* Persona dropdown — glass */
+.topbar-dropdown {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-xl);
+  border-radius: 16px;
+}
+
+/* ═══════════════════════════════════════════
+   TOAST BANNERS — GLASS NOTIFICATION
+   ═══════════════════════════════════════════ */
+
+.toast-glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ═══════════════════════════════════════════
+   FLOATING ACTION BUTTONS — GLASS ORBS
+   ═══════════════════════════════════════════ */
+
+.fab-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.fab-glass:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.fab-primary {
+  background: linear-gradient(145deg, rgba(11, 123, 138, 0.9) 0%, rgba(14, 165, 160, 0.85) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(14, 165, 160, 0.3);
+  box-shadow:
+    0 4px 20px rgba(11, 123, 138, 0.3),
+    0 2px 8px rgba(11, 123, 138, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.fab-primary:hover {
+  box-shadow:
+    0 6px 28px rgba(11, 123, 138, 0.4),
+    0 4px 12px rgba(11, 123, 138, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR NAVIGATION — GLASS LINKS
+   ═══════════════════════════════════════════ */
+
+.nav-item-glass {
+  border-radius: 10px;
+  transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.nav-item-glass:hover {
+  background: rgba(11, 123, 138, 0.04);
+}
+.nav-item-active {
+  background: rgba(11, 123, 138, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(11, 123, 138, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   CHAT MODAL — GLASS PANEL
+   ═══════════════════════════════════════════ */
+
+.chat-modal-glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(32px) saturate(1.5);
+  -webkit-backdrop-filter: blur(32px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ═══════════════════════════════════════════
+   AMBIENT BACKGROUND MESH — ANIMATED
+   ═══════════════════════════════════════════ */
+
+@keyframes ambient-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(-20px, 10px) scale(0.95);
+    opacity: 0.45;
+  }
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ambient-orb-teal {
+  background: rgba(11, 123, 138, 0.08);
+  animation: ambient-float 20s ease-in-out infinite;
+}
+.ambient-orb-sage {
+  background: rgba(135, 169, 107, 0.06);
+  animation: ambient-float 25s ease-in-out infinite reverse;
+}
+.ambient-orb-gold {
+  background: rgba(212, 165, 55, 0.04);
+  animation: ambient-float 30s ease-in-out infinite 5s;
+}
+
+/* ═══════════════════════════════════════════
+   PIPELINE CONNECTING LINE
+   ═══════════════════════════════════════════ */
+
+.pipeline-track {
+  position: relative;
+}
+
+.pipeline-track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(11, 123, 138, 0.15) 0%,
+    rgba(11, 123, 138, 0.08) 50%,
+    rgba(45, 45, 45, 0.05) 100%
+  );
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════
+   RESET BUTTON — GLASS CHIP
+   ═══════════════════════════════════════════ */
+
+.btn-reset-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  transition: all 200ms ease;
+}
+.btn-reset-glass:hover {
+  background: rgba(200, 75, 75, 0.06);
+  border-color: rgba(200, 75, 75, 0.25);
+  box-shadow: 0 2px 12px rgba(200, 75, 75, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ═══════════════════════════════════════════
+   TOP NAV PILLS — GLASS CAPSULES
+   ═══════════════════════════════════════════ */
+
+.nav-pill-glass {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 200ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.nav-pill-glass:hover {
+  background: rgba(11, 123, 138, 0.08);
+  border-color: rgba(11, 123, 138, 0.2);
+  box-shadow: 0 2px 8px rgba(11, 123, 138, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════
+   COMPLETED STEP CARDS — GLASS ACCORDION
+   ═══════════════════════════════════════════ */
+
+.completed-step-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 200ms ease;
+}
+.completed-step-glass:hover {
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }

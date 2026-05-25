@@ -85,7 +85,7 @@ export function WorkflowPipeline({
   const role = PERSONA_ROLE[personaId];
 
   return (
-    <section className="rounded-lg glass-card p-5">
+    <section className="glass-card p-5">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="font-serif text-lg font-semibold text-charcoal">Campaign Workflow</h2>
@@ -104,28 +104,17 @@ export function WorkflowPipeline({
 
       {/* Animated progress bar */}
       {steps && (
-        <div className="mb-4 relative h-2 rounded-full bg-charcoal/6 overflow-hidden">
+        <div className="mb-4 progress-energy">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(steps.filter((s) => s.status === "complete").length / steps.length) * 100}%` }}
-            transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="absolute inset-y-0 left-0 rounded-full"
-            style={{ background: "linear-gradient(90deg, #0B7B8A, #0EA5A0, #87A96B)" }}
+            transition={{ duration: 1.4, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="progress-energy-fill"
           />
-          {/* Active step pulse dot on the progress line */}
-          {activeNumber && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="absolute top-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-mustard shadow-lg shadow-mustard/40 animate-soft-pulse"
-              style={{ left: `${((activeNumber - 0.5) / steps.length) * 100}%` }}
-            />
-          )}
         </div>
       )}
 
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-3 overflow-x-auto pb-2 pipeline-track">
         {(steps ?? Array.from({ length: 10 })).map((step, i) => {
           if (!step) {
             return (
@@ -146,31 +135,26 @@ export function WorkflowPipeline({
               initial={{ opacity: 0, y: 16, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ scale: 1.05, y: -6, transition: { duration: 0.2 } }}
-              className={`step-card relative flex h-36 w-48 flex-shrink-0 flex-col justify-between rounded-2xl p-3.5 cursor-default overflow-hidden ${
+              whileHover={{ scale: 1.05, y: -6, transition: { duration: 0.25 } }}
+              className={`step-card ${isActive ? "step-card-active" : ""} relative flex h-36 w-48 flex-shrink-0 flex-col justify-between p-3.5 cursor-default ${
                 isActive
-                  ? "border-2 border-teal-400/50"
+                  ? "border-2 border-teal-400/40"
                   : isComplete
-                    ? "border border-white/60"
+                    ? "border border-white/70"
                     : farPending
-                      ? "border border-charcoal/6 opacity-45"
-                      : "border border-white/40"
+                      ? "border border-charcoal/6 opacity-40"
+                      : "border border-white/50"
               } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
               style={{
                 background: isActive
-                  ? "linear-gradient(135deg, rgba(224,242,241,0.9) 0%, rgba(178,223,219,0.7) 100%)"
+                  ? "linear-gradient(145deg, rgba(220,243,241,0.92) 0%, rgba(178,230,225,0.75) 50%, rgba(200,238,234,0.85) 100%)"
                   : isComplete
-                    ? "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(245,245,245,0.7) 100%)"
+                    ? "linear-gradient(145deg, rgba(255,255,255,0.88) 0%, rgba(248,250,248,0.75) 100%)"
                     : farPending
-                      ? "linear-gradient(135deg, rgba(250,250,250,0.4) 0%, rgba(240,240,240,0.3) 100%)"
-                      : "linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(248,248,248,0.6) 100%)",
-                backdropFilter: "blur(20px) saturate(1.4)",
-                WebkitBackdropFilter: "blur(20px) saturate(1.4)",
-                boxShadow: isActive
-                  ? "0 12px 40px rgba(11,123,138,0.15), 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.03)"
-                  : isComplete
-                    ? "0 6px 24px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.02)"
-                    : "0 4px 16px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -1px 0 rgba(0,0,0,0.02)",
+                      ? "linear-gradient(145deg, rgba(250,250,250,0.35) 0%, rgba(245,245,245,0.25) 100%)"
+                      : "linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(252,252,252,0.65) 100%)",
+                backdropFilter: "blur(24px) saturate(1.5)",
+                WebkitBackdropFilter: "blur(24px) saturate(1.5)",
               }}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >

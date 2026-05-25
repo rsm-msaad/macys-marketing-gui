@@ -14,7 +14,7 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
   const active = usePersona(activePersonaId);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-charcoal/10 bg-white px-6 shadow-sm">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between topbar-glass px-6">
       <Link href="/" className="font-serif text-2xl font-bold tracking-wide text-charcoal">
         MACY&apos;S
       </Link>
@@ -51,7 +51,7 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
 
         {open && (
           <div
-            className="absolute right-0 mt-2 w-72 overflow-hidden rounded-md border border-charcoal/10 bg-white shadow-lg"
+            className="absolute right-0 mt-2 w-72 overflow-hidden topbar-dropdown"
             onMouseLeave={() => setOpen(false)}
           >
             {personas.map((p) => (
@@ -90,37 +90,37 @@ export function TopBar({ activePersonaId }: { activePersonaId: string }) {
       <div className="flex items-center gap-3">
         <Link
           href="/story"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           Story
         </Link>
         <Link
           href="/rag-compare"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           RAG Demo
         </Link>
         <Link
           href="/evals"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           Evals
         </Link>
         <Link
           href="/evidence"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           Evidence
         </Link>
         <Link
           href="/impact"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           Impact
         </Link>
         <Link
           href="/docs"
-          className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50"
+          className="nav-pill-glass px-3 py-1 text-[11px] font-medium text-teal-700"
         >
           Docs
         </Link>

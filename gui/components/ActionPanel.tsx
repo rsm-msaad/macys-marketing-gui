@@ -81,7 +81,7 @@ function CompletedStepCard({
 }) {
   const [open, setOpen] = useState(stepNumber >= 6); // auto-expand steps 6-10
   return (
-    <div className="rounded-md border border-charcoal/10 bg-white">
+    <div className="completed-step-glass">
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -375,7 +375,7 @@ export function ActionPanel({
   }
 
   return (
-    <div className="flex items-start gap-4 rounded-lg border border-teal-600/40 bg-white p-5 shadow-sm">
+    <div className="flex items-start gap-4 action-panel-glass p-5">
       <ActiveIcon canAct={canAct} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
