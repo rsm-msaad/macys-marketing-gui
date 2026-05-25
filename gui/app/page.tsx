@@ -3,319 +3,330 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Shield, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, Shield } from "lucide-react";
 
 import { usePersonas } from "@/components/PersonaContext";
 import { CountUp } from "@/components/motion";
 
-const TEAM_ORDER = [
-  "campaign-manager",
-  "senior-designer",
-  "marketing-analyst",
-  "production-artist",
-];
+/* ─── Data ─── */
 
+const TEAM_ORDER = ["campaign-manager", "senior-designer", "marketing-analyst", "production-artist"];
 const CEO_IDS = ["ceo", "thales"];
 
-const PERSONA_COLORS: Record<string, { bg: string; accent: string }> = {
-  "campaign-manager": { bg: "#0B7B8A", accent: "#0EA5A0" },
-  "senior-designer": { bg: "#B8860B", accent: "#D4A537" },
-  "marketing-analyst": { bg: "#9B2C2C", accent: "#C84B4B" },
-  "production-artist": { bg: "#5B8C5A", accent: "#87A96B" },
-};
-
 const STATS = [
-  { value: 5, label: "LLM Skills" },
-  { value: 6, label: "Automations" },
-  { value: 2, label: "MCP Tools" },
-  { value: 12, label: "RAG Docs" },
-  { value: 2000, suffix: "", label: "SKUs" },
-  { value: 50, suffix: "K", label: "Customers" },
+  { end: 5, label: "Skills", dur: 2 },
+  { end: 6, label: "Automations", dur: 2.2 },
+  { end: 2, label: "MCP Tools", dur: 1.8 },
+  { end: 12, label: "RAG Docs", dur: 2.4 },
+  { end: 2000, label: "SKUs", dur: 2.8, sfx: "" },
+  { end: 50, label: "Customers", dur: 2, sfx: "K" },
 ];
+
+const NAV = [
+  { label: "Story", href: "/story" },
+  { label: "RAG Demo", href: "/rag-compare" },
+  { label: "Evals", href: "/evals" },
+  { label: "Evidence", href: "/evidence" },
+  { label: "Impact", href: "/impact" },
+  { label: "Docs", href: "/docs" },
+];
+
+const GRAIN = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E")`;
+
+/* ─── Page ─── */
 
 export default function LandingPage() {
   const { personas, loading } = usePersonas();
-  const [heroComplete, setHeroComplete] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // -1 left, 1 right
-  const isAnimatingRef = useRef(false);
+  const [entered, setEntered] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [dir, setDir] = useState(0);
+  const lockRef = useRef(false);
 
-  const team = TEAM_ORDER
-    .map((id) => personas.find((p) => p.id === id))
-    .filter(Boolean) as typeof personas;
+  const team = TEAM_ORDER.map((id) => personas.find((p) => p.id === id)).filter(Boolean) as typeof personas;
+  const ceos = CEO_IDS.map((id) => personas.find((p) => p.id === id)).filter(Boolean) as typeof personas;
+  const n = team.length || 1;
 
-  const ceos = CEO_IDS
-    .map((id) => personas.find((p) => p.id === id))
-    .filter(Boolean) as typeof personas;
+  useEffect(() => { const t = setTimeout(() => setEntered(true), 2800); return () => clearTimeout(t); }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setHeroComplete(true), 3200);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const navigate = useCallback((dir: "next" | "prev") => {
-    if (isAnimatingRef.current || team.length === 0) return;
-    isAnimatingRef.current = true;
-    setDirection(dir === "next" ? 1 : -1);
-    setActiveIndex((prev) =>
-      dir === "next" ? (prev + 1) % team.length : (prev + team.length - 1) % team.length
-    );
-    setTimeout(() => { isAnimatingRef.current = false; }, 600);
-  }, [team.length]);
+  const go = useCallback((d: "next" | "prev") => {
+    if (lockRef.current || !team.length) return;
+    lockRef.current = true;
+    setDir(d === "next" ? 1 : -1);
+    setIdx((p) => d === "next" ? (p + 1) % n : (p + n - 1) % n);
+    setTimeout(() => { lockRef.current = false; }, 550);
+  }, [n, team.length]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") navigate("prev");
-      if (e.key === "ArrowRight") navigate("next");
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [navigate]);
+    const h = (e: KeyboardEvent) => { if (e.key === "ArrowLeft") go("prev"); if (e.key === "ArrowRight") go("next"); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [go]);
 
-  const active = team[activeIndex];
-  const colors = active ? PERSONA_COLORS[active.id] ?? { bg: "#1a1a2e", accent: "#0B7B8A" } : { bg: "#1a1a2e", accent: "#0B7B8A" };
+  const cur = team[idx];
+  const prev = team[(idx + n - 1) % n];
+  const next = team[(idx + 1) % n];
 
-  // Slide variants for center persona
-  const slideVariants = {
-    enter: (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0, scale: 0.9 }),
+  /* slide variants */
+  const centerV = {
+    enter: (d: number) => ({ x: d > 0 ? 120 : -120, opacity: 0, scale: 0.8 }),
     center: { x: 0, opacity: 1, scale: 1 },
-    exit: (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0, scale: 0.9 }),
+    exit: (d: number) => ({ x: d > 0 ? -120 : 120, opacity: 0, scale: 0.8 }),
   };
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      {/* Dark base — video shows through */}
-      <div className="absolute inset-0 bg-[#0a0a12]" />
+    <div className="relative w-full h-screen overflow-hidden bg-[#08080e]">
 
-      {/* Video background */}
-      <div className="absolute inset-0 z-[1]">
-        <video autoPlay loop muted playsInline className="h-full w-full object-cover" style={{ opacity: heroComplete ? 0.25 : 0.18, transition: "opacity 1.5s ease" }}>
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/50" />
-      </div>
+      {/* ── Video ── */}
+      <video
+        autoPlay loop muted playsInline
+        className="absolute inset-0 z-0 h-full w-full object-cover"
+        style={{ opacity: entered ? 0.22 : 0.14, transition: "opacity 2s ease" }}
+      >
+        <source src="/hero-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/50 via-black/20 to-black/70" />
 
-      {/* Grain */}
-      <div className="absolute inset-0 pointer-events-none z-[2]" style={{ opacity: 0.3, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E")`, backgroundSize: "200px 200px" }} />
+      {/* ── Grain ── */}
+      <div
+        className="absolute inset-0 z-[2] pointer-events-none"
+        style={{ opacity: 0.35, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
+      />
 
-      <div className="relative z-[10] flex min-h-screen flex-col">
-        <div className="flex flex-1 flex-col items-center justify-center px-6">
+      {/* ── Content ── */}
+      <div className="relative z-10 flex h-full flex-col px-4 sm:px-8">
 
-          {/* MACY'S title */}
+        {/* ━━━ TOP: Title + Stats ━━━ */}
+        <div className="flex flex-col items-center pt-[4vh] sm:pt-[5vh]">
+
+          {/* Title */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="font-serif tracking-wider text-white text-center"
-            style={{ fontSize: "clamp(48px, 10vw, 120px)", lineHeight: 0.9, fontWeight: 600 }}
+            initial={{ opacity: 0, y: 16, letterSpacing: "0.4em" }}
+            animate={{ opacity: 1, y: 0, letterSpacing: "0.18em" }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="font-serif text-white text-center"
+            style={{ fontSize: "clamp(36px, 7vw, 80px)", lineHeight: 1, fontWeight: 600 }}
           >
             MACY&apos;S
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="mt-4 text-center text-sm sm:text-lg tracking-[0.25em] uppercase text-white/70 font-medium"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs tracking-[0.35em] uppercase text-white font-medium"
           >
             AI-Powered Marketing Operations
           </motion.p>
 
-          {/* Animated stats row */}
+          {/* Stats */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.8 }}
-            className="mt-8 flex flex-wrap justify-center gap-5 sm:gap-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.6 }}
+            className="mt-4 sm:mt-5 flex flex-wrap justify-center gap-4 sm:gap-7"
           >
             {STATS.map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="font-serif text-2xl sm:text-3xl font-bold text-white">
-                  <CountUp end={s.value} duration={2} suffix={s.suffix ?? ""} />
+              <div key={s.label} className="text-center min-w-[48px]">
+                <div className="font-serif text-lg sm:text-2xl font-bold text-white/90">
+                  {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
                 </div>
-                <div className="text-[10px] sm:text-xs uppercase tracking-wider text-white/50">{s.label}</div>
+                <div className="text-[8px] sm:text-[10px] uppercase tracking-[0.15em] text-white/35 mt-0.5">{s.label}</div>
               </div>
             ))}
           </motion.div>
+        </div>
 
-          {/* ===== PERSONA SECTION ===== */}
+        {/* ━━━ MIDDLE: CEOs + Carousel ━━━ */}
+        <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+
+          {/* CEO Duo */}
           <AnimatePresence>
-            {heroComplete && team.length > 0 && (
+            {entered && ceos.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.2 }}
-                className="mt-10 sm:mt-14 w-full max-w-5xl"
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="flex items-center gap-5 sm:gap-8 mb-5 sm:mb-7"
               >
-
-                {/* ── CEO DUO (always visible above carousel) ── */}
-                {ceos.length > 0 && (
-                  <div className="mb-10 flex flex-col items-center">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-500/10 px-4 py-1.5">
-                      <Shield className="h-3.5 w-3.5 text-purple-300" />
-                      <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-purple-200">Executive Leadership</span>
+                {ceos.map((c) => (
+                  <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
+                    <div
+                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-purple-400/40 transition-all duration-300 group-hover:ring-purple-400/80"
+                      style={{ boxShadow: "0 0 30px rgba(139,92,246,0.15)" }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
                     </div>
-                    <div className="flex items-center justify-center gap-6 sm:gap-12">
-                      {ceos.map((ceo) => (
-                        <Link key={ceo.id} href={`/${ceo.id}`} className="group flex flex-col items-center">
+                    <span className="mt-1.5 text-[10px] sm:text-xs font-semibold text-white/80">{c.name}</span>
+                    <span className="flex items-center gap-0.5 text-[8px] uppercase tracking-wider text-purple-300/50">
+                      <Shield className="h-2 w-2" /> Co-CEO
+                    </span>
+                  </Link>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Team Carousel */}
+          <AnimatePresence>
+            {entered && team.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="w-full max-w-4xl"
+              >
+                {/* Carousel track */}
+                <div className="relative flex items-center justify-center" style={{ height: "clamp(240px, 38vh, 380px)" }}>
+
+                  {/* ── Left persona ── */}
+                  <AnimatePresence mode="popLayout">
+                    <motion.button
+                      key={`l-${prev?.id}`}
+                      initial={{ opacity: 0, x: -40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.45 }}
+                      onClick={() => go("prev")}
+                      className="absolute left-4 sm:left-16 z-10 flex flex-col items-center cursor-pointer"
+                    >
+                      <div
+                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/30"
+                        style={{ filter: "blur(0.5px)", opacity: 0.6 }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
+                      </div>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-white/30 font-medium">{prev?.name}</span>
+                    </motion.button>
+                  </AnimatePresence>
+
+                  {/* ── Center persona ── */}
+                  <AnimatePresence mode="wait" custom={dir}>
+                    {cur && (
+                      <motion.div
+                        key={cur.id}
+                        custom={dir}
+                        variants={centerV}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        className="flex flex-col items-center z-20"
+                      >
+                        <Link href={`/${cur.id}`} className="flex flex-col items-center group">
                           <div
-                            className="h-20 w-20 sm:h-28 sm:w-28 rounded-full overflow-hidden ring-[3px] ring-purple-400/60 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-purple-400 group-hover:ring-offset-[6px]"
-                            style={{ boxShadow: "0 0 50px rgba(139,92,246,0.25), 0 0 100px rgba(139,92,246,0.1)" }}
+                            className="h-28 w-28 sm:h-40 sm:w-40 rounded-full overflow-hidden ring-[3px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
+                            style={{ boxShadow: "0 0 50px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4)" }}
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={ceo.avatar} alt={ceo.name} className="h-full w-full object-cover" />
+                            <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
                           </div>
-                          <h3 className="mt-2 font-serif text-base sm:text-xl font-semibold text-white">{ceo.name}</h3>
-                          <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-purple-200/50">{ceo.title}</p>
-                          <span className="mt-1.5 text-[10px] text-white/30 transition-colors duration-200 group-hover:text-white/60">
-                            Enter →
+                          <h2 className="mt-3 sm:mt-4 font-serif text-2xl sm:text-4xl font-semibold text-white tracking-wide">
+                            {cur.name}
+                          </h2>
+                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/40 font-medium">
+                            {cur.title}
+                          </p>
+                          <p className="mt-2 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-white/30">
+                            {cur.tagline}
+                          </p>
+                          <span className="mt-3 sm:mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2 text-[11px] sm:text-xs font-medium text-white/60 transition-all duration-300 group-hover:border-white/40 group-hover:bg-white/5 group-hover:text-white/90">
+                            Enter as {cur.name}
+                            <ArrowRight className="h-3 w-3" />
                           </span>
                         </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                {/* ── Divider ── */}
-                <div className="mb-8 flex items-center gap-4 px-8 sm:px-20">
-                  <div className="h-px flex-1 bg-white/10" />
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/25">Operations Team</span>
-                  <div className="h-px flex-1 bg-white/10" />
-                </div>
+                  {/* ── Right persona ── */}
+                  <AnimatePresence mode="popLayout">
+                    <motion.button
+                      key={`r-${next?.id}`}
+                      initial={{ opacity: 0, x: 40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 40 }}
+                      transition={{ duration: 0.45 }}
+                      onClick={() => go("next")}
+                      className="absolute right-4 sm:right-16 z-10 flex flex-col items-center cursor-pointer"
+                    >
+                      <div
+                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/30"
+                        style={{ filter: "blur(0.5px)", opacity: 0.6 }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
+                      </div>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-white/30 font-medium">{next?.name}</span>
+                    </motion.button>
+                  </AnimatePresence>
 
-                {/* ── TEAM CAROUSEL ── */}
-                <div className="relative flex items-center justify-center" style={{ minHeight: "340px" }}>
-
-                  {/* Left arrow */}
+                  {/* ── Arrow buttons (outer edges) ── */}
                   <button
                     type="button"
-                    onClick={() => navigate("prev")}
-                    className="absolute left-0 sm:left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/60 transition-all duration-200 hover:scale-110 hover:border-white/40 hover:bg-white/10 hover:text-white cursor-pointer"
+                    onClick={() => go("prev")}
+                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/40 hover:border-white/30 hover:bg-white/5 hover:text-white/80 transition-all duration-200 cursor-pointer"
                   >
-                    <ArrowLeft className="h-5 w-5" strokeWidth={2} />
+                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   </button>
-
-                  {/* Center persona with slide animation */}
-                  <div className="relative w-full flex justify-center overflow-hidden" style={{ minHeight: "340px" }}>
-                    <AnimatePresence mode="wait" custom={direction}>
-                      {active && (
-                        <motion.div
-                          key={active.id}
-                          custom={direction}
-                          variants={slideVariants}
-                          initial="enter"
-                          animate="center"
-                          exit="exit"
-                          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                          className="absolute inset-0 flex flex-col items-center"
-                        >
-                          <Link href={`/${active.id}`} className="flex flex-col items-center group">
-                            <div
-                              className="h-32 w-32 sm:h-44 sm:w-44 rounded-full overflow-hidden ring-4 ring-white/30 ring-offset-4 ring-offset-transparent transition-all duration-500 group-hover:ring-white/50 group-hover:ring-offset-8"
-                              style={{
-                                boxShadow: "0 0 60px rgba(255,255,255,0.1), 0 0 120px rgba(255,255,255,0.05)",
-                              }}
-                            >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={active.avatar} alt={active.name} className="h-full w-full object-cover" />
-                            </div>
-
-                            <h2 className="mt-4 font-serif text-3xl sm:text-5xl font-semibold text-white text-center">
-                              {active.name}
-                            </h2>
-                            <p className="mt-1.5 text-xs sm:text-sm uppercase tracking-[0.2em] text-white/60">
-                              {active.title}
-                            </p>
-                            <p className="mt-3 max-w-sm text-center text-xs sm:text-sm leading-relaxed text-white/45">
-                              {active.tagline}
-                            </p>
-                            <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-2.5 text-sm font-medium text-white/80 transition-all duration-300 group-hover:border-white/50 group-hover:bg-white/10 group-hover:text-white">
-                              Enter as {active.name} →
-                            </span>
-                          </Link>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Right arrow */}
                   <button
                     type="button"
-                    onClick={() => navigate("next")}
-                    className="absolute right-0 sm:right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/60 transition-all duration-200 hover:scale-110 hover:border-white/40 hover:bg-white/10 hover:text-white cursor-pointer"
+                    onClick={() => go("next")}
+                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/40 hover:border-white/30 hover:bg-white/5 hover:text-white/80 transition-all duration-200 cursor-pointer"
                   >
-                    <ArrowRight className="h-5 w-5" strokeWidth={2} />
+                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                 </div>
 
-                {/* Dot indicators */}
-                <div className="mt-4 flex items-center justify-center gap-2.5">
+                {/* Dots */}
+                <div className="mt-3 flex justify-center gap-2">
                   {team.map((_, i) => (
                     <button
                       key={i}
                       type="button"
-                      onClick={() => {
-                        if (!isAnimatingRef.current) {
-                          setDirection(i > activeIndex ? 1 : -1);
-                          setActiveIndex(i);
-                        }
-                      }}
+                      onClick={() => { if (!lockRef.current) { setDir(i > idx ? 1 : -1); setIdx(i); } }}
                       className="cursor-pointer"
                     >
                       <div
-                        className="rounded-full transition-all duration-500"
+                        className="rounded-full transition-all duration-400"
                         style={{
-                          width: i === activeIndex ? "28px" : "8px",
-                          height: "8px",
-                          backgroundColor: i === activeIndex ? "white" : "rgba(255,255,255,0.25)",
+                          width: i === idx ? "20px" : "6px",
+                          height: "6px",
+                          backgroundColor: i === idx ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.2)",
                         }}
                       />
                     </button>
                   ))}
                 </div>
-
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Scroll indicator */}
-          {!heroComplete && !loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="mt-12">
-              <ChevronDown className="h-5 w-5 text-white/30 animate-bounce" />
-            </motion.div>
-          )}
         </div>
 
-        {/* Footer */}
-        <motion.footer
+        {/* ━━━ BOTTOM: Nav + Credit ━━━ */}
+        <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: heroComplete ? 1 : 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="relative z-[10] pb-6 pt-4"
+          animate={{ opacity: entered ? 1 : 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="pb-4 sm:pb-5 flex flex-col items-center gap-2"
         >
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-6">
-            {[
-              { label: "Story", href: "/story" },
-              { label: "RAG Demo", href: "/rag-compare" },
-              { label: "Evals", href: "/evals" },
-              { label: "Evidence", href: "/evidence" },
-              { label: "Impact", href: "/impact" },
-              { label: "Docs", href: "/docs" },
-            ].map((link) => (
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            {NAV.map((l) => (
               <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-full border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-medium text-white/40 transition-all duration-200 hover:border-white/30 hover:bg-white/5 hover:text-white/70"
+                key={l.href}
+                href={l.href}
+                className="rounded-full border border-white/8 px-3 py-1 text-[9px] sm:text-[10px] font-medium text-white/30 transition-all duration-200 hover:border-white/20 hover:text-white/60"
               >
-                {link.label}
+                {l.label}
               </Link>
             ))}
           </div>
-          <p className="mt-3 text-center text-[10px] text-white/20">
-            Built with Claude · TritonAI · Next.js · FastAPI · Merna Saad, Abdullah AlJarallah, Shankar D.
+          <p className="text-[9px] text-white/15">
+            Built with Claude · TritonAI · Next.js · FastAPI
           </p>
-        </motion.footer>
+        </motion.div>
       </div>
     </div>
   );
