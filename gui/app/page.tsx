@@ -112,9 +112,9 @@ export default function LandingPage() {
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.9 }}
-            className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs tracking-[0.35em] uppercase text-charcoal/60 font-medium"
+            className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold"
           >
             AI-Powered Marketing Operations
           </motion.p>
@@ -128,10 +128,10 @@ export default function LandingPage() {
           >
             {STATS.map((s) => (
               <div key={s.label} className="text-center min-w-[48px]">
-                <div className="font-serif text-lg sm:text-2xl font-bold text-charcoal/85">
+                <div className="font-serif text-lg sm:text-2xl font-bold text-charcoal">
                   {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
                 </div>
-                <div className="text-[8px] sm:text-[10px] uppercase tracking-[0.15em] text-charcoal/30 mt-0.5">{s.label}</div>
+                <div className="text-[8px] sm:text-[10px] uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -158,7 +158,7 @@ export default function LandingPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
                     </div>
-                    <span className="mt-1.5 text-[10px] sm:text-xs font-semibold text-charcoal/70">{c.name}</span>
+                    <span className="mt-1.5 text-[10px] sm:text-xs font-semibold text-charcoal/90">{c.name}</span>
                     <span className="flex items-center gap-0.5 text-[8px] uppercase tracking-wider text-purple-300/50">
                       <Shield className="h-2 w-2" /> Co-CEO
                     </span>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/25 font-medium">{prev?.name}</span>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/45 font-medium">{prev?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -225,13 +225,13 @@ export default function LandingPage() {
                           <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-charcoal tracking-wide">
                             {cur.name}
                           </h2>
-                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal/35 font-medium">
+                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal/60 font-medium">
                             {cur.title}
                           </p>
                           <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-charcoal/25">
                             {cur.tagline}
                           </p>
-                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-charcoal/12 px-5 py-2 text-[11px] sm:text-xs font-medium text-charcoal/50 transition-all duration-300 group-hover:border-charcoal/25 group-hover:bg-charcoal/5 group-hover:text-charcoal/85">
+                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-charcoal/12 px-5 py-2 text-[11px] sm:text-xs font-medium text-charcoal/75 transition-all duration-300 group-hover:border-charcoal/25 group-hover:bg-charcoal/5 group-hover:text-charcoal">
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -258,7 +258,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/25 font-medium">{next?.name}</span>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/45 font-medium">{next?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -266,14 +266,14 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => go("prev")}
-                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/35 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/70 transition-all duration-200 cursor-pointer"
+                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/55 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/90 transition-all duration-200 cursor-pointer"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                   <button
                     type="button"
                     onClick={() => go("next")}
-                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/35 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/70 transition-all duration-200 cursor-pointer"
+                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/55 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/90 transition-all duration-200 cursor-pointer"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
@@ -316,7 +316,7 @@ export default function LandingPage() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border border-charcoal/8 px-3 py-1 text-[9px] sm:text-[10px] font-medium text-charcoal/25 transition-all duration-200 hover:border-charcoal/15 hover:text-charcoal/50"
+                className="rounded-full border border-charcoal/12 px-3 py-1 text-[9px] sm:text-[10px] font-medium text-charcoal/55 transition-all duration-200 hover:border-charcoal/15 hover:text-charcoal/70"
               >
                 {l.label}
               </Link>
