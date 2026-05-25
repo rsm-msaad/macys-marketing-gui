@@ -51,6 +51,26 @@ export function FinalApprovalContent({
     <div className="space-y-3">
       <ContextStack context={context} />
 
+      {/* Robot army accent — AI skills firing */}
+      <div className="relative overflow-hidden rounded-xl border border-teal-600/20 bg-gradient-to-r from-[#0d1f24] to-[#1a2a2e]">
+        <video
+          autoPlay loop muted playsInline
+          className="h-28 w-full object-cover opacity-60"
+        >
+          <source src="/robot-army.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-[#0d1f24]/80 via-transparent to-transparent">
+          <div className="text-center">
+            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-teal-400">
+              3 AI Skills Firing
+            </div>
+            <div className="mt-0.5 text-[9px] text-white/50">
+              Compliance · Brief Generator · Revision Router
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* AI Compliance Pre Check fires first */}
       <CompliancePreCheck
         context={context}

@@ -30,6 +30,26 @@ export function ActivationContent({
     <div className="space-y-3">
       <ContextStack context={context} />
 
+      {/* Robot runner accent — automation executing */}
+      <div className="relative overflow-hidden rounded-xl border border-charcoal/10 bg-gradient-to-r from-[#1a1f1a] to-[#202820]">
+        <video
+          autoPlay loop muted playsInline
+          className="h-24 w-full object-cover opacity-50"
+        >
+          <source src="/robot-runner.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-[#1a1f1a]/80 via-transparent to-transparent">
+          <div className="text-center">
+            <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-sage">
+              Automation Running
+            </div>
+            <div className="mt-0.5 text-[9px] text-white/50">
+              Activation Scheduler · 5 Channels
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Upstream context: reading from Step 7 */}
       {variantCount > 0 && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
