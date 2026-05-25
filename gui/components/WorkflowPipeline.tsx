@@ -136,25 +136,23 @@ export function WorkflowPipeline({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.05, y: -6, transition: { duration: 0.25 } }}
-              className={`step-card ${isActive ? "step-card-active" : ""} relative flex h-36 w-48 flex-shrink-0 flex-col justify-between p-3.5 cursor-default ${
+              className={`step-card ${isActive ? "step-card-active" : isComplete ? "step-card-complete" : farPending ? "step-card-locked" : ""} relative flex h-36 w-48 flex-shrink-0 flex-col justify-between p-3.5 cursor-default ${
                 isActive
-                  ? "border-2 border-teal-400/40"
+                  ? "border-2 border-teal-500/50"
                   : isComplete
-                    ? "border border-white/70"
+                    ? "border border-sage/20"
                     : farPending
-                      ? "border border-charcoal/6 opacity-40"
-                      : "border border-white/50"
+                      ? "border border-charcoal/5"
+                      : "border border-charcoal/8"
               } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
               style={{
                 background: isActive
-                  ? "linear-gradient(145deg, rgba(220,243,241,0.92) 0%, rgba(178,230,225,0.75) 50%, rgba(200,238,234,0.85) 100%)"
+                  ? "linear-gradient(145deg, rgba(200,240,236,1) 0%, rgba(175,228,222,0.95) 50%, rgba(195,236,232,0.98) 100%)"
                   : isComplete
-                    ? "linear-gradient(145deg, rgba(255,255,255,0.88) 0%, rgba(248,250,248,0.75) 100%)"
-                    : farPending
-                      ? "linear-gradient(145deg, rgba(250,250,250,0.35) 0%, rgba(245,245,245,0.25) 100%)"
-                      : "linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(252,252,252,0.65) 100%)",
-                backdropFilter: "blur(24px) saturate(1.5)",
-                WebkitBackdropFilter: "blur(24px) saturate(1.5)",
+                    ? "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(245,250,245,0.9) 100%)"
+                  : farPending
+                    ? "linear-gradient(145deg, rgba(248,248,248,0.6) 0%, rgba(244,244,244,0.45) 100%)"
+                    : "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.88) 100%)",
               }}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
