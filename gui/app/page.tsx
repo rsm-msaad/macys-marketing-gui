@@ -159,7 +159,7 @@ export default function LandingPage() {
                       <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
                     </div>
                     <span className="mt-1.5 text-[10px] sm:text-xs font-semibold text-charcoal/90">{c.name}</span>
-                    <span className="flex items-center gap-0.5 text-[8px] uppercase tracking-wider text-purple-300/50">
+                    <span className="flex items-center gap-0.5 text-[8px] uppercase tracking-wider text-purple-600/60 font-semibold">
                       <Shield className="h-2 w-2" /> Co-CEO
                     </span>
                   </Link>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/45 font-medium">{prev?.name}</span>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/65 font-semibold">{prev?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -225,13 +225,13 @@ export default function LandingPage() {
                           <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-charcoal tracking-wide">
                             {cur.name}
                           </h2>
-                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal/60 font-medium">
+                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal/80 font-semibold">
                             {cur.title}
                           </p>
-                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-charcoal/25">
+                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-charcoal/55">
                             {cur.tagline}
                           </p>
-                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-charcoal/12 px-5 py-2 text-[11px] sm:text-xs font-medium text-charcoal/75 transition-all duration-300 group-hover:border-charcoal/25 group-hover:bg-charcoal/5 group-hover:text-charcoal">
+                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border-2 border-charcoal/25 bg-white/50 backdrop-blur-sm px-5 py-2 text-[11px] sm:text-xs font-semibold text-charcoal transition-all duration-300 group-hover:border-charcoal/40 group-hover:bg-white/70 group-hover:text-charcoal">
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -258,7 +258,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/45 font-medium">{next?.name}</span>
+                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/65 font-semibold">{next?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -266,14 +266,14 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => go("prev")}
-                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/55 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/90 transition-all duration-200 cursor-pointer"
+                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm text-charcoal/70 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal transition-all duration-200 cursor-pointer"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                   <button
                     type="button"
                     onClick={() => go("next")}
-                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-charcoal/10 text-charcoal/55 hover:border-charcoal/20 hover:bg-charcoal/5 hover:text-charcoal/90 transition-all duration-200 cursor-pointer"
+                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm text-charcoal/70 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal transition-all duration-200 cursor-pointer"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
@@ -293,7 +293,7 @@ export default function LandingPage() {
                         style={{
                           width: i === idx ? "20px" : "6px",
                           height: "6px",
-                          backgroundColor: i === idx ? "rgba(45,45,45,0.6)" : "rgba(45,45,45,0.15)",
+                          backgroundColor: i === idx ? "rgba(45,45,45,0.75)" : "rgba(45,45,45,0.25)",
                         }}
                       />
                     </button>
@@ -316,13 +316,13 @@ export default function LandingPage() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border border-charcoal/12 px-3 py-1 text-[9px] sm:text-[10px] font-medium text-charcoal/55 transition-all duration-200 hover:border-charcoal/15 hover:text-charcoal/70"
+                className="rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm px-3 py-1 text-[9px] sm:text-[10px] font-bold text-charcoal/80 transition-all duration-200 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal"
               >
                 {l.label}
               </Link>
             ))}
           </div>
-          <p className="text-[9px] text-charcoal/20">
+          <p className="text-[9px] text-charcoal/45 font-medium">
             Built with Claude · TritonAI · Next.js · FastAPI
           </p>
         </motion.div>
