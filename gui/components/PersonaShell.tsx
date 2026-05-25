@@ -730,40 +730,38 @@ function StepOverlay({
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 20, scale: 0.95 }}
           transition={{ duration: 0.3, delay: 0.05 }}
-          className="flex-1 relative overflow-hidden rounded-2xl shadow-2xl border border-white/50"
+          className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50 bg-white"
         >
-          {/* Layer 1: Solid background to block main page */}
-          <div className="absolute inset-0 bg-[#F0ECE4]" style={{ zIndex: 0 }} />
-          {/* Layer 2: Video playing on top of solid bg */}
+          {/* Video strip header */}
           {STEP_VIDEO[state.current_step] && (
-            <video
-              key={state.current_step}
-              autoPlay loop muted playsInline
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.35, zIndex: 1 }}
-            >
-              <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-            </video>
-          )}
-          {/* Layer 3: Slight white wash for readability */}
-          <div className="absolute inset-0 bg-white/20" style={{ zIndex: 2 }} />
-          {/* Close button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-3 right-3 z-30 flex h-7 w-7 items-center justify-center rounded-full bg-charcoal/15 text-charcoal/60 hover:bg-charcoal/25 hover:text-charcoal transition-colors"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-          {/* Step title */}
-          <div className="relative px-5 pt-4 pb-2" style={{ zIndex: 3 }}>
-            <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-teal-600/60">Step {state.current_step}</div>
-            <div className="text-lg font-serif font-semibold text-charcoal">
-              {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+            <div className="relative h-[72px] flex-shrink-0 overflow-hidden">
+              <video
+                key={state.current_step}
+                autoPlay loop muted playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+              >
+                <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50" />
+              <div className="absolute inset-0 flex items-center justify-between px-5">
+                <div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
+                  <div className="text-base font-serif font-semibold text-white">
+                    {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white/80 hover:bg-white/25 hover:text-white transition-colors"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
-          </div>
-          {/* Scrollable content */}
-          <div className="relative flex-1 overflow-y-auto px-5 pb-5 step-content-glass" style={{ zIndex: 3, maxHeight: "calc(100% - 60px)" }}>
+          )}
+          {/* Scrollable content — opaque for readability */}
+          <div className="flex-1 overflow-y-auto px-5 py-4 bg-white">
             <ActionPanel
               personaId={personaId}
               campaignId={campaignId}
