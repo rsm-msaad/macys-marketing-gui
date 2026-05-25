@@ -66,11 +66,11 @@ export default function LandingPage() {
   const prev = team[(idx + n - 1) % n];
   const next = team[(idx + 1) % n];
 
-  /* slide variants */
+  /* crossfade morph — both personas overlap during transition */
   const centerV = {
-    enter: (d: number) => ({ x: d > 0 ? 120 : -120, opacity: 0, scale: 0.8 }),
-    center: { x: 0, opacity: 1, scale: 1 },
-    exit: (d: number) => ({ x: d > 0 ? -120 : 120, opacity: 0, scale: 0.8 }),
+    enter: { opacity: 0, scale: 0.92, filter: "blur(6px)" },
+    center: { opacity: 1, scale: 1, filter: "blur(0px)" },
+    exit: { opacity: 0, scale: 1.05, filter: "blur(6px)" },
   };
 
   return (
@@ -203,17 +203,16 @@ export default function LandingPage() {
                   </AnimatePresence>
 
                   {/* ── Center persona ── */}
-                  <AnimatePresence mode="wait" custom={dir}>
+                  <AnimatePresence mode="popLayout">
                     {cur && (
                       <motion.div
                         key={cur.id}
-                        custom={dir}
                         variants={centerV}
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        className="flex flex-col items-center z-20"
+                        transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+                        className="absolute inset-0 flex flex-col items-center justify-center z-20"
                       >
                         <Link href={`/${cur.id}`} className="flex flex-col items-center group">
                           <div
