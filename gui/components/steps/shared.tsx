@@ -27,8 +27,8 @@ import { useState } from "react";
 import type { CampaignContext } from "@/lib/api";
 import { getStepOwnerName, getStepOwnerTitle } from "@/lib/authorities";
 
-// Step video background — renders a looping video behind step content.
-const STEP_VIDEO: Record<number, string> = {
+// Step video map — used by the floating modal header in PersonaShell.
+export const STEP_VIDEO: Record<number, string> = {
   1: "/step1-briefing.mp4",
   2: "/step2-segments.mp4",
   3: "/step3-products.mp4",
@@ -42,28 +42,12 @@ const STEP_VIDEO: Record<number, string> = {
 };
 
 export function StepVideoBackground({
-  stepNumber,
   children,
 }: {
   stepNumber: number;
   children: React.ReactNode;
 }) {
-  const src = STEP_VIDEO[stepNumber];
-  if (!src) return <div className="space-y-3">{children}</div>;
-  return (
-    <div className="relative space-y-3 overflow-hidden">
-      <video
-        autoPlay loop muted playsInline
-        className="absolute inset-0 h-full w-full object-cover rounded-xl pointer-events-none"
-        style={{ opacity: 0.18, zIndex: 0 }}
-      >
-        <source src={src} type="video/mp4" />
-      </video>
-      <div className="relative" style={{ zIndex: 1 }}>
-        {children}
-      </div>
-    </div>
-  );
+  return <>{children}</>;
 }
 
 // Common props every step content component receives.

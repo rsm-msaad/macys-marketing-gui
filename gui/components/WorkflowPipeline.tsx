@@ -45,10 +45,12 @@ export function WorkflowPipeline({
   personaId,
   steps: stepsProp,
   revisionCounts,
+  onStepClick,
 }: {
   personaId: string;
   steps?: WorkflowStep[];
   revisionCounts?: Record<string, number>;
+  onStepClick?: (stepNumber: number) => void;
 }) {
   const [fetched, setFetched] = useState<WorkflowStep[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -131,8 +133,9 @@ export function WorkflowPipeline({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
+              onClick={() => onStepClick?.(step.number)}
               style={{ animationDelay: `${i * 0.3}s` }}
-              className={`step-card-light relative flex h-32 flex-col justify-between p-3 cursor-default ${
+              className={`step-card-light relative flex h-32 flex-col justify-between p-3 ${onStepClick ? "cursor-pointer" : "cursor-default"} ${
                 isActive
                   ? "step-card-light-active"
                   : isComplete
