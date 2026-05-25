@@ -403,15 +403,19 @@ export function PersonaShell({
         </motion.aside>
 
         {/* Center */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
+        <main className="flex-1 overflow-y-auto px-6 py-6 relative">
+          {/* Subtle ambient gradient */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: "radial-gradient(ellipse at 30% 0%, rgba(11,123,138,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 100%, rgba(135,169,107,0.03) 0%, transparent 50%)",
+          }} />
           {/* Header — fades in */}
           <motion.header
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mb-5 flex items-start justify-between gap-4">
+            className="relative mb-5 flex items-start justify-between gap-4">
             <div>
-              <h1 className="font-serif text-2xl font-semibold text-charcoal">
+              <h1 className="font-serif text-2xl font-semibold text-charcoal tracking-wide">
                 {context && !isActiveCampaign ? context.campaign_brief.name : headline}
               </h1>
               <p className="mt-1 text-sm text-charcoal/65">

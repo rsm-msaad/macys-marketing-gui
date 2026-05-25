@@ -26,7 +26,7 @@ const LABEL_STYLE: Record<WorkflowStep["label"], { bg: string; text: string; lab
 function StatusDot({ status }: { status: WorkflowStep["status"] }) {
   if (status === "complete") {
     return (
-      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-600 text-white">
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-sm shadow-teal-500/30">
         <Check className="h-3 w-3" strokeWidth={3} />
       </span>
     );
@@ -104,7 +104,7 @@ export function WorkflowPipeline({
 
       {/* Animated progress bar */}
       {steps && (
-        <div className="mb-3 relative h-1.5 rounded-full bg-charcoal/8 overflow-hidden">
+        <div className="mb-4 relative h-2 rounded-full bg-charcoal/6 overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(steps.filter((s) => s.status === "complete").length / steps.length) * 100}%` }}
@@ -143,19 +143,28 @@ export function WorkflowPipeline({
           return (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 12, scale: 0.95 }}
-              animate={{ opacity: isComplete ? 0.8 : step.status === "pending" ? 0.65 : 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.15 + i * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ scale: 1.03, y: -2 }}
-              className={`relative flex h-32 w-44 flex-shrink-0 flex-col justify-between rounded-md border p-3 transition-shadow cursor-default ${
+              initial={{ opacity: 0, y: 16, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.2 } }}
+              className={`relative flex h-36 w-48 flex-shrink-0 flex-col justify-between rounded-xl p-3.5 cursor-default backdrop-blur-md ${
                 isActive
-                  ? "border-teal-600 shadow-md ring-2 ring-teal-600/20 ring-offset-1 ring-offset-cream"
-                  : "border-charcoal/15"
-              } ${step.my_step && !isActive ? "ring-1 ring-teal-600/30" : ""}`}
+                  ? "bg-teal-50/80 border-2 border-teal-500/40 shadow-lg shadow-teal-500/10 ring-1 ring-teal-400/20"
+                  : isComplete
+                    ? "bg-white/60 border border-charcoal/8"
+                    : farPending
+                      ? "bg-charcoal/[0.03] border border-charcoal/8 opacity-50"
+                      : "bg-white/50 border border-charcoal/10"
+              } ${step.my_step && !isActive ? "ring-1 ring-teal-500/20" : ""}`}
+              style={{
+                boxShadow: isActive
+                  ? "0 8px 32px rgba(11,123,138,0.12), 0 2px 8px rgba(0,0,0,0.06)"
+                  : "0 2px 12px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.04)",
+              }}
               title={`${step.owner} | ${step.status}${step.my_step ? " | your step" : ""}`}
             >
               <div className="flex items-start justify-between">
-                <span className="font-serif text-2xl font-semibold text-charcoal/40">
+                <span className={`font-serif text-2xl font-bold ${isActive ? "text-teal-600" : isComplete ? "text-teal-600/40" : "text-charcoal/20"}`}>
                   {step.number}
                 </span>
                 {farPending ? (
