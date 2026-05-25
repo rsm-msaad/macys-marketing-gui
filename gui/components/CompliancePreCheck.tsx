@@ -411,7 +411,7 @@ export function CompliancePreCheck({
       {/* Floating page overlay */}
       {floatingUrl && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-6"
+          className="fixed inset-0 z-[70] flex items-center justify-center p-6"
           style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setFloatingUrl(null); }}
         >
