@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { X } from "lucide-react";
 import {
   AlertTriangle,
   BookOpen,
@@ -151,6 +152,7 @@ export function AIBriefCard({
   const [wasEdited, setWasEdited] = useState(false);
   const [aiOriginal, setAiOriginal] = useState<BriefResult | null>(null);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [floatingUrl, setFloatingUrl] = useState<string | null>(null);
   const firedRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -485,18 +487,20 @@ export function AIBriefCard({
               <BookOpen className="h-3 w-3" />
               Evidence
             </button>
-            <Link
-              href="/evidence?step=6b"
+            <button
+              type="button"
+              onClick={() => setFloatingUrl("/evidence?step=6b")}
               className="text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
             >
               Full View &rarr;
-            </Link>
-            <Link
-              href={`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFloatingUrl(`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`)}
               className="inline-flex items-center gap-1.5 rounded-md border border-purple-200 bg-purple-50 px-3 py-1.5 text-[11px] font-medium text-purple-700 hover:bg-purple-100"
             >
               Review
-            </Link>
+            </button>
           </div>
         </div>
       )}
@@ -508,6 +512,26 @@ export function AIBriefCard({
         open={evidenceOpen}
         onClose={() => setEvidenceOpen(false)}
       />
+
+      {/* Floating page overlay */}
+      {floatingUrl && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-6"
+          style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
+          onClick={(e) => { if (e.target === e.currentTarget) setFloatingUrl(null); }}
+        >
+          <div className="relative w-full max-w-4xl h-[85vh] rounded-2xl overflow-hidden shadow-2xl border border-white/50 bg-white">
+            <button
+              type="button"
+              onClick={() => setFloatingUrl(null)}
+              className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-charcoal/10 text-charcoal/60 hover:bg-charcoal/20 hover:text-charcoal transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <iframe src={floatingUrl} className="h-full w-full border-0" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
