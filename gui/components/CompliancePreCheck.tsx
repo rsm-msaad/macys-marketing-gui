@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   AlertTriangle,
   BookOpen,
@@ -408,14 +409,14 @@ export function CompliancePreCheck({
         onClose={() => setEvidenceOpen(false)}
       />
 
-      {/* Floating page overlay */}
-      {floatingUrl && (
+      {/* Floating page overlay — portal to body so it's truly on top */}
+      {floatingUrl && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center p-6"
-          style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(20,20,20,0.6)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setFloatingUrl(null); }}
         >
-          <div className="relative w-full max-w-[95vw] h-[92vh] rounded-2xl overflow-hidden shadow-2xl border border-white/50 bg-white">
+          <div className="relative w-full max-w-[90vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl border border-white/50 bg-white animate-modal-in">
             <button
               type="button"
               onClick={() => setFloatingUrl(null)}
@@ -425,7 +426,8 @@ export function CompliancePreCheck({
             </button>
             <iframe src={floatingUrl} className="h-full w-full border-0" />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
