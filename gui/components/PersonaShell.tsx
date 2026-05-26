@@ -811,19 +811,18 @@ function StepOverlay({
           </div>
           <StepTypeCard stepNumber={state.current_step} label={steps.find(s => s.number === state.current_step)?.label ?? "HUMAN_ONLY"} />
 
-          {/* Chat with Claude */}
-          <div className="mt-4 pt-3 border-t border-charcoal/8">
-            <button
-              type="button"
-              onClick={onOpenChat}
-              className="flex w-full items-center gap-2 rounded-lg bg-teal-600 px-3 py-2 text-[10px] font-semibold text-white hover:bg-teal-700 transition-colors"
-            >
-              <MessageCircle className="h-3.5 w-3.5" />
-              Chat with Claude
-            </button>
-          </div>
         </motion.div>
       </div>
+
+      {/* Floating Chat with Claude icon — top right of overlay */}
+      <button
+        type="button"
+        onClick={onOpenChat}
+        className="fixed top-3 right-16 z-[55] fab-primary flex items-center gap-2 rounded-full px-4 py-2.5 text-white"
+      >
+        <MessageCircle className="h-4 w-4" />
+        <span className="text-[11px] font-semibold">Chat with Claude</span>
+      </button>
     </div>
   );
 }
