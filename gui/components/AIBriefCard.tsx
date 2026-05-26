@@ -137,10 +137,12 @@ export function AIBriefCard({
   context,
   complianceCheck,
   cachedOutput,
+  onBriefDone,
 }: {
   context: CampaignContext;
   complianceCheck: ComplianceResult | null;
   cachedOutput?: BriefResult | null;
+  onBriefDone?: (done: boolean) => void;
 }) {
   const [result, setResult] = useState<BriefResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -155,6 +157,11 @@ export function AIBriefCard({
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [floatingUrl, setFloatingUrl] = useState<string | null>(null);
   const firedRef = useRef<string | null>(null);
+
+  // Notify parent when brief is done
+  useEffect(() => {
+    onBriefDone?.(result !== null);
+  }, [result, onBriefDone]);
 
   useEffect(() => {
     const cid = context.campaign_brief.campaign_id;

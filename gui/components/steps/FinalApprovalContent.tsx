@@ -45,6 +45,7 @@ export function FinalApprovalContent({
     }
   }
 
+  const [briefDone, setBriefDone] = useState(false);
   const shouldBlockSubmit = aiRecommendsRevise && !overrideSubmit;
 
   return (
@@ -64,10 +65,11 @@ export function FinalApprovalContent({
           context={context}
           complianceCheck={complianceResult}
           cachedOutput={cachedBrief}
+          onBriefDone={setBriefDone}
         />
 
-        {/* Warning if AI recommends revisions */}
-        {shouldBlockSubmit && canAct && (
+        {/* Warning + approval only after brief is done */}
+        {briefDone && shouldBlockSubmit && canAct && (
           <div className="flex items-start gap-3 rounded-md border border-mustard/30 bg-mustard/10 p-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-mustard" />
             <div className="min-w-0 flex-1">
@@ -85,20 +87,22 @@ export function FinalApprovalContent({
           </div>
         )}
 
-        <ApprovalActions
-          canAct={canAct}
-          busy={busy}
-          primaryDisabled={shouldBlockSubmit}
-          primaryLabel="Final Approval"
-          secondaryLabel="Hold for Revisions"
-          stepNumber={6}
-          onPrimary={() =>
-            onApprove("Final Approval", {
-              compliance_check: complianceResult,
-            })
-          }
-          onRequestRevisions={() => onRequestRevisions(6, 5)}
-        />
+        {briefDone && (
+          <ApprovalActions
+            canAct={canAct}
+            busy={busy}
+            primaryDisabled={shouldBlockSubmit}
+            primaryLabel="Final Approval"
+            secondaryLabel="Hold for Revisions"
+            stepNumber={6}
+            onPrimary={() =>
+              onApprove("Final Approval", {
+                compliance_check: complianceResult,
+              })
+            }
+            onRequestRevisions={() => onRequestRevisions(6, 5)}
+          />
+        )}
       </div>
     </StepVideoBackground>
   );
