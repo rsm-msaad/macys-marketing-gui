@@ -387,6 +387,21 @@ export function ActionPanel({
     <div className="flex items-start gap-4 action-panel-glass p-5">
       <ActiveIcon canAct={canAct} />
       <div className="min-w-0 flex-1">
+        {/* Authorization warning */}
+        {!canAct && (
+          <div className="mb-4 flex items-center gap-3 rounded-xl border-2 border-mustard/40 bg-mustard/10 px-4 py-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mustard/20 flex-shrink-0">
+              <span className="text-lg">⚠️</span>
+            </div>
+            <div>
+              <div className="text-sm font-bold text-charcoal">Not Authorized</div>
+              <div className="text-xs text-charcoal/70">
+                This step belongs to <strong>{getStepOwnerName(stepNumber)}</strong> ({getStepOwnerTitle(stepNumber)}).
+                Please log in as <strong className="text-teal-700">{getStepOwnerName(stepNumber)}</strong> to take action.
+              </div>
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <ActiveBadge stepNumber={stepNumber} />
         </div>
