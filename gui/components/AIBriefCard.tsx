@@ -483,22 +483,15 @@ export function AIBriefCard({
           {/* Sources panel */}
           <BriefSourcesPanel docs={result.retrieved_docs ?? []} />
 
-          {/* Action row: Evidence (peek), Full Evidence View, Review */}
+          {/* Action row: Evidence, Review */}
           <div className="mt-3 flex items-center gap-3 border-t border-charcoal/5 pt-3">
             <button
               type="button"
-              onClick={() => setEvidenceOpen(true)}
+              onClick={() => setFloatingUrl("/evidence?step=6b")}
               className="inline-flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100"
             >
               <BookOpen className="h-3 w-3" />
               Evidence
-            </button>
-            <button
-              type="button"
-              onClick={() => setFloatingUrl("/evidence?step=6b")}
-              className="text-[11px] font-medium text-charcoal/45 hover:text-charcoal/65 hover:underline"
-            >
-              Full View &rarr;
             </button>
             <button
               type="button"
