@@ -78,7 +78,7 @@ export default function LandingPage() {
 
       {/* ── Video ── */}
       <video
-        autoPlay loop muted playsInline
+        autoPlay loop playsInline
         className="absolute inset-0 z-0 h-full w-full object-cover"
         style={{ opacity: entered ? 0.35 : 0.2, transition: "opacity 2s ease" }}
       >
