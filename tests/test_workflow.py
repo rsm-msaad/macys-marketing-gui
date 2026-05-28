@@ -27,6 +27,93 @@ from pathlib import Path
 import pytest
 
 # ---------------------------------------------------------------------------
+# Optional DeepEval integration (Tier 2 LLM scoring)
+# ---------------------------------------------------------------------------
+
+try:
+    from deepeval import evaluate
+    from deepeval.metrics import FaithfulnessMetric, GEval
+    from deepeval.test_case import LLMTestCase
+
+    # DeepEval >=4 renamed LLMTestCaseParams → SingleTurnParams; fall back gracefully.
+    try:
+        from deepeval.test_case import SingleTurnParams as _EvalParams
+    except ImportError:
+        from deepeval.test_case import LLMTestCaseParams as _EvalParams  # type: ignore[no-redef]
+
+    DEEPEVAL_AVAILABLE = True
+except Exception:  # pragma: no cover
+    DEEPEVAL_AVAILABLE = False
+    evaluate = None  # type: ignore[assignment]
+    FaithfulnessMetric = None  # type: ignore[assignment]
+    GEval = None  # type: ignore[assignment]
+    LLMTestCase = None  # type: ignore[assignment]
+    _EvalParams = None  # type: ignore[assignment]
+
+
+def _deepeval_score(
+    *,
+    input_text: str,
+    actual_output: str,
+    retrieval_context: list[str] | None = None,
+    quality_criteria: str,
+    face_validity_criteria: str,
+) -> None:
+    """Run DeepEval metrics against a single LLM output and record results.
+
+    Failures are reported as warnings rather than hard pytest failures so that
+    an LLM quality regression does not mask the structural assertion failures
+    already present in each Tier 2 test.
+    """
+    if not DEEPEVAL_AVAILABLE:
+        return  # skip silently — deepeval not installed
+
+    retrieval_context = retrieval_context or []
+
+    tc = LLMTestCase(
+        input=input_text,
+        actual_output=actual_output,
+        retrieval_context=retrieval_context,
+    )
+
+    metrics = [
+        FaithfulnessMetric(threshold=0.7),
+        GEval(
+            name="MarketingComplianceQuality",
+            criteria=quality_criteria,
+            evaluation_params=[
+                _EvalParams.INPUT,
+                _EvalParams.ACTUAL_OUTPUT,
+            ],
+            threshold=0.7,
+        ),
+        GEval(
+            name="FaceValidity",
+            criteria=face_validity_criteria,
+            evaluation_params=[
+                _EvalParams.INPUT,
+                _EvalParams.ACTUAL_OUTPUT,
+            ],
+            threshold=0.7,
+        ),
+    ]
+
+    for metric in metrics:
+        metric.measure(tc)
+        score = getattr(metric, "score", None)
+        passed = getattr(metric, "success", None)
+        label = getattr(metric, "name", type(metric).__name__)
+        # Surface score via pytest warnings so it appears in the output without
+        # blocking the test on a soft quality miss.
+        import warnings
+
+        warnings.warn(
+            f"DeepEval [{label}] score={score} passed={passed} — {getattr(metric, 'reason', '')}",
+            stacklevel=2,
+        )
+
+
+# ---------------------------------------------------------------------------
 # Setup: load skill helpers from ai_engine
 # ---------------------------------------------------------------------------
 
@@ -171,6 +258,25 @@ class TestCase01HappyPath:
         assert check.get("recommended_action") == "proceed"
         assert len(check.get("retrieved_docs", [])) > 0
 
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text=state["campaign"]["copy"],
+            actual_output=str(check),
+            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            quality_criteria=(
+                "The compliance check output must correctly identify that the campaign copy "
+                "contains no banned phrases, uses an approved Macy's tagline, meets all "
+                "legal disclaimer requirements, and recommends 'proceed' without inventing "
+                "violations that are not present in the copy or retrieved policy documents."
+            ),
+            face_validity_criteria=(
+                "The compliance output should look like a plausible Macy's marketing "
+                "compliance review: it should reference real policy dimensions (brand alignment, "
+                "disclaimers, pricing), assign a clear pass/fail/warn status to each, and "
+                "produce a coherent recommended action rather than an empty or garbled response."
+            ),
+        )
+
 
 # ===================================================================
 # CASE 2: Banned word detection
@@ -213,6 +319,25 @@ class TestCase02BannedWord:
         check = result.get("compliance_check", {})
         assert check.get("recommended_action") == "revise"
 
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text=self.BANNED_COPY,
+            actual_output=str(check),
+            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            quality_criteria=(
+                "The compliance check must correctly detect Macy's banned phrases such as "
+                "'lowest prices anywhere' and 'unbeatable savings', cite the relevant brand "
+                "guideline policy document, and recommend 'revise'. It must not hallucinate "
+                "additional violations or clear violations that the retrieved documents do not support."
+            ),
+            face_validity_criteria=(
+                "The output should clearly identify which specific phrase triggered the brand "
+                "alignment failure and map it to a recognizable Macy's compliance policy "
+                "dimension, producing a response that any compliance reviewer would consider "
+                "coherent and actionable."
+            ),
+        )
+
 
 # ===================================================================
 # CASE 3: MAP-protected brand with excessive discount
@@ -239,6 +364,25 @@ class TestCase03MAPViolation:
         assert check.get("recommended_action") == "revise" or check.get("pricing_cross_check", {}).get("status") in (
             "fail",
             "warn",
+        )
+
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text="Up to 60 percent off Lancome serums. discount_pct=60",
+            actual_output=str(check),
+            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            quality_criteria=(
+                "The compliance check must identify that a 60% discount on a MAP-protected "
+                "brand (Lancome) violates Macy's Minimum Advertised Price policy, flag the "
+                "pricing_cross_check dimension as fail or warn, and recommend 'revise'. "
+                "It should not approve copy that contains a MAP violation based solely on "
+                "the discount percentage and brand name present in the input."
+            ),
+            face_validity_criteria=(
+                "The output should read like a realistic Macy's vendor pricing compliance "
+                "finding: it should name the brand, cite the MAP policy, and give a clear "
+                "status that a merchandising or legal reviewer could act on immediately."
+            ),
         )
 
 
@@ -268,6 +412,26 @@ class TestCase04MissingDisclaimer:
         assert check.get("disclaimers", {}).get("status") in ("fail", "warn") or check.get(
             "recommended_action"
         ) == "revise"
+
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text=self.COPY,
+            actual_output=str(check),
+            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            quality_criteria=(
+                "The compliance check must detect that the phrase 'up to 50 percent off' "
+                "is missing the required Macy's legal qualifier ('starting at' or equivalent), "
+                "flag the disclaimers dimension as fail or warn, and recommend 'revise'. "
+                "It must not pass copy that omits a mandatory price-claim qualifier required "
+                "by Macy's legal disclaimer policy."
+            ),
+            face_validity_criteria=(
+                "The output should clearly explain which legal qualifier is missing from the "
+                "promotional copy, reference the Macy's disclaimer policy, and produce a "
+                "status that any legal or compliance reviewer would recognise as a genuine "
+                "disclaimer gap rather than a false positive."
+            ),
+        )
 
 
 # ===================================================================
@@ -318,6 +482,26 @@ class TestCase06CascadeFailure:
         brief = result.get("approval_brief", {})
         assert len(brief.get("risk_flags", [])) > 0
 
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text=str(self.FAILED_COMPLIANCE),
+            actual_output=str(brief),
+            retrieval_context=[],
+            quality_criteria=(
+                "The approval brief must accurately surface all upstream compliance failures "
+                "passed to it — specifically the brand alignment failure due to a banned phrase "
+                "and the disclaimer warning — as risk_flags. It must not omit, downplay, or "
+                "contradict any compliance finding already present in the upstream state, and "
+                "must recommend 'revise' consistent with the compliance outcome."
+            ),
+            face_validity_criteria=(
+                "The approval brief should look like a genuine Macy's campaign approval "
+                "document: it should list specific risk flags with human-readable explanations, "
+                "cite the relevant compliance findings, and give a recommendation that a "
+                "marketing manager or legal reviewer could act on without needing extra context."
+            ),
+        )
+
 
 # ===================================================================
 # CASE 7: Vague revision comment
@@ -343,6 +527,27 @@ class TestCase07VagueRevision:
         routing = result.get("revision_routing", {})
         assert "change_type" in routing
         assert "owner" in routing
+
+        # --- DeepEval Tier 2 scoring ---
+        _deepeval_score(
+            input_text="revision_comment: make it better",
+            actual_output=str(routing),
+            retrieval_context=[],
+            quality_criteria=(
+                "Given the deliberately vague revision comment 'make it better', the router "
+                "must still produce a structured output with valid change_type and owner fields "
+                "drawn from Macy's defined routing taxonomy. It must not invent owner names or "
+                "change types that do not exist in the policy, and should express appropriate "
+                "uncertainty rather than routing with false confidence to a specific team."
+            ),
+            face_validity_criteria=(
+                "The revision routing output should look like a plausible Macy's workflow "
+                "routing decision: it should assign a change_type that maps to a real "
+                "marketing revision category (copy, pricing, legal, etc.) and an owner that "
+                "corresponds to a recognisable Macy's team or role, even if the confidence "
+                "is flagged as low due to the vague input."
+            ),
+        )
 
 
 # ===================================================================

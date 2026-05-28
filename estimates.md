@@ -38,10 +38,15 @@ All numbers in this document use the following assumptions:
 | Human review time | Embedded throughout, hard to isolate | 4 to 8 hours of explicit review across all gates | More concentrated, more visible |
 | Number of manual data handoffs | M1 documented "every single transfer is manual" across all 10 steps | 0 between AI skills and automations; ~5 human approval gates | Near-elimination of manual handoffs |
 | Revision rounds at Step 6 | 2 to 4 rounds per campaign | 1 round in most cases (AI pre-check catches issues earlier) | 50-75% reduction |
+| Rework risk | High — compliance defects, MAP violations, and brief inconsistencies frequently trigger mid-flight corrections or post-launch rework | Low — Compliance Pre Check and structured brief validation catch most defects before the VP review gate | Substantial reduction; remaining risk covered in `failure_cases.md` |
 | Localization variants per campaign | 40 to 50 manually created files | 40 to 50 auto-generated, 4 to 6 spot-checked | Same output, ~95% less labor |
 | Stakeholder wait time for VP approval | 2 to 3 days after submission | Same day or next day (brief is pre-drafted, compliance pre-checked) | Faster decision cycle |
 
 ## Cost Reasoning
+
+```
+Estimated labor cost per case = estimated minutes per case / 60 * estimated hourly cost
+```
 
 **Labor cost per campaign (current):** At $75/hour fully loaded and conservatively 30 business days at 6 productive hours per day, a campaign consumes roughly 180 person-hours across all roles (campaign manager, designer, production artist, analyst, legal reviewer). Total labor cost per campaign: approximately $13,500. This is the cost of one campaign for one team. Macy's runs dozens of campaigns concurrently across categories and seasons, so total annual marketing operations labor runs into the millions.
 
