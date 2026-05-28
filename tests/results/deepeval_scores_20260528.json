@@ -1,0 +1,66 @@
+[
+  {
+    "case_id": "deepeval-01",
+    "error": "list indices must be integers or slices, not str"
+  },
+  {
+    "case_id": "deepeval-02",
+    "error": "list indices must be integers or slices, not str"
+  },
+  {
+    "case_id": "deepeval-03",
+    "skill": "approval-brief-generator",
+    "action": "proceed",
+    "deepeval_scores": {
+      "FaithfulnessMetric": {
+        "score": 1.0,
+        "passed": true,
+        "reason": "The score is 1.00 because there are no contradictions found, indicating the actual output perfectly aligns with the retrieval context."
+      },
+      "QualityRule": {
+        "score": 0.0,
+        "passed": false,
+        "reason": "The Actual Output does not provide information on campaign goal, target audience demographics, ROI, or risk flags, making it impossible to assess alignment with evaluation steps 1-3 and 4."
+      },
+      "FaceValidity": {
+        "score": 0.8,
+        "passed": true,
+        "reason": "The Actual Output has structured fields that match the type of review implied by the Input, with clear status indicators for brand alignment, disclaimers, and pricing cross-check. The output also prov"
+      }
+    }
+  },
+  {
+    "case_id": "deepeval-helpers",
+    "type": "deterministic+deepeval",
+    "scores": [
+      {
+        "case": "A-clean",
+        "metric": "QualityRule",
+        "score": 1.0,
+        "passed": true,
+        "reason": "The compliance report lists no violations in clean campaign copy, returns proceed as stated in the report, source documents are cited, and the input and actual output match to ensure the report accura"
+      },
+      {
+        "case": "A-clean",
+        "metric": "FaceValidity",
+        "score": 1.0,
+        "passed": true,
+        "reason": "The Actual Output is well-structured and clearly outlines the findings for each compliance check, including brand alignment, disclaimers, and pricing cross-check. The pass status is consistently repor"
+      },
+      {
+        "case": "B-banned",
+        "metric": "QualityRule",
+        "score": 1.0,
+        "passed": true,
+        "reason": "The Actual Output correctly identifies all banned phrases ('lowest prices anywhere' and 'unbeatable') from the Input, flags them, and sets brand_alignment to 'fail'. It also recommends 'revise' as exp"
+      },
+      {
+        "case": "B-banned",
+        "metric": "FaceValidity",
+        "score": 1.0,
+        "passed": true,
+        "reason": "The Actual Output correctly identifies banned words 'unbeatable' and 'lowest prices anywhere' from the Input phrases, aligning with Macy's brand guidelines as cited in BRAND-GL-2026-001. The output al"
+      }
+    ]
+  }
+]

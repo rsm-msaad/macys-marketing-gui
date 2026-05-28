@@ -13,18 +13,16 @@ from typing import Any
 from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
+from deepeval.models import DeepEvalBaseLLM
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 TRITONAI_BASE_URL = "https://tritonai-api.ucsd.edu/v1"
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "api-llama-4-scout"
 
 
-class TritonClaude:
-    """Minimal LLM wrapper compatible with DeepEval's model parameter.
-
-    DeepEval 4.x accepts any object that has a generate() method
-    returning a string, plus a get_model_name() method.
-    """
+class TritonClaude(DeepEvalBaseLLM):
+    """DeepEval-compatible LLM wrapper that routes through TritonAI."""
 
     def __init__(self, model_name: str = DEFAULT_MODEL):
         self.model_name = model_name
@@ -52,7 +50,7 @@ class TritonClaude:
         return self.generate(prompt, **kwargs)
 
     def get_model_name(self) -> str:
-        return f"TritonClaude({self.model_name})"
+        return f"TritonAI({self.model_name})"
 
     def load_model(self) -> Any:
         return self.client

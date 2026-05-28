@@ -25,6 +25,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ---------------------------------------------------------------------------
 # Optional DeepEval integration (Tier 2 LLM scoring)
@@ -68,6 +71,11 @@ def _deepeval_score(
     if not DEEPEVAL_AVAILABLE:
         return  # skip silently — deepeval not installed
 
+    # Use TritonAI judge (Claude via UCSD proxy) instead of requiring OPENAI_API_KEY
+    from evals.triton_judge import get_judge
+
+    judge = get_judge("api-llama-4-scout")
+
     retrieval_context = retrieval_context or []
 
     tc = LLMTestCase(
@@ -77,7 +85,7 @@ def _deepeval_score(
     )
 
     metrics = [
-        FaithfulnessMetric(threshold=0.7),
+        FaithfulnessMetric(threshold=0.7, model=judge),
         GEval(
             name="MarketingComplianceQuality",
             criteria=quality_criteria,
@@ -86,6 +94,7 @@ def _deepeval_score(
                 _EvalParams.ACTUAL_OUTPUT,
             ],
             threshold=0.7,
+            model=judge,
         ),
         GEval(
             name="FaceValidity",
@@ -95,6 +104,7 @@ def _deepeval_score(
                 _EvalParams.ACTUAL_OUTPUT,
             ],
             threshold=0.7,
+            model=judge,
         ),
     ]
 
