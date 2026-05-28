@@ -1,0 +1,16 @@
+{"case_id": "case-01a", "output": "no banned words", "checks": {"stuck_to_evidence": true, "pass": true}}
+{"case_id": "case-01b", "output": "tagline approved", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-01c", "output": "no pricing violation", "checks": {"face_validity": true, "pass": true}}
+{"case_id": "case-01d", "output": "proceed", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-02a", "output": "found: ['unbeatable', 'lowest prices anywhere', 'lowest price']", "checks": {"stuck_to_evidence": true, "pass": true}}
+{"case_id": "case-02b", "output": "variant found: ['lowest price', 'guaranteed lowest']", "checks": {"stuck_to_evidence": true, "pass": true}}
+{"case_id": "case-03", "output": "MAP flagged", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-04", "output": "disclaimer missing flagged", "checks": {"stuck_to_evidence": true, "pass": true}}
+{"case_id": "case-05", "output": "fallback valid", "checks": {"face_validity": true, "pass": true}}
+{"case_id": "case-06", "output": "cascade revise", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-07", "output": "low urgency", "checks": {"face_validity": true, "pass": true}}
+{"case_id": "case-08a", "output": "high urgency", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-08b", "output": "owner: Merchandising (Anna)", "checks": {"stuck_to_evidence": true, "pass": true}}
+{"case_id": "case-09a", "output": "themed copy produced", "checks": {"face_validity": true, "pass": true}}
+{"case_id": "case-09b", "output": "errors: 15", "checks": {"quality_rule": true, "pass": true}}
+{"case_id": "case-10", "output": "cascade logic correct", "checks": {"quality_rule": true, "pass": true}}

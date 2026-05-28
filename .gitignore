@@ -52,3 +52,4 @@ slides/
 config.yaml
 justfile
 DEPLOY.md
+.vercel
