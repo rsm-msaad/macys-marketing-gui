@@ -231,7 +231,7 @@ export default function LandingPage() {
                           <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs sm:text-xs leading-relaxed text-charcoal/55">
                             {cur.tagline}
                           </p>
-                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border-2 border-charcoal/25 bg-white/50 backdrop-blur-sm px-5 py-2 text-[11px] sm:text-xs font-semibold text-charcoal transition-all duration-300 group-hover:border-charcoal/40 group-hover:bg-white/70 group-hover:text-charcoal">
+                          <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-charcoal/20 bg-white/40 backdrop-blur-sm px-4 py-1.5 text-[11px] font-semibold text-charcoal/80 transition-all duration-300 group-hover:border-charcoal/35 group-hover:bg-white/60 group-hover:text-charcoal">
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -311,18 +311,18 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="pb-3 sm:pb-4 flex flex-col items-center gap-1.5"
         >
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
             {NAV.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm px-3 py-1 text-xs sm:text-xs font-bold text-charcoal/80 transition-all duration-200 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal"
+                className="rounded-full border border-charcoal/15 bg-white/30 backdrop-blur-sm px-2.5 py-0.5 text-[11px] font-semibold text-charcoal/70 transition-all duration-200 hover:border-charcoal/30 hover:bg-white/50 hover:text-charcoal"
               >
                 {l.label}
               </Link>
             ))}
           </div>
-          <p className="text-xs text-charcoal/45 font-medium">
+          <p className="text-[11px] text-charcoal/40 font-medium">
             Built with Claude · TritonAI · Next.js · FastAPI
           </p>
         </motion.div>
