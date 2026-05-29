@@ -139,17 +139,6 @@ export default function LandingPage() {
             MACY&apos;S
           </motion.h1>
 
-          {/* Expanding divider line */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 1.2, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-3 sm:mt-4 h-[1px] w-32 sm:w-48 origin-center"
-            style={{
-              background: "linear-gradient(90deg, transparent 0%, rgba(11,123,138,0.6) 30%, rgba(212,165,55,0.5) 70%, transparent 100%)",
-            }}
-          />
-
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 6 }}
@@ -237,7 +226,7 @@ export default function LandingPage() {
                 className="w-full max-w-4xl"
               >
                 {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "260px" }}>
+                <div className="relative flex items-center justify-center" style={{ height: "320px" }}>
 
                   {/* ── Left persona ── */}
                   <AnimatePresence mode="popLayout">
@@ -248,16 +237,16 @@ export default function LandingPage() {
                       exit={{ opacity: 0, x: -40 }}
                       transition={{ duration: 0.45 }}
                       onClick={() => go("prev")}
-                      className="absolute left-4 sm:left-16 z-10 flex flex-col items-center cursor-pointer"
+                      className="absolute left-8 sm:left-24 z-10 flex flex-col items-center cursor-pointer"
                     >
                       <div
-                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
-                        style={{ filter: "blur(0.5px)", opacity: 0.5 }}
+                        className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
+                        style={{ opacity: 0.5 }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-xs text-white/45 font-semibold">{prev?.name}</span>
+                      <span className="mt-1 text-[11px] text-white/45 font-semibold">{prev?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -336,16 +325,16 @@ export default function LandingPage() {
                       exit={{ opacity: 0, x: 40 }}
                       transition={{ duration: 0.45 }}
                       onClick={() => go("next")}
-                      className="absolute right-4 sm:right-16 z-10 flex flex-col items-center cursor-pointer"
+                      className="absolute right-8 sm:right-24 z-10 flex flex-col items-center cursor-pointer"
                     >
                       <div
-                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
-                        style={{ filter: "blur(0.5px)", opacity: 0.5 }}
+                        className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
+                        style={{ opacity: 0.5 }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-xs text-white/45 font-semibold">{next?.name}</span>
+                      <span className="mt-1 text-[11px] text-white/45 font-semibold">{next?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
