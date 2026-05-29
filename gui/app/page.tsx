@@ -33,6 +33,20 @@ const NAV = [
 
 const GRAIN = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E")`;
 
+/* ─── Shimmer keyframes (injected once) ─── */
+const SHIMMER_CSS = `
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes meshFloat {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  25% { transform: translate(3%, -2%) scale(1.05); }
+  50% { transform: translate(-2%, 3%) scale(0.97); }
+  75% { transform: translate(1%, -1%) scale(1.03); }
+}
+`;
+
 /* ─── Page ─── */
 
 export default function LandingPage() {
@@ -74,22 +88,34 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#f5f3ee]">
+    <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]">
+
+      {/* ── Inject shimmer keyframes ── */}
+      <style dangerouslySetInnerHTML={{ __html: SHIMMER_CSS }} />
+
+      {/* ── Animated radial gradient mesh background ── */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(11,123,138,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 70% 60%, rgba(212,165,55,0.06) 0%, transparent 55%)",
+          animation: "meshFloat 20s ease-in-out infinite",
+        }}
+      />
 
       {/* ── Video ── */}
       <video
         autoPlay loop playsInline
         className="absolute inset-0 z-0 h-full w-full object-cover"
-        style={{ opacity: entered ? 0.35 : 0.2, transition: "opacity 2s ease" }}
+        style={{ opacity: entered ? 0.4 : 0.15, transition: "opacity 2.5s ease" }}
       >
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white/40 via-white/10 to-white/50" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
 
       {/* ── Grain ── */}
       <div
         className="absolute inset-0 z-[2] pointer-events-none"
-        style={{ opacity: 0.35, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
+        style={{ opacity: 0.3, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
       />
 
       {/* ── Content ── */}
@@ -98,42 +124,78 @@ export default function LandingPage() {
         {/* ━━━ TOP: Title + Stats ━━━ */}
         <div className="flex flex-col items-center pt-[2.5vh] sm:pt-[3vh]">
 
-          {/* Title */}
+          {/* Title — cinematic MACY'S */}
           <motion.h1
-            initial={{ opacity: 0, y: 16, letterSpacing: "0.4em" }}
-            animate={{ opacity: 1, y: 0, letterSpacing: "0.18em" }}
-            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-charcoal text-center"
-            style={{ fontSize: "clamp(36px, 7vw, 80px)", lineHeight: 1, fontWeight: 600 }}
+            initial={{ opacity: 0, y: 20, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, y: 0, letterSpacing: "0.05em" }}
+            transition={{ duration: 2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="font-serif text-center font-bold"
+            style={{
+              fontSize: "clamp(56px, 10vw, 120px)",
+              lineHeight: 1,
+              background: "linear-gradient(135deg, #ffffff 0%, #0B7B8A 40%, #D4A537 70%, #ffffff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
           >
             MACY&apos;S
           </motion.h1>
 
+          {/* Expanding divider line */}
+          <motion.div
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 1.2, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-3 sm:mt-4 h-[1px] w-32 sm:w-48 origin-center"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(11,123,138,0.6) 30%, rgba(212,165,55,0.5) 70%, transparent 100%)",
+            }}
+          />
+
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.9 }}
-            className="mt-1.5 sm:mt-2 text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.8 }}
+            className="mt-2 sm:mt-3 text-[10px] sm:text-xs tracking-[0.4em] uppercase text-white/60 font-semibold"
           >
             AI-Powered Marketing Operations
           </motion.p>
 
-          {/* Stats */}
+          {/* Stats — frosted glass bar */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.6 }}
-            className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-4 sm:gap-7"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 16 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-4 sm:mt-6 rounded-2xl border border-white/10 px-2 sm:px-4 py-3 sm:py-4"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 4px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)",
+            }}
           >
-            {STATS.map((s) => (
-              <div key={s.label} className="text-center min-w-[48px]">
-                <div className="font-serif text-3xl sm:text-4xl font-bold text-charcoal">
-                  {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
-                </div>
-                <div className="text-xs uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
-              </div>
-            ))}
+            <div className="flex flex-wrap justify-center">
+              {STATS.map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 10 }}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.15 }}
+                  className="text-center min-w-[56px] px-3 sm:px-5 py-1"
+                  style={{
+                    borderTop: "2px solid rgba(11,123,138,0.4)",
+                    borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                  }}
+                >
+                  <div className="font-serif text-2xl sm:text-3xl font-bold text-white/90">
+                    {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
+                  </div>
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-white/40 mt-0.5 font-medium">{s.label}</div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </div>
 
@@ -152,14 +214,14 @@ export default function LandingPage() {
                 {ceos.map((c) => (
                   <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
                     <div
-                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-teal-400/40 transition-all duration-300 group-hover:ring-teal-400/80"
-                      style={{ boxShadow: "0 0 30px rgba(20,184,166,0.15)" }}
+                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-teal-400/30 transition-all duration-300 group-hover:ring-teal-400/70"
+                      style={{ boxShadow: "0 0 30px rgba(11,123,138,0.2)" }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
                     </div>
-                    <span className="mt-1.5 text-xs font-semibold text-charcoal/90">{c.name}</span>
-                    <span className="flex items-center gap-0.5 text-xs uppercase tracking-wider text-teal-600/60 font-semibold">
+                    <span className="mt-1.5 text-xs font-semibold text-white/85">{c.name}</span>
+                    <span className="flex items-center gap-0.5 text-xs uppercase tracking-wider text-teal-400/60 font-semibold">
                       <Shield className="h-2 w-2" /> Co-CEO
                     </span>
                   </Link>
@@ -192,13 +254,13 @@ export default function LandingPage() {
                       className="absolute left-4 sm:left-16 z-10 flex flex-col items-center cursor-pointer"
                     >
                       <div
-                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-charcoal/10 transition-all duration-300 hover:ring-charcoal/20"
-                        style={{ filter: "blur(0.5px)", opacity: 0.6 }}
+                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
+                        style={{ filter: "blur(0.5px)", opacity: 0.5 }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-xs text-charcoal/65 font-semibold">{prev?.name}</span>
+                      <span className="mt-1.5 text-xs text-white/45 font-semibold">{prev?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -215,23 +277,51 @@ export default function LandingPage() {
                         className="absolute inset-0 flex flex-col items-center justify-center z-20"
                       >
                         <Link href={`/${cur.id}`} className="flex flex-col items-center group">
-                          <div
-                            className="h-28 w-28 sm:h-40 sm:w-40 rounded-full overflow-hidden ring-[3px] ring-charcoal/15 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-charcoal/25 group-hover:ring-offset-[6px]"
-                            style={{ boxShadow: "0 0 50px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.1)" }}
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
+                          {/* Radial glow behind active avatar */}
+                          <div className="relative">
+                            <div
+                              className="absolute inset-0 rounded-full"
+                              style={{
+                                background: "radial-gradient(circle, rgba(11,123,138,0.25) 0%, rgba(212,165,55,0.1) 50%, transparent 70%)",
+                                transform: "scale(1.8)",
+                                filter: "blur(20px)",
+                              }}
+                            />
+                            <div
+                              className="relative h-28 w-28 sm:h-40 sm:w-40 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
+                              style={{ boxShadow: "0 0 60px rgba(11,123,138,0.15), 0 8px 40px rgba(0,0,0,0.3)" }}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
+                            </div>
                           </div>
-                          <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-charcoal tracking-wide">
+                          <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-white tracking-wide">
                             {cur.name}
                           </h2>
-                          <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-charcoal/80 font-semibold">
+                          <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-white/70 font-semibold">
                             {cur.title}
                           </p>
-                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs leading-relaxed text-charcoal/55">
+                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs leading-relaxed text-white/45">
                             {cur.tagline}
                           </p>
-                          <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border-2 border-charcoal/25 bg-white/50 backdrop-blur-sm px-5 py-2 text-[11px] sm:text-xs font-semibold text-charcoal transition-all duration-300 group-hover:border-charcoal/40 group-hover:bg-white/70 group-hover:text-charcoal">
+                          {/* Premium gradient-border CTA button */}
+                          <span
+                            className="mt-2 sm:mt-3 relative inline-flex items-center gap-1.5 rounded-full px-6 py-2.5 text-[11px] sm:text-xs font-semibold text-white transition-all duration-300 group-hover:scale-[1.03] cursor-pointer"
+                            style={{
+                              background: "linear-gradient(#0a0a0a, #0a0a0a) padding-box, linear-gradient(135deg, #0B7B8A 0%, #D4A537 100%) border-box",
+                              border: "2px solid transparent",
+                              boxShadow: "0 0 20px rgba(11,123,138,0.15)",
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.backgroundImage = "linear-gradient(135deg, rgba(11,123,138,0.15), rgba(212,165,55,0.1))";
+                              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 30px rgba(11,123,138,0.3)";
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.backgroundImage = "none";
+                              (e.currentTarget as HTMLElement).style.background = "linear-gradient(#0a0a0a, #0a0a0a) padding-box, linear-gradient(135deg, #0B7B8A 0%, #D4A537 100%) border-box";
+                              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(11,123,138,0.15)";
+                            }}
+                          >
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -252,13 +342,13 @@ export default function LandingPage() {
                       className="absolute right-4 sm:right-16 z-10 flex flex-col items-center cursor-pointer"
                     >
                       <div
-                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-charcoal/10 transition-all duration-300 hover:ring-charcoal/20"
-                        style={{ filter: "blur(0.5px)", opacity: 0.6 }}
+                        className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
+                        style={{ filter: "blur(0.5px)", opacity: 0.5 }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-xs text-charcoal/65 font-semibold">{next?.name}</span>
+                      <span className="mt-1.5 text-xs text-white/45 font-semibold">{next?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -266,14 +356,14 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => go("prev")}
-                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm text-charcoal/70 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal transition-all duration-200 cursor-pointer"
+                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                   <button
                     type="button"
                     onClick={() => go("next")}
-                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm text-charcoal/70 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal transition-all duration-200 cursor-pointer"
+                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
@@ -294,7 +384,7 @@ export default function LandingPage() {
                         style={{
                           width: i === idx ? "20px" : "6px",
                           height: "6px",
-                          backgroundColor: i === idx ? "rgba(45,45,45,0.75)" : "rgba(45,45,45,0.25)",
+                          backgroundColor: i === idx ? "rgba(11,123,138,0.8)" : "rgba(255,255,255,0.2)",
                         }}
                       />
                     </button>
@@ -310,21 +400,30 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: entered ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="pb-3 sm:pb-4 flex flex-col items-center gap-1.5"
+          className="pb-3 sm:pb-4 flex flex-col items-center gap-2"
         >
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          {/* Floating glass nav bar */}
+          <div
+            className="flex flex-wrap justify-center gap-1 sm:gap-1.5 rounded-full px-3 py-2 border border-white/10"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 4px 30px rgba(0,0,0,0.2), 0 0 40px rgba(11,123,138,0.05), inset 0 1px 0 rgba(255,255,255,0.05)",
+            }}
+          >
             {NAV.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm px-3 py-1 text-xs font-bold text-charcoal/80 transition-all duration-200 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal"
+                className="rounded-full px-3 sm:px-4 py-1.5 text-[10px] sm:text-xs font-semibold text-white/60 transition-all duration-200 hover:bg-white/10 hover:text-white"
               >
                 {l.label}
               </Link>
             ))}
           </div>
-          <p className="text-xs text-charcoal/45 font-medium">
-            Built with Claude · TritonAI · Next.js · FastAPI
+          <p className="text-[10px] sm:text-xs text-white/25 font-medium tracking-wide">
+            Built with Claude &middot; TritonAI &middot; Next.js &middot; FastAPI
           </p>
         </motion.div>
       </div>
