@@ -104,7 +104,7 @@ export default function LandingPage() {
 
       {/* ── Video ── */}
       <video
-        autoPlay loop playsInline
+        autoPlay loop muted playsInline
         className="absolute inset-0 z-0 h-full w-full object-cover"
         style={{ opacity: entered ? 0.4 : 0.15, transition: "opacity 2.5s ease" }}
       >
@@ -129,14 +129,11 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20, letterSpacing: "0.5em" }}
             animate={{ opacity: 1, y: 0, letterSpacing: "0.05em" }}
             transition={{ duration: 2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-center font-bold"
+            className="font-serif text-center font-bold text-white"
             style={{
-              fontSize: "clamp(56px, 10vw, 120px)",
+              fontSize: "clamp(48px, 8vw, 100px)",
               lineHeight: 1,
-              background: "linear-gradient(135deg, #ffffff 0%, #0B7B8A 40%, #D4A537 70%, #ffffff 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              textShadow: "0 2px 40px rgba(255,255,255,0.15)",
             }}
           >
             MACY&apos;S
@@ -192,7 +189,7 @@ export default function LandingPage() {
                   <div className="font-serif text-2xl sm:text-3xl font-bold text-white/90">
                     {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-white/40 mt-0.5 font-medium">{s.label}</div>
+                  <div className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/40 mt-0.5 font-medium">{s.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -200,7 +197,7 @@ export default function LandingPage() {
         </div>
 
         {/* ━━━ MIDDLE: CEOs + Carousel ━━━ */}
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mt-4 sm:mt-6">
 
           {/* CEO Duo */}
           <AnimatePresence>
@@ -209,13 +206,13 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="flex items-center gap-5 sm:gap-8 mb-3 sm:mb-5"
+                className="flex items-center gap-5 sm:gap-8 mb-4 sm:mb-6"
               >
                 {ceos.map((c) => (
                   <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
                     <div
-                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-teal-400/30 transition-all duration-300 group-hover:ring-teal-400/70"
-                      style={{ boxShadow: "0 0 30px rgba(11,123,138,0.2)" }}
+                      className="h-14 w-14 sm:h-18 sm:w-18 rounded-full overflow-hidden ring-2 ring-teal-400/30 transition-all duration-300 group-hover:ring-teal-400/70"
+                      style={{ boxShadow: "0 0 30px rgba(11,123,138,0.2)", width: "clamp(56px, 8vw, 72px)", height: "clamp(56px, 8vw, 72px)" }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
@@ -240,7 +237,7 @@ export default function LandingPage() {
                 className="w-full max-w-4xl"
               >
                 {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "clamp(260px, 44vh, 420px)" }}>
+                <div className="relative flex items-center justify-center" style={{ height: "clamp(220px, 34vh, 340px)" }}>
 
                   {/* ── Left persona ── */}
                   <AnimatePresence mode="popLayout">
@@ -288,7 +285,7 @@ export default function LandingPage() {
                               }}
                             />
                             <div
-                              className="relative h-28 w-28 sm:h-40 sm:w-40 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
+                              className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
                               style={{ boxShadow: "0 0 60px rgba(11,123,138,0.15), 0 8px 40px rgba(0,0,0,0.3)" }}
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -400,7 +397,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: entered ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="pb-3 sm:pb-4 flex flex-col items-center gap-2"
+          className="pb-5 sm:pb-6 flex flex-col items-center gap-3"
         >
           {/* Floating glass nav bar */}
           <div
