@@ -12,77 +12,99 @@ import {
 import { API_BASE, runDam, runFindDamAssets, type DamAsset, type DamStats, type FindDamAssetsResult } from "@/lib/api";
 import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
+/* Aspect ratios for masonry-style layout — alternate between ratios */
+const ASPECT_RATIOS = [
+  "aspect-[4/3]",
+  "aspect-[3/4]",
+  "aspect-video",
+  "aspect-square",
+  "aspect-[4/5]",
+  "aspect-[3/2]",
+];
+
 function DamAssetCard({
   asset,
   included,
   onToggle,
+  index,
 }: {
   asset: DamAsset;
   included: boolean;
   onToggle: () => void;
+  index: number;
 }) {
   const imgUrl = `${API_BASE}/images/dam/${asset.filename}`;
+  const aspectClass = ASPECT_RATIOS[index % ASPECT_RATIOS.length];
 
   return (
     <div
-      className={`overflow-hidden rounded-lg border transition-all ${
-        included
-          ? "border-teal-600/30 bg-white"
-          : "border-charcoal/10 bg-charcoal/5 opacity-60"
-      }`}
+      className="group relative cursor-pointer overflow-hidden rounded-sm bg-charcoal/5"
+      onClick={onToggle}
     >
-      <div className="relative aspect-video bg-cream">
+      {/* Image with variable aspect ratio */}
+      <div className={`relative ${aspectClass} w-full overflow-hidden`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imgUrl}
           alt={asset.filename}
-          className="h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
+            included ? "" : "grayscale opacity-40"
+          }`}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).style.display = "none";
           }}
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <ImageIcon className="h-6 w-6 text-charcoal/15" />
+        {/* Fallback icon */}
+        <div className="absolute inset-0 flex items-center justify-center -z-10">
+          <ImageIcon className="h-8 w-8 text-charcoal/10" />
         </div>
-      </div>
-      <div className="p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-[11px] font-medium text-charcoal/80">
-              {asset.filename}
-            </div>
-            <div className="mt-0.5 flex items-center gap-2 text-xs text-charcoal/55">
-              <span className="capitalize">{asset.asset_type}</span>
-              <span>{asset.resolution}</span>
-              <span className="font-semibold text-teal-700">
-                {(asset.relevance_score * 100).toFixed(0)}% match
-              </span>
-            </div>
+
+        {/* Hover overlay — Clou Architects style */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+        {/* Bottom info — slides up on hover */}
+        <div className="absolute inset-x-0 bottom-0 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 p-4">
+          <div className="text-xs font-medium text-white/90 truncate">
+            {asset.filename.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ")}
           </div>
-          <button
-            type="button"
-            onClick={onToggle}
-            className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border transition-colors ${
-              included
-                ? "border-teal-600 bg-teal-600 text-white"
-                : "border-charcoal/25 bg-white text-transparent hover:border-charcoal/40"
-            }`}
-          >
-            {included && <CheckCircle2 className="h-3.5 w-3.5" />}
-          </button>
+          <div className="mt-1 flex items-center gap-2 text-[11px] text-white/60">
+            <span className="capitalize">{asset.asset_type}</span>
+            <span className="text-white/30">·</span>
+            <span>{asset.resolution}</span>
+            <span className="text-white/30">·</span>
+            <span className="font-semibold text-teal-300">
+              {(asset.relevance_score * 100).toFixed(0)}%
+            </span>
+          </div>
+          {asset.tags.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {asset.tags.slice(0, 3).map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] text-white/70 backdrop-blur-sm"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-        {asset.tags.length > 0 && (
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {asset.tags.slice(0, 4).map((t) => (
-              <span
-                key={t}
-                className="rounded bg-charcoal/5 px-1.5 py-0.5 text-xs text-charcoal/50"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
+
+        {/* Selection indicator — top right */}
+        <div className={`absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+          included
+            ? "border-teal-400 bg-teal-600 text-white scale-100"
+            : "border-white/40 bg-black/20 text-transparent scale-90 group-hover:scale-100 group-hover:border-white/60"
+        }`}>
+          {included && <CheckCircle2 className="h-3.5 w-3.5" />}
+        </div>
+
+        {/* "View +" label on hover — Clou style */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/80">
+            {included ? "Selected" : "Select +"}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -318,11 +340,12 @@ export function CreativeProductionContent({
                 {includedCount === assets.length ? "Deselect all" : "Select all"}
               </button>
             </div>
-            <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-              {assets.map((asset) => (
+            <div className="mt-2 columns-2 xl:columns-3 gap-2 space-y-2">
+              {assets.map((asset, i) => (
                 <DamAssetCard
                   key={asset.asset_id}
                   asset={asset}
+                  index={i}
                   included={included.has(asset.asset_id)}
                   onToggle={() => toggleAsset(asset.asset_id)}
                 />
