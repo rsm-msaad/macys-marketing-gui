@@ -237,7 +237,7 @@ export default function LandingPage() {
                       exit={{ opacity: 0, x: -40 }}
                       transition={{ duration: 0.45 }}
                       onClick={() => go("prev")}
-                      className="absolute left-8 sm:left-24 z-10 flex flex-col items-center cursor-pointer"
+                      className="absolute left-0 z-10 hidden sm:flex flex-col items-center cursor-pointer"
                     >
                       <div
                         className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
@@ -290,23 +290,8 @@ export default function LandingPage() {
                           <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs leading-relaxed text-white/45">
                             {cur.tagline}
                           </p>
-                          {/* Premium gradient-border CTA button */}
                           <span
-                            className="mt-2 sm:mt-3 relative inline-flex items-center gap-1.5 rounded-full px-6 py-2.5 text-[11px] sm:text-xs font-semibold text-white transition-all duration-300 group-hover:scale-[1.03] cursor-pointer"
-                            style={{
-                              background: "linear-gradient(#0a0a0a, #0a0a0a) padding-box, linear-gradient(135deg, #0B7B8A 0%, #D4A537 100%) border-box",
-                              border: "2px solid transparent",
-                              boxShadow: "0 0 20px rgba(11,123,138,0.15)",
-                            }}
-                            onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLElement).style.backgroundImage = "linear-gradient(135deg, rgba(11,123,138,0.15), rgba(212,165,55,0.1))";
-                              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 30px rgba(11,123,138,0.3)";
-                            }}
-                            onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLElement).style.backgroundImage = "none";
-                              (e.currentTarget as HTMLElement).style.background = "linear-gradient(#0a0a0a, #0a0a0a) padding-box, linear-gradient(135deg, #0B7B8A 0%, #D4A537 100%) border-box";
-                              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(11,123,138,0.15)";
-                            }}
+                            className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-5 py-2 text-xs font-semibold text-white transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/40 cursor-pointer"
                           >
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
@@ -325,7 +310,7 @@ export default function LandingPage() {
                       exit={{ opacity: 0, x: 40 }}
                       transition={{ duration: 0.45 }}
                       onClick={() => go("next")}
-                      className="absolute right-8 sm:right-24 z-10 flex flex-col items-center cursor-pointer"
+                      className="absolute right-0 z-10 hidden sm:flex flex-col items-center cursor-pointer"
                     >
                       <div
                         className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
@@ -342,14 +327,14 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => go("prev")}
-                    className="absolute left-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+                    className="absolute left-2 sm:left-[90px] z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                   <button
                     type="button"
                     onClick={() => go("next")}
-                    className="absolute right-0 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+                    className="absolute right-2 sm:right-[90px] z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
