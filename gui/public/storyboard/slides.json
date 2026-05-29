@@ -46,38 +46,38 @@
   {
     "id": 8,
     "type": "image",
-    "image": "/storyboard/scenes/09_master_ad.jpg",
-    "notes": "He builds the master ad, the one creative asset everything else gets adapted from."
-  },
-  {
-    "id": 9,
-    "type": "image",
     "image": "/storyboard/scenes/04_pricing.jpg",
     "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
   },
   {
-    "id": 10,
+    "id": 9,
     "type": "image",
     "image": "/storyboard/scenes/05_segmentation.jpg",
     "notes": "Then she segments the customer base to figure out who to target."
   },
   {
-    "id": 11,
+    "id": 10,
     "type": "image",
     "image": "/storyboard/scenes/06_writing_the_brief.jpg",
     "notes": "Merna writes the creative brief and hands it off to the design team."
   },
   {
-    "id": 12,
+    "id": 11,
     "type": "image",
     "image": "/storyboard/scenes/07_handoff_to_creative.jpg",
     "notes": "First major handoff. The brief goes from Merna to Abdullah, the senior designer."
   },
   {
-    "id": 13,
+    "id": 12,
     "type": "image",
     "image": "/storyboard/scenes/08_dam_search.jpg",
     "notes": "Abdullah searches the DAM for product photos that match the campaign theme."
+  },
+  {
+    "id": 13,
+    "type": "image",
+    "image": "/storyboard/scenes/09_master_ad.jpg",
+    "notes": "He builds the master ad, the one creative asset everything else gets adapted from."
   },
   {
     "id": 14,
