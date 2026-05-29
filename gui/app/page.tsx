@@ -225,74 +225,46 @@ export default function LandingPage() {
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="w-full max-w-4xl"
               >
-                {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "320px" }}>
+                {/* Carousel track — center persona + edge arrows */}
+                <div className="flex items-center justify-center gap-6 sm:gap-10">
 
-                  {/* ── Left persona ── */}
-                  <AnimatePresence mode="popLayout">
-                    <motion.button
-                      key={`l-${prev?.id}`}
-                      initial={{ opacity: 0, x: -40 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -40 }}
-                      transition={{ duration: 0.45 }}
-                      onClick={() => go("prev")}
-                      className="absolute left-0 z-10 hidden sm:flex flex-col items-center cursor-pointer"
-                    >
-                      <div
-                        className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
-                        style={{ opacity: 0.5 }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
-                      </div>
-                      <span className="mt-1 text-[11px] text-white/45 font-semibold">{prev?.name}</span>
-                    </motion.button>
-                  </AnimatePresence>
+                  {/* Left arrow */}
+                  <button
+                    type="button"
+                    onClick={() => go("prev")}
+                    className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+                  >
+                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+                  </button>
 
-                  {/* ── Center persona ── */}
-                  <AnimatePresence mode="popLayout">
+                  {/* Center persona */}
+                  <AnimatePresence mode="wait">
                     {cur && (
                       <motion.div
                         key={cur.id}
-                        variants={centerV}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
-                        className="absolute inset-0 flex flex-col items-center justify-center z-20"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                       >
                         <Link href={`/${cur.id}`} className="flex flex-col items-center group">
-                          {/* Radial glow behind active avatar */}
-                          <div className="relative">
-                            <div
-                              className="absolute inset-0 rounded-full"
-                              style={{
-                                background: "radial-gradient(circle, rgba(11,123,138,0.25) 0%, rgba(212,165,55,0.1) 50%, transparent 70%)",
-                                transform: "scale(1.8)",
-                                filter: "blur(20px)",
-                              }}
-                            />
-                            <div
-                              className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
-                              style={{ boxShadow: "0 0 60px rgba(11,123,138,0.15), 0 8px 40px rgba(0,0,0,0.3)" }}
-                            >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
-                            </div>
+                          <div
+                            className="h-24 w-24 sm:h-28 sm:w-28 rounded-full overflow-hidden ring-[2px] ring-white/20 transition-all duration-500 group-hover:ring-white/40"
+                            style={{ boxShadow: "0 0 40px rgba(11,123,138,0.15), 0 8px 32px rgba(0,0,0,0.3)" }}
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
                           </div>
-                          <h2 className="mt-2 font-serif text-xl sm:text-2xl font-semibold text-white tracking-wide">
+                          <h2 className="mt-3 font-serif text-xl sm:text-2xl font-semibold text-white">
                             {cur.name}
                           </h2>
-                          <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-white/70 font-semibold">
+                          <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-white/60 font-semibold">
                             {cur.title}
                           </p>
-                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs leading-relaxed text-white/45">
+                          <p className="mt-1.5 max-w-[260px] text-center text-xs leading-relaxed text-white/40">
                             {cur.tagline}
                           </p>
-                          <span
-                            className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-5 py-2 text-xs font-semibold text-white transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/40 cursor-pointer"
-                          >
+                          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-5 py-2 text-xs font-semibold text-white transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/40 cursor-pointer">
                             Enter as {cur.name}
                             <ArrowRight className="h-3 w-3" />
                           </span>
@@ -301,40 +273,11 @@ export default function LandingPage() {
                     )}
                   </AnimatePresence>
 
-                  {/* ── Right persona ── */}
-                  <AnimatePresence mode="popLayout">
-                    <motion.button
-                      key={`r-${next?.id}`}
-                      initial={{ opacity: 0, x: 40 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 40 }}
-                      transition={{ duration: 0.45 }}
-                      onClick={() => go("next")}
-                      className="absolute right-0 z-10 hidden sm:flex flex-col items-center cursor-pointer"
-                    >
-                      <div
-                        className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden ring-2 ring-white/10 transition-all duration-300 hover:ring-white/25"
-                        style={{ opacity: 0.5 }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
-                      </div>
-                      <span className="mt-1 text-[11px] text-white/45 font-semibold">{next?.name}</span>
-                    </motion.button>
-                  </AnimatePresence>
-
-                  {/* ── Arrow buttons (outer edges) ── */}
-                  <button
-                    type="button"
-                    onClick={() => go("prev")}
-                    className="absolute left-2 sm:left-[90px] z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
-                  >
-                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
+                  {/* Right arrow */}
                   <button
                     type="button"
                     onClick={() => go("next")}
-                    className="absolute right-2 sm:right-[90px] z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+                    className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                   </button>
