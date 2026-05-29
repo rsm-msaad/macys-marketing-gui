@@ -88,7 +88,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]">
+    <div className="relative w-full min-h-screen overflow-y-auto bg-[#0a0a0a]">
 
       {/* ── Inject shimmer keyframes ── */}
       <style dangerouslySetInnerHTML={{ __html: SHIMMER_CSS }} />
@@ -105,12 +105,12 @@ export default function LandingPage() {
       {/* ── Video ── */}
       <video
         autoPlay loop muted playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover"
+        className="fixed inset-0 z-0 h-full w-full object-cover"
         style={{ opacity: entered ? 0.4 : 0.15, transition: "opacity 2.5s ease" }}
       >
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+      <div className="fixed inset-0 z-[1] bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
 
       {/* ── Grain ── */}
       <div
@@ -119,10 +119,10 @@ export default function LandingPage() {
       />
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex h-full flex-col px-4 sm:px-8">
+      <div className="relative z-10 flex flex-col items-center px-4 sm:px-8 py-8 sm:py-12 gap-8 sm:gap-10">
 
         {/* ━━━ TOP: Title + Stats ━━━ */}
-        <div className="flex flex-col items-center pt-[2.5vh] sm:pt-[3vh]">
+        <div className="flex flex-col items-center">
 
           {/* Title — cinematic MACY'S */}
           <motion.h1
@@ -197,7 +197,7 @@ export default function LandingPage() {
         </div>
 
         {/* ━━━ MIDDLE: CEOs + Carousel ━━━ */}
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mt-4 sm:mt-6">
+        <div className="flex flex-col items-center">
 
           {/* CEO Duo */}
           <AnimatePresence>
@@ -237,7 +237,7 @@ export default function LandingPage() {
                 className="w-full max-w-4xl"
               >
                 {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "clamp(180px, 28vh, 280px)" }}>
+                <div className="relative flex items-center justify-center" style={{ height: "260px" }}>
 
                   {/* ── Left persona ── */}
                   <AnimatePresence mode="popLayout">
@@ -397,7 +397,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: entered ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="pb-5 sm:pb-6 flex flex-col items-center gap-3"
+          className="flex flex-col items-center gap-3"
         >
           {/* Floating glass nav bar */}
           <div
