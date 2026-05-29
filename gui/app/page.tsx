@@ -131,7 +131,7 @@ export default function LandingPage() {
             transition={{ duration: 2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="font-serif text-center font-bold text-white"
             style={{
-              fontSize: "clamp(48px, 8vw, 100px)",
+              fontSize: "clamp(32px, 5vw, 56px)",
               lineHeight: 1,
               textShadow: "0 2px 40px rgba(255,255,255,0.15)",
             }}
@@ -165,7 +165,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 16 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-4 sm:mt-6 rounded-2xl border border-white/10 px-2 sm:px-4 py-3 sm:py-4"
+            className="mt-3 sm:mt-4 rounded-xl border border-white/10 px-2 sm:px-3 py-2 sm:py-2.5"
             style={{
               background: "rgba(255,255,255,0.04)",
               backdropFilter: "blur(20px)",
@@ -180,13 +180,13 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 10 }}
                   transition={{ duration: 0.5, delay: 0.3 + i * 0.15 }}
-                  className="text-center min-w-[56px] px-3 sm:px-5 py-1"
+                  className="text-center min-w-[44px] px-2 sm:px-3 py-0.5"
                   style={{
                     borderTop: "2px solid rgba(11,123,138,0.4)",
                     borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.06)" : "none",
                   }}
                 >
-                  <div className="font-serif text-2xl sm:text-3xl font-bold text-white/90">
+                  <div className="font-serif text-lg sm:text-xl font-bold text-white/90">
                     {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
                   </div>
                   <div className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/40 mt-0.5 font-medium">{s.label}</div>
@@ -237,7 +237,7 @@ export default function LandingPage() {
                 className="w-full max-w-4xl"
               >
                 {/* Carousel track */}
-                <div className="relative flex items-center justify-center" style={{ height: "clamp(220px, 34vh, 340px)" }}>
+                <div className="relative flex items-center justify-center" style={{ height: "clamp(180px, 28vh, 280px)" }}>
 
                   {/* ── Left persona ── */}
                   <AnimatePresence mode="popLayout">
@@ -285,14 +285,14 @@ export default function LandingPage() {
                               }}
                             />
                             <div
-                              className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
+                              className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden ring-[2px] ring-white/20 ring-offset-[3px] ring-offset-transparent transition-all duration-500 group-hover:ring-white/40 group-hover:ring-offset-[6px]"
                               style={{ boxShadow: "0 0 60px rgba(11,123,138,0.15), 0 8px 40px rgba(0,0,0,0.3)" }}
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={cur.avatar} alt={cur.name} className="h-full w-full object-cover" />
                             </div>
                           </div>
-                          <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-white tracking-wide">
+                          <h2 className="mt-2 font-serif text-xl sm:text-2xl font-semibold text-white tracking-wide">
                             {cur.name}
                           </h2>
                           <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-white/70 font-semibold">
