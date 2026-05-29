@@ -182,7 +182,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: 0.3 + i * 0.15 }}
                   className="text-center min-w-[44px] px-2 sm:px-3 py-0.5"
                   style={{
-                    borderTop: "2px solid rgba(11,123,138,0.4)",
+                    borderTop: "none",
                     borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.06)" : "none",
                   }}
                 >
