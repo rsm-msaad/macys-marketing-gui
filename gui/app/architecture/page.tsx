@@ -1,404 +1,660 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
-  ChevronDown,
-  ChevronRight,
-  ExternalLink,
   Layers,
-  X,
+  Cpu,
+  User,
+  Zap,
+  ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  Data                                                               */
+/*  Types & Data                                                       */
 /* ------------------------------------------------------------------ */
 
-type Component = {
+type StepType = "human" | "ai" | "automation" | "human-ai";
+
+type Pill = {
+  label: string;
+  kind: "rag" | "mcp" | "data";
+};
+
+type Step = {
+  id: number;
+  label: string;
   name: string;
-  badge?: "skill" | "automation" | "mcp";
-  description: string;
-  path?: string;
-  example?: string;
+  type: StepType;
+  hasReview?: boolean;
+  pills: Pill[];
+  lane: "merch" | "creative" | "dist";
 };
 
-type Layer = {
-  id: string;
-  title: string;
-  subtitle: string;
-  bg: string;
-  accent: string;
-  description: string;
-  components: Component[];
-};
-
-const LAYERS: Layer[] = [
+const STEPS: Step[] = [
   {
-    id: "frontend",
-    title: "Frontend",
-    subtitle: "Next.js 14 on Vercel",
-    bg: "bg-[#FDF8F0]",
-    accent: "border-[#D4A537]",
-    description:
-      "The user-facing layer. Renders the campaign workflow, persona-specific views, AI outputs, and supporting pages. Hosted on Vercel with auto-deploy from main.",
-    components: [
-      { name: "Next.js 14 (App Router)", description: "React framework with server components, file-based routing, and static generation.", path: "gui/app/", example: "Each persona has its own route: /campaign-manager, /senior-designer, etc." },
-      { name: "4 Persona Views", description: "Merna (Campaign Manager), Abdullah (Senior Designer), Shankar (Production Artist), Anna (Marketing Analyst). Each sees the same workflow from their role's perspective.", path: "gui/app/campaign-manager/page.tsx" },
-      { name: "Workflow Pipeline UI", description: "10-step horizontal progress bar showing completed, active, and pending steps with badges.", path: "gui/components/WorkflowPipeline.tsx" },
-      { name: "Storyboard (/story)", description: "Slide-based narrative walkthrough of the project for presentations and grading.", path: "gui/app/story/page.tsx" },
-      { name: "RAG Demo (/rag-compare)", description: "Side-by-side comparison of naive vs HyQ retrieval on the same query.", path: "gui/app/rag-compare/page.tsx" },
-      { name: "Eval Dashboard (/evals)", description: "Live display of the 67 DeepEval test results across compliance, brief, routing, and RAG.", path: "gui/app/evals/page.tsx" },
-    ],
+    id: 1,
+    label: "1",
+    name: "Briefing",
+    type: "human-ai",
+    pills: [],
+    lane: "merch",
   },
   {
-    id: "api",
-    title: "API",
-    subtitle: "FastAPI on Render",
-    bg: "bg-[#FEF0E8]",
-    accent: "border-[#C84B4B]",
-    description:
-      "The backend layer. Handles HTTP requests from the frontend, routes to skills and automations, persists workflow state to disk. FastAPI on Render free tier.",
-    components: [
-      { name: "FastAPI App", description: "Python web framework with automatic OpenAPI docs, async support, and Pydantic validation.", path: "api/main.py" },
-      { name: "Campaign Endpoints", description: "CRUD for campaigns, workflow state, advance/reset/revisions. Powers the sidebar and step transitions.", path: "api/routes/workflow.py" },
-      { name: "Skill Endpoints", description: "POST endpoints for each automation and skill: /skills/segment, /skills/dam-search, /skills/sku-recommend, /skills/generate-layout-copy, etc.", path: "api/routes/skills.py" },
-      { name: "State Persistence", description: "In-memory dict backed by /tmp/macys_state.json. Survives Render restarts. Written after every mutation.", path: "api/state.py" },
-      { name: "RAG Compare API", description: "Runs naive and HyQ retrieval side by side for the demo comparison page.", path: "api/routes/rag_compare.py" },
-    ],
+    id: 2,
+    label: "2",
+    name: "Segmentation",
+    type: "automation",
+    pills: [{ label: "50K customers", kind: "data" }],
+    lane: "merch",
   },
   {
-    id: "orchestrator",
-    title: "Orchestrator",
-    subtitle: "Deterministic routing, no LLM in the router",
-    bg: "bg-[#EDF5E8]",
-    accent: "border-[#87A96B]",
-    description:
-      "The control layer. Reads workflow state and picks the next step using 8 deterministic rules. The LLM never decides what runs next. Pre-fetches RAG and MCP context before calling Claude.",
-    components: [
-      { name: "Routing Table", description: "8 priority rules: first match wins. Maps state predicates to skill/automation names. Pure Python, no network calls.", path: "ai_engine/orchestrator/routing_table.py", example: "Rule 1: if status=submitted and no compliance check, run compliance-pre-check." },
-      { name: "Skill Invoker", description: "Pre-fetch pattern (Option A). Loads SKILL.md, runs RAG queries, runs MCP tools, builds prompt, calls Claude once, parses JSON.", path: "ai_engine/orchestrator/skill_invoker.py" },
-      { name: "Workflow State Engine", description: "Reads and writes workflow_state.json. Each skill output is checkpointed. The next_action field tells the router what to evaluate.", path: "ai_engine/orchestrator/orchestrator.py" },
-      { name: "Activity Logger", description: "In-memory deque (max 50 events) tracking which skills ran, when, and what RAG docs were retrieved.", path: "api/main.py" },
+    id: 3,
+    label: "3",
+    name: "SKU Selection",
+    type: "automation",
+    pills: [
+      { label: "check_pricing", kind: "mcp" },
+      { label: "2K SKUs", kind: "data" },
     ],
+    lane: "merch",
   },
   {
-    id: "ai-engine",
-    title: "AI Engine",
-    subtitle: "4 skills + 7 automations + 3 MCP tools",
-    bg: "bg-[#E0F2F1]",
-    accent: "border-[#0B7B8A]",
-    description:
-      "The work layer. Skills call Claude via TritonAI for judgment tasks. Automations are pure deterministic Python. MCP tools provide structured data lookups that skills can invoke.",
-    components: [
-      { name: "Compliance Pre Check", badge: "skill", description: "Scans campaign copy for banned words, validates taglines, checks pricing claims. Cites 4 RAG docs.", path: "ai_engine/skills/compliance-pre-check/SKILL.md" },
-      { name: "Approval Brief Generator", badge: "skill", description: "Writes a prose VP approval brief with goal, audience, ROI, risks, and recommendation.", path: "ai_engine/skills/approval-brief-generator/SKILL.md" },
-      { name: "Revision Router", badge: "skill", description: "Parses free-text VP revision comments into change_type, owner, urgency.", path: "ai_engine/skills/revision-router/SKILL.md" },
-      { name: "Layout Copy Generator", badge: "skill", description: "Generates tagline, body, CTA, and visual direction for 4 ad placements.", path: "ai_engine/skills/layout-copy-generator/SKILL.md" },
-      { name: "Audience Segment Builder", badge: "automation", description: "k-means clustering (k=3) on RFM features across 50K customers.", path: "ai_engine/automations/audience-segment-builder/segment.py" },
-      { name: "SKU Recommender", badge: "automation", description: "Scores SKUs by inventory, margin, vendor commitment, seasonality. Excludes MAP violations.", path: "ai_engine/automations/sku-recommender/recommend.py" },
-      { name: "DAM Asset Finder", badge: "automation", description: "Filters 5,000 DAM records by quality, ranks by tag relevance with photo boost.", path: "ai_engine/automations/dam-asset-finder/search.py" },
-      { name: "Localization Generator", badge: "automation", description: "Region/language mapping, regional pricing overrides, holiday calendar overlays.", path: "ai_engine/automations/localization-generator/helpers.py" },
-      { name: "Activation Scheduler", badge: "automation", description: "Timezone math, send time computation, frequency cap rules for channel scheduling.", path: "ai_engine/automations/activation-scheduler/helpers.py" },
-      { name: "Campaign Performance Analyzer", badge: "automation", description: "Last-touch attribution + linear regression forecast with 80% confidence intervals.", path: "ai_engine/automations/campaign-performance-analyzer/analyze.py" },
-      { name: "Localization Generator v1", badge: "automation", description: "Generates 40 regional/placement variant records from templates (10 regions x 4 placements).", path: "ai_engine/automations/localization-generator-v1/generate.py" },
-      { name: "check_pricing_conflicts", badge: "mcp", description: "MCP Tool: Validates SKU list against MAP rules. Called agentically by Claude at Steps 6a/6b.", path: "ai_engine/tools/check_pricing_conflicts.py" },
-      { name: "send_campaign_summary", badge: "mcp", description: "MCP Tool: Sends campaign report via Gmail SMTP. Triggered by user at Step 10.", path: "ai_engine/tools/send_campaign_summary.py" },
-      { name: "find_dam_assets", badge: "automation", description: "Python helper: DAM lookup by category and region. Called by DAM Asset Finder automation at Step 4.", path: "ai_engine/tools/find_dam_assets.py" },
-      { name: "generate_locale_variants", badge: "automation", description: "Python helper: Phrase substitution for Spanish/Quebec French. Called by Localization Generator at Step 7.", path: "ai_engine/tools/generate_locale_variants.py" },
+    id: 4,
+    label: "4",
+    name: "Creative Production",
+    type: "automation",
+    pills: [
+      { label: "find_dam_assets", kind: "mcp" },
+      { label: "5K DAM assets", kind: "data" },
     ],
+    lane: "creative",
   },
   {
-    id: "data",
-    title: "Data",
-    subtitle: "RAG corpus, databases, catalogs",
-    bg: "bg-[#FDE8E8]",
-    accent: "border-[#C84B4B]",
-    description:
-      "The data layer. 12 proprietary documents for RAG retrieval, product and customer databases for automations, 300 Unsplash photos for DAM thumbnails, and persistent campaign state.",
-    components: [
-      { name: "RAG Knowledge Base (12 docs)", description: "Brand guidelines, legal disclaimers, pricing rules, campaign retros, approval tickets, compliance examples, team FAQ.", path: "ai_engine/rag/knowledge_base/" },
-      { name: "Naive FAISS Index (78 chunks)", description: "L2 heading splits, paragraph sub-splits over 500 words. all-MiniLM-L6-v2 embeddings. Exact inner product search.", path: "ai_engine/rag/index/" },
-      { name: "HyQ Index (381 entries)", description: "78 original chunks + 303 generated questions. Matches intent-phrased queries that raw chunks miss. 8/8 recall vs 5/8 for naive.", path: "ai_engine/rag/hyq/index/" },
-      { name: "Product Catalog (2,000 SKUs)", description: "macys.db sku_catalog: 5 categories (Beauty, Apparel, Accessories, Home, Shoes), 33 brands. MAP protection derived from 14-brand enforced list. Margins, vendor commitment, and seasonality derived per SKU.", path: "data/macys.db" },
-      { name: "DAM Database (5,000 assets)", description: "Synthetic digital asset records with tags, resolution, rights status, quality flags. 300 backed by real Unsplash photos.", path: "data/macys.db" },
-      { name: "Customer Database (50K)", description: "Synthetic customer transactions for RFM clustering. Loyalty tiers, purchase history, category preferences.", path: "data/macys.db" },
-      { name: "Campaign State", description: "3 seeded campaigns (active, completed, planned). Persisted to /tmp/macys_state.json across Render restarts.", path: "api/state.py" },
+    id: 5,
+    label: "5",
+    name: "Layout Assembly",
+    type: "ai",
+    pills: [{ label: "Layout Copy Generator", kind: "mcp" }],
+    lane: "creative",
+  },
+  {
+    id: 6,
+    label: "6a",
+    name: "Compliance Pre-Check",
+    type: "ai",
+    hasReview: true,
+    pills: [
+      { label: "BRAND-GL", kind: "rag" },
+      { label: "LEGAL-DIS", kind: "rag" },
+      { label: "PRICE-RULES", kind: "rag" },
+      { label: "COMP-EX", kind: "rag" },
+      { label: "check_pricing", kind: "mcp" },
     ],
+    lane: "creative",
+  },
+  {
+    id: 7,
+    label: "6b",
+    name: "Approval Brief",
+    type: "ai",
+    hasReview: true,
+    pills: [
+      { label: "RETRO-Q4", kind: "rag" },
+      { label: "RETRO-SP-BTY", kind: "rag" },
+    ],
+    lane: "creative",
+  },
+  {
+    id: 8,
+    label: "6c",
+    name: "Revision Router",
+    type: "ai",
+    pills: [
+      { label: "TICKET-INC-4471", kind: "rag" },
+      { label: "TICKET-INC-0212", kind: "rag" },
+    ],
+    lane: "creative",
+  },
+  {
+    id: 9,
+    label: "7",
+    name: "Localization",
+    type: "automation",
+    pills: [
+      { label: "generate_locale_variants", kind: "mcp" },
+      { label: "LOC-STYLE", kind: "rag" },
+    ],
+    lane: "creative",
+  },
+  {
+    id: 10,
+    label: "8",
+    name: "Activation",
+    type: "automation",
+    pills: [],
+    lane: "dist",
+  },
+  {
+    id: 11,
+    label: "9",
+    name: "Monitoring",
+    type: "automation",
+    pills: [{ label: "Campaign KPIs", kind: "data" }],
+    lane: "dist",
+  },
+  {
+    id: 12,
+    label: "10",
+    name: "Reporting",
+    type: "ai",
+    pills: [{ label: "send_campaign_summary", kind: "mcp" }],
+    lane: "dist",
   },
 ];
 
-const EXTERNAL_SERVICES = [
-  { name: "TritonAI (Claude)", note: "UCSD shared LLM proxy" },
-  { name: "FastMCP", note: "MCP server for tool calling" },
-  { name: "Unsplash API", note: "Real photos for DAM + hero" },
-  { name: "Vercel", note: "Frontend hosting" },
-  { name: "Render", note: "Backend hosting" },
-  { name: "GitHub", note: "Version control" },
-];
-
-const BADGE_STYLE: Record<string, { bg: string; text: string; label: string }> = {
-  skill: { bg: "#0B7B8A1A", text: "#0B7B8A", label: "SKILL" },
-  automation: { bg: "#78716C1A", text: "#57534E", label: "AUTOMATION" },
-  mcp: { bg: "#4338CA1A", text: "#4338CA", label: "MCP TOOL" },
+const TYPE_CONFIG: Record<
+  StepType,
+  { border: string; bg: string; label: string; icon: typeof Cpu }
+> = {
+  human: {
+    border: "border-emerald-400",
+    bg: "bg-emerald-400/10",
+    label: "Human",
+    icon: User,
+  },
+  ai: {
+    border: "border-red-400",
+    bg: "bg-red-400/10",
+    label: "AI Skill",
+    icon: Cpu,
+  },
+  automation: {
+    border: "border-blue-400",
+    bg: "bg-blue-400/10",
+    label: "Automation",
+    icon: Zap,
+  },
+  "human-ai": {
+    border: "border-orange-400",
+    bg: "bg-orange-400/10",
+    label: "Human + AI",
+    icon: User,
+  },
 };
 
+const PILL_COLORS: Record<string, { bg: string; text: string }> = {
+  rag: { bg: "bg-amber-500/20", text: "text-amber-300" },
+  mcp: { bg: "bg-teal-500/20", text: "text-teal-300" },
+  data: { bg: "bg-slate-500/20", text: "text-slate-300" },
+};
+
+/* Lane labels are rendered inline below */
+
 /* ------------------------------------------------------------------ */
-/*  Components                                                         */
+/*  Step Card Component                                                */
 /* ------------------------------------------------------------------ */
 
-function Badge({ type }: { type: "skill" | "automation" | "mcp" }) {
-  const s = BADGE_STYLE[type];
-  return (
-    <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wider"
-      style={{ backgroundColor: s.bg, color: s.text }}
-    >
-      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: s.text }} />
-      {s.label}
-    </span>
-  );
-}
+function StepCard({ step, index }: { step: Step; index: number }) {
+  const cfg = TYPE_CONFIG[step.type];
+  const Icon = cfg.icon;
 
-function ComponentCard({
-  comp,
-  onClick,
-}: {
-  comp: Component;
-  onClick: () => void;
-}) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="rounded-md border border-charcoal/10 bg-white p-3 text-left transition-all hover:border-charcoal/25 hover:shadow-sm"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-[12px] font-semibold text-charcoal">{comp.name}</span>
-        {comp.badge && <Badge type={comp.badge} />}
-      </div>
-      <p className="mt-1 text-[11px] leading-relaxed text-charcoal/60">
-        {comp.description}
-      </p>
-    </button>
-  );
-}
-
-function LayerCard({
-  layer,
-  expanded,
-  onToggle,
-  onSelectComponent,
-}: {
-  layer: Layer;
-  expanded: boolean;
-  onToggle: () => void;
-  onSelectComponent: (comp: Component) => void;
-}) {
-  return (
-    <div className={`rounded-lg border ${layer.accent} ${layer.bg} shadow-sm transition-shadow hover:shadow-md`}>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full items-center gap-3 px-5 py-4 text-left"
-      >
-        {expanded ? (
-          <ChevronDown className="h-5 w-5 flex-shrink-0 text-charcoal/50" />
-        ) : (
-          <ChevronRight className="h-5 w-5 flex-shrink-0 text-charcoal/50" />
-        )}
-        <div className="min-w-0 flex-1">
-          <div className="font-serif text-lg font-semibold text-charcoal">
-            {layer.title}
-          </div>
-          <div className="text-[12px] text-charcoal/60">{layer.subtitle}</div>
-        </div>
-        <span className="rounded-full bg-white/60 px-2.5 py-0.5 text-xs font-medium text-charcoal/50">
-          {layer.components.length} components
-        </span>
-      </button>
-
-      <div
-        className="overflow-hidden transition-all duration-300 ease-in-out"
-        style={{ maxHeight: expanded ? `${layer.components.length * 120 + 100}px` : "0" }}
-      >
-        <div className="border-t border-charcoal/10 px-5 pb-4 pt-3">
-          <p className="mb-3 text-[12px] leading-relaxed text-charcoal/70">
-            {layer.description}
-          </p>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {layer.components.map((comp) => (
-              <ComponentCard
-                key={comp.name}
-                comp={comp}
-                onClick={() => onSelectComponent(comp)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DetailModal({
-  comp,
-  onClose,
-}: {
-  comp: Component;
-  onClose: () => void;
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(45,45,45,0.35)" }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.15 + index * 0.08, duration: 0.5, ease: "easeOut" }}
+      className={`step-card relative rounded-xl border ${cfg.border} ${cfg.bg} backdrop-blur-md p-4 w-full`}
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+        boxShadow: `0 0 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
       }}
     >
-      <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3 rounded-md p-1.5 text-charcoal/50 hover:bg-cream hover:text-charcoal"
-        >
-          <X className="h-4 w-4" />
-        </button>
-
-        <div className="flex items-start gap-2">
-          <h3 className="font-serif text-lg font-semibold text-charcoal">{comp.name}</h3>
-          {comp.badge && <Badge type={comp.badge} />}
+      {/* Step number badge */}
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <span
+            className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold ${cfg.border} border`}
+            style={{ color: "white" }}
+          >
+            {step.label}
+          </span>
+          <div>
+            <h3 className="text-sm font-semibold text-white leading-tight">
+              {step.name}
+            </h3>
+          </div>
         </div>
-
-        <p className="mt-3 text-sm leading-relaxed text-charcoal/75">{comp.description}</p>
-
-        {comp.path && (
-          <div className="mt-4 rounded-md bg-charcoal/5 px-3 py-2">
-            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">
-              File path
-            </div>
-            <div className="mt-0.5 font-mono text-[12px] text-charcoal/75">{comp.path}</div>
-          </div>
-        )}
-
-        {comp.example && (
-          <div className="mt-3 rounded-md border border-teal-600/20 bg-teal-50/30 px-3 py-2">
-            <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">
-              Example
-            </div>
-            <div className="mt-0.5 text-[12px] text-charcoal/70">{comp.example}</div>
-          </div>
-        )}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {step.hasReview && (
+            <span className="flex items-center gap-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 px-1.5 py-0.5 text-[9px] font-semibold text-purple-300">
+              <ShieldCheck className="h-2.5 w-2.5" />
+              Review
+            </span>
+          )}
+          <span
+            className={`inline-flex items-center gap-1 rounded-full ${cfg.bg} border ${cfg.border} px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white/80`}
+          >
+            <Icon className="h-2.5 w-2.5" />
+            {cfg.label}
+          </span>
+        </div>
       </div>
-    </div>
+
+      {/* Pills */}
+      {step.pills.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-2">
+          {step.pills.map((pill) => {
+            const pc = PILL_COLORS[pill.kind];
+            return (
+              <span
+                key={pill.label}
+                className={`inline-flex items-center rounded-full ${pc.bg} ${pc.text} px-2 py-0.5 text-[9px] font-medium`}
+              >
+                {pill.kind === "rag" && "📄 "}
+                {pill.kind === "mcp" && "🔧 "}
+                {pill.kind === "data" && "💾 "}
+                {pill.label}
+              </span>
+            );
+          })}
+        </div>
+      )}
+    </motion.div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Page                                                               */
+/*  SVG Connection Lines                                               */
+/* ------------------------------------------------------------------ */
+
+function ConnectionLines() {
+  const [dims, setDims] = useState<{
+    cards: DOMRect[];
+    container: DOMRect;
+  } | null>(null);
+  useEffect(() => {
+    const measure = () => {
+      const container = document.getElementById("flow-container");
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      const cards = Array.from(container.querySelectorAll(".step-card"));
+      const rects = cards.map((c) => c.getBoundingClientRect());
+      if (rects.length === STEPS.length) {
+        setDims({ cards: rects, container: containerRect });
+      }
+    };
+
+    const timer = setTimeout(measure, 800);
+    window.addEventListener("resize", () => setTimeout(measure, 100));
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", () => setTimeout(measure, 100));
+    };
+  }, []);
+
+  if (!dims || dims.cards.length < 2) return null;
+
+  const ox = dims.container.left;
+  const oy = dims.container.top;
+
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+
+  for (let i = 0; i < dims.cards.length - 1; i++) {
+    const from = dims.cards[i];
+    const to = dims.cards[i + 1];
+    lines.push({
+      x1: from.left - ox + from.width / 2,
+      y1: from.top - oy + from.height,
+      x2: to.left - ox + to.width / 2,
+      y2: to.top - oy,
+    });
+  }
+
+  return (
+    <svg
+      className="absolute inset-0 pointer-events-none"
+      style={{ width: "100%", height: "100%", overflow: "visible" }}
+    >
+      <defs>
+        <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(45,212,191,0.6)" />
+          <stop offset="100%" stopColor="rgba(45,212,191,0.15)" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {lines.map((line, i) => {
+        const midY = (line.y1 + line.y2) / 2;
+        const path = `M ${line.x1} ${line.y1} C ${line.x1} ${midY}, ${line.x2} ${midY}, ${line.x2} ${line.y2}`;
+        return (
+          <g key={i}>
+            {/* Glow line */}
+            <path
+              d={path}
+              fill="none"
+              stroke="rgba(45,212,191,0.15)"
+              strokeWidth="4"
+              filter="url(#glow)"
+            />
+            {/* Main line */}
+            <path
+              d={path}
+              fill="none"
+              stroke="url(#lineGrad)"
+              strokeWidth="1.5"
+              strokeDasharray="6 4"
+            />
+            {/* Animated dot */}
+            <circle r="3" fill="#2dd4bf">
+              <animateMotion
+                dur={`${2 + i * 0.15}s`}
+                repeatCount="indefinite"
+                path={path}
+              />
+            </circle>
+            <circle r="6" fill="rgba(45,212,191,0.2)">
+              <animateMotion
+                dur={`${2 + i * 0.15}s`}
+                repeatCount="indefinite"
+                path={path}
+              />
+            </circle>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main Page                                                          */
 /* ------------------------------------------------------------------ */
 
 export default function ArchitecturePage() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [selectedComp, setSelectedComp] = useState<Component | null>(null);
+  const [showLines, setShowLines] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowLines(true), 900);
+    return () => clearTimeout(t);
+  }, []);
+
+  const merchSteps = STEPS.filter((s) => s.lane === "merch");
+  const creativeSteps = STEPS.filter((s) => s.lane === "creative");
+  const distSteps = STEPS.filter((s) => s.lane === "dist");
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Header bar */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-charcoal/10 bg-white px-6 shadow-sm">
-        <Link href="/" className="font-serif text-2xl font-bold tracking-wide text-charcoal">
-          MACY&apos;S
-        </Link>
-        <div className="flex items-center gap-3">
-          <Link href="/story" className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50">
-            Story
-          </Link>
-          <Link href="/rag-compare" className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50">
-            RAG Demo
-          </Link>
-          <Link href="/evals" className="rounded-full border border-teal-600/20 px-3 py-1 text-[11px] font-medium text-teal-600 hover:bg-teal-50">
-            Evals
-          </Link>
-          <span className="rounded-full border border-teal-600 bg-teal-50 px-3 py-1 text-[11px] font-semibold text-teal-700">
-            Architecture
-          </span>
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* Subtle grid background */}
+      <div
+        className="fixed inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Link>
+            <div className="h-5 w-px bg-white/10" />
+            <span className="font-serif text-lg font-bold tracking-widest text-white">
+              MACY&apos;S
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {[
+              { href: "/story", label: "Story" },
+              { href: "/rag-compare", label: "RAG" },
+              { href: "/evals", label: "Evals" },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-full border border-white/10 px-3 py-1 text-[11px] font-medium text-white/50 hover:border-white/25 hover:text-white/80 transition-all"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <span className="rounded-full border border-teal-400/40 bg-teal-400/10 px-3 py-1 text-[11px] font-semibold text-teal-300">
+              Architecture
+            </span>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        {/* Title */}
-        <div className="mb-8 text-center">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1">
-            <Layers className="h-4 w-4 text-teal-600" />
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-teal-700">
+      <main className="relative mx-auto max-w-7xl px-6 py-10">
+        {/* Title Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-teal-400/20 bg-teal-400/5 px-4 py-1.5">
+            <Layers className="h-4 w-4 text-teal-400" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-teal-300">
               System Architecture
             </span>
           </div>
-          <h1 className="font-serif text-3xl font-bold text-charcoal">
-            How Macy&apos;s AI Coworker is Built
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            10-Step Campaign Workflow
           </h1>
-          <p className="mt-2 text-sm text-charcoal/60">
-            Click any layer to explore its components. Click a component for details.
+          <p className="mt-3 text-base text-white/40 max-w-2xl mx-auto">
+            How Macy&apos;s AI Coworker orchestrates merchandising, creative
+            production, and distribution through skills, automations, and MCP
+            tools.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="flex gap-6">
-          {/* Main layers */}
-          <div className="min-w-0 flex-1 space-y-3">
-            {LAYERS.map((layer) => (
-              <LayerCard
-                key={layer.id}
-                layer={layer}
-                expanded={expandedId === layer.id}
-                onToggle={() =>
-                  setExpandedId((prev) => (prev === layer.id ? null : layer.id))
-                }
-                onSelectComponent={setSelectedComp}
-              />
-            ))}
-          </div>
-
-          {/* External services sidebar */}
-          <aside className="hidden w-52 flex-shrink-0 lg:block">
-            <div className="sticky top-20 rounded-lg border border-charcoal/10 bg-white p-4 shadow-sm">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
-                External Services
-              </h3>
-              <ul className="space-y-2.5">
-                {EXTERNAL_SERVICES.map((svc) => (
-                  <li key={svc.name} className="flex items-start gap-2">
-                    <ExternalLink className="mt-0.5 h-3 w-3 flex-shrink-0 text-charcoal/35" />
-                    <div>
-                      <div className="text-[11px] font-medium text-charcoal/80">{svc.name}</div>
-                      <div className="text-xs text-charcoal/45">{svc.note}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+        {/* Legend */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="flex flex-wrap items-center justify-center gap-4 mb-10"
+        >
+          {[
+            { color: "border-orange-400 bg-orange-400/10", label: "Human + AI" },
+            { color: "border-blue-400 bg-blue-400/10", label: "Automation" },
+            { color: "border-red-400 bg-red-400/10", label: "AI Skill" },
+            { color: "border-emerald-400 bg-emerald-400/10", label: "Human Task" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className={`flex items-center gap-2 rounded-full border ${item.color} px-3 py-1`}
+            >
+              <span className="text-[10px] font-medium text-white/70">
+                {item.label}
+              </span>
             </div>
+          ))}
+          <div className="flex items-center gap-2 rounded-full border border-purple-400/40 bg-purple-400/10 px-3 py-1">
+            <ShieldCheck className="h-3 w-3 text-purple-300" />
+            <span className="text-[10px] font-medium text-white/70">
+              Has Human Review
+            </span>
+          </div>
+          <div className="h-4 w-px bg-white/10" />
+          {[
+            { emoji: "📄", label: "RAG Doc", cls: "text-amber-300 bg-amber-500/20" },
+            { emoji: "🔧", label: "MCP Tool", cls: "text-teal-300 bg-teal-500/20" },
+            { emoji: "💾", label: "Data Source", cls: "text-slate-300 bg-slate-500/20" },
+          ].map((p) => (
+            <span
+              key={p.label}
+              className={`inline-flex items-center gap-1 rounded-full ${p.cls} px-2 py-0.5 text-[10px] font-medium`}
+            >
+              {p.emoji} {p.label}
+            </span>
+          ))}
+        </motion.div>
 
-            {/* Counts summary */}
-            <div className="mt-3 rounded-lg border border-charcoal/10 bg-white p-4 shadow-sm">
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
-                By the Numbers
-              </h3>
-              <div className="space-y-1.5 text-[11px]">
-                <div className="flex justify-between"><span className="text-charcoal/60">Skills (LLM)</span><span className="font-semibold text-teal-700">4</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">Automations</span><span className="font-semibold text-charcoal/80">7</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">MCP Tools</span><span className="font-semibold" style={{ color: "#4338CA" }}>3</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">RAG Documents</span><span className="font-semibold text-charcoal/80">12</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">Eval Tests</span><span className="font-semibold text-charcoal/80">67</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">Unit Tests</span><span className="font-semibold text-charcoal/80">270</span></div>
-                <div className="flex justify-between"><span className="text-charcoal/60">Workflow Steps</span><span className="font-semibold text-charcoal/80">10</span></div>
+        {/* 3-Lane Layout */}
+        <div id="flow-container" className="relative">
+          {showLines && <ConnectionLines />}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Merchandising Lane */}
+            <div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                className="mb-4 text-center"
+              >
+                <h2 className="text-sm font-bold uppercase tracking-widest text-blue-400">
+                  Merchandising
+                </h2>
+                <p className="text-[10px] text-white/30 mt-0.5">Steps 1 - 3</p>
+              </motion.div>
+              <div className="space-y-4">
+                {merchSteps.map((step, i) => (
+                  <StepCard key={step.id} step={step} index={i} />
+                ))}
               </div>
             </div>
-          </aside>
-        </div>
-      </main>
 
-      {/* Detail modal */}
-      {selectedComp && (
-        <DetailModal comp={selectedComp} onClose={() => setSelectedComp(null)} />
-      )}
+            {/* Creative Lane */}
+            <div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="mb-4 text-center"
+              >
+                <h2 className="text-sm font-bold uppercase tracking-widest text-purple-400">
+                  Creative
+                </h2>
+                <p className="text-[10px] text-white/30 mt-0.5">Steps 4 - 7</p>
+              </motion.div>
+              <div className="space-y-4">
+                {creativeSteps.map((step, i) => (
+                  <StepCard key={step.id} step={step} index={i + 3} />
+                ))}
+              </div>
+            </div>
+
+            {/* Distribution Lane */}
+            <div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mb-4 text-center"
+              >
+                <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-400">
+                  Distribution
+                </h2>
+                <p className="text-[10px] text-white/30 mt-0.5">Steps 8 - 10</p>
+              </motion.div>
+              <div className="space-y-4">
+                {distSteps.map((step, i) => (
+                  <StepCard key={step.id} step={step} index={i + 9} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Flow Arrows Between Lanes (visible on md+) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="hidden md:flex items-center justify-center gap-2 mt-8 mb-2"
+        >
+          <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-2.5">
+            <span className="text-xs font-semibold text-blue-400">Merchandising</span>
+            <svg width="24" height="12" viewBox="0 0 24 12">
+              <path d="M0 6 L18 6 M14 2 L18 6 L14 10" stroke="rgba(45,212,191,0.5)" strokeWidth="1.5" fill="none" />
+              <circle r="2" fill="#2dd4bf">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M0 6 L18 6" />
+              </circle>
+            </svg>
+            <span className="text-xs font-semibold text-purple-400">Creative</span>
+            <svg width="24" height="12" viewBox="0 0 24 12">
+              <path d="M0 6 L18 6 M14 2 L18 6 L14 10" stroke="rgba(45,212,191,0.5)" strokeWidth="1.5" fill="none" />
+              <circle r="2" fill="#2dd4bf">
+                <animateMotion dur="1.5s" repeatCount="indefinite" path="M0 6 L18 6" />
+              </circle>
+            </svg>
+            <span className="text-xs font-semibold text-emerald-400">Distribution</span>
+          </div>
+        </motion.div>
+
+        {/* Global animation styles */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes flowDown {
+            0% { transform: translateY(-8px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(8px); opacity: 0; }
+          }
+          .flow-dot {
+            animation: flowDown 1.5s ease-in-out infinite;
+          }
+        ` }} />
+
+        {/* Summary Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4, duration: 0.6 }}
+          className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6"
+        >
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+            {[
+              { value: "4", label: "AI Skills", color: "text-red-400" },
+              { value: "7", label: "Automations", color: "text-blue-400" },
+              { value: "3", label: "MCP Tools", color: "text-teal-400" },
+              { value: "12", label: "RAG Documents", color: "text-amber-400" },
+              { value: "57K+", label: "Data Records", color: "text-slate-300" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className={`text-2xl font-bold ${stat.color}`}>
+                  {stat.value}
+                </div>
+                <div className="text-[10px] font-medium uppercase tracking-wider text-white/40 mt-0.5">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-center">
+            <p className="text-xs text-white/25">
+              4 AI Skills &middot; 7 Automations &middot; 3 MCP Tools &middot;
+              12 RAG Documents &middot; 57K+ Data Records
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Within-lane connection lines */}
+        <svg className="absolute inset-0 pointer-events-none hidden md:block" style={{ width: "100%", height: "100%", overflow: "visible" }}>
+          <defs>
+            <linearGradient id="laneLineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="rgba(45,212,191,0.4)" />
+              <stop offset="100%" stopColor="rgba(45,212,191,0.05)" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </main>
     </div>
   );
 }
