@@ -43,10 +43,10 @@ TRITONAI_BASE_URL = "https://tritonai-api.ucsd.edu/v1"
 
 # Per-skill model overrides. Skills not listed use CLAUDE_MODEL.
 # Brief generation is structured output that doesn't need claude-opus
-# quality — gemini-3-flash cuts first-run time from ~30s to ~10s.
+# quality — api-llama-4-scout is fast and available on On-Prem Instructional.
 SKILL_MODEL_OVERRIDE: dict[str, str] = {
-    "compliance-pre-check": "gemini-3-flash",
-    "approval-brief-generator": "gemini-3-flash",
+    "compliance-pre-check": "claude-sonnet-4-6",
+    "approval-brief-generator": "claude-sonnet-4-6",
 }
 
 
