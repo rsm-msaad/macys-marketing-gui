@@ -56,7 +56,7 @@ function SkuCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">
+          <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">
             {sku.brand}
           </div>
           <div className="font-serif text-sm font-semibold leading-tight text-charcoal">
@@ -80,24 +80,24 @@ function SkuCard({
         <span className="font-semibold text-charcoal">${discounted.toFixed(0)}</span>
         <span className="text-charcoal/40 line-through">${sku.msrp.toFixed(0)}</span>
         <span
-          className="rounded-full px-1.5 py-0.5 text-[9px] font-semibold"
+          className="rounded-full px-1.5 py-0.5 text-xs font-semibold"
           style={{ backgroundColor: badge.bg, color: badge.text }}
         >
           {sku.inventory_level.toLocaleString()} units
         </span>
       </div>
 
-      <div className="mt-1.5 flex items-center gap-2 text-[10px] text-charcoal/55">
+      <div className="mt-1.5 flex items-center gap-2 text-xs text-charcoal/55">
         <span>Margin {(sku.margin_pct * 100).toFixed(0)}%</span>
         <span>Score {sku.score_pct.toFixed(0)}</span>
       </div>
 
-      <div className="mt-1.5 text-[10px] italic text-teal-700">
+      <div className="mt-1.5 text-xs italic text-teal-700">
         {sku.top_reason}
       </div>
 
       {sku.map_protected && (
-        <div className="mt-1 flex items-center gap-1 text-[9px] text-amber-600">
+        <div className="mt-1 flex items-center gap-1 text-xs text-mustard">
           <ShieldAlert className="h-3 w-3" />
           MAP protected
         </div>
@@ -213,7 +213,7 @@ export function SKUSelectionContent({
             <div className="flex items-start gap-2">
               <ShoppingBag className="mt-0.5 h-4 w-4 text-sage" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                <div className="text-xs font-semibold uppercase tracking-wider text-sage">
                   SKUs locked in
                 </div>
                 <div className="font-serif text-base font-semibold text-charcoal">
@@ -248,7 +248,7 @@ export function SKUSelectionContent({
       {/* Upstream context: reading from Step 2 Segmentation */}
       {segmentName && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Step 2: Segmentation
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -263,7 +263,7 @@ export function SKUSelectionContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · SKU Recommender
           </span>
         </div>
@@ -341,8 +341,8 @@ export function SKUSelectionContent({
 
       {/* MAP exclusions panel */}
       {excluded.length > 0 && (
-        <div className="rounded-md border border-amber-300/40 bg-amber-50/30 p-3">
-          <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700">
+        <div className="rounded-md border border-mustard/30 bg-mustard/10 p-3">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-mustard">
             <AlertTriangle className="h-3 w-3" />
             Excluded due to MAP ({excluded.length})
           </div>
@@ -367,16 +367,16 @@ export function SKUSelectionContent({
       {pricingCheck && (
         <div className={`rounded-md border p-3 ${
           pricingCheck.status === "pass"
-            ? "border-green-300/40 bg-green-50/30"
+            ? "border-sage/30 bg-sage/10"
             : pricingCheck.status === "warn"
-              ? "border-amber-300/40 bg-amber-50/30"
-              : "border-red-300/40 bg-red-50/30"
+              ? "border-mustard/30 bg-mustard/10"
+              : "border-soft_red/30 bg-soft_red/10"
         }`}>
-          <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider">
             <ShieldAlert className="h-3 w-3" />
             <span className={
-              pricingCheck.status === "pass" ? "text-green-700" :
-              pricingCheck.status === "warn" ? "text-amber-700" : "text-red-700"
+              pricingCheck.status === "pass" ? "text-charcoal/70" :
+              pricingCheck.status === "warn" ? "text-charcoal/70" : "text-charcoal/70"
             }>
               Pricing helper: check_pricing_conflicts — {pricingCheck.status.toUpperCase()}
             </span>
@@ -387,14 +387,14 @@ export function SKUSelectionContent({
           {pricingCheck.conflicts.length > 0 && (
             <ul className="mt-1.5 space-y-0.5 text-[11px]">
               {pricingCheck.conflicts.map((c) => (
-                <li key={c.sku_id} className={c.severity === "fail" ? "text-red-700" : "text-amber-700"}>
+                <li key={c.sku_id} className={c.severity === "fail" ? "text-soft_red" : "text-mustard"}>
                   <span className="font-medium">[{c.severity.toUpperCase()}]</span> {c.sku_id}{c.brand ? ` (${c.brand})` : ""}: {c.issue}
                 </li>
               ))}
             </ul>
           )}
           {pricingCheck.status === "pass" && (
-            <div className="mt-1 text-[11px] text-green-700">No pricing conflicts detected.</div>
+            <div className="mt-1 text-[11px] text-charcoal/70">No pricing conflicts detected.</div>
           )}
         </div>
       )}
@@ -412,7 +412,7 @@ export function SKUSelectionContent({
         return (
           <>
             {hasBlockingFailures && (
-              <div className="rounded-md border border-red-300/40 bg-red-50/30 px-3 py-2 text-[11px] text-red-700">
+              <div className="rounded-md border border-soft_red/30 bg-soft_red/10 px-3 py-2 text-[11px] text-charcoal/70">
                 <strong>{includedFailures.length} selected SKU(s)</strong> have pricing rule violations.
                 Deselect them or request different SKUs to proceed.
               </div>

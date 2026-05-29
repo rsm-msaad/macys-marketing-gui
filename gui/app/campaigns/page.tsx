@@ -63,7 +63,7 @@ export default function CampaignsPage() {
             >
               {f}
               {campaigns && (
-                <span className="ml-1 text-[10px] opacity-70">
+                <span className="ml-1 text-xs opacity-70">
                   ({f === "all" ? campaigns.length : campaigns.filter((c) => c.status === f).length})
                 </span>
               )}
@@ -96,9 +96,9 @@ export default function CampaignsPage() {
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
                       <h3 className="text-[14px] font-semibold text-charcoal truncate">{c.name}</h3>
-                      <div className="mt-0.5 text-[10px] font-mono text-charcoal/40">{c.id}</div>
+                      <div className="mt-0.5 text-xs font-mono text-charcoal/40">{c.id}</div>
                     </div>
-                    <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${style.bg} ${style.text}`}>
+                    <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-bold uppercase ${style.bg} ${style.text}`}>
                       {c.status}
                     </span>
                   </div>
@@ -106,8 +106,8 @@ export default function CampaignsPage() {
                   {/* Progress bar */}
                   <div className="mt-3">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] text-charcoal/50">Step {c.current_step} of 10</span>
-                      <span className="text-[10px] font-medium text-charcoal/60">{progress}%</span>
+                      <span className="text-xs text-charcoal/50">Step {c.current_step} of 10</span>
+                      <span className="text-xs font-medium text-charcoal/60">{progress}%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-charcoal/8">
                       <div
@@ -121,7 +121,7 @@ export default function CampaignsPage() {
                     {c.current_step_name}
                   </div>
 
-                  <div className="mt-2 flex items-center gap-2 text-[10px]">
+                  <div className="mt-2 flex items-center gap-2 text-xs">
                     <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
                     <span className="text-charcoal/50">{c.days_label}</span>
                   </div>

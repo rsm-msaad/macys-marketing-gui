@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { createCampaign } from "@/lib/api";
 import { EXAMPLE_CAMPAIGNS, type ExampleCampaign } from "@/lib/example-campaigns";
@@ -106,7 +107,12 @@ export default function StartPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-6 py-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mx-auto max-w-3xl px-6 py-10"
+      >
         {/* Title */}
         <div className="mb-8 text-center">
           <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1">
@@ -122,7 +128,7 @@ export default function StartPage() {
 
         {/* Load Example */}
         <div className="mb-8 rounded-lg border border-charcoal/10 bg-white p-4">
-          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/45">
             Quick start with an example
           </div>
           <div className="flex flex-wrap gap-2">
@@ -246,7 +252,7 @@ export default function StartPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-700 disabled:opacity-50 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-teal-700 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 sm:w-auto"
             >
               {submitting ? (
                 <>
@@ -262,7 +268,7 @@ export default function StartPage() {
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </main>
   );
 }

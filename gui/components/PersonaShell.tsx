@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { ArrowRightCircle, Check, Circle, Database, Lock, MessageCircle, RotateCcw, X } from "lucide-react";
+import { ArrowRightCircle, BarChart3, BookOpen, Bot, Check, Circle, Cog, Database, Factory, LayoutDashboard, Lock, MessageCircle, RotateCcw, Settings, TrendingUp, User, X, Brain } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { FloatingPersonaAvatar } from "@/components/FloatingPersonaAvatar";
@@ -53,6 +53,19 @@ import {
 } from "@/lib/authorities";
 
 type LeftNavItem = { label: string; active?: boolean; href?: string };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LucideIconComponent = React.ComponentType<any>;
+
+const NAV_ICON: Record<string, LucideIconComponent> = {
+  Dashboard: BarChart3,
+  Campaigns: BookOpen,
+  "Knowledge Base": Database,
+  Analytics: TrendingUp,
+  "All Campaigns": BookOpen,
+  "All Steps": LayoutDashboard,
+  Overrides: Settings,
+};
 
 const DEFAULT_CAMPAIGN_ID = "MDC-2026-MD-001";
 const POLL_INTERVAL_MS = 5_000;
@@ -382,37 +395,32 @@ export function PersonaShell({
             onSelectCampaign={handleSelectCampaign}
           />
           <nav className="px-4 py-4">
-            <h2 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
               Workspace
             </h2>
             <ul className="space-y-1 text-sm">
-              {leftNav.map((item) => (
-                <li key={item.label}>
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      className={`block w-full px-3 py-2 text-left text-sm nav-item-glass ${
-                        item.active
-                          ? "nav-item-active font-semibold text-charcoal"
-                          : "text-charcoal/60"
-                      }`}
-                    >
-                      {item.label}
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      className={`block w-full px-3 py-2 text-left nav-item-glass ${
-                        item.active
-                          ? "nav-item-active font-semibold text-charcoal"
-                          : "text-charcoal/60"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  )}
-                </li>
-              ))}
+              {leftNav.map((item) => {
+                const NavIcon = NAV_ICON[item.label];
+                const activeClasses = item.active
+                  ? "nav-item-active font-semibold text-charcoal border-l-2 border-teal-600"
+                  : "text-charcoal/60 border-l-2 border-transparent";
+                const sharedClasses = `flex items-center w-full px-3 py-2 text-left text-sm nav-item-glass ${activeClasses}`;
+                return (
+                  <li key={item.label}>
+                    {item.href ? (
+                      <a href={item.href} className={sharedClasses}>
+                        {NavIcon && <NavIcon className="h-4 w-4 mr-2 flex-shrink-0" />}
+                        {item.label}
+                      </a>
+                    ) : (
+                      <button type="button" className={sharedClasses}>
+                        {NavIcon && <NavIcon className="h-4 w-4 mr-2 flex-shrink-0" />}
+                        {item.label}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </motion.aside>
@@ -444,7 +452,11 @@ export function PersonaShell({
             {isActiveCampaign && (
               <button
                 type="button"
-                onClick={handleReset}
+                onClick={() => {
+                  if (window.confirm("Reset the demo? This will clear all campaign data.")) {
+                    handleReset();
+                  }
+                }}
                 disabled={resetting}
                 className="btn-reset-glass inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:text-soft_red disabled:opacity-50"
                 title="Reset the demo campaign back to step 1"
@@ -663,7 +675,7 @@ function StepOverlay({
         >
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-serif text-sm font-semibold text-charcoal">Workflow</h3>
-            <span className="text-[10px] font-bold text-teal-600">{pct}%</span>
+            <span className="text-xs font-bold text-teal-600">{pct}%</span>
           </div>
           {/* Mini progress bar */}
           <div className="mb-3 h-1.5 rounded-full bg-charcoal/5 overflow-hidden">
@@ -693,7 +705,7 @@ function StepOverlay({
                   {isActive && <Circle className="h-3 w-3 text-mustard fill-mustard flex-shrink-0" />}
                   {!isComplete && !isActive && <Lock className="h-2.5 w-2.5 text-charcoal/12 flex-shrink-0" />}
                   <div className="min-w-0 flex-1">
-                    <div className={`text-[10px] font-semibold leading-tight truncate ${isActive ? "text-teal-700" : isComplete ? "text-charcoal/65" : "text-charcoal/30"}`}>
+                    <div className={`text-xs font-semibold leading-tight truncate ${isActive ? "text-teal-700" : isComplete ? "text-charcoal/65" : "text-charcoal/30"}`}>
                       {step.name}
                     </div>
                   </div>
@@ -708,10 +720,10 @@ function StepOverlay({
                       </div>
                     )}
                     {ceoMeta && isActive && (
-                      <div className="h-5 w-5 rounded-full border-[1.5px] border-purple-300 overflow-hidden" title={`${ceoMeta.name} reviewing`}>
+                      <div className="h-5 w-5 rounded-full border-[1.5px] border-teal-300 overflow-hidden" title={`${ceoMeta.name} reviewing`}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={ceoMeta.avatar} alt={ceoMeta.name} className="h-full w-full object-cover"
-                          onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-purple-600","flex","items-center","justify-center","text-[7px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = ceoMeta.name.charAt(0); }}
+                          onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600","flex","items-center","justify-center","text-[7px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = ceoMeta.name.charAt(0); }}
                         />
                       </div>
                     )}
@@ -748,7 +760,7 @@ function StepOverlay({
               <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50" />
               <div className="absolute inset-0 flex items-center justify-between px-5">
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
+                  <div className="text-xs font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
                   <div className="text-base font-serif font-semibold text-white">
                     {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
                   </div>
@@ -788,14 +800,14 @@ function StepOverlay({
           className="w-[180px] flex-shrink-0 overflow-y-auto rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl border border-white/50 p-3"
         >
           {/* Persona switcher */}
-          <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Team</div>
+          <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Team</div>
           <div className="space-y-1 mb-4 pb-3 border-b border-charcoal/8">
             {personas.map((p) => (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => { onClose(); router.push(`/${p.id}`); }}
-                className={`flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-[10px] font-medium transition-all ${
+                className={`flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-xs font-medium transition-all ${
                   p.id === personaId
                     ? "bg-teal-50 text-teal-700 ring-1 ring-teal-500/25"
                     : "text-charcoal/50 hover:bg-charcoal/5"
@@ -827,12 +839,12 @@ function StepOverlay({
   );
 }
 
-const STEP_TYPE_INFO: Record<string, { icon: string; title: string; color: string; desc: string }> = {
-  HUMAN_ONLY: { icon: "👤", title: "Human Task", color: "#8C2727", desc: "This step is performed entirely by a human. No AI, automation, or tools are involved." },
-  HUMAN_PLUS_AI: { icon: "🤖", title: "Human + AI Skill", color: "#3F5A1F", desc: "A human initiates and reviews, but an LLM skill provides AI-generated analysis or content." },
-  HUMAN_PLUS_AUTOMATION: { icon: "⚙️", title: "Human + Automation", color: "#57534E", desc: "A human reviews results from a deterministic automation — rule-based code, no LLM needed." },
-  HUMAN_PLUS_SKILL: { icon: "🧠", title: "Human + AI Skill", color: "#0B7B8A", desc: "An AI skill uses LLM judgment (Claude) because the task requires reasoning, not just rules." },
-  FULLY_AUTOMATED: { icon: "🏭", title: "Fully Automated", color: "#444444", desc: "Runs without human involvement. Deterministic code handles the entire step." },
+const STEP_TYPE_INFO: Record<string, { icon: LucideIconComponent; title: string; color: string; desc: string }> = {
+  HUMAN_ONLY: { icon: User, title: "Human Task", color: "#8C2727", desc: "This step is performed entirely by a human. No AI, automation, or tools are involved." },
+  HUMAN_PLUS_AI: { icon: Bot, title: "Human + AI Skill", color: "#3F5A1F", desc: "A human initiates and reviews, but an LLM skill provides AI-generated analysis or content." },
+  HUMAN_PLUS_AUTOMATION: { icon: Cog, title: "Human + Automation", color: "#57534E", desc: "A human reviews results from a deterministic automation — rule-based code, no LLM needed." },
+  HUMAN_PLUS_SKILL: { icon: Brain, title: "Human + AI Skill", color: "#0B7B8A", desc: "An AI skill uses LLM judgment (Claude) because the task requires reasoning, not just rules." },
+  FULLY_AUTOMATED: { icon: Factory, title: "Fully Automated", color: "#444444", desc: "Runs without human involvement. Deterministic code handles the entire step." },
 };
 
 const STEP_TOOLS: Record<number, string[]> = {
@@ -852,20 +864,20 @@ function StepTypeCard({ stepNumber, label }: { stepNumber: number; label: string
   const tools = STEP_TOOLS[stepNumber] ?? [];
   return (
     <div>
-      <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Step Type</div>
+      <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Step Type</div>
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">{info.icon}</span>
+        <info.icon size={16} style={{ color: info.color }} />
         <span className="text-[11px] font-bold" style={{ color: info.color }}>{info.title}</span>
       </div>
-      <p className="text-[9px] leading-relaxed text-charcoal/50 mb-3">{info.desc}</p>
+      <p className="text-xs leading-relaxed text-charcoal/50 mb-3">{info.desc}</p>
       {tools.length > 0 && (
         <>
-          <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-1.5">Tools Used</div>
+          <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-1.5">Tools Used</div>
           <div className="space-y-1">
             {tools.map((t) => (
               <div key={t} className="flex items-start gap-1.5">
                 <span className="mt-0.5 h-1 w-1 rounded-full bg-teal-500 flex-shrink-0" />
-                <span className="text-[9px] text-charcoal/55 leading-tight">{t}</span>
+                <span className="text-xs text-charcoal/55 leading-tight">{t}</span>
               </div>
             ))}
           </div>

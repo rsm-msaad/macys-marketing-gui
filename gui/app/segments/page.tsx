@@ -80,7 +80,7 @@ export default function SegmentsPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-serif text-xl font-bold text-charcoal">{seg.customer_count.toLocaleString()}</div>
-                    <div className="text-[10px] text-charcoal/50">{seg.pct_of_total}% of total</div>
+                    <div className="text-xs text-charcoal/50">{seg.pct_of_total}% of total</div>
                   </div>
                 </div>
 
@@ -90,21 +90,21 @@ export default function SegmentsPage() {
                 <div className="mt-3 grid grid-cols-3 gap-2 text-center">
                   <div className="rounded border border-charcoal/10 bg-white px-2 py-1.5">
                     <div className="text-[11px] font-semibold text-charcoal">{seg.avg_recency_days}d</div>
-                    <div className="text-[9px] text-charcoal/50">Recency</div>
+                    <div className="text-xs text-charcoal/50">Recency</div>
                   </div>
                   <div className="rounded border border-charcoal/10 bg-white px-2 py-1.5">
                     <div className="text-[11px] font-semibold text-charcoal">{seg.avg_frequency.toFixed(1)}x</div>
-                    <div className="text-[9px] text-charcoal/50">Frequency</div>
+                    <div className="text-xs text-charcoal/50">Frequency</div>
                   </div>
                   <div className="rounded border border-charcoal/10 bg-white px-2 py-1.5">
                     <div className="text-[11px] font-semibold text-charcoal">${seg.avg_monetary.toFixed(0)}</div>
-                    <div className="text-[9px] text-charcoal/50">Monetary</div>
+                    <div className="text-xs text-charcoal/50">Monetary</div>
                   </div>
                 </div>
 
                 {/* Top category */}
                 {seg.top_category && (
-                  <div className="mt-2 text-[10px] text-charcoal/55">
+                  <div className="mt-2 text-xs text-charcoal/55">
                     Top category: <strong>{seg.top_category}</strong> (+{(seg.top_category_lift * 100).toFixed(0)}% lift vs avg)
                   </div>
                 )}
@@ -113,7 +113,7 @@ export default function SegmentsPage() {
                 {tiers.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {tiers.slice(0, 4).map(([tier, pct]) => (
-                      <span key={tier} className="rounded bg-white/70 px-1.5 py-0.5 text-[9px] text-charcoal/50">
+                      <span key={tier} className="rounded bg-white/70 px-1.5 py-0.5 text-xs text-charcoal/50">
                         {tier} {pct}%
                       </span>
                     ))}
@@ -122,7 +122,7 @@ export default function SegmentsPage() {
 
                 {/* Used by */}
                 {seg.used_by_campaigns.length > 0 && (
-                  <div className="mt-3 border-t border-charcoal/5 pt-2 text-[10px] text-charcoal/50">
+                  <div className="mt-3 border-t border-charcoal/5 pt-2 text-xs text-charcoal/50">
                     Used by: {seg.used_by_campaigns.join(", ")}
                   </div>
                 )}

@@ -63,7 +63,7 @@ export function SkillCard({
   return (
     <div className="flex flex-col rounded-lg border border-charcoal/10 bg-white p-5 shadow-sm">
       <div
-        className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+        className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wider"
         style={{ backgroundColor: `${m.accent}1A`, color: m.accent }}
       >
         <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: m.accent }} />

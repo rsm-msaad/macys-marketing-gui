@@ -246,7 +246,7 @@ export default function StoryPage() {
             <button
               key={i}
               type="button"
-              className={`relative overflow-hidden rounded-full text-[10px] font-medium transition-all ${
+              className={`relative overflow-hidden rounded-full text-xs font-medium transition-all ${
                 sec.isCurrent
                   ? "px-3 py-1 shadow-sm"
                   : "hidden px-2.5 py-0.5 md:block"
@@ -268,14 +268,14 @@ export default function StoryPage() {
               <span className={`relative z-10 ${sec.fillPct > 50 ? "text-white" : "text-charcoal/60"}`}>
                 {sec.label}
                 {sec.isCurrent && (
-                  <span className="ml-1.5 text-[9px] opacity-80">
+                  <span className="ml-1.5 text-xs opacity-80">
                     {sec.slideInSection}/{sec.totalInSection}
                   </span>
                 )}
               </span>
             </button>
           ))}
-          <span className="ml-auto flex-shrink-0 text-[10px] text-charcoal/40">
+          <span className="ml-auto flex-shrink-0 text-xs text-charcoal/40">
             {currentIndex + 1}/{total}
           </span>
         </div>

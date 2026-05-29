@@ -134,7 +134,7 @@ export function WorkflowPipeline({
               transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
               onClick={() => onStepClick?.(step.number)}
-              style={{ animationDelay: `${i * 0.3}s` }}
+              style={{ '--card-index': i } as React.CSSProperties}
               className={`step-card-light relative flex h-32 flex-col justify-between p-3 ${onStepClick ? "cursor-pointer" : "cursor-default"} ${
                 isActive
                   ? "step-card-light-active"
@@ -158,23 +158,23 @@ export function WorkflowPipeline({
               </div>
               <div>
                 <div className="text-[12px] font-bold text-charcoal leading-tight">{step.name}</div>
-                <div className="mt-0.5 text-[10px] text-charcoal/50">{step.owner}</div>
+                <div className="mt-0.5 text-xs text-charcoal/50">{step.owner}</div>
               </div>
               <div className="flex items-center justify-between gap-1">
                 <span
-                  className="rounded-full px-1.5 py-0.5 text-[8px] font-bold tracking-wide"
+                  className="rounded-full px-1.5 py-0.5 text-[11px] font-bold tracking-wide"
                   style={{ backgroundColor: styleSet.bg, color: styleSet.text }}
                 >
                   {styleSet.label}
                 </span>
                 {isActive && (
-                  <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white animate-soft-pulse">
+                  <span className="rounded-full bg-teal-600 px-1.5 py-0.5 text-[11px] font-bold tracking-wider text-white animate-soft-pulse">
                     ACTIVE
                   </span>
                 )}
                 {!isActive && (revisionCounts?.[String(step.number)] ?? 0) > 0 && (
                   <span
-                    className="rounded-full bg-mustard/20 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-mustard"
+                    className="rounded-full bg-mustard/20 px-1.5 py-0.5 text-[11px] font-bold tracking-wider text-mustard"
                     title="Number of revision requests on this step"
                   >
                     {revisionCounts![String(step.number)]} rev
@@ -193,7 +193,7 @@ export function WorkflowPipeline({
                     src={ownerMeta.avatar}
                     alt={ownerMeta.name}
                     className="h-full w-full rounded-full object-cover"
-                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600", "flex", "items-center", "justify-center", "text-[10px]", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = ownerMeta.name.charAt(0); }}
+                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600", "flex", "items-center", "justify-center", "text-xs", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = ownerMeta.name.charAt(0); }}
                   />
                 </div>
               )}
@@ -201,7 +201,7 @@ export function WorkflowPipeline({
               {/* CEO overlay avatar on the active step */}
               {isCeo && isActive && (
                 <div
-                  className="absolute -bottom-1.5 -right-1.5 h-7 w-7 rounded-full border-2 border-purple-400 shadow-md"
+                  className="absolute -bottom-1.5 -right-1.5 h-7 w-7 rounded-full border-2 border-teal-400 shadow-md"
                   title={`${PERSONA_ROLE[personaId]?.name ?? "Co-CEO"} reviewing`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -209,7 +209,7 @@ export function WorkflowPipeline({
                     src={PERSONA_ROLE[personaId]?.avatar ?? "/avatars/vincent.png"}
                     alt={PERSONA_ROLE[personaId]?.name ?? "Co-CEO"}
                     className="h-full w-full rounded-full object-cover"
-                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-purple-600", "flex", "items-center", "justify-center", "text-[10px]", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = (PERSONA_ROLE[personaId]?.name ?? "C").charAt(0); }}
+                    onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("bg-teal-600", "flex", "items-center", "justify-center", "text-xs", "font-bold", "text-white"); e.currentTarget.parentElement!.textContent = (PERSONA_ROLE[personaId]?.name ?? "C").charAt(0); }}
                   />
                 </div>
               )}

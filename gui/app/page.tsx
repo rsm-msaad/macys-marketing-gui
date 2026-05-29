@@ -114,7 +114,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.9 }}
-            className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold"
+            className="mt-1.5 sm:mt-2 text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold"
           >
             AI-Powered Marketing Operations
           </motion.p>
@@ -128,10 +128,10 @@ export default function LandingPage() {
           >
             {STATS.map((s) => (
               <div key={s.label} className="text-center min-w-[48px]">
-                <div className="font-serif text-lg sm:text-2xl font-bold text-charcoal">
+                <div className="font-serif text-3xl sm:text-4xl font-bold text-charcoal">
                   {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
                 </div>
-                <div className="text-[8px] sm:text-[10px] uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
+                <div className="text-xs uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -152,14 +152,14 @@ export default function LandingPage() {
                 {ceos.map((c) => (
                   <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
                     <div
-                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-purple-400/40 transition-all duration-300 group-hover:ring-purple-400/80"
-                      style={{ boxShadow: "0 0 30px rgba(139,92,246,0.15)" }}
+                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full overflow-hidden ring-2 ring-teal-400/40 transition-all duration-300 group-hover:ring-teal-400/80"
+                      style={{ boxShadow: "0 0 30px rgba(20,184,166,0.15)" }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={c.avatar} alt={c.name} className="h-full w-full object-cover" />
                     </div>
-                    <span className="mt-1.5 text-[10px] sm:text-xs font-semibold text-charcoal/90">{c.name}</span>
-                    <span className="flex items-center gap-0.5 text-[8px] uppercase tracking-wider text-purple-600/60 font-semibold">
+                    <span className="mt-1.5 text-xs font-semibold text-charcoal/90">{c.name}</span>
+                    <span className="flex items-center gap-0.5 text-xs uppercase tracking-wider text-teal-600/60 font-semibold">
                       <Shield className="h-2 w-2" /> Co-CEO
                     </span>
                   </Link>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={prev?.avatar} alt={prev?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/65 font-semibold">{prev?.name}</span>
+                      <span className="mt-1.5 text-xs text-charcoal/65 font-semibold">{prev?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -225,10 +225,10 @@ export default function LandingPage() {
                           <h2 className="mt-2 sm:mt-3 font-serif text-2xl sm:text-4xl font-semibold text-charcoal tracking-wide">
                             {cur.name}
                           </h2>
-                          <p className="mt-0.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-charcoal/80 font-semibold">
+                          <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-charcoal/80 font-semibold">
                             {cur.title}
                           </p>
-                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-[10px] sm:text-xs leading-relaxed text-charcoal/55">
+                          <p className="mt-1.5 max-w-[280px] sm:max-w-xs text-center text-xs leading-relaxed text-charcoal/55">
                             {cur.tagline}
                           </p>
                           <span className="mt-2 sm:mt-3 inline-flex items-center gap-1.5 rounded-full border-2 border-charcoal/25 bg-white/50 backdrop-blur-sm px-5 py-2 text-[11px] sm:text-xs font-semibold text-charcoal transition-all duration-300 group-hover:border-charcoal/40 group-hover:bg-white/70 group-hover:text-charcoal">
@@ -258,7 +258,7 @@ export default function LandingPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={next?.avatar} alt={next?.name} className="h-full w-full object-cover" />
                       </div>
-                      <span className="mt-1.5 text-[9px] sm:text-[10px] text-charcoal/65 font-semibold">{next?.name}</span>
+                      <span className="mt-1.5 text-xs text-charcoal/65 font-semibold">{next?.name}</span>
                     </motion.button>
                   </AnimatePresence>
 
@@ -281,10 +281,11 @@ export default function LandingPage() {
 
                 {/* Dots */}
                 <div className="mt-3 flex justify-center gap-2">
-                  {team.map((_, i) => (
+                  {team.map((member, i) => (
                     <button
                       key={i}
                       type="button"
+                      aria-label={`Go to ${member?.name ?? `persona ${i + 1}`}`}
                       onClick={() => { if (!lockRef.current) { setDir(i > idx ? 1 : -1); setIdx(i); } }}
                       className="cursor-pointer"
                     >
@@ -316,13 +317,13 @@ export default function LandingPage() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm px-3 py-1 text-[9px] sm:text-[10px] font-bold text-charcoal/80 transition-all duration-200 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal"
+                className="rounded-full border-2 border-charcoal/20 bg-white/40 backdrop-blur-sm px-3 py-1 text-xs font-bold text-charcoal/80 transition-all duration-200 hover:border-charcoal/35 hover:bg-white/60 hover:text-charcoal"
               >
                 {l.label}
               </Link>
             ))}
           </div>
-          <p className="text-[9px] text-charcoal/45 font-medium">
+          <p className="text-xs text-charcoal/45 font-medium">
             Built with Claude · TritonAI · Next.js · FastAPI
           </p>
         </motion.div>

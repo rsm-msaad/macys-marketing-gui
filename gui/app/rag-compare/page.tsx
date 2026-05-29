@@ -45,7 +45,7 @@ function ScoreBadge({ score }: { score: number }) {
         ? "bg-mustard/15 text-mustard"
         : "bg-charcoal/10 text-charcoal/60";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${color}`}>
+    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${color}`}>
       {pct}%
     </span>
   );
@@ -63,7 +63,7 @@ function ResultCard({
   return (
     <div className="rounded-lg border border-charcoal/10 bg-white p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="rounded bg-teal-50 px-2 py-0.5 text-[10px] font-semibold text-teal-600">
+        <span className="rounded bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-600">
           {result.doc_id}
         </span>
         <ScoreBadge score={result.score} />

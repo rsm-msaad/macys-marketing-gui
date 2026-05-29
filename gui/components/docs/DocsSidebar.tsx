@@ -36,7 +36,7 @@ export function DocsSidebar({ entries }: { entries: SidebarEntry[] }) {
   const sidebar = (
     <nav className="flex flex-col gap-6 p-6">
       <div>
-        <div className="text-[10px] font-semibold uppercase tracking-widest text-charcoal/40">
+        <div className="text-xs font-semibold uppercase tracking-widest text-charcoal/40">
           Macy&apos;s AI Coworker
         </div>
         <div className="mt-0.5 font-serif text-lg font-bold text-charcoal">
@@ -46,7 +46,7 @@ export function DocsSidebar({ entries }: { entries: SidebarEntry[] }) {
 
       {sections.map((sec) => (
         <div key={sec.name}>
-          <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">
+          <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-charcoal/45">
             <BookOpen className="h-3 w-3" />
             {sec.name}
           </div>
@@ -62,7 +62,7 @@ export function DocsSidebar({ entries }: { entries: SidebarEntry[] }) {
                     <span className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-charcoal/30 cursor-not-allowed">
                       <FileText className="h-3.5 w-3.5" />
                       {item.title}
-                      <span className="ml-auto text-[9px] font-medium uppercase tracking-wider text-charcoal/20">
+                      <span className="ml-auto text-xs font-medium uppercase tracking-wider text-charcoal/20">
                         Soon
                       </span>
                     </span>

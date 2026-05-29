@@ -29,18 +29,18 @@ function VariantCard({
             <span className="text-[11px] font-semibold text-charcoal/80">
               {variant.region} / {variant.placement}
             </span>
-            <span className="text-[10px] text-charcoal/45">{variant.placement_dimensions}</span>
+            <span className="text-xs text-charcoal/45">{variant.placement_dimensions}</span>
           </div>
           <div className="mt-1.5 font-serif text-sm font-semibold text-charcoal">
             {variant.copy_headline}
           </div>
           <div className="mt-0.5 text-[12px] text-charcoal/65">{variant.copy_subhead}</div>
-          <div className="mt-1.5 flex items-center gap-3 text-[10px]">
+          <div className="mt-1.5 flex items-center gap-3 text-xs">
             <span className="font-medium text-teal-700">CTA: {variant.cta_text}</span>
             <span className="text-charcoal/45">
               ${variant.regional_price.toFixed(0)}
               {variant.price_difference_pct !== 0 && (
-                <span className={variant.price_difference_pct > 0 ? "text-amber-600" : "text-sage"}>
+                <span className={variant.price_difference_pct > 0 ? "text-mustard" : "text-sage"}>
                   {" "}({variant.price_difference_pct > 0 ? "+" : ""}{variant.price_difference_pct.toFixed(1)}%)
                 </span>
               )}
@@ -157,7 +157,7 @@ export function LocalizationContent({
             <div className="flex items-start gap-2">
               <Globe className="mt-0.5 h-4 w-4 text-sage" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                <div className="text-xs font-semibold uppercase tracking-wider text-sage">
                   Translations locked in
                 </div>
                 <div className="font-serif text-base font-semibold text-charcoal">
@@ -201,7 +201,7 @@ export function LocalizationContent({
       {/* Upstream context: reading from Steps 3 and 5 */}
       {(approvedSkus.length > 0 || layoutCopy) && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Steps 3 + 5
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -214,7 +214,7 @@ export function LocalizationContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <Globe className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · Localization Generator
           </span>
         </div>
@@ -327,12 +327,12 @@ export function LocalizationContent({
             <span>Avg price diff: {stats.avg_price_diff_pct.toFixed(1)}%</span>
           </div>
           {stats.price_alerts.length > 0 && (
-            <div className="mt-2 text-[10px] text-amber-600">
+            <div className="mt-2 text-xs text-mustard">
               {stats.price_alerts.length} price alert(s): regional pricing differs by more than 5% from master.
             </div>
           )}
           {stats.inventory_alerts.length > 0 && (
-            <div className="mt-1 text-[10px] text-amber-600">
+            <div className="mt-1 text-xs text-mustard">
               {stats.inventory_alerts.length} inventory alert(s): low stock in some regions.
             </div>
           )}
@@ -341,8 +341,8 @@ export function LocalizationContent({
 
       {/* Transcreation helper: generate_locale_variants (deterministic Python function) */}
       {mcpResults.length > 0 && (
-        <div className="rounded-md border border-green-300/40 bg-green-50/30 p-3">
-          <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-green-700">
+        <div className="rounded-md border border-sage/30 bg-sage/10 p-3">
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-charcoal/70">
             Python helper: generate_locale_variants — {mcpResults.length} locales
           </div>
           {mcpResults.map((r) => (

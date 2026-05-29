@@ -172,10 +172,10 @@ export function AICoworkerPanel({
     <section className="rounded-lg border border-charcoal/10 bg-white shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-charcoal/10 px-5 py-3">
-        <h2 className="text-[10px] font-semibold uppercase tracking-widest text-teal-600">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-teal-600">
           AI Tools
         </h2>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-teal-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-teal-700">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-500" />
           Ready
         </span>
@@ -184,7 +184,7 @@ export function AICoworkerPanel({
       <div className="px-5 py-4 space-y-5">
         {/* Activity feed */}
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
             Recent AI Work
           </h3>
           {events.length === 0 ? (
@@ -198,16 +198,16 @@ export function AICoworkerPanel({
                   <Diamond className="mt-0.5 h-2.5 w-2.5 flex-shrink-0 fill-teal-500 text-teal-500" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-charcoal/45">
+                      <span className="text-xs text-charcoal/45">
                         {relativeTime(evt.timestamp)}
                       </span>
-                      <span className="rounded bg-charcoal/5 px-1 py-px text-[9px] font-medium text-charcoal/50">
+                      <span className="rounded bg-charcoal/5 px-1 py-px text-[11px] font-medium text-charcoal/50">
                         {friendlyName(evt.skill_name)}
                       </span>
                     </div>
                     <p className="truncate text-xs text-charcoal/75">{evt.summary}</p>
                     {evt.retrieved_docs.length > 0 && (
-                      <p className="mt-0.5 truncate font-mono text-[10px] text-charcoal/40">
+                      <p className="mt-0.5 truncate font-mono text-xs text-charcoal/40">
                         {evt.retrieved_docs[0]}
                         {evt.retrieved_docs.length > 1 &&
                           ` +${evt.retrieved_docs.length - 1} more`}
@@ -249,7 +249,7 @@ function StepToolsSection({
 
   return (
     <div>
-      <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
         Available for this step
       </h3>
 
@@ -273,7 +273,7 @@ function StepToolsSection({
                 className="rounded-lg border border-charcoal/10 bg-cream/30 p-4"
               >
                 <div
-                  className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                  className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
                   style={{
                     backgroundColor:
                       m.stepType === "skill" ? "#0B7B8A1A" : "#78716C1A",
@@ -316,14 +316,14 @@ function StepToolsSection({
               >
                 {tool.kind === "mcp" ? (
                   <div
-                    className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                    className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
                     style={{ backgroundColor: "#4338CA1A", color: "#4338CA" }}
                   >
                     <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#4338CA" }} />
                     MCP Tool (Agentic)
                   </div>
                 ) : (
-                  <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-charcoal/5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-charcoal/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">
                     <span className="h-1.5 w-1.5 rounded-full bg-charcoal/30" />
                     Python Helper
                   </div>

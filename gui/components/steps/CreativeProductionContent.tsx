@@ -51,7 +51,7 @@ function DamAssetCard({
             <div className="truncate text-[11px] font-medium text-charcoal/80">
               {asset.filename}
             </div>
-            <div className="mt-0.5 flex items-center gap-2 text-[10px] text-charcoal/55">
+            <div className="mt-0.5 flex items-center gap-2 text-xs text-charcoal/55">
               <span className="capitalize">{asset.asset_type}</span>
               <span>{asset.resolution}</span>
               <span className="font-semibold text-teal-700">
@@ -76,7 +76,7 @@ function DamAssetCard({
             {asset.tags.slice(0, 4).map((t) => (
               <span
                 key={t}
-                className="rounded bg-charcoal/5 px-1.5 py-0.5 text-[9px] text-charcoal/50"
+                className="rounded bg-charcoal/5 px-1.5 py-0.5 text-xs text-charcoal/50"
               >
                 {t}
               </span>
@@ -210,7 +210,7 @@ export function CreativeProductionContent({
             <div className="flex items-start gap-2">
               <ImageIcon className="mt-0.5 h-4 w-4 text-sage" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                <div className="text-xs font-semibold uppercase tracking-wider text-sage">
                   Assets locked in
                 </div>
                 <div className="font-serif text-base font-semibold text-charcoal">
@@ -245,7 +245,7 @@ export function CreativeProductionContent({
       {/* Upstream context: reading from Step 3 SKU Selection */}
       {approvedSkus.length > 0 && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Step 3: SKU Selection
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -257,7 +257,7 @@ export function CreativeProductionContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · DAM Asset Finder
           </span>
         </div>
@@ -366,17 +366,17 @@ export function CreativeProductionContent({
       {mcpResult && (
         <div className={`rounded-md border p-3 ${
           mcpResult.status === "pass"
-            ? "border-green-300/40 bg-green-50/30"
-            : "border-amber-300/40 bg-amber-50/30"
+            ? "border-sage/30 bg-sage/10"
+            : "border-mustard/30 bg-mustard/10"
         }`}>
-          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-green-700">
+          <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-charcoal/70">
             Python helper: find_dam_assets — {mcpResult.result_count} rights-verified assets
           </div>
           <div className="text-[11px] text-charcoal/65">
             Queried DAM for <strong>{mcpResult.input.category}</strong> assets in region <strong>{mcpResult.input.region}</strong> with active model releases.
           </div>
           {mcpResult.assets.length > 0 && (
-            <div className="mt-1 text-[10px] text-charcoal/50">
+            <div className="mt-1 text-xs text-charcoal/50">
               {mcpResult.assets.map((a) => a.filename).join(", ")}
             </div>
           )}

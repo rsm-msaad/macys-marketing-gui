@@ -304,7 +304,7 @@ function DamResults({ data }: { data: DamResult }) {
                 <span className="text-charcoal/55">{a.relevance_score.toFixed(2)}</span>
               </div>
               <div className="mt-1 truncate text-charcoal/70">{a.filename}</div>
-              <div className="mt-1 flex flex-wrap gap-1 text-[10px]">
+              <div className="mt-1 flex flex-wrap gap-1 text-xs">
                 <span className="rounded-full bg-cream px-1.5 py-0.5 text-charcoal/70">{a.asset_type}</span>
                 <span className="rounded-full bg-cream px-1.5 py-0.5 text-charcoal/70">{a.resolution}</span>
               </div>
@@ -344,7 +344,7 @@ function LocalizeResults({ data }: { data: LocalizeResult }) {
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {sample.map((v) => (
           <div key={v.variant_id} className="rounded-md border border-charcoal/10 p-3 text-xs">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+            <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">
               {v.region} · {v.placement}
             </div>
             <div className="mt-1 text-charcoal/55">{v.placement_dimensions}</div>
@@ -355,7 +355,7 @@ function LocalizeResults({ data }: { data: LocalizeResult }) {
             <div className="mt-2 text-charcoal/55">CTA: {v.cta_text}</div>
             <div className="mt-2 flex items-center justify-between">
               <span className="text-charcoal/70">${v.regional_price.toFixed(2)}</span>
-              <span className={`rounded-full px-1.5 py-0.5 text-[10px] ${badgeClassFor(v.inventory_status)}`}>
+              <span className={`rounded-full px-1.5 py-0.5 text-xs ${badgeClassFor(v.inventory_status)}`}>
                 {v.inventory_status} {v.inventory_units > 0 ? `(${v.inventory_units})` : ""}
               </span>
             </div>
@@ -487,7 +487,7 @@ function ForecastCell({
     block.trend_direction === "up" ? "text-sage" : block.trend_direction === "down" ? "text-soft_red" : "text-charcoal/60";
   return (
     <div className="rounded-md border border-charcoal/10 bg-white p-3">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">{title}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/55">{title}</div>
       <div className="mt-1 font-serif text-lg font-semibold text-charcoal">{format(block.predicted)}</div>
       <div className="mt-0.5 text-[11px] text-charcoal/55">
         CI: {format(block.lower_bound)} to {format(block.upper_bound)}
@@ -502,9 +502,9 @@ function ForecastCell({
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">{label}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/55">{label}</div>
       <div className="font-serif text-base font-semibold text-charcoal">{value}</div>
-      {sub && <div className="text-[10px] text-charcoal/50">{sub}</div>}
+      {sub && <div className="text-xs text-charcoal/50">{sub}</div>}
     </div>
   );
 }

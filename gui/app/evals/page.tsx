@@ -81,7 +81,7 @@ function HowItWorksSidebar() {
 
   return (
     <aside className="space-y-3">
-      <h2 className="text-[10px] font-semibold uppercase tracking-widest text-teal-600">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-teal-600">
         How it works
       </h2>
 
@@ -115,7 +115,7 @@ function HowItWorksSidebar() {
         <ul className="space-y-2">
           {TEST_CATEGORIES.map((cat) => (
             <li key={cat.name} className="flex items-start gap-2">
-              <span className="mt-0.5 flex h-5 min-w-[20px] items-center justify-center rounded bg-sage/15 text-[9px] font-bold text-sage">
+              <span className="mt-0.5 flex h-5 min-w-[20px] items-center justify-center rounded bg-sage/15 text-xs font-bold text-sage">
                 {cat.count}
               </span>
               <div>
@@ -138,7 +138,7 @@ function HowItWorksSidebar() {
           {sampleOpen ? "Hide example" : "Show example"}
         </button>
         {sampleOpen && (
-          <pre className="mt-2 overflow-x-auto rounded-md bg-charcoal/5 p-3 text-[10px] leading-relaxed text-charcoal/75">
+          <pre className="mt-2 overflow-x-auto rounded-md bg-charcoal/5 p-3 text-xs leading-relaxed text-charcoal/75">
             <code>{SAMPLE_TEST}</code>
           </pre>
         )}

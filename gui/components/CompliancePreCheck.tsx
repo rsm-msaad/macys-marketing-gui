@@ -25,7 +25,7 @@ import { EvidenceSidePanel } from "@/components/EvidenceSidePanel";
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
       AI
     </span>
   );
@@ -59,7 +59,7 @@ const CONFIDENCE_STYLE: Record<Confidence, { dot: string; text: string; label: s
 function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   const s = CONFIDENCE_STYLE[confidence];
   return (
-    <span className={`inline-flex items-center gap-1.5 text-[10px] font-medium ${s.text}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${s.text}`}>
       <span className={`h-2 w-2 rounded-full ${s.dot}`} />
       {s.label}
     </span>
@@ -88,7 +88,7 @@ function FindingCard({ label, item }: { label: string; item: ComplianceCheckItem
   return (
     <div className="rounded-md border border-charcoal/5 bg-cream/30">
       <div className="flex items-start gap-3 p-3">
-        <span className={`mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${pillCls}`}>
+        <span className={`mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${pillCls}`}>
           <StatusIcon className="h-3 w-3" />
           {color === "green" ? "Pass" : color === "red" ? "Fail" : "Warn"}
         </span>
@@ -99,7 +99,7 @@ function FindingCard({ label, item }: { label: string; item: ComplianceCheckItem
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
-              className="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-teal-600 hover:text-teal-700"
+              className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-teal-600 hover:text-teal-700"
             >
               {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
               {expanded ? "Hide details" : "Show details"}
@@ -113,7 +113,7 @@ function FindingCard({ label, item }: { label: string; item: ComplianceCheckItem
         </div>
       )}
       {item?.cited_doc && (
-        <div className="border-t border-charcoal/5 px-3 py-1.5 text-[10px] font-mono text-charcoal/35">
+        <div className="border-t border-charcoal/5 px-3 py-1.5 text-xs font-sans text-charcoal/35">
           Cited: {item.cited_doc}
         </div>
       )}
@@ -131,7 +131,7 @@ function SourcesPanel({ docs, tools }: { docs: string[]; tools?: string[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1 text-[10px] font-medium text-charcoal/45 hover:text-charcoal/65"
+        className="inline-flex items-center gap-1 text-xs font-medium text-charcoal/45 hover:text-charcoal/65"
       >
         {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
         Sources used ({docs.length} docs{tools && tools.length > 0 ? `, ${tools.length} tools` : ""})
@@ -139,13 +139,13 @@ function SourcesPanel({ docs, tools }: { docs: string[]; tools?: string[] }) {
       {open && (
         <div className="mt-1.5 space-y-1 pl-4">
           {docs.map((d) => (
-            <div key={d} className="flex items-center gap-1.5 text-[10px] text-charcoal/50">
+            <div key={d} className="flex items-center gap-1.5 text-xs text-charcoal/50">
               <FileText className="h-3 w-3 text-charcoal/30" />
               {d}
             </div>
           ))}
           {tools?.map((t) => (
-            <div key={t} className="flex items-center gap-1.5 text-[10px] text-charcoal/50">
+            <div key={t} className="flex items-center gap-1.5 text-xs text-charcoal/50">
               <Wrench className="h-3 w-3 text-charcoal/30" />
               {t}
             </div>
@@ -297,11 +297,11 @@ export function CompliancePreCheck({
   const actionColor = statusColor(recommendedAction);
 
   return (
-    <div className="relative rounded-md border border-charcoal/10 bg-white p-4">
+    <div className="relative rounded-xl border border-white/70 bg-white/80 p-4 backdrop-blur-sm" style={{ boxShadow: "var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.8)" }}>
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Agentic Skill · Compliance Pre Check
           </span>
           {confidence && <ConfidenceBadge confidence={confidence} />}
@@ -323,7 +323,7 @@ export function CompliancePreCheck({
             </div>
             <div className="mt-3 flex gap-2">
               {["Brand guidelines", "Legal disclaimers", "Pricing rules"].map((label) => (
-                <span key={label} className="rounded-full border border-charcoal/8 bg-white/70 px-2.5 py-1 text-[9px] font-medium text-charcoal/50 animate-pulse">
+                <span key={label} className="rounded-full border border-charcoal/8 bg-white/70 px-2.5 py-1 text-xs font-medium text-charcoal/50 animate-pulse">
                   {label}
                 </span>
               ))}
@@ -335,7 +335,7 @@ export function CompliancePreCheck({
       {error && (
         <div className="rounded-md border border-mustard/30 bg-mustard/5 p-3 text-xs text-charcoal/70">
           AI temporarily unavailable. You may proceed manually.
-          <div className="mt-1 text-[10px] text-charcoal/45">{error}</div>
+          <div className="mt-1 text-xs text-charcoal/45">{error}</div>
         </div>
       )}
 
@@ -349,10 +349,10 @@ export function CompliancePreCheck({
           <div
             className={`mt-3 flex items-center justify-between rounded-md p-3 ${
               actionColor === "green"
-                ? "border border-green-200 bg-green-50 text-green-900"
+                ? "border border-sage/30 bg-sage/10 text-charcoal"
                 : actionColor === "red"
-                  ? "border border-red-200 bg-red-50 text-red-900"
-                  : "border border-amber-200 bg-amber-50 text-amber-900"
+                  ? "border border-soft_red/30 bg-soft_red/10 text-charcoal"
+                  : "border border-mustard/30 bg-mustard/10 text-charcoal"
             }`}
           >
             <span className="text-sm font-bold uppercase tracking-wide">
@@ -386,7 +386,7 @@ export function CompliancePreCheck({
             <button
               type="button"
               onClick={() => setFloatingUrl(`/review?step=6a&campaign=${context.campaign_brief.campaign_id}`)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-purple-200 bg-purple-50 px-3 py-1.5 text-[11px] font-medium text-purple-700 hover:bg-purple-100"
+              className="inline-flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100"
             >
               Review
             </button>

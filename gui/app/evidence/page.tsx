@@ -47,7 +47,7 @@ function StatusBadge({ status }: { status: string }) {
     status === "failure" ? "bg-soft_red/15 text-soft_red" :
     "bg-mustard/15 text-mustard";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cls}`}>
+    <span className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wider ${cls}`}>
       {status}
     </span>
   );
@@ -67,7 +67,7 @@ function Section({ icon: Icon, title, count, children }: {
         <Icon className="h-4 w-4 text-teal-600" />
         <h3 className="text-[11px] font-semibold uppercase tracking-wider text-charcoal/60">{title}</h3>
         {count !== undefined && (
-          <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-700">{count}</span>
+          <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs font-bold text-teal-700">{count}</span>
         )}
       </div>
       <div className="p-5">{children}</div>
@@ -97,7 +97,7 @@ function DocumentViewer({ doc, onClose }: { doc: RagDocEvidence; onClose: () => 
         </div>
         <div className="max-h-[60vh] overflow-y-auto px-5 py-4">
           <div className="mb-3 text-xs text-charcoal/50">{meta?.description}</div>
-          <div className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">
+          <div className="mb-4 text-xs font-semibold uppercase tracking-wider text-charcoal/40">
             Section: {doc.section}
           </div>
           <div className="rounded-md border-l-4 border-teal-400 bg-teal-50/30 px-4 py-3 text-sm leading-relaxed text-charcoal/80">
@@ -173,12 +173,12 @@ function EvidenceContent() {
             Inspect the RAG documents, MCP tool calls, data sources, and assumptions behind each AI output.
           </p>
           {isLive ? (
-            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-sage/15 px-2.5 py-0.5 text-[10px] font-medium text-sage">
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-sage/15 px-2.5 py-0.5 text-xs font-medium text-sage">
               <span className="h-1.5 w-1.5 rounded-full bg-sage" />
               Live evidence captured from this campaign
             </div>
           ) : (
-            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-medium text-amber-700">
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               Showing example evidence. Run the AI workflow to capture live data.
             </div>
@@ -212,7 +212,7 @@ function EvidenceContent() {
             <div className="rounded-lg border border-charcoal/10 bg-white px-5 py-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">Step {evidence.step}</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">Step {evidence.step}</span>
                   <h2 className="font-serif text-lg font-semibold text-charcoal">{evidence.step_name}</h2>
                 </div>
                 <div className="text-right text-[11px] text-charcoal/50">
@@ -242,7 +242,7 @@ function EvidenceContent() {
                         <button
                           type="button"
                           onClick={() => setViewDoc(doc)}
-                          className="flex-shrink-0 rounded-md border border-teal-600/20 px-2.5 py-1 text-[10px] font-medium text-teal-600 hover:bg-teal-50"
+                          className="flex-shrink-0 rounded-md border border-teal-600/20 px-2.5 py-1 text-xs font-medium text-teal-600 hover:bg-teal-50"
                         >
                           View document
                         </button>
@@ -270,13 +270,13 @@ function EvidenceContent() {
                       </div>
                       <div className="mt-2 grid gap-3 md:grid-cols-2">
                         <div>
-                          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">Input</div>
+                          <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-charcoal/40">Input</div>
                           <pre className="overflow-x-auto rounded bg-charcoal/5 p-2 text-[11px] text-charcoal/70">
                             {JSON.stringify(tool.inputs, null, 2)}
                           </pre>
                         </div>
                         <div>
-                          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">Output</div>
+                          <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-charcoal/40">Output</div>
                           <div className="rounded bg-charcoal/5 p-2 text-[11px] text-charcoal/70">{tool.output_summary}</div>
                         </div>
                       </div>
@@ -298,7 +298,7 @@ function EvidenceContent() {
                       <div>
                         <div className="text-sm font-medium text-charcoal">{ds.name}</div>
                         <div className="text-[12px] text-charcoal/60">{ds.description}</div>
-                        {ds.rows && <div className="mt-0.5 text-[10px] text-charcoal/40">Scale: {ds.rows}</div>}
+                        {ds.rows && <div className="mt-0.5 text-xs text-charcoal/40">Scale: {ds.rows}</div>}
                       </div>
                     </div>
                   ))}
@@ -318,7 +318,7 @@ function EvidenceContent() {
                       <div>
                         <div className="text-sm font-medium text-charcoal">Step {po.step}: {po.step_name}</div>
                         <div className="text-[12px] text-charcoal/60">{po.summary}</div>
-                        <div className="mt-0.5 font-mono text-[10px] text-charcoal/40">Field: {po.field}</div>
+                        <div className="mt-0.5 font-mono text-xs text-charcoal/40">Field: {po.field}</div>
                       </div>
                     </div>
                   ))}

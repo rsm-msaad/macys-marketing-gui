@@ -150,7 +150,7 @@ function Badge({ type }: { type: "skill" | "automation" | "mcp" }) {
   const s = BADGE_STYLE[type];
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wider"
       style={{ backgroundColor: s.bg, color: s.text }}
     >
       <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: s.text }} />
@@ -212,7 +212,7 @@ function LayerCard({
           </div>
           <div className="text-[12px] text-charcoal/60">{layer.subtitle}</div>
         </div>
-        <span className="rounded-full bg-white/60 px-2.5 py-0.5 text-[10px] font-medium text-charcoal/50">
+        <span className="rounded-full bg-white/60 px-2.5 py-0.5 text-xs font-medium text-charcoal/50">
           {layer.components.length} components
         </span>
       </button>
@@ -273,7 +273,7 @@ function DetailModal({
 
         {comp.path && (
           <div className="mt-4 rounded-md bg-charcoal/5 px-3 py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">
               File path
             </div>
             <div className="mt-0.5 font-mono text-[12px] text-charcoal/75">{comp.path}</div>
@@ -282,7 +282,7 @@ function DetailModal({
 
         {comp.example && (
           <div className="mt-3 rounded-md border border-teal-600/20 bg-teal-50/30 px-3 py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+            <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">
               Example
             </div>
             <div className="mt-0.5 text-[12px] text-charcoal/70">{comp.example}</div>
@@ -360,7 +360,7 @@ export default function ArchitecturePage() {
           {/* External services sidebar */}
           <aside className="hidden w-52 flex-shrink-0 lg:block">
             <div className="sticky top-20 rounded-lg border border-charcoal/10 bg-white p-4 shadow-sm">
-              <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
                 External Services
               </h3>
               <ul className="space-y-2.5">
@@ -369,7 +369,7 @@ export default function ArchitecturePage() {
                     <ExternalLink className="mt-0.5 h-3 w-3 flex-shrink-0 text-charcoal/35" />
                     <div>
                       <div className="text-[11px] font-medium text-charcoal/80">{svc.name}</div>
-                      <div className="text-[10px] text-charcoal/45">{svc.note}</div>
+                      <div className="text-xs text-charcoal/45">{svc.note}</div>
                     </div>
                   </li>
                 ))}
@@ -378,7 +378,7 @@ export default function ArchitecturePage() {
 
             {/* Counts summary */}
             <div className="mt-3 rounded-lg border border-charcoal/10 bg-white p-4 shadow-sm">
-              <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/55">
                 By the Numbers
               </h3>
               <div className="space-y-1.5 text-[11px]">

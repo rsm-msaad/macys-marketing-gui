@@ -196,7 +196,7 @@ function BriefSection({
 }) {
   return (
     <section>
-      <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+      <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
         <Icon className="h-3 w-3" />
         {title}
       </div>
@@ -282,7 +282,7 @@ export function BriefCard({
     <div className="rounded-md border border-charcoal/10 bg-cream/50 p-5">
       <div className="mb-4 flex items-start justify-between border-b border-charcoal/10 pb-3">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-charcoal/45">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-charcoal/45">
             Campaign Brief · Filed by {brief.sponsor}
             {wasEdited && (
               <span className="normal-case italic tracking-normal text-charcoal/40">
@@ -309,30 +309,30 @@ export function BriefCard({
       {editing ? (
         <div className="space-y-3">
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Campaign Name</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">Campaign Name</label>
             <input type="text" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className={inputCls} />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Strategic Objective</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">Strategic Objective</label>
             <textarea value={draft.objective} onChange={(e) => setDraft({ ...draft, objective: e.target.value })} rows={3} className={inputCls} />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Target Customer</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">Target Customer</label>
             <textarea value={draft.target_customer} onChange={(e) => setDraft({ ...draft, target_customer: e.target.value })} rows={2} className={inputCls} />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Promotional Offer (one per line)</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">Promotional Offer (one per line)</label>
             <textarea value={draft.promotional_offer} onChange={(e) => setDraft({ ...draft, promotional_offer: e.target.value })} rows={3} className={inputCls} />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Constraints (one per line)</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">Constraints (one per line)</label>
             <textarea value={draft.constraints} onChange={(e) => setDraft({ ...draft, constraints: e.target.value })} rows={3} className={inputCls} />
           </div>
           <div className="flex items-center gap-2 pt-1">
             <button type="button" onClick={handleSave} className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-700">Save Changes</button>
             <button type="button" onClick={handleCancel} className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30">Cancel</button>
           </div>
-          <p className="text-[10px] italic text-amber-600">
+          <p className="text-xs italic text-mustard">
             Editing the brief may require downstream steps (segmentation, SKU selection, compliance) to be re-run.
           </p>
         </div>
@@ -455,7 +455,7 @@ function DecisionCard({
       <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-sage" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+          <span className="text-xs font-semibold uppercase tracking-wider text-sage">
             Step {step}
           </span>
           <span className="text-[11px] font-semibold text-charcoal">
@@ -521,7 +521,7 @@ export function ContextStack({ context }: { context: CampaignContext }) {
 
 export function ActiveBadge({ stepNumber, total = 10 }: { stepNumber: number; total?: number }) {
   return (
-    <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
       Step {stepNumber} of {total} · Active
     </span>
   );

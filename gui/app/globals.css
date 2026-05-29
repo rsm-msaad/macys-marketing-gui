@@ -28,6 +28,11 @@ html, body {
   font-family: var(--font-inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
 }
 
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #F8F4EC, 0 0 0 4px rgba(11, 123, 138, 0.5);
+}
+
 h1, h2, h3, h4 {
   font-family: var(--font-fraunces, Georgia, Cambria, ui-serif, serif);
   letter-spacing: -0.005em;
@@ -229,6 +234,7 @@ h1, h2, h3, h4 {
     0 16px 40px rgba(0, 0, 0, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
   animation: card-float 4s ease-in-out infinite;
+  animation-delay: calc(var(--card-index, 0) * 0.4s);
 }
 
 @keyframes card-float {

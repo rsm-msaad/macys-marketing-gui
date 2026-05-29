@@ -54,9 +54,9 @@ function MiniSection({ icon: Icon, title, count, children }: {
         className="flex w-full items-center gap-2 py-2 text-left"
       >
         <Icon className="h-3.5 w-3.5 text-teal-600" />
-        <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">{title}</span>
+        <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-charcoal/55">{title}</span>
         {count !== undefined && (
-          <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-bold text-teal-700">{count}</span>
+          <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-xs font-bold text-teal-700">{count}</span>
         )}
         {open ? <ChevronDown className="h-3 w-3 text-charcoal/30" /> : <ChevronRight className="h-3 w-3 text-charcoal/30" />}
       </button>
@@ -133,12 +133,12 @@ export function EvidenceSidePanel({
         {/* Live / static indicator */}
         <div className="border-b border-charcoal/5 px-5 py-2">
           {isLive ? (
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-sage">
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-sage">
               <span className="h-1.5 w-1.5 rounded-full bg-sage" /> Live evidence captured
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-amber-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> Example evidence (run AI to capture live)
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-mustard">
+              <span className="h-1.5 w-1.5 rounded-full bg-mustard" /> Example evidence (run AI to capture live)
             </span>
           )}
         </div>
@@ -159,14 +159,14 @@ export function EvidenceSidePanel({
                       return (
                         <div key={doc.doc_id} className="rounded border border-charcoal/8 bg-cream/20 p-2.5">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-[10px] text-teal-700">{doc.doc_id}</span>
+                            <span className="font-mono text-xs text-teal-700">{doc.doc_id}</span>
                             <RelevanceDots level={doc.relevance} />
                           </div>
                           <div className="mt-0.5 text-[11px] font-medium text-charcoal/80">{meta?.title ?? doc.title}</div>
                           <button
                             type="button"
                             onClick={() => setExpandedDoc(isExpanded ? null : doc.doc_id)}
-                            className="mt-1 text-[10px] font-medium text-teal-600 hover:text-teal-700"
+                            className="mt-1 text-xs font-medium text-teal-600 hover:text-teal-700"
                           >
                             {isExpanded ? "Hide passage" : "Show passage"}
                           </button>
@@ -191,7 +191,7 @@ export function EvidenceSidePanel({
                     {staticEvidence.mcp_tools.map((t) => (
                       <div key={t.tool_name} className="rounded border border-charcoal/8 bg-cream/20 p-2.5">
                         <div className="font-mono text-[11px] font-medium text-charcoal">{t.tool_name}</div>
-                        <div className="mt-0.5 text-[10px] text-charcoal/50">{t.output_summary}</div>
+                        <div className="mt-0.5 text-xs text-charcoal/50">{t.output_summary}</div>
                       </div>
                     ))}
                   </div>
@@ -248,7 +248,7 @@ export function EvidenceSidePanel({
                               {/* Claude's reasoning before the call */}
                               {reasoning && reasoning.length > 0 && (
                                 <div className="mb-2 rounded border-l-2 border-violet-300 bg-violet-50/30 px-2.5 py-1.5">
-                                  <div className="mb-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-500">
+                                  <div className="mb-0.5 text-xs font-semibold uppercase tracking-wider text-violet-500">
                                     Claude&apos;s reasoning
                                   </div>
                                   <div className="text-[11px] leading-relaxed text-charcoal/65 italic">
@@ -262,14 +262,14 @@ export function EvidenceSidePanel({
                                 <span className="font-mono text-[11px] font-semibold text-teal-700">
                                   {entry.tool_name as string}
                                 </span>
-                                <span className="text-[9px] text-charcoal/40">
+                                <span className="text-xs text-charcoal/40">
                                   iteration {entry.iteration as number}
                                 </span>
                               </div>
-                              <div className="mt-1 text-[10px] text-charcoal/50">
+                              <div className="mt-1 text-xs text-charcoal/50">
                                 Input: {JSON.stringify(entry.tool_input).slice(0, 120)}
                               </div>
-                              <div className="mt-0.5 text-[10px] text-charcoal/50">
+                              <div className="mt-0.5 text-xs text-charcoal/50">
                                 Output: {JSON.stringify(entry.tool_output).slice(0, 150)}
                               </div>
                             </div>
@@ -278,7 +278,7 @@ export function EvidenceSidePanel({
                         if (entry.type === "final_response" && entry.reasoning) {
                           return (
                             <div key={i} className="rounded border border-charcoal/10 bg-cream/30 p-2.5">
-                              <div className="text-[9px] font-semibold uppercase tracking-wider text-charcoal/40">
+                              <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">
                                 Claude&apos;s final analysis
                               </div>
                               <div className="mt-0.5 text-[11px] text-charcoal/60 italic">

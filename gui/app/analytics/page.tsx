@@ -98,22 +98,22 @@ export default function AnalyticsPage() {
           <div className="rounded-lg border border-teal-200 bg-teal-50/40 p-4">
             <Clock className="h-4 w-4 text-teal-600" />
             <div className="mt-2 font-serif text-2xl font-bold text-teal-700">{data.totals.hours_saved}h</div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Total Hours Saved</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Total Hours Saved</div>
           </div>
           <div className="rounded-lg border border-teal-200 bg-teal-50/40 p-4">
             <DollarSign className="h-4 w-4 text-teal-600" />
             <div className="mt-2 font-serif text-2xl font-bold text-teal-700">${data.totals.dollars_saved.toLocaleString()}</div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Total Dollar Savings</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Total Dollar Savings</div>
           </div>
           <div className="rounded-lg border border-charcoal/10 bg-white p-4">
             <TrendingUp className="h-4 w-4 text-charcoal/40" />
             <div className="mt-2 font-serif text-2xl font-bold text-charcoal">${(data.projected_annual / 1_000_000).toFixed(1)}M</div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Projected Annual</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Projected Annual</div>
           </div>
           <div className="rounded-lg border border-charcoal/10 bg-white p-4">
             <ShieldCheck className="h-4 w-4 text-charcoal/40" />
             <div className="mt-2 font-serif text-2xl font-bold text-charcoal">{data.totals.compliance_findings}</div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Compliance Findings</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Compliance Findings</div>
           </div>
         </div>
 
@@ -148,7 +148,7 @@ export default function AnalyticsPage() {
               <BarChart3 className="h-3 w-3" /> Quality Metrics by Campaign
             </h3>
             <table className="w-full text-[11px]">
-              <thead className="text-[10px] text-charcoal/40 uppercase">
+              <thead className="text-xs text-charcoal/40 uppercase">
                 <tr>
                   <th className="pb-2 text-left">Campaign</th>
                   <th className="pb-2 text-right">Compliance</th>
@@ -181,7 +181,7 @@ export default function AnalyticsPage() {
                   <div key={tool}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[11px] text-charcoal/70">{tool}</span>
-                      <span className="text-[10px] text-charcoal/50">{count} calls ({pct}%)</span>
+                      <span className="text-xs text-charcoal/50">{count} calls ({pct}%)</span>
                     </div>
                     <div className="h-3 w-full rounded bg-charcoal/8">
                       <div
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
                 );
               })}
             </div>
-            <div className="mt-3 text-[10px] text-charcoal/40">
+            <div className="mt-3 text-xs text-charcoal/40">
               Total: {totalMcp} MCP tool invocations across {data.campaign_count} campaigns.
               check_pricing_conflicts fires agentically at Steps 6a/6b; others are deterministic helpers.
             </div>
@@ -206,7 +206,7 @@ export default function AnalyticsPage() {
             Campaign Performance Ranking
           </h3>
           <table className="w-full text-[11px]">
-            <thead className="text-[10px] text-charcoal/40 uppercase">
+            <thead className="text-xs text-charcoal/40 uppercase">
               <tr>
                 <th className="pb-2 text-left">Rank</th>
                 <th className="pb-2 text-left">Campaign</th>

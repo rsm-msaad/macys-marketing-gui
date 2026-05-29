@@ -100,7 +100,7 @@ function SortableSlideCard({
       </div>
 
       {/* Slide number */}
-      <div className="absolute left-2 bottom-2 z-10 rounded bg-black/40 px-1.5 py-0.5 text-[10px] font-bold text-white">
+      <div className="absolute left-2 bottom-2 z-10 rounded bg-black/40 px-1.5 py-0.5 text-xs font-bold text-white">
         {slide.id}
       </div>
 
@@ -116,7 +116,7 @@ function SortableSlideCard({
       ) : (
         <div className="flex aspect-video items-center justify-center bg-[#0B7B8A] px-3">
           <div className="text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-[#D4A843]">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#D4A843]">
               {slide.label}
             </p>
             <p className="mt-1 text-sm font-bold text-[#F8F4EC]">{slide.title}</p>

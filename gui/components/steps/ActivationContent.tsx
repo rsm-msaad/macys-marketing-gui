@@ -34,7 +34,7 @@ export function ActivationContent({
       {/* Upstream context: reading from Step 7 */}
       {variantCount > 0 && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Step 7: Localization
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -46,7 +46,7 @@ export function ActivationContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-3 flex items-center gap-1.5">
           <Radio className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · Activation Scheduler ({schedule.length} channels)
           </span>
         </div>
@@ -60,12 +60,12 @@ export function ActivationContent({
                 <span className="font-semibold text-charcoal">
                   {CHANNEL_LABEL[c.channel] ?? c.channel}
                 </span>
-                <span className="text-[10px] text-charcoal/55">{c.deployment_time}</span>
+                <span className="text-xs text-charcoal/55">{c.deployment_time}</span>
               </div>
               <div className="text-charcoal/75">
                 <div>{c.audience}</div>
                 <div className="text-charcoal/55">{c.expected_volume}</div>
-                <div className="mt-0.5 inline-block rounded-full bg-mustard/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-mustard">
+                <div className="mt-0.5 inline-block rounded-full bg-mustard/15 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-mustard">
                   {c.status}
                 </div>
               </div>

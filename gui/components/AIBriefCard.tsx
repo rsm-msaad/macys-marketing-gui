@@ -25,7 +25,7 @@ import { EvidenceSidePanel } from "@/components/EvidenceSidePanel";
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
       AI
     </span>
   );
@@ -52,7 +52,7 @@ function BriefConfidence({ result }: { result: BriefResult }) {
   };
   const s = styles[level];
   return (
-    <span className={`inline-flex items-center gap-1.5 text-[10px] font-medium ${s.text}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${s.text}`}>
       <span className={`h-2 w-2 rounded-full ${s.dot}`} />
       {s.label}
     </span>
@@ -67,7 +67,7 @@ function BriefSourcesPanel({ docs }: { docs: string[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1 text-[10px] font-medium text-charcoal/45 hover:text-charcoal/65"
+        className="inline-flex items-center gap-1 text-xs font-medium text-charcoal/45 hover:text-charcoal/65"
       >
         {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
         Sources used ({docs.length} docs)
@@ -75,7 +75,7 @@ function BriefSourcesPanel({ docs }: { docs: string[] }) {
       {open && (
         <div className="mt-1.5 space-y-1 pl-4">
           {docs.map((d) => (
-            <div key={d} className="flex items-center gap-1.5 text-[10px] text-charcoal/50">
+            <div key={d} className="flex items-center gap-1.5 text-xs text-charcoal/50">
               <FileText className="h-3 w-3 text-charcoal/30" />
               {d}
             </div>
@@ -318,16 +318,16 @@ export function AIBriefCard({
   }
 
   return (
-    <div className="relative rounded-md border border-charcoal/10 bg-white p-4">
+    <div className="relative rounded-xl border border-white/70 bg-white/80 p-4 backdrop-blur-sm" style={{ boxShadow: "var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.8)" }}>
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <FileText className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Agentic Skill · Approval Brief Generator
           </span>
           {result && !loading && <BriefConfidence result={result} />}
           {wasEdited && (
-            <span className="text-[10px] italic text-charcoal/45">
+            <span className="text-xs italic text-charcoal/45">
               (manually edited)
             </span>
           )}
@@ -384,7 +384,7 @@ export function AIBriefCard({
       {error && (
         <div className="rounded-md border border-mustard/30 bg-mustard/5 p-3 text-xs text-charcoal/70">
           AI temporarily unavailable. You may review the campaign manually.
-          <div className="mt-1 text-[10px] text-charcoal/45">{error}</div>
+          <div className="mt-1 text-xs text-charcoal/45">{error}</div>
         </div>
       )}
 
@@ -393,7 +393,7 @@ export function AIBriefCard({
         <div className="space-y-3">
           {FIELDS.map((f) => (
             <div key={f.key}>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                 {f.label}
               </label>
               <textarea
@@ -427,19 +427,19 @@ export function AIBriefCard({
       {result && !loading && !editing && (
         <div className="space-y-0 divide-y divide-charcoal/5">
           <div className="py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Campaign Goal</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Campaign Goal</div>
             <div className="mt-0.5 text-sm text-charcoal/80">{result.campaign_goal}</div>
           </div>
           <div className="py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Target Audience</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Target Audience</div>
             <div className="mt-0.5 text-sm text-charcoal/80">{result.target_audience}</div>
           </div>
           <div className="py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Expected ROI</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Expected ROI</div>
             <div className="mt-0.5 text-sm text-charcoal/80">{result.expected_roi}</div>
           </div>
           <div className="py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Risk Flags</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Risk Flags</div>
             {result.risk_flags && result.risk_flags.length > 0 ? (
               <ul className="mt-1.5 space-y-1">
                 {result.risk_flags.map((flag, i) => (
@@ -503,7 +503,7 @@ export function AIBriefCard({
             <button
               type="button"
               onClick={() => setFloatingUrl(`/review?step=6b&campaign=${context.campaign_brief.campaign_id}`)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-purple-200 bg-purple-50 px-3 py-1.5 text-[11px] font-medium text-purple-700 hover:bg-purple-100"
+              className="inline-flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-3 py-1.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100"
             >
               Review
             </button>

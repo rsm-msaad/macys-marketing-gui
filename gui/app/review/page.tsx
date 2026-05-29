@@ -39,7 +39,7 @@ const STEP_NAMES: Record<string, string> = {
 const STATUS_STYLE: Record<string, { bg: string; text: string; label: string }> = {
   approved: { bg: "bg-sage/15", text: "text-sage", label: "Approved" },
   rejected: { bg: "bg-soft_red/15", text: "text-soft_red", label: "Rejected" },
-  escalated: { bg: "bg-purple-100", text: "text-purple-700", label: "Escalated" },
+  escalated: { bg: "bg-teal-100", text: "text-teal-700", label: "Escalated" },
   edited: { bg: "bg-amber-100", text: "text-amber-700", label: "Edited" },
   pending: { bg: "bg-charcoal/10", text: "text-charcoal/60", label: "Pending Review" },
 };
@@ -108,7 +108,7 @@ function AuditEntry({ entry }: { entry: Record<string, unknown> }) {
   const reason = entry.reason ? String(entry.reason) : null;
   const time = ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
   const actionColors: Record<string, string> = {
-    approve: "text-sage", reject: "text-soft_red", edit: "text-amber-600", escalate: "text-purple-600", rerun: "text-teal-600",
+    approve: "text-sage", reject: "text-soft_red", edit: "text-amber-600", escalate: "text-teal-600", rerun: "text-teal-600",
   };
   return (
     <div className="flex items-start gap-2 py-2 border-b border-charcoal/5 last:border-0">
@@ -248,7 +248,7 @@ function ReviewContent() {
         {/* Section 1: Header */}
         <div className="mb-6 flex items-start justify-between rounded-lg border border-charcoal/10 bg-white p-5">
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">Human Review</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">Human Review</div>
             <h1 className="mt-1 font-serif text-2xl font-bold text-charcoal">{stepName}</h1>
             <div className="mt-1 font-mono text-[11px] text-charcoal/45">{campaignId} / {stepId}</div>
           </div>
@@ -321,9 +321,9 @@ function ReviewContent() {
 
               <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
                 <div className="mb-3 flex items-center justify-between">
-                  <h2 className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">AI Output</h2>
                   {reviewStatus === "edited" && (
-                    <span className="text-[10px] italic text-amber-600">(manually edited)</span>
+                    <span className="text-xs italic text-amber-600">(manually edited)</span>
                   )}
                 </div>
 
@@ -342,11 +342,11 @@ function ReviewContent() {
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-[12px] font-semibold text-charcoal">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}</span>
-                                <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${st.bg} ${st.text}`}>{st.label}</span>
+                                <span className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${st.bg} ${st.text}`}>{st.label}</span>
                               </div>
                               <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">{String(finding.reason ?? "")}</p>
                               {finding.cited_doc ? (
-                                <div className="mt-1.5 text-[10px] text-charcoal/40">Source: {String(finding.cited_doc)}</div>
+                                <div className="mt-1.5 text-xs text-charcoal/40">Source: {String(finding.cited_doc)}</div>
                               ) : null}
                             </div>
                           </div>
@@ -361,7 +361,7 @@ function ReviewContent() {
                   <div className="space-y-3">
                     {Object.entries(output).filter(([k]) => !SKIP_KEYS.has(k) && !k.startsWith("_")).map(([key, value]) => (
                       <div key={key} className="rounded-md border border-charcoal/8 p-3">
-                        <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
+                        <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
                         <div className="mt-1 text-[12px] leading-relaxed text-charcoal/75">
                           {Array.isArray(value)
                             ? (value as string[]).map((v, i) => (
@@ -382,7 +382,7 @@ function ReviewContent() {
                   <div className="space-y-2">
                     {Object.entries(output).filter(([k]) => !SKIP_KEYS.has(k) && !k.startsWith("_")).map(([key, value]) => (
                       <div key={key} className="rounded-md border border-charcoal/5 bg-cream/20 p-3">
-                        <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
+                        <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">{key.replace(/_/g, " ")}</div>
                         <div className="mt-0.5 text-sm text-charcoal/75">
                           {typeof value === "object" && value !== null
                             ? Array.isArray(value)
@@ -399,7 +399,7 @@ function ReviewContent() {
               {/* Agentic trace timeline */}
               {agenticTrace && agenticTrace.length > 0 && (
                 <div className="mb-6 rounded-lg border border-violet-200/50 bg-violet-50/10 p-5">
-                  <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-violet-500">
+                  <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-500">
                     Agentic Trace — Claude&apos;s Reasoning ({agenticTrace.filter((t) => t.type === "tool_call").length} tool calls)
                   </h2>
                   <div className="space-y-3">
@@ -410,16 +410,16 @@ function ReviewContent() {
                           <div key={i} className="rounded-md border border-violet-200/40 bg-white p-3">
                             {reasoning && reasoning.length > 0 && (
                               <div className="mb-2 rounded border-l-2 border-violet-300 bg-violet-50/30 px-3 py-2">
-                                <div className="mb-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-400">Claude&apos;s reasoning</div>
+                                <div className="mb-0.5 text-xs font-semibold uppercase tracking-wider text-violet-400">Claude&apos;s reasoning</div>
                                 <div className="text-[11px] leading-relaxed text-charcoal/65 italic">{reasoning.slice(0, 400)}{reasoning.length > 400 ? "..." : ""}</div>
                               </div>
                             )}
                             <div className="flex items-center gap-1.5">
                               <Zap className="h-3 w-3 text-teal-600" />
                               <span className="font-mono text-[11px] font-semibold text-teal-700">{String(entry.tool_name)}</span>
-                              <span className="text-[9px] text-charcoal/40">iteration {String(entry.iteration)}</span>
+                              <span className="text-xs text-charcoal/40">iteration {String(entry.iteration)}</span>
                             </div>
-                            <div className="mt-1 rounded bg-charcoal/3 p-2 text-[10px] font-mono text-charcoal/55">
+                            <div className="mt-1 rounded bg-charcoal/3 p-2 text-xs font-mono text-charcoal/55">
                               <div><strong>Input:</strong> {JSON.stringify(entry.tool_input, null, 1).slice(0, 200)}</div>
                               <div className="mt-1"><strong>Output:</strong> {JSON.stringify(entry.tool_output, null, 1).slice(0, 200)}</div>
                             </div>
@@ -429,7 +429,7 @@ function ReviewContent() {
                       if (entry.type === "final_response" && entry.reasoning) {
                         return (
                           <div key={i} className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
-                            <div className="text-[9px] font-semibold uppercase tracking-wider text-charcoal/40">Final analysis</div>
+                            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/40">Final analysis</div>
                             <div className="mt-0.5 text-[11px] text-charcoal/60 italic">{String(entry.reasoning).slice(0, 300)}...</div>
                           </div>
                         );
@@ -447,7 +447,7 @@ function ReviewContent() {
         {output && !loading && editing && (
           <div className="mb-6 rounded-lg border-2 border-amber-300/50 bg-white p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-amber-600">Editing AI Output</h2>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-600">Editing AI Output</h2>
               <div className="flex gap-2">
                 <button type="button" onClick={saveEdit} disabled={busy} className="inline-flex items-center gap-1 rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-700 disabled:opacity-50">
                   {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />} Save
@@ -460,7 +460,7 @@ function ReviewContent() {
             <div className="space-y-3">
               {Object.entries(draft).map(([key, value]) => (
                 <div key={key}>
-                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                     {key.replace(/_/g, " ")}
                   </label>
                   <textarea
@@ -489,7 +489,7 @@ function ReviewContent() {
         {/* Section 4: Action buttons (all 5 + evidence link) */}
         {output && !loading && !editing && !rerunning && (
           <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
-            <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Review Actions</h2>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal/50">Review Actions</h2>
             <div className="flex flex-wrap gap-3">
               <button type="button" onClick={() => setModal("approve")} className="inline-flex items-center gap-1.5 rounded-md bg-sage px-5 py-2.5 text-sm font-medium text-white hover:bg-sage/90">
                 <Check className="h-4 w-4" /> {stepId === "6a" ? "Accept Findings" : stepId === "6b" ? "Accept Brief" : "Approve"}
@@ -506,7 +506,7 @@ function ReviewContent() {
               <button type="button" onClick={() => setModal("reject")} className="inline-flex items-center gap-1.5 rounded-md border border-soft_red/30 bg-white px-4 py-2.5 text-sm font-medium text-soft_red hover:bg-soft_red/5">
                 <ThumbsDown className="h-4 w-4" /> Reject
               </button>
-              <button type="button" onClick={() => setModal("escalate")} className="inline-flex items-center gap-1.5 rounded-md border border-purple-300 bg-white px-4 py-2.5 text-sm font-medium text-purple-700 hover:bg-purple-50">
+              <button type="button" onClick={() => setModal("escalate")} className="inline-flex items-center gap-1.5 rounded-md border border-teal-300 bg-white px-4 py-2.5 text-sm font-medium text-teal-700 hover:bg-teal-50">
                 <ShieldAlert className="h-4 w-4" /> Escalate to CEO
               </button>
             </div>
@@ -515,7 +515,7 @@ function ReviewContent() {
 
         {/* Section 5: Audit log */}
         <div className="rounded-lg border border-charcoal/10 bg-white p-5">
-          <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal/50">
             Action History ({auditLog.length})
           </h2>
           {auditLog.length === 0 ? (
@@ -570,7 +570,7 @@ function ReviewContent() {
           title="Escalate to CEO?"
           description="The CEO will see this in their escalation queue and can override any decision."
           confirmLabel="Escalate"
-          confirmColor="bg-purple-600 hover:bg-purple-700"
+          confirmColor="bg-teal-600 hover:bg-teal-700"
           onConfirm={(reason) => handleAction("escalate", reason)}
           onCancel={() => setModal(null)}
           busy={busy}

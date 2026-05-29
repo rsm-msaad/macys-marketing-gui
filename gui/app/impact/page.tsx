@@ -100,7 +100,7 @@ function HeroCard({ icon: Icon, label, value, countUp, sub, accent = false }: {
 }) {
   return (
     <div className={`card-hover rounded-lg border p-5 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
-      <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-charcoal/50">
         <Icon className={`h-4 w-4 ${accent ? "text-teal-600" : "text-charcoal/40"}`} />
         {label}
       </div>
@@ -121,7 +121,7 @@ function StepBar({ step, maxBaseline, index }: { step: StepImpact; maxBaseline: 
     <tr className="border-t border-charcoal/5">
       <td className="py-2.5 pr-3">
         <div className="flex items-center gap-2">
-          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold ${
+          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${
             step.completed ? "bg-teal-100 text-teal-700" : "bg-charcoal/8 text-charcoal/40"
           }`}>
             {step.completed ? <CheckCircle2 className="h-3 w-3" /> : step.step}
@@ -162,7 +162,7 @@ function QualityCard({ icon: Icon, label, value, color = "teal" }: {
     <div className={`card-hover rounded-lg border border-charcoal/10 ${c.bg} p-4`}>
       <Icon className={`h-4 w-4 ${c.icon}`} />
       <div className={`mt-2 font-serif text-2xl font-bold ${c.text}`}>{value}</div>
-      <div className="mt-0.5 text-[10px] font-medium text-charcoal/50">{label}</div>
+      <div className="mt-0.5 text-xs font-medium text-charcoal/50">{label}</div>
     </div>
   );
 }
@@ -176,30 +176,30 @@ function CampaignComparisonBar({ campaign }: { campaign: CampaignImpact }) {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-[12px] font-semibold text-charcoal">{campaign.campaign_name}</div>
-          <div className="text-[10px] text-charcoal/50">
+          <div className="text-xs text-charcoal/50">
             {campaign.is_complete ? "Completed" : `Step ${campaign.current_step} of 10`}
             {" · "}{campaign.completed_step_count} steps done
           </div>
         </div>
         <div className="text-right">
           <div className="font-serif text-lg font-bold text-teal-700">${campaign.hero.dollars_saved.toLocaleString()}</div>
-          <div className="text-[10px] text-charcoal/50">saved</div>
+          <div className="text-xs text-charcoal/50">saved</div>
         </div>
       </div>
       <div className="mt-3 space-y-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-16 text-[10px] text-charcoal/50">Baseline</span>
+          <span className="w-16 text-xs text-charcoal/50">Baseline</span>
           <div className="flex-1 h-3 rounded bg-charcoal/8">
             <div className="h-full rounded bg-charcoal/25" style={{ width: `${bPct}%` }} />
           </div>
-          <span className="w-12 text-right text-[10px] text-charcoal/55">{campaign.hero.baseline_days}d</span>
+          <span className="w-12 text-right text-xs text-charcoal/55">{campaign.hero.baseline_days}d</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-16 text-[10px] text-teal-600 font-medium">AI</span>
+          <span className="w-16 text-xs text-teal-600 font-medium">AI</span>
           <div className="flex-1 h-3 rounded bg-charcoal/8">
             <div className="h-full rounded bg-teal-500" style={{ width: `${aPct}%` }} />
           </div>
-          <span className="w-12 text-right text-[10px] font-semibold text-teal-700">{campaign.hero.ai_supported_days}d</span>
+          <span className="w-12 text-right text-xs font-semibold text-teal-700">{campaign.hero.ai_supported_days}d</span>
         </div>
       </div>
     </div>
@@ -344,7 +344,7 @@ export default function ImpactPage() {
                 </p>
                 <table className="w-full">
                   <thead>
-                    <tr className="text-[10px] font-medium uppercase tracking-wider text-charcoal/40">
+                    <tr className="text-xs font-medium uppercase tracking-wider text-charcoal/40">
                       <th className="pb-2 text-left">Step</th>
                       <th className="pb-2 text-right">Baseline</th>
                       <th className="pb-2 text-right">AI-Supported</th>
@@ -363,7 +363,7 @@ export default function ImpactPage() {
 
               {/* Extrapolation note */}
               <div className="mt-4 rounded-lg border border-teal-200/50 bg-teal-50/30 p-4">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">Extrapolation</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">Extrapolation</div>
                 <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
                   At {portfolio.aggregate.annual_campaign_volume_low} to {portfolio.aggregate.annual_campaign_volume_high} campaigns
                   per year (avg ${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()} saved per campaign
@@ -391,7 +391,7 @@ export default function ImpactPage() {
                 {breakdownOpen && (
                   <div className="border-t border-charcoal/5 px-4 py-4">
                     <table className="w-full text-[11px]">
-                      <thead className="text-[10px] uppercase text-charcoal/40">
+                      <thead className="text-xs uppercase text-charcoal/40">
                         <tr>
                           <th className="pb-2 text-left font-medium">Campaign source</th>
                           <th className="pb-2 text-right font-medium">Annual count</th>

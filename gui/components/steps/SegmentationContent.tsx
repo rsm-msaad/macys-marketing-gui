@@ -50,9 +50,9 @@ const SEGMENT_ICONS = [Users, Clock, Search];
 const SEGMENT_COLORS = [
   { border: "border-teal-600/30", bg: "bg-teal-50/40", text: "text-teal-600" },
   {
-    border: "border-amber-500/30",
-    bg: "bg-amber-50/40",
-    text: "text-amber-600",
+    border: "border-mustard/30",
+    bg: "bg-mustard/10",
+    text: "text-mustard",
   },
   {
     border: "border-violet-500/30",
@@ -68,7 +68,7 @@ function formatPct(n: number): string {
 function LoyaltyBar({ mix }: { mix: Record<string, number> }) {
   const tiers = Object.entries(mix).sort(([, a], [, b]) => b - a);
   return (
-    <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-charcoal/55">
+    <div className="mt-1.5 flex items-center gap-1.5 text-xs text-charcoal/55">
       {tiers.slice(0, 3).map(([tier, pct]) => (
         <span key={tier}>
           {tier} {formatPct(pct)}
@@ -117,12 +117,12 @@ function SegmentCard({
           </div>
         </div>
         {selected && (
-          <span className="flex-shrink-0 rounded-full bg-teal-600 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+          <span className="flex-shrink-0 rounded-full bg-teal-600 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
             Selected
           </span>
         )}
         {recommended && !selected && (
-          <span className="flex-shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">
+          <span className="flex-shrink-0 rounded-full bg-mustard/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-mustard">
             Recommended
           </span>
         )}
@@ -137,24 +137,24 @@ function SegmentCard({
           <div className="text-[11px] font-semibold text-charcoal">
             {segment.avg_recency_days}d
           </div>
-          <div className="text-[9px] text-charcoal/50">Recency</div>
+          <div className="text-xs text-charcoal/50">Recency</div>
         </div>
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             {segment.avg_frequency.toFixed(1)}x
           </div>
-          <div className="text-[9px] text-charcoal/50">Frequency</div>
+          <div className="text-xs text-charcoal/50">Frequency</div>
         </div>
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             ${segment.avg_monetary.toFixed(0)}
           </div>
-          <div className="text-[9px] text-charcoal/50">Monetary</div>
+          <div className="text-xs text-charcoal/50">Monetary</div>
         </div>
       </div>
 
       {segment.top_category && (
-        <div className="mt-1.5 text-[10px] text-charcoal/55">
+        <div className="mt-1.5 text-xs text-charcoal/55">
           Top category: {segment.top_category} (+{(segment.top_category_lift * 100).toFixed(0)}% lift)
         </div>
       )}
@@ -236,7 +236,7 @@ export function SegmentationContent({
             <div className="flex items-start gap-2">
               <Users className="mt-0.5 h-4 w-4 text-sage" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                <div className="text-xs font-semibold uppercase tracking-wider text-sage">
                   Selected segment
                 </div>
                 <div className="font-serif text-base font-semibold text-charcoal">
@@ -251,8 +251,8 @@ export function SegmentationContent({
                   {why}
                 </p>
                 {existingOutput.was_override === true && typeof existingOutput.override_reason === "string" && (
-                  <div className="mt-2 rounded border border-amber-200/50 bg-amber-50/30 px-2.5 py-1.5">
-                    <div className="text-[9px] font-semibold uppercase tracking-wider text-amber-600">
+                  <div className="mt-2 rounded border border-mustard/30 bg-mustard/10 px-2.5 py-1.5">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-mustard">
                       Override reason (recommended: {String(existingOutput.recommended_segment)})
                     </div>
                     <div className="mt-0.5 text-[11px] italic text-charcoal/65">
@@ -289,7 +289,7 @@ export function SegmentationContent({
       {/* Upstream context: reading from Step 1 brief */}
       {briefCategory && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Step 1: Campaign Brief
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -301,7 +301,7 @@ export function SegmentationContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · Audience Segment Builder
           </span>
         </div>
@@ -372,8 +372,8 @@ export function SegmentationContent({
         return (
           <>
             {isOverride && (
-              <div className="rounded-md border border-amber-300/40 bg-amber-50/20 p-3">
-                <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700">
+              <div className="rounded-md border border-mustard/30 bg-mustard/10 p-3">
+                <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-mustard">
                   <MessageSquare className="h-3 w-3" />
                   Override reason (visible to manager)
                 </div>

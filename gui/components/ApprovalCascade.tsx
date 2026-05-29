@@ -7,7 +7,7 @@ import { callCascade, type CascadeResult } from "@/lib/ai_client";
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
       AI
     </span>
   );
@@ -113,7 +113,7 @@ export function ApprovalCascade({
           {error && (
             <div className="mt-3 rounded-md border border-mustard/30 bg-mustard/5 p-3 text-xs text-charcoal/70">
               AI temporarily unavailable. The campaign has been approved.
-              <div className="mt-1 text-[10px] text-charcoal/45">{error}</div>
+              <div className="mt-1 text-xs text-charcoal/45">{error}</div>
             </div>
           )}
 

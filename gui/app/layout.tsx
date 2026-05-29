@@ -19,6 +19,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Macy's Marketing Operations",
   description: "Internal marketing operations console for the May 7 demo.",
+  other: {
+    "theme-color": "#F8F4EC",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

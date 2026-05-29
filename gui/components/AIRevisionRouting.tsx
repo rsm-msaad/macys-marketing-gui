@@ -7,7 +7,7 @@ import { callRouteRevision, type RouteRevisionResult } from "@/lib/ai_client";
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
       AI
     </span>
   );
@@ -123,7 +123,7 @@ export function AIRevisionRouting({
             <div className="space-y-3">
               <div className="rounded-md border border-mustard/30 bg-mustard/5 p-3 text-xs text-charcoal/70">
                 AI temporarily unavailable. You may route this revision manually.
-                <div className="mt-1 text-[10px] text-charcoal/45">{error}</div>
+                <div className="mt-1 text-xs text-charcoal/45">{error}</div>
               </div>
               <div className="flex items-center justify-end gap-2">
                 <button
@@ -157,20 +157,20 @@ export function AIRevisionRouting({
 
               <div className="space-y-2 rounded-md border border-charcoal/10 bg-cream/30 p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                     Change Type
                   </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${changeTypeColor(result.change_type)}`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${changeTypeColor(result.change_type)}`}>
                     {result.change_type}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                     Suggested Owner
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-50 text-[10px] font-semibold text-teal-600">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-50 text-xs font-semibold text-teal-600">
                       {result.owner.charAt(0).toUpperCase()}
                     </span>
                     <span className="text-sm font-medium text-charcoal">{result.owner}</span>
@@ -178,17 +178,17 @@ export function AIRevisionRouting({
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                     Summary
                   </span>
                   <p className="mt-0.5 text-sm text-charcoal/80">{result.one_line_summary}</p>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                     Urgency
                   </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${urgencyColor(result.urgency)}`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${urgencyColor(result.urgency)}`}>
                     {result.urgency}
                   </span>
                 </div>

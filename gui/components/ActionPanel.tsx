@@ -97,7 +97,7 @@ function CompletedStepCard({
         className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-charcoal hover:bg-cream/50"
       >
         <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-sage" />
-        <span className="text-[10px] font-bold text-charcoal/40">STEP {stepNumber}</span>
+        <span className="text-xs font-bold text-charcoal/40">STEP {stepNumber}</span>
         <span className="flex-1">{title}</span>
         {open ? (
           <ChevronDown className="h-4 w-4 text-charcoal/40" />
@@ -156,7 +156,7 @@ function CompletedCampaignView({
           <div className="mb-3">
             <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wider text-charcoal/50">Compliance Pre-Check</h4>
             <div className="rounded border border-sage/30 bg-sage/5 px-3 py-2">
-              <span className="inline-block rounded-full bg-sage/20 px-2 py-0.5 text-[10px] font-bold uppercase text-sage">
+              <span className="inline-block rounded-full bg-sage/20 px-2 py-0.5 text-xs font-bold uppercase text-sage">
                 {String(compliance.status ?? "pass").toUpperCase()}
               </span>
               <ul className="mt-2 space-y-1">
@@ -193,7 +193,7 @@ function CompletedCampaignView({
           <div>
             <h4 className="mb-1 text-xs font-bold uppercase tracking-wider text-charcoal/50">Routing Decision</h4>
             <p className="text-xs">
-              <span className="inline-block rounded-full bg-sage/20 px-2 py-0.5 text-[10px] font-bold uppercase text-sage mr-2">
+              <span className="inline-block rounded-full bg-sage/20 px-2 py-0.5 text-xs font-bold uppercase text-sage mr-2">
                 {String(routing.decision)}
               </span>
               {String(routing.note)}
@@ -235,7 +235,7 @@ function CompletedCampaignView({
                 <td className="py-1 pr-3">{s.time}</td>
                 <td className="py-1 pr-3">{s.audience}</td>
                 <td className="py-1">
-                  <span className="inline-block rounded-full bg-sage/20 px-1.5 py-0.5 text-[10px] font-bold text-sage">
+                  <span className="inline-block rounded-full bg-sage/20 px-1.5 py-0.5 text-xs font-bold text-sage">
                     {s.status}
                   </span>
                 </td>
@@ -253,7 +253,7 @@ function CompletedCampaignView({
             {Object.entries(totals).map(([k, v]) => (
               <div key={k} className="rounded border border-charcoal/10 bg-cream/40 px-2 py-1.5 text-center text-xs">
                 <div className="font-semibold text-charcoal">{String(v)}</div>
-                <div className="text-[10px] text-charcoal/50">{k.replace(/_/g, " ")}</div>
+                <div className="text-xs text-charcoal/50">{k.replace(/_/g, " ")}</div>
               </div>
             ))}
           </div>
@@ -416,7 +416,7 @@ export function ActionPanel({
               src={OWNER_AVATAR[getStepOwner(stepNumber) ?? ""] ?? ""}
               alt={getStepOwnerName(stepNumber)}
               className="h-full w-full object-cover"
-              onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("flex","items-center","justify-center","text-[10px]","font-bold","text-white"); e.currentTarget.parentElement!.textContent = getStepOwnerName(stepNumber).charAt(0); }}
+              onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.classList.add("flex","items-center","justify-center","text-xs","font-bold","text-white"); e.currentTarget.parentElement!.textContent = getStepOwnerName(stepNumber).charAt(0); }}
             />
           </div>
           <span className="text-[11px] text-charcoal/70">

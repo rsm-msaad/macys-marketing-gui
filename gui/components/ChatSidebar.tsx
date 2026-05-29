@@ -24,7 +24,7 @@ type Message = {
 
 function AIBadge() {
   return (
-    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+    <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
       AI
     </span>
   );
@@ -131,7 +131,7 @@ export function ChatSidebar({
         </span>
         <div className="flex-1 leading-tight">
           <div className="text-sm font-semibold text-charcoal">Claude</div>
-          <div className="text-[10px] text-charcoal/55">
+          <div className="text-xs text-charcoal/55">
             Marketing coworker powered by TritonAI
           </div>
         </div>
@@ -166,7 +166,7 @@ export function ChatSidebar({
                 )}
               </div>
               {m.docs && m.docs.length > 0 && (
-                <div className="mt-1 px-1 text-[10px] font-mono text-charcoal/40">
+                <div className="mt-1 px-1 text-xs font-mono text-charcoal/40">
                   Sources: {m.docs.join(", ")}
                 </div>
               )}

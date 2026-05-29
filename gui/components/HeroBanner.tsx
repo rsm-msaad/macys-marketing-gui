@@ -49,7 +49,7 @@ export function HeroBanner({
         className="h-48 w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent" />
-      <div className="absolute bottom-2 right-2 rounded bg-charcoal/50 px-2 py-0.5 text-[10px] text-white/80">
+      <div className="absolute bottom-2 right-2 rounded bg-charcoal/50 px-2 py-0.5 text-xs text-white/80">
         Photo by{" "}
         <a
           href={`${hero.photographer_url}?utm_source=macys_ops&utm_medium=referral`}

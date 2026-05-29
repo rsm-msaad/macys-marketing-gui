@@ -79,13 +79,13 @@ export function CampaignSidebar({
   return (
     <section className="border-b border-charcoal/10 px-4 py-4">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-charcoal/55">
           Campaigns
         </h2>
         <button
           type="button"
           onClick={() => router.push("/start")}
-          className="inline-flex items-center gap-1 rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-teal-700"
+          className="inline-flex items-center gap-1 rounded-full bg-teal-600 px-2 py-0.5 text-xs font-medium text-white hover:bg-teal-700"
         >
           <Plus className="h-3 w-3" />
           New
@@ -131,21 +131,21 @@ export function CampaignSidebar({
                     <div className="truncate text-[12px] font-semibold text-charcoal leading-tight">
                       {c.name}
                     </div>
-                    <div className="mt-0.5 truncate text-[10px] text-charcoal/55">
+                    <div className="mt-0.5 truncate text-xs text-charcoal/55">
                       {c.id}
                     </div>
                   </div>
                   <span
-                    className="flex-shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold tracking-wider"
+                    className="flex-shrink-0 rounded-full px-1.5 py-0.5 text-xs font-bold tracking-wider"
                     style={{ backgroundColor: style.pillBg, color: style.pillText }}
                   >
                     {style.label}
                   </span>
                 </div>
-                <div className="mt-1.5 text-[10px] text-charcoal/65">
+                <div className="mt-1.5 text-xs text-charcoal/65">
                   Step {c.current_step}: {c.current_step_name}
                 </div>
-                <div className="mt-0.5 flex items-center gap-1.5 text-[10px]">
+                <div className="mt-0.5 flex items-center gap-1.5 text-xs">
                   <span
                     className="inline-block h-1.5 w-1.5 rounded-full"
                     style={{ backgroundColor: style.dot }}
@@ -153,7 +153,7 @@ export function CampaignSidebar({
                   <span className="text-charcoal/55">{c.days_label}</span>
                 </div>
                 {c.status === "active" && activeOwnerName && (
-                  <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-teal-700">
+                  <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-700">
                     Awaiting {activeOwnerName}
                   </div>
                 )}

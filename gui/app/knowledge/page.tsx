@@ -47,11 +47,11 @@ function DocCard({ doc, onOpen }: { doc: KnowledgeDoc; onOpen: () => void }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <span className={`inline-block rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${style.bg} ${style.text}`}>
+          <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold uppercase ${style.bg} ${style.text}`}>
             {doc.category}
           </span>
           <h3 className="mt-2 text-[13px] font-semibold text-charcoal leading-tight">{doc.title}</h3>
-          <div className="mt-0.5 font-mono text-[10px] text-charcoal/40">{doc.doc_id}</div>
+          <div className="mt-0.5 font-mono text-xs text-charcoal/40">{doc.doc_id}</div>
         </div>
         <FileText className="h-4 w-4 flex-shrink-0 text-charcoal/25" />
       </div>
@@ -59,15 +59,15 @@ function DocCard({ doc, onOpen }: { doc: KnowledgeDoc; onOpen: () => void }) {
       <div className="mt-3 flex items-center justify-between">
         <div className="flex flex-wrap gap-1">
           {doc.used_by.map((skill) => (
-            <span key={skill} className="rounded bg-teal-50 px-1.5 py-0.5 text-[9px] font-medium text-teal-600">
+            <span key={skill} className="rounded bg-teal-50 px-1.5 py-0.5 text-xs font-medium text-teal-600">
               {skill}
             </span>
           ))}
         </div>
-        <span className="text-[9px] text-charcoal/35">{doc.word_count} words</span>
+        <span className="text-xs text-charcoal/35">{doc.word_count} words</span>
       </div>
       {doc.updated && (
-        <div className="mt-2 text-[9px] text-charcoal/35">Updated {doc.updated}</div>
+        <div className="mt-2 text-xs text-charcoal/35">Updated {doc.updated}</div>
       )}
     </button>
   );
@@ -141,7 +141,7 @@ export default function KnowledgePage() {
                 key={cat}
                 type="button"
                 onClick={() => setCategory(cat)}
-                className={`rounded-full px-2.5 py-1 text-[10px] font-medium capitalize transition-colors ${
+                className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize transition-colors ${
                   category === cat
                     ? "bg-teal-600 text-white"
                     : "border border-charcoal/15 bg-white text-charcoal/55 hover:bg-cream"
@@ -168,7 +168,7 @@ export default function KnowledgePage() {
           </div>
         )}
 
-        <div className="text-[10px] text-charcoal/35">
+        <div className="text-xs text-charcoal/35">
           {filtered.length} of {docs.length} documents shown.
           {docs.length} documents indexed in the HyQ FAISS vector store for semantic retrieval by AI skills.
         </div>
@@ -184,10 +184,10 @@ export default function KnowledgePage() {
               {selectedDoc ? (
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${(CATEGORY_STYLE[selectedDoc.category] ?? CATEGORY_STYLE.Reference).bg} ${(CATEGORY_STYLE[selectedDoc.category] ?? CATEGORY_STYLE.Reference).text}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${(CATEGORY_STYLE[selectedDoc.category] ?? CATEGORY_STYLE.Reference).bg} ${(CATEGORY_STYLE[selectedDoc.category] ?? CATEGORY_STYLE.Reference).text}`}>
                       {selectedDoc.category}
                     </span>
-                    <span className="font-mono text-[10px] text-charcoal/40">{selectedDoc.doc_id}</span>
+                    <span className="font-mono text-xs text-charcoal/40">{selectedDoc.doc_id}</span>
                   </div>
                   <h2 className="mt-1 font-serif text-lg font-bold text-charcoal">{selectedDoc.title}</h2>
                 </div>
@@ -205,7 +205,7 @@ export default function KnowledgePage() {
                 <div className="py-12 text-center text-charcoal/40">Loading document...</div>
               ) : selectedDoc ? (
                 <div className="prose prose-sm max-w-none text-charcoal/80 prose-headings:font-serif prose-headings:text-charcoal prose-a:text-teal-600 prose-strong:text-charcoal prose-code:text-teal-700 prose-code:bg-teal-50 prose-code:px-1 prose-code:rounded">
-                  <div className="mb-4 flex items-center gap-3 text-[10px] text-charcoal/45">
+                  <div className="mb-4 flex items-center gap-3 text-xs text-charcoal/45">
                     {selectedDoc.owner && <span>Owner: {selectedDoc.owner}</span>}
                     {selectedDoc.updated && <span>Updated: {selectedDoc.updated}</span>}
                     <span>Used by: {selectedDoc.used_by.join(", ")}</span>

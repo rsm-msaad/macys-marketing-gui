@@ -34,7 +34,7 @@ export function RevisionPendingPanel({
           <Hourglass className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-mustard">
+          <div className="text-xs font-semibold uppercase tracking-wider text-mustard">
             Revision Requested · Awaiting resubmission
           </div>
           <h3 className="mt-0.5 font-serif text-lg font-semibold text-charcoal">

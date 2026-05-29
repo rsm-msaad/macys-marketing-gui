@@ -180,7 +180,7 @@ export function ReportingContent({
 
       {/* Upstream context: reading from ALL steps */}
       <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+        <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
           Reading from Steps 1-9: Full Audit Trail
         </div>
         <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -192,7 +192,7 @@ export function ReportingContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <FileEdit className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Skill · Report Generator (LLM, pre-fetch)
           </span>
         </div>
@@ -223,7 +223,7 @@ export function ReportingContent({
           </button>
         )}
         {genMethod && (
-          <div className="mt-1 text-[10px] text-charcoal/40">
+          <div className="mt-1 text-xs text-charcoal/40">
             Generated via: {genMethod === "claude_via_skill_invoker" ? "Claude (TritonAI)" : genMethod}
           </div>
         )}
@@ -234,7 +234,7 @@ export function ReportingContent({
           disabled={!canAct}
           className="mt-3 w-full rounded-md border border-charcoal/15 bg-cream/30 p-3 font-serif text-[13px] leading-relaxed text-charcoal focus:border-teal-600 focus:outline-none disabled:opacity-70"
         />
-        <div className="mt-1 text-[10px] text-charcoal/50">
+        <div className="mt-1 text-xs text-charcoal/50">
           {draft.length} characters · keep under 1500 for the leadership
           one-pager.
         </div>
@@ -249,15 +249,15 @@ export function ReportingContent({
         >
           <Mail className="h-3.5 w-3.5" />
           Send to Team via Email
-          <span className="ml-1 rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-violet-500">MCP</span>
+          <span className="ml-1 rounded bg-violet-100 px-1.5 py-0.5 text-xs font-semibold uppercase text-violet-500">MCP</span>
         </button>
       )}
 
       {emailResult && (
         <div className={`rounded-md border px-3 py-2 text-[11px] ${
           emailResult.status === "sent"
-            ? "border-green-300/40 bg-green-50/30 text-green-700"
-            : "border-red-300/40 bg-red-50/30 text-red-700"
+            ? "border-sage/30 bg-sage/10 text-charcoal"
+            : "border-soft_red/30 bg-soft_red/10 text-charcoal"
         }`}>
           {emailResult.status === "sent" ? (
             <span className="flex items-center gap-1.5">
@@ -278,7 +278,7 @@ export function ReportingContent({
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-violet-600" />
                 <span className="text-sm font-semibold text-charcoal">Send Campaign Summary</span>
-                <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-violet-500">MCP: send_campaign_summary</span>
+                <span className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-semibold uppercase text-violet-500">MCP: send_campaign_summary</span>
               </div>
               <button type="button" onClick={() => setEmailOpen(false)} className="rounded p-1 text-charcoal/50 hover:bg-cream">
                 <X className="h-4 w-4" />
@@ -287,7 +287,7 @@ export function ReportingContent({
 
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Recipients</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Recipients</label>
                 <input
                   type="text"
                   value={emailRecipients}
@@ -297,7 +297,7 @@ export function ReportingContent({
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Subject</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Subject</label>
                 <input
                   type="text"
                   value={emailSubject}
@@ -306,7 +306,7 @@ export function ReportingContent({
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">Preview</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">Preview</label>
                 <div className="mt-1 max-h-40 overflow-y-auto rounded-md border border-charcoal/10 bg-cream/20 p-3 text-[11px] leading-relaxed text-charcoal/65 whitespace-pre-wrap">
                   {draft.slice(0, 500)}{draft.length > 500 ? "..." : ""}
                 </div>

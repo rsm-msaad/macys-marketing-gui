@@ -40,8 +40,8 @@ function KpiCard({ label, value, sub }: { label: string; value: string; sub?: st
   return (
     <div className="rounded-md border border-charcoal/10 bg-white px-3 py-2.5 text-center">
       <div className="font-serif text-xl font-bold text-charcoal">{value}</div>
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">{label}</div>
-      {sub && <div className="mt-0.5 text-[10px] text-charcoal/40">{sub}</div>}
+      <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">{label}</div>
+      {sub && <div className="mt-0.5 text-xs text-charcoal/40">{sub}</div>}
     </div>
   );
 }
@@ -52,7 +52,7 @@ function ChannelTable({ channels }: { channels: ChannelAttribution[] }) {
   const maxRev = Math.max(...channels.map((c) => c.revenue), 1);
   return (
     <div className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
-      <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
         <Activity className="h-3 w-3" /> Channel Attribution
       </div>
       <table className="w-full text-[11px]">
@@ -86,7 +86,7 @@ function ChannelTable({ channels }: { channels: ChannelAttribution[] }) {
 function SegmentTable({ segments }: { segments: SegmentAttribution[] }) {
   return (
     <div className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
-      <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600">
         <BarChart3 className="h-3 w-3" /> Segment Performance
       </div>
       <table className="w-full text-[11px]">
@@ -125,14 +125,14 @@ function ForecastCard({ label, block }: { label: string; block: ForecastBlock | 
   const trendColor = block.trend_direction === "up" ? "text-sage" : block.trend_direction === "down" ? "text-soft_red" : "text-charcoal/50";
   return (
     <div className="rounded-md border border-charcoal/10 bg-white px-3 py-2.5">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">{label}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">{label}</div>
       <div className="mt-1 flex items-center gap-2">
         <span className="font-serif text-lg font-bold text-charcoal">
           {label.toLowerCase().includes("roas") ? `${block.predicted.toFixed(1)}x` : `$${(block.predicted / 1000).toFixed(0)}K`}
         </span>
         <TrendIcon className={`h-4 w-4 ${trendColor}`} />
       </div>
-      <div className="mt-0.5 text-[10px] text-charcoal/40">
+      <div className="mt-0.5 text-xs text-charcoal/40">
         80% CI: {label.toLowerCase().includes("roas")
           ? `${block.lower_bound.toFixed(1)}x to ${block.upper_bound.toFixed(1)}x`
           : `$${(block.lower_bound / 1000).toFixed(0)}K to $${(block.upper_bound / 1000).toFixed(0)}K`}
@@ -198,7 +198,7 @@ export function MonitoringContent({
             <div className="flex items-start gap-2">
               <Activity className="mt-0.5 h-4 w-4 text-sage" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sage">
+                <div className="text-xs font-semibold uppercase tracking-wider text-sage">
                   Performance analysis locked in
                 </div>
                 <div className="font-serif text-base font-semibold text-charcoal">
@@ -232,7 +232,7 @@ export function MonitoringContent({
       {/* Upstream context: reading from Steps 2+3 */}
       {(segmentName || approvedSkuCount > 0) && (
         <div className="rounded-md border border-blue-200/50 bg-blue-50/30 px-3 py-2">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-blue-600">
+          <div className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             Reading from Steps 2 + 3
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
@@ -246,7 +246,7 @@ export function MonitoringContent({
       <div className="rounded-md border border-charcoal/10 bg-white p-4">
         <div className="mb-2 flex items-center gap-1.5">
           <BarChart3 className="h-3.5 w-3.5 text-teal-600" />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-600">
+          <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
             Automation · Campaign Performance Analyzer
           </span>
         </div>
@@ -306,7 +306,7 @@ export function MonitoringContent({
           {/* Forecast */}
           {analysis.forecast.forecast_status === "success" && (
             <div>
-              <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal/50">
                 14-Day Forecast (80% Confidence Interval)
               </h3>
               <div className="grid grid-cols-3 gap-2">
@@ -317,14 +317,14 @@ export function MonitoringContent({
             </div>
           )}
           {analysis.forecast.forecast_status !== "success" && analysis.forecast.message && (
-            <div className="rounded-md border border-amber-300/40 bg-amber-50/30 p-3 text-[11px] text-amber-700">
+            <div className="rounded-md border border-mustard/30 bg-mustard/10 p-3 text-[11px] text-charcoal/70">
               Forecast: {analysis.forecast.message}
             </div>
           )}
 
           {/* Summary */}
           <div className="rounded-md border border-charcoal/10 bg-cream/30 p-3">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/45">Executive Summary</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/45">Executive Summary</div>
             <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">{analysis.summary}</p>
           </div>
 

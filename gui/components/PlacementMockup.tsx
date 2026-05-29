@@ -98,7 +98,7 @@ export function PlacementMockup({
       </div>
 
       {/* Placement label badge */}
-      <div className="absolute left-3 top-3 rounded bg-black/50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm">
+      <div className="absolute left-3 top-3 rounded bg-black/50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm">
         {config.label} · {config.dimensions}
       </div>
 
@@ -119,7 +119,7 @@ export function PlacementMockup({
       {mockupContent}
 
       {/* Asset caption */}
-      <div className="mt-1.5 flex items-center justify-between text-[9px] text-charcoal/40">
+      <div className="mt-1.5 flex items-center justify-between text-xs text-charcoal/40">
         {assetId != null ? (
           <span>Asset: DAM-{String(assetId).padStart(5, "0")}</span>
         ) : (
@@ -129,7 +129,7 @@ export function PlacementMockup({
 
       {/* Visual direction from AI */}
       {copy.visual_direction && (
-        <p className="mt-1 text-[10px] italic text-charcoal/45">
+        <p className="mt-1 text-xs italic text-charcoal/45">
           Designer brief: {copy.visual_direction}
         </p>
       )}

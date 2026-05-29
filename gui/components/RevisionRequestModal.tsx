@@ -129,7 +129,7 @@ export function RevisionRequestModal({
               placeholder="What needs to change? Be specific so the previous owner can address it quickly."
               className="mt-1 w-full rounded-md border border-charcoal/15 bg-white p-3 text-sm text-charcoal focus:border-teal-600 focus:outline-none disabled:opacity-50"
             />
-            <div className="mt-1 text-[10px] text-charcoal/45">
+            <div className="mt-1 text-xs text-charcoal/45">
               {comment.length} characters
             </div>
           </label>

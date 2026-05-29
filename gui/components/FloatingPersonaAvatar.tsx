@@ -92,7 +92,7 @@ export function FloatingPersonaAvatar({ personaId }: { personaId: string }) {
                 </span>
                 <div>
                   <div className="text-[12px] font-medium text-charcoal">{p.name}</div>
-                  <div className="text-[10px] text-charcoal/50">{p.title}</div>
+                  <div className="text-xs text-charcoal/50">{p.title}</div>
                 </div>
               </button>
             ))}

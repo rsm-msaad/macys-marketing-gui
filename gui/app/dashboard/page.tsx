@@ -56,8 +56,8 @@ function StatCard({ icon: Icon, label, value, sub, accent }: {
     <div className={`card-hover rounded-lg border p-4 ${accent ? "border-teal-200 bg-teal-50/40" : "border-charcoal/10 bg-white"}`}>
       <Icon className={`h-4 w-4 ${accent ? "text-teal-600" : "text-charcoal/40"}`} />
       <div className={`mt-2 font-serif text-2xl font-bold ${accent ? "text-teal-700" : "text-charcoal"}`}>{value}</div>
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/50">{label}</div>
-      {sub && <div className="mt-0.5 text-[10px] text-charcoal/40">{sub}</div>}
+      <div className="text-xs font-semibold uppercase tracking-wider text-charcoal/50">{label}</div>
+      {sub && <div className="mt-0.5 text-xs text-charcoal/40">{sub}</div>}
     </div>
   );
 }
@@ -119,11 +119,11 @@ export default function DashboardPage() {
                     >
                       <div>
                         <div className="text-[12px] font-semibold text-charcoal">{c.name}</div>
-                        <div className="text-[10px] text-charcoal/50">Step {c.current_step}: {c.current_step_name}</div>
+                        <div className="text-xs text-charcoal/50">Step {c.current_step}: {c.current_step_name}</div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-medium text-teal-600">{c.hours_saved}h saved</span>
-                        <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${style.bg} ${style.text}`}>
+                        <span className="text-xs font-medium text-teal-600">{c.hours_saved}h saved</span>
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-bold uppercase ${style.bg} ${style.text}`}>
                           {c.status}
                         </span>
                       </div>
@@ -148,7 +148,7 @@ export default function DashboardPage() {
                       <div className="text-[11px] text-charcoal/70">
                         <strong>{String(entry.action ?? "Action")}</strong> on {String(entry.campaign_name ?? "")}
                       </div>
-                      <div className="text-[10px] text-charcoal/40">
+                      <div className="text-xs text-charcoal/40">
                         {entry.persona ? `by ${String(entry.persona)}` : ""} · Step {String(entry.step_id ?? "")}
                       </div>
                     </div>
