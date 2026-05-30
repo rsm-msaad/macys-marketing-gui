@@ -484,7 +484,7 @@ export function PersonaShell({
               personaId={personaId}
               steps={steps ?? undefined}
               revisionCounts={revisionCounts}
-              onStepClick={(n) => { setViewingStep(n); setStepPanelOpen(true); }}
+              onStepClick={() => setStepPanelOpen(true)}
             />
           </motion.div>
 
@@ -547,14 +547,14 @@ export function PersonaShell({
 
       {/* Floating card overlay - persona switcher top, workflow left, detail right */}
       <AnimatePresence>
-        {stepPanelOpen && state && !state.is_complete && (viewingStep ?? state.current_step) <= 10 && (
+        {stepPanelOpen && state && !state.is_complete && state.current_step <= 10 && (
           <StepOverlay
             personaId={personaId}
             campaignId={campaignId}
-            state={{ ...state, current_step: viewingStep ?? state.current_step }}
+            state={state}
             steps={steps ?? []}
             context={context}
-            onClose={() => { setStepPanelOpen(false); setViewingStep(null); }}
+            onClose={() => setStepPanelOpen(false)}
             onLaunchSkill={launchSkillFromActionPanel}
             onRequestRevisions={handleOpenRevisionModal}
             onAdvanced={refresh}
