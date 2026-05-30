@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -325,14 +326,24 @@ export function SKUSelectionContent({
               </button>
             </div>
             <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {recommended.map((sku) => (
-                <SkuCard
+              {recommended.map((sku, i) => (
+                <motion.div
                   key={sku.sku_id}
-                  sku={sku}
-                  discountPct={25}
-                  included={included.has(sku.sku_id)}
-                  onToggle={() => toggleSku(sku.sku_id)}
-                />
+                  initial={{ opacity: 0, y: 30, scale: 0.9, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.1 + i * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  <SkuCard
+                    sku={sku}
+                    discountPct={25}
+                    included={included.has(sku.sku_id)}
+                    onToggle={() => toggleSku(sku.sku_id)}
+                  />
+                </motion.div>
               ))}
             </div>
           </>

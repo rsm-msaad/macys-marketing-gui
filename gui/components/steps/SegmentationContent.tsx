@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { runSegment, type Segment, type CampaignBrief } from "@/lib/api";
 import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
@@ -344,21 +345,31 @@ export function SegmentationContent({
           </div>
         )}
 
-        {/* Segment cards */}
+        {/* Segment cards — staggered entrance animation */}
         {segments && segments.length > 0 && (() => {
           const recIdx = pickRecommendedIndex(segments, context.campaign_brief);
           return (
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               {segments.map((seg, i) => (
-                <SegmentCard
+                <motion.div
                   key={seg.name}
-                  segment={seg}
-                  index={i}
-                  selected={selectedIdx === i}
-                  muted={selectedIdx !== null && selectedIdx !== i}
-                  recommended={i === recIdx}
-                  onSelect={() => setSelectedIdx(i)}
-                />
+                  initial={{ opacity: 0, y: 40, scale: 0.85, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.15 + i * 0.2,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  <SegmentCard
+                    segment={seg}
+                    index={i}
+                    selected={selectedIdx === i}
+                    muted={selectedIdx !== null && selectedIdx !== i}
+                    recommended={i === recIdx}
+                    onSelect={() => setSelectedIdx(i)}
+                  />
+                </motion.div>
               ))}
             </div>
           );
