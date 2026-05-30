@@ -226,20 +226,20 @@
   {
     "id": 38,
     "type": "image",
-    "image": "/storyboard/scenes/05_macys_workflow.jpg",
-    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
+    "notes": "",
+    "image": "/storyboard/scenes/slide_new_1778970160.jpg"
   },
   {
     "id": 39,
     "type": "image",
-    "image": "/storyboard/scenes/31_rady_what_if.jpg",
-    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
+    "image": "/storyboard/scenes/05_macys_workflow.jpg",
+    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
   },
   {
     "id": 40,
     "type": "image",
-    "notes": "",
-    "image": "/storyboard/scenes/slide_new_1778970160.jpg"
+    "image": "/storyboard/scenes/31_rady_what_if.jpg",
+    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
   },
   {
     "id": 41,
