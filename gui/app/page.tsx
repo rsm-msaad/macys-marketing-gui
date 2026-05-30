@@ -33,54 +33,80 @@ const NAV = [
 
 const GRAIN = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E")`;
 
-/* ─── Video intro phases ─── */
-type Phase = "exterior" | "interior" | "content";
+/* ─── Helpers ─── */
+
+/** Map 0→1 linear progress to easeOut curve */
+function easeOut(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+/* ─── Page ─── */
 
 export default function LandingPage() {
   const { personas } = usePersonas();
-  const [phase, setPhase] = useState<Phase>("exterior");
+
+  /* scroll-scrub state */
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [progress, setProgress] = useState(0);  // 0 → 1
+  const rafRef = useRef<number>(0);
+  const durationRef = useRef(0);
+
+  /* carousel state */
   const [entered, setEntered] = useState(false);
   const [idx, setIdx] = useState(0);
   const [dir, setDir] = useState(0);
   const lockRef = useRef(false);
-  const vid1Ref = useRef<HTMLVideoElement>(null);
-  const vid2Ref = useRef<HTMLVideoElement>(null);
 
   const team = TEAM_ORDER.map((id) => personas.find((p) => p.id === id)).filter(Boolean) as typeof personas;
   const ceos = CEO_IDS.map((id) => personas.find((p) => p.id === id)).filter(Boolean) as typeof personas;
   const n = team.length || 1;
 
-  /* Video sequence: exterior → interior → content */
+  /* ── Scroll-scrub: map scroll position → video currentTime ── */
   useEffect(() => {
-    const v1 = vid1Ref.current;
-    if (!v1) return;
-    const onEnd1 = () => {
-      setPhase("interior");
-      vid2Ref.current?.play();
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Wait for video metadata so we know the duration
+    const onMeta = () => { durationRef.current = video.duration; };
+    video.addEventListener("loadedmetadata", onMeta);
+    if (video.duration) durationRef.current = video.duration;
+
+    const onScroll = () => {
+      if (rafRef.current) return; // throttle to rAF
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        const el = containerRef.current;
+        if (!el || !durationRef.current) return;
+
+        // scrollable range = container height - viewport height
+        const scrollable = el.scrollHeight - window.innerHeight;
+        if (scrollable <= 0) return;
+
+        const raw = Math.min(Math.max(el.scrollTop / scrollable, 0), 1);
+        setProgress(raw);
+
+        // Apply easeOut to the video time
+        const eased = easeOut(raw);
+        video.currentTime = eased * durationRef.current;
+      });
     };
-    v1.addEventListener("ended", onEnd1);
-    return () => v1.removeEventListener("ended", onEnd1);
+
+    const el = containerRef.current;
+    el?.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el?.removeEventListener("scroll", onScroll);
+      video.removeEventListener("loadedmetadata", onMeta);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
+  /* Trigger "entered" when scroll reaches the reveal zone */
   useEffect(() => {
-    const v2 = vid2Ref.current;
-    if (!v2) return;
-    const onEnd2 = () => {
-      setPhase("content");
-      setTimeout(() => setEntered(true), 600);
-    };
-    v2.addEventListener("ended", onEnd2);
-    return () => v2.removeEventListener("ended", onEnd2);
-  }, []);
+    if (progress >= 0.9 && !entered) setEntered(true);
+  }, [progress, entered]);
 
-  /* Skip intro on click */
-  const skipIntro = useCallback(() => {
-    if (phase !== "content") {
-      setPhase("content");
-      setTimeout(() => setEntered(true), 400);
-    }
-  }, [phase]);
-
+  /* ── Carousel navigation ── */
   const go = useCallback((d: "next" | "prev") => {
     if (lockRef.current || !team.length) return;
     lockRef.current = true;
@@ -91,13 +117,12 @@ export default function LandingPage() {
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
-      if (phase !== "content") { skipIntro(); return; }
       if (e.key === "ArrowLeft") go("prev");
       if (e.key === "ArrowRight") go("next");
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
-  }, [go, phase, skipIntro]);
+  }, [go]);
 
   const cur = team[idx];
   const prev = team[(idx + n - 1) % n];
@@ -109,121 +134,108 @@ export default function LandingPage() {
     exit: { opacity: 0, scale: 1.05, filter: "blur(6px)" },
   };
 
-  const showContent = phase === "content";
+  /* Derived values from progress */
+  // Video fades from 1 → 0.25 in the 0.85 → 1.0 range
+  const videoOpacity = progress < 0.85 ? 1 : 1 - 0.75 * ((progress - 0.85) / 0.15);
+  // Content appears in the 0.88 → 1.0 range
+  const contentOpacity = progress < 0.88 ? 0 : Math.min((progress - 0.88) / 0.12, 1);
+  // Content slides up from 40px → 0
+  const contentY = progress < 0.88 ? 40 : 40 * (1 - Math.min((progress - 0.88) / 0.12, 1));
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-white">
+    <div
+      ref={containerRef}
+      className="h-screen overflow-y-auto"
+      style={{ scrollBehavior: "smooth" }}
+    >
+      {/* Tall scroll container — 4x viewport gives comfortable scrub range */}
+      <div style={{ height: "400vh", position: "relative" }}>
 
-      {/* ═══ PHASE 1: Exterior video (veo1) ═══ */}
-      <video
-        ref={vid1Ref}
-        autoPlay muted playsInline
-        className="absolute inset-0 z-10 h-full w-full object-cover transition-opacity duration-1500"
-        style={{ opacity: phase === "exterior" ? 1 : 0 }}
-      >
-        <source src="/veo1.mp4" type="video/mp4" />
-      </video>
+        {/* ── Sticky video layer (pinned to viewport) ── */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-      {/* ═══ PHASE 2: Interior video (veo2) ═══ */}
-      <video
-        ref={vid2Ref}
-        muted playsInline
-        className="absolute inset-0 z-10 h-full w-full object-cover transition-opacity duration-1500"
-        style={{ opacity: phase === "interior" ? 1 : 0 }}
-      >
-        <source src="/veo2.mp4" type="video/mp4" />
-      </video>
+          {/* The single video — scroll-scrubbed */}
+          <video
+            ref={videoRef}
+            muted playsInline preload="auto"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{
+              opacity: videoOpacity,
+              transition: "opacity 0.15s ease-out",
+            }}
+          >
+            <source src="/veo3.mp4" type="video/mp4" />
+          </video>
 
-      {/* Skip button during video intro */}
-      {phase !== "content" && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          onClick={skipIntro}
-          className="absolute bottom-8 right-8 z-50 rounded-full border border-white/30 bg-black/20 backdrop-blur-sm px-4 py-2 text-xs font-semibold text-white/80 hover:bg-black/40 hover:text-white transition-all duration-300 cursor-pointer"
-        >
-          Skip intro →
-        </motion.button>
-      )}
+          {/* Grain overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ opacity: 0.25, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
+          />
 
-      {/* ═══ PHASE 3: Content (cream bg + carousel) ═══ */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: showContent ? 1 : 0 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute inset-0 z-20 bg-[#f5f3ee]"
-        style={{ pointerEvents: showContent ? "auto" : "none" }}
-      >
-        {/* Background — hero-bg.mp4 as subtle ambient */}
-        <video
-          autoPlay loop muted playsInline
-          className="absolute inset-0 z-0 h-full w-full object-cover"
-          style={{ opacity: 0.3 }}
-        >
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white/40 via-white/10 to-white/50" />
-
-        {/* Grain */}
-        <div
-          className="absolute inset-0 z-[2] pointer-events-none"
-          style={{ opacity: 0.35, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
-        />
-
-        {/* ── Content ── */}
-        <div className="relative z-10 flex h-full flex-col px-4 sm:px-8">
-
-          {/* ━━━ TOP: Title + Stats ━━━ */}
-          <div className="flex flex-col items-center pt-[2.5vh] sm:pt-[3vh]">
-            <motion.h1
-              initial={{ opacity: 0, y: 16, letterSpacing: "0.4em" }}
-              animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 16, letterSpacing: entered ? "0.18em" : "0.4em" }}
-              transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="font-serif text-charcoal text-center"
-              style={{ fontSize: "clamp(36px, 7vw, 80px)", lineHeight: 1, fontWeight: 600 }}
-            >
-              MACY&apos;S
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: entered ? 1 : 0 }}
-              transition={{ duration: 1, delay: 0.9 }}
-              className="mt-1.5 sm:mt-2 text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold"
-            >
-              AI-Powered Marketing Operations
-            </motion.p>
-
+          {/* Scroll hint — only visible at the top */}
+          <div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-700"
+            style={{ opacity: progress < 0.05 ? 1 : 0, pointerEvents: "none" }}
+          >
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/70">
+              Scroll to enter
+            </span>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: entered ? 1 : 0, y: entered ? 0 : 10 }}
-              transition={{ duration: 0.8, delay: 1.6 }}
-              className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-4 sm:gap-7"
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="h-8 w-5 rounded-full border-2 border-white/40 flex items-start justify-center pt-1.5"
             >
-              {STATS.map((s) => (
-                <div key={s.label} className="text-center min-w-[48px]">
-                  <div className="font-serif text-lg sm:text-2xl font-bold text-charcoal">
-                    {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
-                  </div>
-                  <div className="text-[11px] sm:text-xs uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
-                </div>
-              ))}
+              <div className="h-1.5 w-1.5 rounded-full bg-white/70" />
             </motion.div>
           </div>
 
-          {/* ━━━ MIDDLE: CEOs + Carousel ━━━ */}
-          <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+          {/* ── Content overlay — fades in at the end of the scroll ── */}
+          <div
+            className="absolute inset-0 flex flex-col px-4 sm:px-8"
+            style={{
+              opacity: contentOpacity,
+              transform: `translateY(${contentY}px)`,
+              transition: "opacity 0.15s ease-out, transform 0.15s ease-out",
+              pointerEvents: contentOpacity > 0.5 ? "auto" : "none",
+            }}
+          >
+            {/* ━━━ TOP: Title + Stats ━━━ */}
+            <div className="flex flex-col items-center pt-[2.5vh] sm:pt-[3vh]">
+              <h1
+                className="font-serif text-charcoal text-center"
+                style={{
+                  fontSize: "clamp(36px, 7vw, 80px)",
+                  lineHeight: 1,
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                }}
+              >
+                MACY&apos;S
+              </h1>
 
-            {/* CEO Duo */}
-            <AnimatePresence>
+              <p className="mt-1.5 sm:mt-2 text-xs tracking-[0.35em] uppercase text-charcoal/70 font-semibold">
+                AI-Powered Marketing Operations
+              </p>
+
+              <div className="mt-3 sm:mt-4 flex flex-wrap justify-center gap-4 sm:gap-7">
+                {STATS.map((s) => (
+                  <div key={s.label} className="text-center min-w-[48px]">
+                    <div className="font-serif text-lg sm:text-2xl font-bold text-charcoal">
+                      {entered ? <CountUp end={s.end} duration={s.dur} suffix={s.sfx ?? ""} /> : "0"}
+                    </div>
+                    <div className="text-[11px] sm:text-xs uppercase tracking-[0.15em] text-charcoal/50 mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ━━━ MIDDLE: CEOs + Carousel ━━━ */}
+            <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+
+              {/* CEO Duo */}
               {entered && ceos.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.1 }}
-                  className="flex items-center gap-5 sm:gap-8 mb-3 sm:mb-5"
-                >
+                <div className="flex items-center gap-5 sm:gap-8 mb-3 sm:mb-5">
                   {ceos.map((c) => (
                     <Link key={c.id} href={`/${c.id}`} className="group flex flex-col items-center">
                       <div
@@ -239,19 +251,12 @@ export default function LandingPage() {
                       </span>
                     </Link>
                   ))}
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
 
-            {/* Team Carousel */}
-            <AnimatePresence>
+              {/* Team Carousel */}
               {entered && team.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="w-full max-w-4xl"
-                >
+                <div className="w-full max-w-4xl">
                   <div className="relative flex items-center justify-center" style={{ height: "clamp(260px, 44vh, 420px)" }}>
 
                     {/* Left persona */}
@@ -373,35 +378,33 @@ export default function LandingPage() {
                       </button>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
-          </div>
-
-          {/* ━━━ BOTTOM: Nav + Credit ━━━ */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: entered ? 1 : 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="pb-3 sm:pb-4 flex flex-col items-center gap-1.5"
-          >
-            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
-              {NAV.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="rounded-full border border-charcoal/15 bg-white/30 backdrop-blur-sm px-2.5 py-0.5 text-[11px] font-semibold text-charcoal/70 transition-all duration-200 hover:border-charcoal/30 hover:bg-white/50 hover:text-charcoal"
-                >
-                  {l.label}
-                </Link>
-              ))}
             </div>
-            <p className="text-[11px] text-charcoal/40 font-medium">
-              Built with Claude · TritonAI · Next.js · FastAPI
-            </p>
-          </motion.div>
+
+            {/* ━━━ BOTTOM: Nav + Credit ━━━ */}
+            <div
+              className="pb-3 sm:pb-4 flex flex-col items-center gap-1.5"
+              style={{ opacity: entered ? 1 : 0, transition: "opacity 0.8s ease" }}
+            >
+              <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                {NAV.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="rounded-full border border-charcoal/15 bg-white/30 backdrop-blur-sm px-2.5 py-0.5 text-[11px] font-semibold text-charcoal/70 transition-all duration-200 hover:border-charcoal/30 hover:bg-white/50 hover:text-charcoal"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+              <p className="text-[11px] text-charcoal/40 font-medium">
+                Built with Claude · TritonAI · Next.js · FastAPI
+              </p>
+            </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
