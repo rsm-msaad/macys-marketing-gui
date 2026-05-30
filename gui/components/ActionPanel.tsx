@@ -300,7 +300,7 @@ export function ActionPanel({
   context: CampaignContext | null;
   onLaunchSkill: (skill: SkillKind) => void;
   onRequestRevisions: (fromStep: number, defaultSendBackToStep: number) => void;
-  onAdvanced: () => void;
+  onAdvanced: (newState?: CampaignState) => void;
   onInterceptApproval?: (step: number, action: string, output?: Record<string, unknown>) => boolean;
 }) {
   const [busy, setBusy] = useState(false);
@@ -369,13 +369,13 @@ export function ActionPanel({
     setBusy(true);
     setError(null);
     try {
-      await advanceCampaignWithOutput(
+      const newState = await advanceCampaignWithOutput(
         campaignId,
         state.current_step,
         action,
         output,
       );
-      onAdvanced();
+      onAdvanced(newState);
     } catch (e) {
       setError((e as Error).message);
     } finally {

@@ -120,6 +120,9 @@ export function PersonaShell({
   const [chatOpen, setChatOpen] = useState(false);
   const [stepPanelOpen, setStepPanelOpen] = useState(false);
   const [viewingStep, setViewingStep] = useState<number | null>(null);
+  // Guard against stale poll data overwriting a fresh advance
+  const knownStepRef = useRef<number>(0);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isActiveCampaign = campaignId === DEFAULT_CAMPAIGN_ID;
 
@@ -166,7 +169,11 @@ export function PersonaShell({
       ]);
       setSteps(w.steps);
       setCampaigns(cs);
-      setState(st);
+      // Guard: never go backwards from a known step (prevents stale poll from overwriting fresh advance)
+      if (st.current_step >= knownStepRef.current || st.is_complete) {
+        setState(st);
+        knownStepRef.current = st.current_step;
+      }
       setContext(ctx);
       setPollError(null);
 
@@ -231,8 +238,8 @@ export function PersonaShell({
 
   useEffect(() => {
     refresh();
-    const id = setInterval(refresh, POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+    pollIntervalRef.current = setInterval(refresh, POLL_INTERVAL_MS);
+    return () => { if (pollIntervalRef.current) clearInterval(pollIntervalRef.current); };
   }, [refresh]);
 
   // Toast auto dismiss.
@@ -331,6 +338,7 @@ export function PersonaShell({
       await resetCampaign(campaignId);
       lastStepRef.current = 1;
       lastPendingRef.current = false;
+      knownStepRef.current = 0; // allow going back to step 1 on reset
       setToast(null);
       await refresh();
     } catch (e) {
@@ -356,8 +364,12 @@ export function PersonaShell({
     setCascadeActive(false);
     // Now actually advance the campaign
     try {
-      await advanceCampaignWithOutput(campaignId, 6, "Final Approval", cascadeOutput);
+      const newState = await advanceCampaignWithOutput(campaignId, 6, "Final Approval", cascadeOutput);
+      setState(newState);
+      knownStepRef.current = newState.current_step;
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
       await refresh();
+      pollIntervalRef.current = setInterval(refresh, POLL_INTERVAL_MS);
     } catch (e) {
       setPollError((e as Error).message);
     }
@@ -557,7 +569,17 @@ export function PersonaShell({
             onClose={() => setStepPanelOpen(false)}
             onLaunchSkill={launchSkillFromActionPanel}
             onRequestRevisions={handleOpenRevisionModal}
-            onAdvanced={refresh}
+            onAdvanced={async (newState?: CampaignState) => {
+              // Use the authoritative state from the advance call if provided
+              if (newState) {
+                setState(newState);
+                knownStepRef.current = newState.current_step;
+              }
+              // Reset poll timer so stale data doesn't overwrite
+              if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+              await refresh();
+              pollIntervalRef.current = setInterval(refresh, POLL_INTERVAL_MS);
+            }}
             onInterceptApproval={handleInterceptApproval}
             onOpenChat={() => setChatOpen(true)}
           />
@@ -646,7 +668,7 @@ function StepOverlay({
   onClose: () => void;
   onLaunchSkill: (skill: import("@/components/SkillCard").SkillKind) => void;
   onRequestRevisions: (from: number, to: number) => void;
-  onAdvanced: () => void;
+  onAdvanced: (newState?: CampaignState) => void;
   onInterceptApproval: (step: number, action: string, output?: Record<string, unknown>) => boolean;
   onOpenChat: () => void;
 }) {
