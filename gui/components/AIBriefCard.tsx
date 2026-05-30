@@ -188,8 +188,9 @@ export function AIBriefCard({
       return;
     }
 
-    // Already fired for this campaign? Skip.
-    if (firedRef.current === cid) return;
+    // Already fired the API for this campaign? Skip.
+    // But if we were waiting for compliance and it just arrived, allow re-fire.
+    if (firedRef.current === cid && !waitingForCompliance) return;
 
     // Compliance is done, no cache — fire the brief skill.
     firedRef.current = cid;
