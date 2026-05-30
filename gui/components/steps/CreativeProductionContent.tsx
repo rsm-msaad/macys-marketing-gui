@@ -12,100 +12,110 @@ import {
 import { API_BASE, runDam, runFindDamAssets, type DamAsset, type DamStats, type FindDamAssetsResult } from "@/lib/api";
 import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
-/* Aspect ratios for masonry-style layout — alternate between ratios */
-const ASPECT_RATIOS = [
-  "aspect-[4/3]",
-  "aspect-[3/4]",
-  "aspect-video",
-  "aspect-square",
-  "aspect-[4/5]",
-  "aspect-[3/2]",
-];
+/* ── Accordion-style image strip gallery ── */
 
-function DamAssetCard({
-  asset,
+function DamAccordion({
+  assets,
   included,
   onToggle,
-  index,
 }: {
-  asset: DamAsset;
-  included: boolean;
-  onToggle: () => void;
-  index: number;
+  assets: DamAsset[];
+  included: Set<number>;
+  onToggle: (id: number) => void;
 }) {
-  const imgUrl = `${API_BASE}/images/dam/${asset.filename}`;
-  const aspectClass = ASPECT_RATIOS[index % ASPECT_RATIOS.length];
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   return (
-    <div
-      className="group relative cursor-pointer overflow-hidden rounded-sm bg-charcoal/5"
-      onClick={onToggle}
-    >
-      {/* Image with variable aspect ratio */}
-      <div className={`relative ${aspectClass} w-full overflow-hidden`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={imgUrl}
-          alt={asset.filename}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
-            included ? "" : "grayscale opacity-40"
-          }`}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
-        {/* Fallback icon */}
-        <div className="absolute inset-0 flex items-center justify-center -z-10">
-          <ImageIcon className="h-8 w-8 text-charcoal/10" />
-        </div>
+    <div className="flex h-[380px] gap-1 rounded-xl overflow-hidden bg-charcoal/5">
+      {assets.map((asset, i) => {
+        const imgUrl = `${API_BASE}/images/dam/${asset.filename}`;
+        const isExpanded = expandedIdx === i;
+        const isIncluded = included.has(asset.asset_id);
 
-        {/* Hover overlay — Clou Architects style */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        return (
+          <div
+            key={asset.asset_id}
+            className="relative h-full cursor-pointer overflow-hidden rounded-lg"
+            style={{
+              flex: isExpanded ? 4 : 1,
+              transition: "flex 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              minWidth: 0,
+            }}
+            onMouseEnter={() => setExpandedIdx(i)}
+            onMouseLeave={() => setExpandedIdx(null)}
+            onClick={() => onToggle(asset.asset_id)}
+          >
+            {/* Image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imgUrl}
+              alt={asset.filename}
+              className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ${
+                isIncluded ? "" : "grayscale opacity-50"
+              }`}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
 
-        {/* Bottom info — slides up on hover */}
-        <div className="absolute inset-x-0 bottom-0 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 p-4">
-          <div className="text-xs font-medium text-white/90 truncate">
-            {asset.filename.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ")}
-          </div>
-          <div className="mt-1 flex items-center gap-2 text-[11px] text-white/60">
-            <span className="capitalize">{asset.asset_type}</span>
-            <span className="text-white/30">·</span>
-            <span>{asset.resolution}</span>
-            <span className="text-white/30">·</span>
-            <span className="font-semibold text-teal-300">
-              {(asset.relevance_score * 100).toFixed(0)}%
-            </span>
-          </div>
-          {asset.tags.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1">
-              {asset.tags.slice(0, 3).map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] text-white/70 backdrop-blur-sm"
-                >
-                  {t}
-                </span>
-              ))}
+            {/* Fallback */}
+            <div className="absolute inset-0 flex items-center justify-center -z-10">
+              <ImageIcon className="h-6 w-6 text-charcoal/10" />
             </div>
-          )}
-        </div>
 
-        {/* Selection indicator — top right */}
-        <div className={`absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-          included
-            ? "border-teal-400 bg-teal-600 text-white scale-100"
-            : "border-white/40 bg-black/20 text-transparent scale-90 group-hover:scale-100 group-hover:border-white/60"
-        }`}>
-          {included && <CheckCircle2 className="h-3.5 w-3.5" />}
-        </div>
+            {/* Dark gradient at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-        {/* "View +" label on hover — Clou style */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/80">
-            {included ? "Selected" : "Select +"}
-          </span>
-        </div>
-      </div>
+            {/* Number label — always visible */}
+            <div className="absolute bottom-3 left-3 text-sm font-bold text-white/90">
+              {String(i + 1).padStart(2, "0")}
+            </div>
+
+            {/* Selection indicator */}
+            <div className={`absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+              isIncluded
+                ? "border-teal-400 bg-teal-600 text-white"
+                : "border-white/30 bg-black/20 text-transparent"
+            }`}>
+              {isIncluded && <CheckCircle2 className="h-3 w-3" />}
+            </div>
+
+            {/* Expanded info — only visible when this strip is wide */}
+            <div
+              className="absolute inset-x-0 bottom-0 p-4 pt-16"
+              style={{
+                opacity: isExpanded ? 1 : 0,
+                transition: "opacity 0.4s ease",
+              }}
+            >
+              <div className="text-xs font-semibold text-white/90 truncate">
+                {asset.filename.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ")}
+              </div>
+              <div className="mt-1 flex items-center gap-2 text-[11px] text-white/60">
+                <span className="capitalize">{asset.asset_type}</span>
+                <span className="text-white/30">·</span>
+                <span>{asset.resolution}</span>
+                <span className="text-white/30">·</span>
+                <span className="font-semibold text-teal-300">
+                  {(asset.relevance_score * 100).toFixed(0)}% match
+                </span>
+              </div>
+              {asset.tags.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {asset.tags.slice(0, 3).map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-white/15 backdrop-blur-sm px-2 py-0.5 text-[10px] text-white/70"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -340,16 +350,12 @@ export function CreativeProductionContent({
                 {includedCount === assets.length ? "Deselect all" : "Select all"}
               </button>
             </div>
-            <div className="mt-2 columns-2 xl:columns-3 gap-2 space-y-2">
-              {assets.map((asset, i) => (
-                <DamAssetCard
-                  key={asset.asset_id}
-                  asset={asset}
-                  index={i}
-                  included={included.has(asset.asset_id)}
-                  onToggle={() => toggleAsset(asset.asset_id)}
-                />
-              ))}
+            <div className="mt-2">
+              <DamAccordion
+                assets={assets}
+                included={included}
+                onToggle={toggleAsset}
+              />
             </div>
             <button
               type="button"
