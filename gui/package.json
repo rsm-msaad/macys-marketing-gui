@@ -12,6 +12,9 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@types/three": "^0.184.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^0.453.0",
     "next": "14.2.15",
@@ -19,7 +22,8 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "reveal.js": "^5.2.1"
+    "reveal.js": "^5.2.1",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.10",
