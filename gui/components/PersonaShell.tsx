@@ -747,34 +747,22 @@ function StepOverlay({
           transition={{ duration: 0.3, delay: 0.05 }}
           className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-white/50 bg-white"
         >
-          {/* Video strip header */}
-          {STEP_VIDEO[state.current_step] && (
-            <div className="relative h-[72px] flex-shrink-0 overflow-hidden">
-              <video
-                key={state.current_step}
-                autoPlay loop muted playsInline
-                className="absolute inset-0 h-full w-full object-cover"
-              >
-                <source src={STEP_VIDEO[state.current_step]} type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50" />
-              <div className="absolute inset-0 flex items-center justify-between px-5">
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-[0.25em] text-white/60">Step {state.current_step}</div>
-                  <div className="text-base font-serif font-semibold text-white">
-                    {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white/80 hover:bg-white/25 hover:text-white transition-colors"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
+          {/* Clean text header */}
+          <div className="flex items-center justify-between px-5 py-3 border-b border-charcoal/10 flex-shrink-0">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-[0.25em] text-teal-600/70">Step {state.current_step}</div>
+              <div className="text-base font-serif font-semibold text-charcoal">
+                {steps.find(s => s.number === state.current_step)?.name ?? `Step ${state.current_step}`}
               </div>
             </div>
-          )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-charcoal/15 text-charcoal/50 hover:bg-charcoal/5 hover:text-charcoal transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
           {/* Scrollable content — opaque for readability */}
           <div className="flex-1 overflow-y-auto px-5 py-4 bg-white">
             <ActionPanel
