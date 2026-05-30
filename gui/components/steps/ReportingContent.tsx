@@ -193,7 +193,7 @@ export function ReportingContent({
         <div className="mb-2 flex items-center gap-1.5">
           <FileEdit className="h-3.5 w-3.5 text-teal-600" />
           <span className="text-xs font-semibold uppercase tracking-wider text-teal-600">
-            Skill · Report Generator (LLM, pre-fetch)
+            Skill · Report Generator
           </span>
         </div>
         <p className="text-[12px] text-charcoal/65">
