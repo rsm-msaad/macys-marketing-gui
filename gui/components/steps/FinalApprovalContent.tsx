@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, SkipForward } from "lucide-react";
 
 import { type ComplianceResult, type BriefResult } from "@/lib/ai_client";
 import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
@@ -46,12 +46,77 @@ export function FinalApprovalContent({
   }
 
   const [briefDone, setBriefDone] = useState(false);
+  const [skipped, setSkipped] = useState(false);
   const shouldBlockSubmit = aiRecommendsRevise && !overrideSubmit;
+
+  function handleSkipStep6() {
+    setSkipped(true);
+    // Create a mock compliance result so downstream steps work
+    const mockCompliance: ComplianceResult = {
+      brand_alignment: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
+      disclaimers: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
+      pricing_cross_check: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
+      recommended_action: "proceed",
+      retrieved_docs: [],
+    };
+    handleComplianceResult(mockCompliance);
+    setBriefDone(true);
+  }
+
+  if (skipped) {
+    return (
+      <StepVideoBackground stepNumber={6}>
+        <div className="space-y-3">
+          <ContextStack context={context} />
+          <div className="rounded-md border border-mustard/30 bg-mustard/10 p-4">
+            <div className="flex items-start gap-2">
+              <SkipForward className="mt-0.5 h-4 w-4 text-mustard" />
+              <div>
+                <div className="text-sm font-semibold text-mustard">Step 6 skipped — AI temporarily unavailable</div>
+                <p className="mt-1 text-xs text-charcoal/60">
+                  Compliance and brief checks were bypassed for this demo run. In production, these would be mandatory before proceeding.
+                </p>
+              </div>
+            </div>
+          </div>
+          <ApprovalActions
+            canAct={canAct}
+            busy={busy}
+            primaryDisabled={false}
+            primaryLabel="Continue to Step 7"
+            secondaryLabel="Hold for Revisions"
+            stepNumber={6}
+            onPrimary={() =>
+              onApprove("Skipped — AI unavailable", {
+                compliance_check: complianceResult,
+                skipped: true,
+              })
+            }
+            onRequestRevisions={() => onRequestRevisions(6, 5)}
+          />
+        </div>
+      </StepVideoBackground>
+    );
+  }
 
   return (
     <StepVideoBackground stepNumber={6}>
       <div className="space-y-3">
         <ContextStack context={context} />
+
+        {/* Skip button — always visible as fallback */}
+        {canAct && !briefDone && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleSkipStep6}
+              className="inline-flex items-center gap-1.5 rounded-md border border-mustard/30 bg-mustard/10 px-3 py-1.5 text-xs font-medium text-mustard hover:bg-mustard/20 transition-colors"
+            >
+              <SkipForward className="h-3 w-3" />
+              Skip Step 6 (AI unavailable)
+            </button>
+          </div>
+        )}
 
         {/* AI Compliance Pre Check fires first */}
         <CompliancePreCheck
