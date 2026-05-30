@@ -290,7 +290,7 @@ export function AIBriefCard({
             setLoading(false);
             onBriefDone?.(true);
             storeEvidence(context.campaign_brief.campaign_id, "6b_output", fallback).catch(() => {});
-          }, 3000);
+          }, 1800);
         }
       });
 

@@ -286,7 +286,7 @@ export function CompliancePreCheck({
             setLoading(false);
             onComplianceResult?.(fallback);
             storeEvidence(context.campaign_brief.campaign_id, "6a_output", fallback).catch(() => {});
-          }, 2500);
+          }, 1200);
         }
       });
 
