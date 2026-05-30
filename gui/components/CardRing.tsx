@@ -162,17 +162,18 @@ function Ring({
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  // Pointer handlers for drag-to-spin
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
+  // Pointer handlers for drag-to-spin (use `any` to avoid React vs R3F event type conflict)
+  const onPointerDown = useCallback((e: any) => {
     isDragging.current = true;
-    prevPointerX.current = e.clientX;
+    prevPointerX.current = e.clientX ?? e.point?.x ?? 0;
     velocity.current = 0;
   }, []);
 
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
+  const onPointerMove = useCallback((e: any) => {
     if (!isDragging.current) return;
-    const dx = e.clientX - prevPointerX.current;
-    prevPointerX.current = e.clientX;
+    const clientX = e.clientX ?? e.point?.x ?? 0;
+    const dx = clientX - prevPointerX.current;
+    prevPointerX.current = clientX;
     velocity.current = dx * 0.003;
     if (groupRef.current) {
       groupRef.current.rotation.y += velocity.current;
