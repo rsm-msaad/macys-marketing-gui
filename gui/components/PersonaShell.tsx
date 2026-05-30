@@ -657,14 +657,12 @@ function StepOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-start pt-[1vh] p-2 animate-backdrop-in"
+      className="fixed inset-0 z-50 flex items-stretch animate-backdrop-in"
       style={{ backgroundColor: "rgba(25,25,25,0.5)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* Persona switcher moved to right panel */}
-
-      {/* BOTTOM — Workflow list + detail card side by side */}
-      <div className="flex gap-2 w-full" style={{ maxHeight: "98vh", maxWidth: "99vw" }}>
+      {/* Full-screen layout */}
+      <div className="flex gap-0 w-full h-full">
         {/* LEFT — Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
