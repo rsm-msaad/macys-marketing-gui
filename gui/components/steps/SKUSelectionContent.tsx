@@ -19,6 +19,7 @@ import {
   type CheckPricingResult,
 } from "@/lib/api";
 import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
+import { Carousel3D } from "@/components/Carousel3D";
 
 const STATUS_BADGE: Record<string, { bg: string; text: string }> = {
   in_stock: { bg: "#dcfce7", text: "#15803d" },
@@ -304,12 +305,12 @@ export function SKUSelectionContent({
           </div>
         )}
 
-        {/* Recommended SKU grid */}
+        {/* Recommended SKUs — 3D rotating carousel */}
         {showingRecommended && (
           <>
             <div className="mt-3 flex items-center justify-between">
               <span className="text-[11px] text-charcoal/55">
-                {includedCount} of {recommended.length} selected
+                {includedCount} of {recommended.length} selected — drag to spin
               </span>
               <button
                 type="button"
@@ -325,26 +326,28 @@ export function SKUSelectionContent({
                 {includedCount === recommended.length ? "Deselect all" : "Select all"}
               </button>
             </div>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {recommended.map((sku, i) => (
-                <motion.div
-                  key={sku.sku_id}
-                  initial={{ opacity: 0, y: 30, scale: 0.9, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.1 + i * 0.08,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                >
-                  <SkuCard
-                    sku={sku}
-                    discountPct={25}
-                    included={included.has(sku.sku_id)}
-                    onToggle={() => toggleSku(sku.sku_id)}
-                  />
-                </motion.div>
-              ))}
+
+            <div className="mt-2">
+              <Carousel3D
+                items={recommended}
+                radius={recommended.length <= 6 ? 280 : 340}
+                height={380}
+                autoRotateSpeed={10}
+              >
+                {(sku: RecommendedSku, _i: number, _isFront: boolean) => (
+                  <div
+                    onClick={(e) => { e.stopPropagation(); toggleSku(sku.sku_id); }}
+                    className="select-none"
+                  >
+                    <SkuCard
+                      sku={sku}
+                      discountPct={25}
+                      included={included.has(sku.sku_id)}
+                      onToggle={() => toggleSku(sku.sku_id)}
+                    />
+                  </div>
+                )}
+              </Carousel3D>
             </div>
           </>
         )}
