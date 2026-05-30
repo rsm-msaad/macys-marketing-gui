@@ -377,7 +377,7 @@ export function PersonaShell({
       <TopBar activePersonaId={personaId} />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left sidebar — slides in from left */}
+        {/* Left sidebar - slides in from left */}
         <motion.aside
           initial={{ x: -240, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -425,7 +425,7 @@ export function PersonaShell({
           </nav>
         </motion.aside>
 
-        {/* Center — simple page with header + pipeline */}
+        {/* Center - simple page with header + pipeline */}
         <main className="flex-1 overflow-y-auto px-6 py-6 relative">
           {/* Ambient floating orbs */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -522,7 +522,7 @@ export function PersonaShell({
         </div>
       )}
 
-      {/* Chat modal — z-[70] so it layers above everything */}
+      {/* Chat modal - z-[70] so it layers above everything */}
       {chatOpen && (
         <div
           className="fixed inset-0 z-[70] flex items-center justify-center p-4 animate-backdrop-in"
@@ -544,7 +544,7 @@ export function PersonaShell({
         </div>
       )}
 
-      {/* Floating card overlay — persona switcher top, workflow left, detail right */}
+      {/* Floating card overlay - persona switcher top, workflow left, detail right */}
       <AnimatePresence>
         {stepPanelOpen && state && !state.is_complete && state.current_step <= 10 && (
           <StepOverlay
@@ -663,7 +663,7 @@ function StepOverlay({
     >
       {/* Full-screen layout */}
       <div className="flex gap-0 w-full h-full">
-        {/* LEFT — Slim workflow list */}
+        {/* LEFT - Slim workflow list */}
         <motion.div
           initial={{ opacity: 0, x: -30, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -737,7 +737,7 @@ function StepOverlay({
           </div>
         </motion.div>
 
-        {/* RIGHT — Step detail card with video background */}
+        {/* RIGHT - Step detail card with video background */}
         <motion.div
           initial={{ opacity: 0, x: 30, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -761,7 +761,7 @@ function StepOverlay({
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
-          {/* Scrollable content — opaque for readability */}
+          {/* Scrollable content - opaque for readability */}
           <div className="flex-1 overflow-y-auto px-5 py-4 bg-white">
             <ActionPanel
               personaId={personaId}
@@ -777,7 +777,7 @@ function StepOverlay({
           </div>
         </motion.div>
 
-        {/* FAR RIGHT — Persona switcher + Step type info */}
+        {/* FAR RIGHT - Persona switcher + Step type info */}
         <motion.div
           initial={{ opacity: 0, x: 20, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -812,7 +812,7 @@ function StepOverlay({
         </motion.div>
       </div>
 
-      {/* Floating Chat with Claude icon — top right of overlay */}
+      {/* Floating Chat with Claude icon - top right of overlay */}
       <button
         type="button"
         onClick={onOpenChat}
@@ -828,7 +828,7 @@ function StepOverlay({
 const STEP_TYPE_INFO: Record<string, { icon: LucideIconComponent; title: string; color: string; desc: string }> = {
   HUMAN_ONLY: { icon: User, title: "Human Task", color: "#8C2727", desc: "This step is performed entirely by a human. No AI, automation, or tools are involved." },
   HUMAN_PLUS_AI: { icon: Bot, title: "Human + AI Skill", color: "#3F5A1F", desc: "A human initiates and reviews, but an LLM skill provides AI-generated analysis or content." },
-  HUMAN_PLUS_AUTOMATION: { icon: Cog, title: "Human + Automation", color: "#57534E", desc: "A human reviews results from a deterministic automation — rule-based code, no LLM needed." },
+  HUMAN_PLUS_AUTOMATION: { icon: Cog, title: "Human + Automation", color: "#57534E", desc: "A human reviews results from a deterministic automation - rule-based code, no LLM needed." },
   HUMAN_PLUS_SKILL: { icon: Brain, title: "Human + AI Skill", color: "#0B7B8A", desc: "An AI skill uses LLM judgment (Claude) because the task requires reasoning, not just rules." },
   FULLY_AUTOMATED: { icon: Factory, title: "Fully Automated", color: "#444444", desc: "Runs without human involvement. Deterministic code handles the entire step." },
 };

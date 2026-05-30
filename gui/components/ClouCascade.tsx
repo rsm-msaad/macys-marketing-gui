@@ -220,7 +220,7 @@ export function ClouCascade({ items, onSelect }: ClouCascadeProps) {
 
         {/* Navigation hint */}
         <div className="absolute bottom-0 right-0 text-xs text-charcoal/40 font-medium">
-          {activeIdx + 1} / {items.length} — scroll or click to browse
+          {activeIdx + 1} / {items.length} - scroll or click to browse
         </div>
       </div>
     </div>

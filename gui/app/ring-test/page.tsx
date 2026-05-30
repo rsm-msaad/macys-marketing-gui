@@ -17,7 +17,7 @@ const TEST_ITEMS: CardItem[] = [
   { id: "7", image: "/storyboard/scenes/31_rady_what_if.jpg", title: "What If Scenario" },
   { id: "8", image: "/storyboard/scenes/38_m3_cascade.jpg", title: "M3 Cascade" },
   { id: "9", image: "/storyboard/scenes/42_after_team_calm.jpg", title: "Team Retrospective" },
-  { id: "10", image: "/avatars/merna.png", title: "Merna — Campaign Manager" },
+  { id: "10", image: "/avatars/merna.png", title: "Merna - Campaign Manager" },
 ];
 
 export default function RingTestPage() {
@@ -32,7 +32,7 @@ export default function RingTestPage() {
           Back
         </Link>
         <div className="h-4 w-px bg-charcoal/15" />
-        <h1 className="font-serif text-lg font-semibold text-charcoal">3D Card Ring — Test</h1>
+        <h1 className="font-serif text-lg font-semibold text-charcoal">3D Card Ring - Test</h1>
       </header>
 
       {/* Ring */}

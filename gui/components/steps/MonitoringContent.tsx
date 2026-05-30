@@ -238,7 +238,7 @@ export function MonitoringContent({
           <div className="mt-0.5 text-[11px] text-charcoal/65">
             {segmentName && <>Segment: <strong>{segmentName}</strong> · </>}
             {approvedSkuCount > 0 && <><strong>{approvedSkuCount} SKUs</strong></>}
-            {" "}— performance scoped to campaign selections.
+            {" "}- performance scoped to campaign selections.
           </div>
         </div>
       )}
@@ -251,7 +251,7 @@ export function MonitoringContent({
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Last-touch attribution and linear regression forecast. Deterministic — same campaign data produces the same analysis.
+          Last-touch attribution and linear regression forecast. Deterministic - same campaign data produces the same analysis.
         </p>
 
         {/* Run button */}

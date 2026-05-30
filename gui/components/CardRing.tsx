@@ -291,7 +291,7 @@ export function CardRing({
         </Canvas>
       </Suspense>
 
-      {/* Detail panel — slides in when a card is selected */}
+      {/* Detail panel - slides in when a card is selected */}
       {selected && (
         <div
           className="absolute bottom-0 inset-x-0 z-20 mx-auto max-w-md rounded-t-xl border border-charcoal/10 bg-white/90 backdrop-blur-md p-4 shadow-xl"

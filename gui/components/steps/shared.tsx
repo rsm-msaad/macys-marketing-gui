@@ -27,7 +27,7 @@ import { useState } from "react";
 import type { CampaignContext } from "@/lib/api";
 import { getStepOwnerName, getStepOwnerTitle } from "@/lib/authorities";
 
-// Step video map — used by the floating modal header in PersonaShell.
+// Step video map - used by the floating modal header in PersonaShell.
 export const STEP_VIDEO: Record<number, string> = {
   1: "/step1-briefing.mp4",
   2: "/step2-segments.mp4",

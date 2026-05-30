@@ -160,7 +160,7 @@ export function PlacementMockup({
  * Given approved asset IDs from Step 4, fetch the filenames and pick
  * one per placement. Returns a map of placement → {asset_id, filename}.
  *
- * Called client-side — fetches from the DAM search endpoint to get
+ * Called client-side - fetches from the DAM search endpoint to get
  * asset details for the approved IDs.
  */
 export function selectPlacementAssets(
@@ -170,7 +170,7 @@ export function selectPlacementAssets(
   const withPhotos = approvedAssets.filter((a) => a.has_photo !== false);
   const pool = withPhotos.length > 0 ? withPhotos : approvedAssets;
 
-  // Simple round-robin assignment — one asset per placement
+  // Simple round-robin assignment - one asset per placement
   const placements: PlacementType[] = ["web_banner", "email", "mobile", "in_store_signage"];
   const result: Record<string, { asset_id: number; filename: string } | null> = {};
 

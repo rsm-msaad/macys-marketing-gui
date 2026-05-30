@@ -66,7 +66,7 @@ function DamAccordion({
             {/* Dark gradient at bottom */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-            {/* Number label — always visible */}
+            {/* Number label - always visible */}
             <div className="absolute bottom-3 left-3 text-sm font-bold text-white/90">
               {String(i + 1).padStart(2, "0")}
             </div>
@@ -80,7 +80,7 @@ function DamAccordion({
               {isIncluded && <CheckCircle2 className="h-3 w-3" />}
             </div>
 
-            {/* Expanded info — only visible when this strip is wide */}
+            {/* Expanded info - only visible when this strip is wide */}
             <div
               className="absolute inset-x-0 bottom-0 p-4 pt-16"
               style={{
@@ -281,7 +281,7 @@ export function CreativeProductionContent({
             Reading from Step 3: SKU Selection
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
-            <strong>{approvedSkus.length} SKUs</strong> locked in — asset search tuned to <strong>{category}</strong> category.
+            <strong>{approvedSkus.length} SKUs</strong> locked in - asset search tuned to <strong>{category}</strong> category.
           </div>
         </div>
       )}
@@ -399,7 +399,7 @@ export function CreativeProductionContent({
             : "border-mustard/30 bg-mustard/10"
         }`}>
           <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-charcoal/70">
-            Python helper: find_dam_assets — {mcpResult.result_count} rights-verified assets
+            Python helper: find_dam_assets - {mcpResult.result_count} rights-verified assets
           </div>
           <div className="text-[11px] text-charcoal/65">
             Queried DAM for <strong>{mcpResult.input.category}</strong> assets in region <strong>{mcpResult.input.region}</strong> with active model releases.

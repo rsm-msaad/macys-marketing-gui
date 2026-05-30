@@ -175,7 +175,7 @@ export function CompliancePreCheck({
   useEffect(() => {
     const cid = context.campaign_brief.campaign_id;
 
-    // If we have a non-empty cached output, use it directly — skip the API call.
+    // If we have a non-empty cached output, use it directly - skip the API call.
     if (cachedOutput && Object.keys(cachedOutput).length > 0) {
       setResult(cachedOutput);
       setLoading(false);
@@ -272,7 +272,7 @@ export function CompliancePreCheck({
       })
       .catch(() => {
         if (!cancelled) {
-          // API unavailable — use realistic fallback after a brief delay
+          // API unavailable - use realistic fallback after a brief delay
           setTimeout(() => {
             if (cancelled) return;
             const fallback: ComplianceResult = {
@@ -321,7 +321,7 @@ export function CompliancePreCheck({
         <AIBadge />
       </div>
 
-      {/* Progress state — robot working in background */}
+      {/* Progress state - robot working in background */}
       {loading && (
         <div className="relative overflow-hidden rounded-xl border border-charcoal/8 p-4">
           <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover rounded-xl" style={{ opacity: 0.1 }}>
@@ -414,7 +414,7 @@ export function CompliancePreCheck({
         onClose={() => setEvidenceOpen(false)}
       />
 
-      {/* Floating page overlay — portal to body so it's truly on top */}
+      {/* Floating page overlay - portal to body so it's truly on top */}
       {floatingUrl && typeof document !== "undefined" && createPortal(
         <div
           className="fixed inset-0 z-[70] flex items-center justify-center p-4"

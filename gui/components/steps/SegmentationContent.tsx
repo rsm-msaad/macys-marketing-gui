@@ -294,7 +294,7 @@ export function SegmentationContent({
             Reading from Step 1: Campaign Brief
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
-            Category: <strong>{briefCategory}</strong> — segmentation will recommend the segment with highest {briefCategory} category lift.
+            Category: <strong>{briefCategory}</strong> - segmentation will recommend the segment with highest {briefCategory} category lift.
           </div>
         </div>
       )}
@@ -307,7 +307,7 @@ export function SegmentationContent({
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Runs k-means clustering on 50,000 customer RFM profiles. Deterministic — same data produces the same 3 segments every time.
+          Runs k-means clustering on 50,000 customer RFM profiles. Deterministic - same data produces the same 3 segments every time.
         </p>
 
         {/* Before segments are built */}
@@ -345,7 +345,7 @@ export function SegmentationContent({
           </div>
         )}
 
-        {/* Segment cards — staggered entrance animation */}
+        {/* Segment cards - staggered entrance animation */}
         {segments && segments.length > 0 && (() => {
           const recIdx = pickRecommendedIndex(segments, context.campaign_brief);
           return (

@@ -116,7 +116,7 @@ export function LayoutAssemblyContent({
             has_photo: true, // DAM search returns photo-backed assets first
           })));
         } catch {
-          // Non-critical — mockups will render without photos
+          // Non-critical - mockups will render without photos
         }
       }
     } catch (e) {
@@ -178,7 +178,7 @@ export function LayoutAssemblyContent({
             {segmentName && <>Segment: <strong>{segmentName}</strong> · </>}
             {approvedSkuCount > 0 && <><strong>{approvedSkuCount} SKUs</strong> · </>}
             {approvedAssetCount > 0 && <><strong>{approvedAssetCount} assets</strong> · </>}
-            Category: <strong>{category}</strong> — copy generation grounded in upstream selections.
+            Category: <strong>{category}</strong> - copy generation grounded in upstream selections.
           </div>
         </div>
       )}

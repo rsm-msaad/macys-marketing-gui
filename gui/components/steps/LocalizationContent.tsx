@@ -343,7 +343,7 @@ export function LocalizationContent({
       {mcpResults.length > 0 && (
         <div className="rounded-md border border-sage/30 bg-sage/10 p-3">
           <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-charcoal/70">
-            Python helper: generate_locale_variants — {mcpResults.length} locales
+            Python helper: generate_locale_variants - {mcpResults.length} locales
           </div>
           {mcpResults.map((r) => (
             <div key={r.target_language} className="mt-1 text-[11px] text-charcoal/65">

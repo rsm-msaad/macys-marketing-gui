@@ -53,9 +53,9 @@ export function FinalApprovalContent({
     setSkipped(true);
     // Create a mock compliance result so downstream steps work
     const mockCompliance: ComplianceResult = {
-      brand_alignment: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
-      disclaimers: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
-      pricing_cross_check: { status: "pass", reason: "Skipped — AI unavailable during demo", cited_doc: "N/A" },
+      brand_alignment: { status: "pass", reason: "Skipped - AI unavailable during demo", cited_doc: "N/A" },
+      disclaimers: { status: "pass", reason: "Skipped - AI unavailable during demo", cited_doc: "N/A" },
+      pricing_cross_check: { status: "pass", reason: "Skipped - AI unavailable during demo", cited_doc: "N/A" },
       recommended_action: "proceed",
       retrieved_docs: [],
     };
@@ -72,7 +72,7 @@ export function FinalApprovalContent({
             <div className="flex items-start gap-2">
               <SkipForward className="mt-0.5 h-4 w-4 text-mustard" />
               <div>
-                <div className="text-sm font-semibold text-mustard">Step 6 skipped — AI temporarily unavailable</div>
+                <div className="text-sm font-semibold text-mustard">Step 6 skipped - AI temporarily unavailable</div>
                 <p className="mt-1 text-xs text-charcoal/60">
                   Compliance and brief checks were bypassed for this demo run. In production, these would be mandatory before proceeding.
                 </p>
@@ -87,7 +87,7 @@ export function FinalApprovalContent({
             secondaryLabel="Hold for Revisions"
             stepNumber={6}
             onPrimary={() =>
-              onApprove("Skipped — AI unavailable", {
+              onApprove("Skipped - AI unavailable", {
                 compliance_check: complianceResult,
                 skipped: true,
               })
@@ -104,7 +104,7 @@ export function FinalApprovalContent({
       <div className="space-y-3">
         <ContextStack context={context} />
 
-        {/* Skip button — always visible as fallback */}
+        {/* Skip button - always visible as fallback */}
         {canAct && !briefDone && (
           <div className="flex justify-end">
             <button

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from "react"
 import { motion } from "framer-motion";
 
 interface Carousel3DProps {
-  /** Render function for each item — receives the item and whether it's the front card */
+  /** Render function for each item - receives the item and whether it's the front card */
   children: (item: any, index: number, isFront: boolean) => ReactNode;
   items: any[];
   /** Auto-rotate speed in degrees per second (0 to disable) */

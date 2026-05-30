@@ -255,7 +255,7 @@ export function SKUSelectionContent({
           <div className="mt-0.5 text-[11px] text-charcoal/65">
             Segment: <strong>{segmentName}</strong>
             {segmentCustomerCount != null && <> ({segmentCustomerCount.toLocaleString()} customers)</>}
-            {segmentTopCategory && <> — top category: <strong>{segmentTopCategory}</strong>, biasing SKU selection</>}
+            {segmentTopCategory && <> - top category: <strong>{segmentTopCategory}</strong>, biasing SKU selection</>}
           </div>
         </div>
       )}
@@ -389,7 +389,7 @@ export function SKUSelectionContent({
               pricingCheck.status === "pass" ? "text-charcoal/70" :
               pricingCheck.status === "warn" ? "text-charcoal/70" : "text-charcoal/70"
             }>
-              Pricing helper: check_pricing_conflicts — {pricingCheck.status.toUpperCase()}
+              Pricing helper: check_pricing_conflicts - {pricingCheck.status.toUpperCase()}
             </span>
           </div>
           <div className="text-[11px] text-charcoal/65">
@@ -410,7 +410,7 @@ export function SKUSelectionContent({
         </div>
       )}
 
-      {/* Approval footer — block if pricing check has hard failures on included SKUs */}
+      {/* Approval footer - block if pricing check has hard failures on included SKUs */}
       {showingRecommended && includedCount > 0 && (() => {
         const failedSkuIds = new Set(
           (pricingCheck?.conflicts ?? [])

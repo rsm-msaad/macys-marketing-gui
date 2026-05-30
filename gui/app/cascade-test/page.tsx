@@ -72,7 +72,7 @@ export default function CascadeTestPage() {
           Back
         </Link>
         <div className="h-4 w-px bg-charcoal/15" />
-        <h1 className="font-serif text-lg font-semibold text-charcoal">CLOU Cascade — Test</h1>
+        <h1 className="font-serif text-lg font-semibold text-charcoal">CLOU Cascade - Test</h1>
       </header>
 
       <div className="px-6 sm:px-12 py-10">

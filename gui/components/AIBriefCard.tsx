@@ -166,7 +166,7 @@ export function AIBriefCard({
   useEffect(() => {
     const cid = context.campaign_brief.campaign_id;
 
-    // If we have a non-empty cached output, use it directly — skip the API call.
+    // If we have a non-empty cached output, use it directly - skip the API call.
     if (cachedOutput && Object.keys(cachedOutput).length > 0) {
       setResult(cachedOutput);
       setAiOriginal(cachedOutput);
@@ -192,7 +192,7 @@ export function AIBriefCard({
     // But if we were waiting for compliance and it just arrived, allow re-fire.
     if (firedRef.current === cid && !waitingForCompliance) return;
 
-    // Compliance is done, no cache — fire the brief skill.
+    // Compliance is done, no cache - fire the brief skill.
     firedRef.current = cid;
     setWaitingForCompliance(false);
     let cancelled = false;
@@ -275,15 +275,15 @@ export function AIBriefCard({
       })
       .catch(() => {
         if (!cancelled) {
-          // API unavailable — use realistic fallback after brief delay
+          // API unavailable - use realistic fallback after brief delay
           setTimeout(() => {
             if (cancelled) return;
             const fallback: BriefResult = {
               campaign_goal: `Drive Mother's Day sales among ${context.campaign_brief.target_customer} with curated ${context.campaign_brief.name} featuring Star Rewards exclusive offers.`,
-              target_audience: `${context.campaign_brief.target_customer} — customers who purchased prestige Beauty in the prior 12 months with active Star Rewards membership.`,
+              target_audience: `${context.campaign_brief.target_customer} - customers who purchased prestige Beauty in the prior 12 months with active Star Rewards membership.`,
               expected_roi: "Based on Q4 2025 Holiday and Spring 2025 Beauty retrospectives, we project a conversion rate 1.4–1.8x the segment average and email open rates above 38%.",
               risk_flags: [],
-              ai_recommendation: "Approve — compliance check passed all three findings (brand alignment, disclaimers, pricing cross-check). No risk flags identified.",
+              ai_recommendation: "Approve - compliance check passed all three findings (brand alignment, disclaimers, pricing cross-check). No risk flags identified.",
               retrieved_docs: ["RETRO-Q4-2025", "RETRO-SP-2025-BTY"],
             };
             setResult(fallback);
@@ -362,7 +362,7 @@ export function AIBriefCard({
         </div>
       </div>
 
-      {/* Waiting for compliance to complete — show muted queued state */}
+      {/* Waiting for compliance to complete - show muted queued state */}
       {waitingForCompliance && !result && !loading && (
         <div className="space-y-1 opacity-50">
           <div className="flex items-center gap-2 text-xs text-charcoal/40">
@@ -375,7 +375,7 @@ export function AIBriefCard({
         </div>
       )}
 
-      {/* Actively running — miniature robot in background */}
+      {/* Actively running - miniature robot in background */}
       {loading && !waitingForCompliance && (
         <div className="relative overflow-hidden rounded-xl border border-charcoal/8 p-4">
           <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover rounded-xl" style={{ opacity: 0.1 }}>
@@ -534,7 +534,7 @@ export function AIBriefCard({
         onClose={() => setEvidenceOpen(false)}
       />
 
-      {/* Floating page overlay — portal to body so it's truly on top */}
+      {/* Floating page overlay - portal to body so it's truly on top */}
       {floatingUrl && typeof document !== "undefined" && createPortal(
         <div
           className="fixed inset-0 z-[70] flex items-center justify-center p-4"

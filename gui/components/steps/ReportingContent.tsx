@@ -8,7 +8,7 @@ import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentPro
 
 function makeFallbackSummary(campaignName: string): string {
   return (
-    `${campaignName} — Executive Summary (draft)\n\n` +
+    `${campaignName} - Executive Summary (draft)\n\n` +
     "This is a placeholder summary. Click 'Generate Report via Claude' above " +
     "to produce an AI-written executive report from the full audit trail."
   );

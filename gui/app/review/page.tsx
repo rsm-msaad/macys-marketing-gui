@@ -400,7 +400,7 @@ function ReviewContent() {
               {agenticTrace && agenticTrace.length > 0 && (
                 <div className="mb-6 rounded-lg border border-violet-200/50 bg-violet-50/10 p-5">
                   <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-500">
-                    Agentic Trace — Claude&apos;s Reasoning ({agenticTrace.filter((t) => t.type === "tool_call").length} tool calls)
+                    Agentic Trace - Claude&apos;s Reasoning ({agenticTrace.filter((t) => t.type === "tool_call").length} tool calls)
                   </h2>
                   <div className="space-y-3">
                     {agenticTrace.map((entry, i) => {

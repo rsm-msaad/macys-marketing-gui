@@ -340,7 +340,7 @@ export default function ImpactPage() {
                   Per-Step Savings Estimates
                 </h3>
                 <p className="mb-3 text-[11px] text-charcoal/45">
-                  Industry benchmarks from estimates.md. These apply to every campaign — the per-campaign hero numbers above sum these across whatever steps the campaign has completed.
+                  Industry benchmarks from estimates.md. These apply to every campaign - the per-campaign hero numbers above sum these across whatever steps the campaign has completed.
                 </p>
                 <table className="w-full">
                   <thead>

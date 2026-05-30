@@ -106,7 +106,7 @@ export default function LandingPage() {
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#f5f3ee]">
 
-      {/* ═══ Video — autoplays, dims when done ═══ */}
+      {/* ═══ Video - autoplays, dims when done ═══ */}
       <video
         ref={videoRef}
         autoPlay muted playsInline
@@ -125,7 +125,7 @@ export default function LandingPage() {
         style={{ opacity: 0.25, backgroundImage: GRAIN, backgroundSize: "200px 200px" }}
       />
 
-      {/* Skip button — visible during video */}
+      {/* Skip button - visible during video */}
       {!videoEnded && (
         <motion.button
           initial={{ opacity: 0 }}
@@ -138,7 +138,7 @@ export default function LandingPage() {
         </motion.button>
       )}
 
-      {/* ═══ Content — fades in + slides up after video ends ═══ */}
+      {/* ═══ Content - fades in + slides up after video ends ═══ */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{

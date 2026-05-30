@@ -38,7 +38,7 @@ export function ActivationContent({
             Reading from Step 7: Localization
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
-            <strong>{variantCount} variants</strong> across {locRegions.length} regions locked in — activation covers all localized placements.
+            <strong>{variantCount} variants</strong> across {locRegions.length} regions locked in - activation covers all localized placements.
           </div>
         </div>
       )}

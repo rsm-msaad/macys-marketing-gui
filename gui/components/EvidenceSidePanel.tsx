@@ -238,7 +238,7 @@ export function EvidenceSidePanel({
                 const toolCalls = trace.filter((t) => t.type === "tool_call");
                 if (toolCalls.length === 0) return null;
                 return (
-                  <MiniSection icon={Bot} title="Agentic Trace — Claude's Tool Calls" count={toolCalls.length}>
+                  <MiniSection icon={Bot} title="Agentic Trace - Claude's Tool Calls" count={toolCalls.length}>
                     <div className="space-y-3">
                       {trace.map((entry, i) => {
                         if (entry.type === "tool_call") {
