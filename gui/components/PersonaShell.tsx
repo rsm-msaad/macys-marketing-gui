@@ -557,7 +557,7 @@ export function PersonaShell({
             onClose={() => setStepPanelOpen(false)}
             onLaunchSkill={launchSkillFromActionPanel}
             onRequestRevisions={handleOpenRevisionModal}
-            onAdvanced={async () => { setStepPanelOpen(false); await refresh(); }}
+            onAdvanced={async () => { await refresh(); setStepPanelOpen(false); await new Promise(r => setTimeout(r, 400)); await refresh(); setStepPanelOpen(true); }}
             onInterceptApproval={handleInterceptApproval}
             onOpenChat={() => setChatOpen(true)}
           />
