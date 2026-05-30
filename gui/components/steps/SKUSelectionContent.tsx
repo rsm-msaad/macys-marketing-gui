@@ -19,7 +19,6 @@ import {
   type CheckPricingResult,
 } from "@/lib/api";
 import { ApprovalActions, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
-import { ClouCascade, type ClouItem } from "@/components/ClouCascade";
 
 const STATUS_BADGE: Record<string, { bg: string; text: string }> = {
   in_stock: { bg: "#dcfce7", text: "#15803d" },
@@ -305,7 +304,7 @@ export function SKUSelectionContent({
           </div>
         )}
 
-        {/* Recommended SKUs — CLOU cascade view */}
+        {/* Recommended SKU grid */}
         {showingRecommended && (
           <>
             <div className="mt-3 flex items-center justify-between">
@@ -326,38 +325,7 @@ export function SKUSelectionContent({
                 {includedCount === recommended.length ? "Deselect all" : "Select all"}
               </button>
             </div>
-
-            {/* 3D Cascade for top 8 SKUs */}
-            <div className="mt-3">
-              <ClouCascade
-                items={recommended.slice(0, 8).map((sku): ClouItem => ({
-                  id: sku.sku_id,
-                  image: `/storyboard/scenes/${
-                    ["01_what_is_skill", "09_master_ad", "12_handoff_to_production",
-                     "16_live", "17_data_analysis", "19_cycle_complete",
-                     "31_rady_what_if", "38_m3_cascade"][
-                      recommended.indexOf(sku) % 8
-                    ]
-                  }.jpg`,
-                  title: sku.name,
-                  tag: sku.brand,
-                  metadata: {
-                    Price: `$${(sku.msrp * 0.75).toFixed(0)}`,
-                    MSRP: `$${sku.msrp.toFixed(0)}`,
-                    Margin: `${(sku.margin_pct * 100).toFixed(0)}%`,
-                    Stock: `${sku.inventory_level.toLocaleString()} units`,
-                    Score: `${sku.score_pct.toFixed(0)}`,
-                  },
-                }))}
-                onSelect={(item) => {
-                  // Toggle selection when clicking in cascade
-                  toggleSku(item.id);
-                }}
-              />
-            </div>
-
-            {/* Compact card grid below for selection toggles */}
-            <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {recommended.map((sku, i) => (
                 <motion.div
                   key={sku.sku_id}
