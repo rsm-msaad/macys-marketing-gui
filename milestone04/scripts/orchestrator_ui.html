@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macys AI Coworker - Workflow Orchestrator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FDF8F0; color: #2D2D2D; }
+  .banner { background: #0B7B8A; color: white; text-align: center; padding: 8px; font-size: 13px; }
+  .banner a { color: #B2DFDB; }
+  header { padding: 24px 32px; border-bottom: 1px solid #e5e5e5; background: white; }
+  header h1 { font-family: Georgia, serif; font-size: 24px; font-weight: 700; }
+  header p { color: #666; font-size: 14px; margin-top: 4px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+  .controls { display: flex; gap: 12px; margin-bottom: 24px; }
+  .btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .btn-primary { background: #0B7B8A; color: white; }
+  .btn-primary:hover { background: #096B78; }
+  .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+  .btn-secondary { background: white; color: #2D2D2D; border: 1px solid #ccc; }
+  .btn-secondary:hover { background: #f5f5f5; }
+  .status-bar { background: white; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .status-bar .label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .status-bar .value { font-family: Georgia, serif; font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+  .step-card { background: white; border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px; position: relative; min-height: 100px; }
+  .step-card.completed { border-color: #87A96B; background: #f0f7ec; }
+  .step-card.active { border-color: #0B7B8A; box-shadow: 0 0 0 2px rgba(11,123,138,0.2); }
+  .step-card.pending { opacity: 0.5; }
+  .step-num { font-family: Georgia, serif; font-size: 20px; color: #ccc; font-weight: 700; }
+  .step-card.completed .step-num { color: #87A96B; }
+  .step-card.active .step-num { color: #0B7B8A; }
+  .step-name { font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .step-type { font-size: 10px; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .step-type.human { background: #FCEAEA; color: #8C2727; }
+  .step-type.automation { background: #F5F0EB; color: #57534E; }
+  .step-type.skill { background: #E0F2F1; color: #0B7B8A; }
+  .step-status { font-size: 10px; margin-top: 6px; color: #888; }
+  .step-card.completed .step-status { color: #87A96B; }
+  .step-card.active .step-status { color: #0B7B8A; font-weight: 600; }
+  .output-panel { background: white; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
+  .output-panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 12px; font-weight: 600; }
+  .output-entry { border-bottom: 1px solid #f0f0f0; padding: 8px 0; font-size: 13px; }
+  .output-entry:last-child { border-bottom: none; }
+  .output-step { font-weight: 600; color: #0B7B8A; }
+  .output-data { color: #555; margin-top: 2px; font-size: 12px; white-space: pre-wrap; max-height: 100px; overflow-y: auto; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #0B7B8A; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .info { background: #E0F2F1; border: 1px solid #B2DFDB; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 13px; color: #0B7B8A; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  Reference UI for M3 grading. Full production UI at <a href="https://macysai.vercel.app" target="_blank">macysai.vercel.app</a>
+</div>
+
+<header>
+  <h1>Macys AI Coworker</h1>
+  <p>Campaign workflow orchestrator for marketing operations</p>
+</header>
+
+<div class="container">
+  <div class="info">
+    This standalone orchestrator drives the 10-step campaign workflow. Click <strong>Advance Step</strong> to run the next step.
+    Each step is either a human task, a deterministic automation, or an LLM skill.
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="advanceBtn" onclick="advanceStep()">Advance Step</button>
+    <button class="btn btn-secondary" onclick="resetCampaign()">Reset Demo</button>
+    <button class="btn btn-secondary" onclick="openProduction()">Open Production App</button>
+  </div>
+
+  <div class="status-bar">
+    <div>
+      <div class="label">Campaign</div>
+      <div class="value" id="campaignName">Loading...</div>
+    </div>
+    <div>
+      <div class="label">Current Step</div>
+      <div class="value" id="currentStep">-</div>
+    </div>
+    <div>
+      <div class="label">Status</div>
+      <div class="value" id="campaignStatus">-</div>
+    </div>
+  </div>
+
+  <div class="steps" id="stepsGrid"></div>
+
+  <div class="output-panel">
+    <h3>Step Outputs</h3>
+    <div id="outputs">
+      <p style="color: #999; font-size: 13px;">Click Advance Step to begin the workflow.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+async function fetchState() {
+  const res = await fetch(API + '/api/state');
+  const data = await res.json();
+  render(data);
+}
+
+function render(data) {
+  document.getElementById('campaignName').textContent = data.campaign_name || 'Mother\'s Day Beauty Event';
+  document.getElementById('currentStep').textContent = data.is_complete ? 'Complete' : 'Step ' + data.current_step;
+  document.getElementById('campaignStatus').textContent = data.is_complete ? 'All 10 steps done' : 'In progress';
+  document.getElementById('advanceBtn').disabled = data.is_complete;
+
+  const grid = document.getElementById('stepsGrid');
+  grid.innerHTML = '';
+  (data.steps || []).forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'step-card ' + s.status;
+    card.innerHTML = `
+      <div class="step-num">${s.number}</div>
+      <div class="step-name">${s.name}</div>
+      <span class="step-type ${s.type}">${s.type}</span>
+      <div class="step-status">${s.status === 'completed' ? 'Done' : s.status === 'active' ? 'Active' : 'Pending'}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const outputs = document.getElementById('outputs');
+  const completed = (data.steps || []).filter(s => s.status === 'completed' && s.output);
+  if (completed.length === 0) {
+    outputs.innerHTML = '<p style="color: #999; font-size: 13px;">No step outputs yet. Click Advance Step to begin.</p>';
+  } else {
+    outputs.innerHTML = '';
+    completed.forEach(s => {
+      const entry = document.createElement('div');
+      entry.className = 'output-entry';
+      entry.innerHTML = `
+        <div class="output-step">Step ${s.number}: ${s.name}</div>
+        <div class="output-data">${JSON.stringify(s.output, null, 2)}</div>
+      `;
+      outputs.appendChild(entry);
+    });
+  }
+}
+
+async function advanceStep() {
+  const btn = document.getElementById('advanceBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Running...';
+  try {
+    const res = await fetch(API + '/api/advance', { method: 'POST' });
+    const data = await res.json();
+    render(data.state || data);
+  } catch (e) {
+    alert('Error: ' + e.message);
+  } finally {
+    btn.innerHTML = 'Advance Step';
+    btn.disabled = false;
+    fetchState();
+  }
+}
+
+async function resetCampaign() {
+  if (!confirm('Reset the demo campaign to Step 1?')) return;
+  await fetch(API + '/api/reset', { method: 'POST' });
+  fetchState();
+}
+
+function openProduction() {
+  window.open('https://macysai.vercel.app', '_blank');
+}
+
+fetchState();
+</script>
+
+</body>
+</html>
