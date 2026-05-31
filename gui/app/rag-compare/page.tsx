@@ -16,6 +16,12 @@ const EXAMPLE_QUERIES = [
   "What are common reasons campaigns fail compliance?",
 ];
 
+const PARAPHRASED_QUERIES = [
+  "Do I need a lawyer to sign off on buy-one-get-one?",
+  "Our vendor wants 60% off on Lancome, is that allowed?",
+  "How did last spring's beauty push do financially?",
+];
+
 type NaiveResult = {
   doc_id: string;
   section: string;
@@ -168,18 +174,35 @@ export default function RagComparePage() {
       </div>
 
       {/* Example chips */}
-      <div className="mx-auto mb-8 flex max-w-3xl flex-wrap justify-center gap-2">
-        {EXAMPLE_QUERIES.map((eq) => (
-          <button
-            key={eq}
-            type="button"
-            onClick={() => runCompare(eq)}
-            disabled={loading}
-            className="rounded-full border border-charcoal/15 bg-cream px-3 py-1.5 text-[11px] text-charcoal/70 hover:border-teal-600 hover:text-teal-600 disabled:opacity-50"
-          >
-            {eq}
-          </button>
-        ))}
+      <div className="mx-auto mb-8 max-w-3xl space-y-3">
+        <div className="flex flex-wrap justify-center gap-2">
+          <span className="w-full text-center text-[10px] font-semibold uppercase tracking-wider text-charcoal/40">Near-verbatim</span>
+          {EXAMPLE_QUERIES.map((eq) => (
+            <button
+              key={eq}
+              type="button"
+              onClick={() => runCompare(eq)}
+              disabled={loading}
+              className="rounded-full border border-charcoal/15 bg-cream px-3 py-1.5 text-[11px] text-charcoal/70 hover:border-teal-600 hover:text-teal-600 disabled:opacity-50"
+            >
+              {eq}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          <span className="w-full text-center text-[10px] font-semibold uppercase tracking-wider text-violet-500">Realistic phrasing</span>
+          {PARAPHRASED_QUERIES.map((eq) => (
+            <button
+              key={eq}
+              type="button"
+              onClick={() => runCompare(eq)}
+              disabled={loading}
+              className="rounded-full border border-violet-300/40 bg-violet-50/30 px-3 py-1.5 text-[11px] text-violet-700 hover:border-violet-500 hover:text-violet-800 disabled:opacity-50"
+            >
+              {eq}
+            </button>
+          ))}
+        </div>
       </div>
 
       {error && (
