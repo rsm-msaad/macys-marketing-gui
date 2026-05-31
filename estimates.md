@@ -44,13 +44,17 @@ All numbers in this document use the following assumptions:
 
 ## Cost Reasoning
 
+Elapsed calendar days and labor hours are separate measures. Elapsed days include waiting, handoffs, and coordination overhead. Labor hours count only actual hands-on work. Dollar savings are computed from labor hours, not elapsed days.
+
 ```
-Estimated labor cost per case = estimated minutes per case / 60 * estimated hourly cost
+Labor savings per campaign = (baseline labor hours - AI labor hours) * hourly rate
 ```
 
-**Labor cost per campaign (current):** At $75/hour fully loaded and conservatively 30 business days at 6 productive hours per day, a campaign consumes roughly 180 person-hours across all roles (campaign manager, designer, production artist, analyst, legal reviewer). Total labor cost per campaign: approximately $13,500. This is the cost of one campaign for one team. Macy's runs dozens of campaigns concurrently across categories and seasons, so total annual marketing operations labor runs into the millions.
+**Labor hours per campaign (current):** Across all 10 steps, the campaign team (campaign manager, designer, production artist, analyst, legal reviewer) spends approximately 154 hands-on labor hours per campaign. This is less than the elapsed calendar time (30-40 business days) because much of the elapsed time is waiting for handoffs, approvals, and coordination rather than active work. At $75/hour fully loaded, total labor cost per campaign: approximately $11,550.
 
-**Labor cost per campaign (AI-supported):** At the same $75/hour and our estimated 5 to 10 business days at 4 productive hours per day (less time on manual coordination, more concentrated on judgment and review), a campaign consumes roughly 30 person-hours. Total labor cost per campaign: approximately $2,250. Estimated savings per campaign: approximately $11,000. At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $715,000 to $1.1 million. This is a class-context estimate based on reasoned assumptions, not a guaranteed projection.
+**Labor hours per campaign (AI-supported):** With AI automations and skills handling data gathering, drafting, and computation, the team spends approximately 34 hands-on labor hours per campaign — concentrated on review, judgment, and strategic decisions at the 5 approval gates. At $75/hour, total labor cost: approximately $2,550. Estimated savings per campaign: approximately $9,000 (range: $7,500 to $10,500). At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $585,000 to $900,000. This is a class-context estimate based on reasoned assumptions, not a guaranteed projection.
+
+**Costs not yet netted:** These savings are gross labor savings before subtracting: (1) AI API costs ($0.50 to $2.00 per campaign run for 4 LLM skills via TritonAI/Claude; 7 deterministic automations at negligible compute cost), and (2) estimated rework from Pattern 4 agentic over-flagging (~1-2h on an estimated ~30% of campaigns where the compliance skill flags clean copy for unnecessary revision). Net savings after these costs are approximately 90-95% of gross savings.
 
 ### Where Does the 65 to 100 Campaigns per Year Estimate Come From?
 

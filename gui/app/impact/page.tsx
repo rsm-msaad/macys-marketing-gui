@@ -35,8 +35,9 @@ type StepImpact = {
   completed: boolean;
   baseline_days: { low: number; high: number; mid: number };
   ai_supported_days: { low: number; high: number; mid: number };
-  days_saved: number;
-  hours_saved: number;
+  baseline_labor_hours: number;
+  ai_labor_hours: number;
+  labor_hours_saved: number;
   dollars_saved: number;
 };
 
@@ -47,12 +48,17 @@ type CampaignImpact = {
   is_complete: boolean;
   completed_step_count: number;
   hero: {
-    hours_saved: number;
+    labor_hours_saved: number;
     dollars_saved: number;
-    baseline_days: number;
-    ai_supported_days: number;
-    days_saved: number;
+    dollars_saved_range: { low: number; high: number };
+    baseline_elapsed_days: number;
+    ai_elapsed_days: number;
     pct_reduction: number;
+    full_campaign_pct_reduction: number;
+  };
+  labor_totals: {
+    baseline_hours: number;
+    ai_hours: number;
   };
   steps: StepImpact[];
   quality: {
@@ -69,16 +75,20 @@ type Portfolio = {
   campaigns: CampaignImpact[];
   campaign_count: number;
   aggregate: {
-    total_hours_saved: number;
+    total_labor_hours_saved: number;
     total_dollars_saved: number;
-    avg_dollars_per_campaign: number;
-    projected_annual_savings: number;
-    annual_campaign_volume: number;
-    annual_campaign_volume_low: number;
-    annual_campaign_volume_high: number;
+    savings_per_completed_campaign: number;
     projected_annual_low: number;
     projected_annual_high: number;
+    annual_campaign_volume_low: number;
+    annual_campaign_volume_high: number;
     hourly_rate: number;
+  };
+  costs_not_netted: {
+    ai_api_cost_per_campaign: string;
+    ai_api_note: string;
+    pattern4_rework_per_campaign: string;
+    pattern4_note: string;
   };
   quality_aggregate: {
     total_compliance_findings: number;
@@ -115,8 +125,8 @@ function HeroCard({ icon: Icon, label, value, countUp, sub, accent = false }: {
 }
 
 function StepBar({ step, maxBaseline, index }: { step: StepImpact; maxBaseline: number; index: number }) {
-  const baselinePct = maxBaseline > 0 ? (step.baseline_days.mid / maxBaseline) * 100 : 0;
-  const aiPct = maxBaseline > 0 ? (step.ai_supported_days.mid / maxBaseline) * 100 : 0;
+  const baselinePct = maxBaseline > 0 ? (step.baseline_labor_hours / maxBaseline) * 100 : 0;
+  const aiPct = maxBaseline > 0 ? (step.ai_labor_hours / maxBaseline) * 100 : 0;
   return (
     <tr className="border-t border-charcoal/5">
       <td className="py-2.5 pr-3">
@@ -129,8 +139,8 @@ function StepBar({ step, maxBaseline, index }: { step: StepImpact; maxBaseline: 
           <span className="text-[12px] font-medium text-charcoal/80">{step.step_name}</span>
         </div>
       </td>
-      <td className="py-2.5 text-right text-[11px] text-charcoal/55">{step.baseline_days.mid.toFixed(1)}d</td>
-      <td className="py-2.5 text-right text-[11px] font-medium text-teal-700">{step.ai_supported_days.mid.toFixed(1)}d</td>
+      <td className="py-2.5 text-right text-[11px] text-charcoal/55">{step.baseline_labor_hours}h</td>
+      <td className="py-2.5 text-right text-[11px] font-medium text-teal-700">{step.ai_labor_hours}h</td>
       <td className="py-2.5 pl-3 w-40">
         <div className="relative h-4">
           <AnimatedBar pct={baselinePct} color="rgba(45,45,45,0.1)" delay={index * 0.08} />
@@ -139,7 +149,7 @@ function StepBar({ step, maxBaseline, index }: { step: StepImpact; maxBaseline: 
           </div>
         </div>
       </td>
-      <td className="py-2.5 text-right text-[11px] font-semibold text-charcoal">{step.hours_saved}h</td>
+      <td className="py-2.5 text-right text-[11px] font-semibold text-charcoal">{step.labor_hours_saved}h</td>
       <td className="py-2.5 text-right text-[11px] text-charcoal/55">${step.dollars_saved.toLocaleString()}</td>
     </tr>
   );
@@ -169,8 +179,8 @@ function QualityCard({ icon: Icon, label, value, color = "teal" }: {
 
 function CampaignComparisonBar({ campaign }: { campaign: CampaignImpact }) {
   const maxDays = 45;
-  const bPct = Math.min(100, (campaign.hero.baseline_days / maxDays) * 100);
-  const aPct = Math.min(100, (campaign.hero.ai_supported_days / maxDays) * 100);
+  const bPct = Math.min(100, (campaign.hero.baseline_elapsed_days / maxDays) * 100);
+  const aPct = Math.min(100, (campaign.hero.ai_elapsed_days / maxDays) * 100);
   return (
     <div className="rounded-lg border border-charcoal/10 bg-white p-4">
       <div className="flex items-center justify-between">
@@ -182,24 +192,24 @@ function CampaignComparisonBar({ campaign }: { campaign: CampaignImpact }) {
           </div>
         </div>
         <div className="text-right">
-          <div className="font-serif text-lg font-bold text-teal-700">${campaign.hero.dollars_saved.toLocaleString()}</div>
+          <div className="font-serif text-lg font-bold text-teal-700">~${(campaign.hero.dollars_saved / 1000).toFixed(1)}K</div>
           <div className="text-xs text-charcoal/50">saved</div>
         </div>
       </div>
       <div className="mt-3 space-y-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-16 text-xs text-charcoal/50">Baseline</span>
+          <span className="w-16 text-xs text-charcoal/50">Before</span>
           <div className="flex-1 h-3 rounded bg-charcoal/8">
             <div className="h-full rounded bg-charcoal/25" style={{ width: `${bPct}%` }} />
           </div>
-          <span className="w-12 text-right text-xs text-charcoal/55">{campaign.hero.baseline_days}d</span>
+          <span className="w-12 text-right text-xs text-charcoal/55">{campaign.hero.baseline_elapsed_days}d</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-16 text-xs text-teal-600 font-medium">AI</span>
+          <span className="w-16 text-xs text-teal-600 font-medium">After</span>
           <div className="flex-1 h-3 rounded bg-charcoal/8">
             <div className="h-full rounded bg-teal-500" style={{ width: `${aPct}%` }} />
           </div>
-          <span className="w-12 text-right text-xs font-semibold text-teal-700">{campaign.hero.ai_supported_days}d</span>
+          <span className="w-12 text-right text-xs font-semibold text-teal-700">{campaign.hero.ai_elapsed_days}d</span>
         </div>
       </div>
     </div>
@@ -226,7 +236,7 @@ export default function ImpactPage() {
   }, []);
 
   const selected = portfolio?.campaigns.find((c) => c.campaign_id === selectedId) ?? portfolio?.campaigns[0];
-  const maxBaseline = selected ? Math.max(...selected.steps.map((s) => s.baseline_days.mid)) : 10;
+  const maxBaseline = selected ? Math.max(...selected.steps.map((s) => s.baseline_labor_hours)) : 24;
 
   return (
     <PageTransition className="min-h-screen bg-cream/30">
@@ -245,10 +255,11 @@ export default function ImpactPage() {
             <Link href="/" className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-600 hover:text-teal-700 mb-2">
               <ArrowLeft className="h-3 w-3" /> Back to campaigns
             </Link>
-            <h1 className="font-serif text-2xl font-bold text-charcoal">Impact Analysis</h1>
+            <h1 className="font-serif text-2xl font-bold text-charcoal">Before GenAI vs After GenAI</h1>
             <p className="mt-1 text-[13px] text-charcoal/60">
-              Time, cost, and quality impact of AI-supported campaign operations vs manual baseline.
-              Numbers computed live from campaign state. Baseline: $75/hr fully loaded, 30-40 business days per campaign.
+              Time, cost, and quality impact of AI-supported campaign operations vs the manual baseline.
+              Labor hours (for $) are separated from elapsed calendar days (for cycle %).
+              Baseline: $75/hr fully loaded, 154 labor hours and 30-40 business days per campaign.
             </p>
           </div>
         </div>
@@ -285,13 +296,21 @@ export default function ImpactPage() {
               {/* Hero cards with count-up animation */}
               <StaggerContainer className="grid grid-cols-2 gap-3 md:grid-cols-4">
                 <StaggerItem>
-                  <HeroCard icon={Clock} label="Hours Saved" value="" countUp={{ end: selected.hero.hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`${selected.hero.days_saved} business days`} accent />
+                  <HeroCard icon={Clock} label="Labor Hours Saved" value="" countUp={{ end: selected.hero.labor_hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`${selected.labor_totals.baseline_hours}h before → ${selected.labor_totals.ai_hours}h after`} accent />
                 </StaggerItem>
                 <StaggerItem>
-                  <HeroCard icon={DollarSign} label="Dollar Savings" value="" countUp={{ end: selected.hero.dollars_saved, prefix: "$", duration: 1.8 }} sub="at $75/hr fully loaded" accent />
+                  <HeroCard
+                    icon={DollarSign}
+                    label="Estimated Savings"
+                    value={selected.hero.dollars_saved > 0
+                      ? `~$${(selected.hero.dollars_saved / 1000).toFixed(1)}K`
+                      : "$0"}
+                    sub="at $75/hr fully loaded (range shown below)"
+                    accent
+                  />
                 </StaggerItem>
                 <StaggerItem>
-                  <HeroCard icon={TrendingUp} label="Cycle Reduction" value="" countUp={{ end: selected.hero.pct_reduction, suffix: "%", duration: 1.2 }} sub={`${selected.hero.baseline_days}d → ${selected.hero.ai_supported_days}d`} />
+                  <HeroCard icon={TrendingUp} label="Cycle Reduction" value="" countUp={{ end: selected.hero.pct_reduction, suffix: "%", duration: 1.2 }} sub={`${selected.hero.baseline_elapsed_days}d → ${selected.hero.ai_elapsed_days}d elapsed`} />
                 </StaggerItem>
                 <StaggerItem>
                   <HeroCard icon={Zap} label="Steps Completed" value={`${selected.completed_step_count}/10`} sub={selected.is_complete ? "Campaign complete" : `Currently at Step ${selected.current_step}`} />
@@ -314,13 +333,19 @@ export default function ImpactPage() {
               {/* Aggregate hero cards */}
               <StaggerContainer className="grid grid-cols-2 gap-3 md:grid-cols-4">
                 <StaggerItem>
-                  <HeroCard icon={DollarSign} label="Total Savings" value="" countUp={{ end: portfolio.aggregate.total_dollars_saved, prefix: "$", duration: 2 }} sub={`across ${portfolio.campaign_count} campaigns`} accent />
+                  <HeroCard icon={DollarSign} label="Total Savings (Demo)" value={`~$${(portfolio.aggregate.total_dollars_saved / 1000).toFixed(1)}K`} sub={`across ${portfolio.campaign_count} demo campaigns`} accent />
                 </StaggerItem>
                 <StaggerItem>
-                  <HeroCard icon={Clock} label="Total Hours Saved" value="" countUp={{ end: portfolio.aggregate.total_hours_saved, suffix: "h", decimals: 1, duration: 1.5 }} sub={`avg $${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()}/campaign`} accent />
+                  <HeroCard icon={Clock} label="Per Completed Campaign" value={`~$${(portfolio.aggregate.savings_per_completed_campaign / 1000).toFixed(0)}K`} sub="120 labor hours saved at $75/hr" accent />
                 </StaggerItem>
                 <StaggerItem>
-                  <HeroCard icon={TrendingUp} label="Projected Annual" value="" countUp={{ end: portfolio.aggregate.projected_annual_savings / 1_000_000, prefix: "$", suffix: "M", decimals: 1, duration: 2.2 }} sub={`at ${portfolio.aggregate.annual_campaign_volume_low}-${portfolio.aggregate.annual_campaign_volume_high} campaigns/year`} accent />
+                  <HeroCard
+                    icon={TrendingUp}
+                    label="Projected Annual"
+                    value={`$${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M–$${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M`}
+                    sub={`at ${portfolio.aggregate.annual_campaign_volume_low}-${portfolio.aggregate.annual_campaign_volume_high} campaigns/year`}
+                    accent
+                  />
                 </StaggerItem>
                 <StaggerItem>
                   <HeroCard icon={Wrench} label="MCP Invocations" value={String(portfolio.quality_aggregate.total_mcp_invocations)} sub={`${portfolio.quality_aggregate.total_compliance_findings} compliance findings`} />
@@ -337,19 +362,19 @@ export default function ImpactPage() {
               {/* Per-step estimates (global, applies to all campaigns) */}
               <div className="mt-4 rounded-lg border border-charcoal/10 bg-white p-5">
                 <h3 className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-charcoal/50">
-                  Per-Step Savings Estimates
+                  Per-Step Labor Savings (Before GenAI vs After GenAI)
                 </h3>
                 <p className="mb-3 text-[11px] text-charcoal/45">
-                  Industry benchmarks from estimates.md. These apply to every campaign - the per-campaign hero numbers above sum these across whatever steps the campaign has completed.
+                  Actual hands-on labor hours per step (not elapsed calendar days). Elapsed days include waiting and handoffs; labor hours count only active work. From estimates.md.
                 </p>
                 <table className="w-full">
                   <thead>
                     <tr className="text-xs font-medium uppercase tracking-wider text-charcoal/40">
                       <th className="pb-2 text-left">Step</th>
-                      <th className="pb-2 text-right">Baseline</th>
-                      <th className="pb-2 text-right">AI-Supported</th>
+                      <th className="pb-2 text-right">Before (hrs)</th>
+                      <th className="pb-2 text-right">After (hrs)</th>
                       <th className="pb-2 pl-3">Comparison</th>
-                      <th className="pb-2 text-right">Hours Saved</th>
+                      <th className="pb-2 text-right">Saved</th>
                       <th className="pb-2 text-right">$ Saved</th>
                     </tr>
                   </thead>
@@ -366,12 +391,21 @@ export default function ImpactPage() {
                 <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">Extrapolation</div>
                 <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
                   At {portfolio.aggregate.annual_campaign_volume_low} to {portfolio.aggregate.annual_campaign_volume_high} campaigns
-                  per year (avg ${portfolio.aggregate.avg_dollars_per_campaign.toLocaleString()} saved per campaign
+                  per year (~${(portfolio.aggregate.savings_per_completed_campaign / 1000).toFixed(0)}K saved per completed campaign
                   at ${portfolio.aggregate.hourly_rate}/hr), projected annual labor savings
                   range from <strong>${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M</strong> to{" "}
                   <strong>${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M</strong>.
                   This is a class-context estimate using reasoned assumptions, not a guaranteed projection.
                 </p>
+              </div>
+
+              {/* Costs not netted */}
+              <div className="mt-3 rounded-lg border border-amber-200/50 bg-amber-50/20 p-4">
+                <div className="text-xs font-semibold uppercase tracking-wider text-amber-600">Costs Not Yet Netted</div>
+                <ul className="mt-1.5 space-y-1 text-[12px] leading-relaxed text-charcoal/70">
+                  <li><strong>AI API costs:</strong> {portfolio.costs_not_netted.ai_api_cost_per_campaign} per campaign run ({portfolio.costs_not_netted.ai_api_note})</li>
+                  <li><strong>Pattern 4 rework:</strong> {portfolio.costs_not_netted.pattern4_rework_per_campaign} ({portfolio.costs_not_netted.pattern4_note})</li>
+                </ul>
               </div>
 
               {/* Campaign volume breakdown (expandable) */}
