@@ -61,6 +61,7 @@ In addition to the deterministic assertions above, we ran 3 representative cases
 |---|---|---|---|---|---|---|
 | Clean Mother's Day copy | Compliance helpers | proceed | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Clean copy correctly passes all 3 findings |
 | Banned words ("lowest prices anywhere", "unbeatable") | Compliance helpers | revise | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Correctly detects all banned phrases, recommends revise |
+| Banned words (Tier 2 full skill) | Full LLM skill (compliance-pre-check) | revise | **1.0 PASS** | **0.8 PASS** | **1.0 PASS** | Agentic skill correctly detects banned phrases; FaithfulnessMetric confirms output aligns with RAG passages. QualityRule 0.8: minor deduction for reporting additional findings beyond the specific banned-phrase check. |
 | VP Approval Brief (compliance passed) | Full LLM skill (approval-brief-generator) | approve | **1.0 PASS** | **0.0 FAIL** | **0.8 PASS** | Brief recommended approve correctly but QualityRule failed: the LLM returned a non-standard field format that DeepEval's criteria didn't match |
 
 **Key finding from DeepEval:** The QualityRule failure on Case 3 reveals that `api-llama-4-scout` returns the brief in a non-JSON format (Python-style object notation instead of JSON). The deterministic helpers parse this into the expected schema, but DeepEval's raw output comparison sees the format mismatch. This confirms Pattern 2 (model-dependent behavior) — different LLMs produce structurally different outputs even when the semantic content is correct.

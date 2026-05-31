@@ -135,6 +135,28 @@ RESULTS_DIR.mkdir(exist_ok=True)
 if str(AI_ENGINE) not in sys.path:
     sys.path.insert(0, str(AI_ENGINE))
 
+# RAG chunk index for DeepEval retrieval_context (plain JSON, no FAISS needed)
+_CHUNKS_PATH = AI_ENGINE / "rag" / "index" / "chunks.json"
+_RAG_CHUNKS: list[dict] | None = None
+
+
+def _passages_for_doc_ids(doc_ids: list) -> list[str]:
+    """Return RAG passage texts for a list of doc IDs.
+
+    Loads chunks.json once (no FAISS or ML imports). Returns the text of
+    every chunk whose doc_id matches, giving DeepEval's FaithfulnessMetric
+    real passage content instead of bare ID strings.
+    """
+    global _RAG_CHUNKS
+    if _RAG_CHUNKS is None:
+        if _CHUNKS_PATH.exists():
+            with _CHUNKS_PATH.open(encoding="utf-8") as f:
+                _RAG_CHUNKS = json.load(f)
+        else:
+            _RAG_CHUNKS = []
+    ids = {str(d) for d in doc_ids}
+    return [c["text"] for c in _RAG_CHUNKS if c.get("doc_id") in ids]
+
 # Compliance helpers
 _comp_path = AI_ENGINE / "skills" / "compliance-pre-check" / "helpers.py"
 _spec = importlib.util.spec_from_file_location("compliance_helpers", _comp_path)
@@ -272,7 +294,7 @@ class TestCase01HappyPath:
         _deepeval_score(
             input_text=state["campaign"]["copy"],
             actual_output=str(check),
-            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
             quality_criteria=(
                 "The compliance check output must correctly identify that the campaign copy "
                 "contains no banned phrases, uses an approved Macy's tagline, meets all "
@@ -333,7 +355,7 @@ class TestCase02BannedWord:
         _deepeval_score(
             input_text=self.BANNED_COPY,
             actual_output=str(check),
-            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
             quality_criteria=(
                 "The compliance check must correctly detect Macy's banned phrases such as "
                 "'lowest prices anywhere' and 'unbeatable savings', cite the relevant brand "
@@ -380,7 +402,7 @@ class TestCase03MAPViolation:
         _deepeval_score(
             input_text="Up to 60 percent off Lancome serums. discount_pct=60",
             actual_output=str(check),
-            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
             quality_criteria=(
                 "The compliance check must identify that a 60% discount on a MAP-protected "
                 "brand (Lancome) violates Macy's Minimum Advertised Price policy, flag the "
@@ -427,7 +449,7 @@ class TestCase04MissingDisclaimer:
         _deepeval_score(
             input_text=self.COPY,
             actual_output=str(check),
-            retrieval_context=[str(d) for d in check.get("retrieved_docs", [])],
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
             quality_criteria=(
                 "The compliance check must detect that the phrase 'up to 50 percent off' "
                 "is missing the required Macy's legal qualifier ('starting at' or equivalent), "

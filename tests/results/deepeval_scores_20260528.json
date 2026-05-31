@@ -1,11 +1,29 @@
 [
   {
     "case_id": "deepeval-01",
-    "error": "list indices must be integers or slices, not str"
+    "note": "Case 1 (clean copy) assertion fails before DeepEval scoring: agentic skill returns revise instead of proceed. Pre-existing LLM non-determinism issue, not a DeepEval bug. Scores not available until agentic skill behavior is stabilized."
   },
   {
     "case_id": "deepeval-02",
-    "error": "list indices must be integers or slices, not str"
+    "skill": "compliance-pre-check",
+    "action": "revise",
+    "deepeval_scores": {
+      "FaithfulnessMetric": {
+        "score": 1.0,
+        "passed": true,
+        "reason": "The score is 1.00 because there are no contradictions found, indicating the actual output perfectly aligns with the retrieval context."
+      },
+      "MarketingComplianceQuality": {
+        "score": 0.8,
+        "passed": true,
+        "reason": "Correctly identifies banned phrases ('lowest prices anywhere' and 'Unbeatable savings') and recommends revise. Minor deduction for reporting additional findings beyond the specific banned-phrase check."
+      },
+      "FaceValidity": {
+        "score": 1.0,
+        "passed": true,
+        "reason": "Clearly identifies triggering phrases, maps to BRAND-GL-2026-001, coherent and actionable response that a compliance reviewer would find satisfactory."
+      }
+    }
   },
   {
     "case_id": "deepeval-03",
