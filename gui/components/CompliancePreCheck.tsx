@@ -255,7 +255,7 @@ export function CompliancePreCheck({
         captured_at: new Date().toISOString(),
       }).catch(() => {});
       storeEvidence(context.campaign_brief.campaign_id, "6a_output", fallback).catch(() => {});
-    }, 1500);
+    }, 2500);
 
     return () => {
       cancelled = true;

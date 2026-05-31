@@ -261,7 +261,7 @@ export function AIBriefCard({
         captured_at: new Date().toISOString(),
       }).catch(() => {});
       storeEvidence(context.campaign_brief.campaign_id, "6b_output", fallback).catch(() => {});
-    }, 2000);
+    }, 2500);
 
     return () => {
       cancelled = true;
