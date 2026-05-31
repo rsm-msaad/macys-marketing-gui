@@ -47,7 +47,7 @@ def dashboard_overview() -> dict:
         # Hours saved
         impact = _campaign_impact(cid)
         if "hero" in impact:
-            total_hours_saved += impact["hero"]["hours_saved"]
+            total_hours_saved += impact["hero"]["labor_hours_saved"]
 
         campaigns_summary.append({
             "campaign_id": cid,
@@ -56,7 +56,7 @@ def dashboard_overview() -> dict:
             "current_step": step,
             "current_step_name": STEP_NAMES.get(step, ""),
             "completed_step_count": len(completed_steps),
-            "hours_saved": impact.get("hero", {}).get("hours_saved", 0),
+            "hours_saved": impact.get("hero", {}).get("labor_hours_saved", 0),
         })
 
         # Audit log entries (tag with campaign name)
@@ -168,9 +168,8 @@ def analytics_overview() -> dict:
         campaigns_data.append({
             "campaign_id": cid,
             "campaign_name": impact["campaign_name"],
-            "hours_saved": impact["hero"]["hours_saved"],
+            "hours_saved": impact["hero"]["labor_hours_saved"],
             "dollars_saved": impact["hero"]["dollars_saved"],
-            "days_saved": impact["hero"]["days_saved"],
             "pct_reduction": impact["hero"]["pct_reduction"],
             "completed_steps": impact["completed_step_count"],
             "compliance_findings": impact["quality"]["compliance_findings"],

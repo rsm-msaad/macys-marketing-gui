@@ -1,0 +1,352 @@
+{
+  "dashboard_overview": {
+    "stats": {
+      "active_campaigns": 1,
+      "completed_campaigns": 1,
+      "planned_campaigns": 1,
+      "total_campaigns": 3,
+      "pending_escalations": 0,
+      "recent_actions": 0,
+      "hours_saved_total": 136.0,
+      "dollars_saved_total": 10200
+    },
+    "campaigns": [
+      {
+        "campaign_id": "MDC-2026-MD-001",
+        "name": "Mother's Day Beauty Event",
+        "status": "planned",
+        "current_step": 1,
+        "current_step_name": "Briefing",
+        "completed_step_count": 0,
+        "hours_saved": 0.0
+      },
+      {
+        "campaign_id": "MDC-2025-SP-BTY",
+        "name": "Spring Beauty Refresh",
+        "status": "completed",
+        "current_step": 11,
+        "current_step_name": "",
+        "completed_step_count": 10,
+        "hours_saved": 120.0
+      },
+      {
+        "campaign_id": "MDC-2026-SS-003",
+        "name": "Summer Style",
+        "status": "active",
+        "current_step": 3,
+        "current_step_name": "SKU Selection",
+        "completed_step_count": 2,
+        "hours_saved": 16.0
+      }
+    ],
+    "recent_activity": [],
+    "escalations": []
+  },
+  "campaigns_list": [
+    {
+      "id": "MDC-2026-MD-001",
+      "name": "Mother's Day Beauty Event",
+      "status": "active",
+      "current_step": 1,
+      "current_step_name": "Briefing",
+      "days_remaining": 12,
+      "days_label": "12 days remaining",
+      "owner_role": "Campaign Manager",
+      "color_indicator": "green"
+    },
+    {
+      "id": "MDC-2025-SP-BTY",
+      "name": "Spring Beauty Refresh",
+      "status": "completed",
+      "current_step": 10,
+      "current_step_name": "Reporting",
+      "days_remaining": -75,
+      "days_label": "Completed Mar 2025",
+      "owner_role": "Marketing Analyst",
+      "color_indicator": "gray"
+    },
+    {
+      "id": "MDC-2026-SS-003",
+      "name": "Summer Style",
+      "status": "planned",
+      "current_step": 3,
+      "current_step_name": "SKU Selection",
+      "days_remaining": 44,
+      "days_label": "Starts in 44 days",
+      "owner_role": "Campaign Manager",
+      "color_indicator": "yellow"
+    }
+  ],
+  "knowledge_list": {
+    "docs": [
+      {
+        "doc_id": "BRAND-GL-2026-001",
+        "title": "Macys Brand Guidelines",
+        "owner": "Brand Marketing Council",
+        "updated": "January 22, 2026",
+        "category": "Guidelines",
+        "description": "Banned words, approved taglines, and brand voice rules for campaign copy.",
+        "used_by": [
+          "Compliance Pre Check"
+        ],
+        "filename": "01_brand_guidelines.md",
+        "word_count": 503
+      },
+      {
+        "doc_id": "APPRV-POL-2025-003",
+        "title": "Campaign Approval Policy",
+        "owner": "Marketing Operations",
+        "updated": "November 8, 2025",
+        "category": "Policy",
+        "description": "Campaign approval workflow, authorization levels, and escalation rules.",
+        "used_by": [
+          "Approval Brief Generator"
+        ],
+        "filename": "02_approval_policy.md",
+        "word_count": 470
+      },
+      {
+        "doc_id": "LEGAL-DIS-2026-002",
+        "title": "Legal Disclaimer Requirements for Campaign Creative",
+        "owner": "Legal, Marketing Counsel",
+        "updated": "February 14, 2026",
+        "category": "Reference",
+        "description": "Required disclaimers for percent-off pricing and Star Rewards multipliers.",
+        "used_by": [
+          "Compliance Pre Check"
+        ],
+        "filename": "03_legal_disclaimer_requirements.md",
+        "word_count": 564
+      },
+      {
+        "doc_id": "PRICE-RULES-2026-001",
+        "title": "Pricing and Promotion Rules",
+        "owner": "Pricing Strategy, Merchandising",
+        "updated": "January 30, 2026",
+        "category": "Reference",
+        "description": "MAP minimums, brand discount exclusions, and stacking ceiling rules.",
+        "used_by": [
+          "Compliance Pre Check"
+        ],
+        "filename": "04_pricing_and_promotion_rules.md",
+        "word_count": 511
+      },
+      {
+        "doc_id": "DAM-TAG-2025-005",
+        "title": "Digital Asset Management Tagging Policy",
+        "owner": "Creative Operations",
+        "updated": "September 12, 2025",
+        "category": "Policy",
+        "description": "Digital asset tagging standards, rights management, and usage policies.",
+        "used_by": [
+          "DAM Asset Finder"
+        ],
+        "filename": "05_dam_tagging_policy.md",
+        "word_count": 551
+      },
+      {
+        "doc_id": "LOC-STYLE-2025-002",
+        "title": "Localization Style Guide",
+        "owner": "Localization Council, Regional Marketing",
+        "updated": "October 4, 2025",
+        "category": "Guidelines",
+        "description": "Spanish and Quebec French localization rules, holiday calendar, regional norms.",
+        "used_by": [
+          "Localization Generator"
+        ],
+        "filename": "06_localization_style_guide.md",
+        "word_count": 532
+      },
+      {
+        "doc_id": "RETRO-Q4-2025",
+        "title": "Q4 2025 Holiday Campaign Retrospective",
+        "owner": "Holiday Campaign Lead, Marketing Operations",
+        "updated": "January 15, 2026",
+        "category": "Retro",
+        "description": "Q4 2025 Holiday campaign retrospective with ROAS benchmarks and channel attribution.",
+        "used_by": [
+          "Approval Brief Generator"
+        ],
+        "filename": "07_campaign_retro_q4_2025_holiday.md",
+        "word_count": 591
+      },
+      {
+        "doc_id": "RETRO-SP-2025-BTY",
+        "title": "Spring 2025 Beauty Launch Retrospective",
+        "owner": "Merna, Spring Beauty Campaign Manager",
+        "updated": "May 22, 2025",
+        "category": "Retro",
+        "description": "Spring 2025 Beauty campaign retro with Beauty Loyalists metrics and lift data.",
+        "used_by": [
+          "Approval Brief Generator"
+        ],
+        "filename": "08_campaign_retro_spring_2025_beauty.md",
+        "word_count": 548
+      },
+      {
+        "doc_id": "TICKET-INC-2025-4471",
+        "title": "Approval Ticket TICKET-INC-2025-4471",
+        "owner": "Marketing Operations",
+        "updated": "May 26, 2025",
+        "category": "Ticket",
+        "description": "Past revision ticket: pricing language fix and MAP brand clearance example.",
+        "used_by": [
+          "Revision Router"
+        ],
+        "filename": "09_approval_ticket_INC_2025_4471.md",
+        "word_count": 555
+      },
+      {
+        "doc_id": "TICKET-INC-2026-0212",
+        "title": "Approval Ticket TICKET-INC-2026-0212",
+        "owner": "Marketing Operations",
+        "updated": "February 12, 2026",
+        "category": "Ticket",
+        "description": "Clean approval cycle reference for benchmarking normal flow times.",
+        "used_by": [
+          "Revision Router"
+        ],
+        "filename": "10_approval_ticket_INC_2026_0212.md",
+        "word_count": 401
+      },
+      {
+        "doc_id": "COMP-EX-2026-001",
+        "title": "Compliance Flag Examples",
+        "owner": "Marketing Compliance, Brand Review",
+        "updated": "March 4, 2026",
+        "category": "Reference",
+        "description": "Compliance flag examples by category (Beauty, Home, Apparel).",
+        "used_by": [
+          "Compliance Pre Check"
+        ],
+        "filename": "11_compliance_flag_examples.md",
+        "word_count": 622
+      },
+      {
+        "doc_id": "FAQ-INT-2026-001",
+        "title": "Internal Team FAQ",
+        "owner": "Marketing Operations",
+        "updated": "April 1, 2026",
+        "category": "Reference",
+        "description": "Internal team FAQ covering common questions and runbook references.",
+        "used_by": [
+          "Cross-cutting"
+        ],
+        "filename": "12_team_faq_internal.md",
+        "word_count": 688
+      }
+    ],
+    "total": 12
+  },
+  "analytics_overview": {
+    "campaigns": [
+      {
+        "campaign_id": "MDC-2025-SP-BTY",
+        "campaign_name": "Spring Beauty Refresh",
+        "hours_saved": 120.0,
+        "dollars_saved": 9000,
+        "pct_reduction": 77,
+        "completed_steps": 10,
+        "compliance_findings": 3,
+        "revision_rounds": 0,
+        "evidence_coverage_pct": 0
+      },
+      {
+        "campaign_id": "MDC-2026-SS-003",
+        "campaign_name": "Summer Style",
+        "hours_saved": 16.0,
+        "dollars_saved": 1200,
+        "pct_reduction": 15,
+        "completed_steps": 2,
+        "compliance_findings": 0,
+        "revision_rounds": 0,
+        "evidence_coverage_pct": 0
+      },
+      {
+        "campaign_id": "MDC-2026-MD-001",
+        "campaign_name": "Mother's Day Beauty Event",
+        "hours_saved": 0.0,
+        "dollars_saved": 0,
+        "pct_reduction": 0,
+        "completed_steps": 0,
+        "compliance_findings": 0,
+        "revision_rounds": 0,
+        "evidence_coverage_pct": 0
+      }
+    ],
+    "campaign_count": 3,
+    "totals": {
+      "hours_saved": 136.0,
+      "dollars_saved": 10200,
+      "compliance_findings": 3,
+      "compliance_failures": 0,
+      "revision_rounds": 0,
+      "mcp_invocations": 0
+    },
+    "mcp_by_tool": {
+      "check_pricing_conflicts": 0,
+      "find_dam_assets": 0,
+      "generate_locale_variants": 0
+    },
+    "projected_annual": 278800
+  },
+  "segments_overview": {
+    "segments": [
+      {
+        "name": "VIP Loyalists",
+        "customer_count": 9590,
+        "pct_of_total": 19.3,
+        "top_category": "Accessories",
+        "top_category_lift": 0.156,
+        "avg_recency_days": 39.0,
+        "avg_frequency": 17.9,
+        "avg_monetary": 4037.7,
+        "definition": "K-means RFM cluster: avg recency 39d, frequency 17.9 txns, monetary $4,035",
+        "loyalty_mix": {
+          "Bronze": 2.6,
+          "Gold": 52.7,
+          "Platinum": 15.2,
+          "Silver": 29.4
+        },
+        "used_by_campaigns": []
+      },
+      {
+        "name": "Mid Tier Engaged",
+        "customer_count": 31631,
+        "pct_of_total": 63.5,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0866,
+        "avg_recency_days": 70.4,
+        "avg_frequency": 6.7,
+        "avg_monetary": 1308.58,
+        "definition": "K-means RFM cluster: avg recency 71d, frequency 6.7 txns, monetary $1,308",
+        "loyalty_mix": {
+          "Bronze": 68.7,
+          "Gold": 2.9,
+          "Platinum": 0.0,
+          "Silver": 28.4
+        },
+        "used_by_campaigns": []
+      },
+      {
+        "name": "Lapsed or New",
+        "customer_count": 8586,
+        "pct_of_total": 17.2,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0315,
+        "avg_recency_days": 314.0,
+        "avg_frequency": 3.8,
+        "avg_monetary": 770.07,
+        "definition": "K-means RFM cluster: avg recency 314d, frequency 3.8 txns, monetary $769",
+        "loyalty_mix": {
+          "Bronze": 91.9,
+          "Gold": 0.2,
+          "Silver": 7.9
+        },
+        "used_by_campaigns": []
+      }
+    ],
+    "total_customers": 49807,
+    "methodology": "K-means clustering (k=3) on RFM features (Recency, Frequency, Monetary) across 50,000 customers from macys.db."
+  }
+}

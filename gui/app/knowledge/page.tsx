@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 
-import { API_BASE } from "@/lib/api";
+import { API_BASE, fetchWithFallback } from "@/lib/api";
 import { PageTransition } from "@/components/motion";
 
 type KnowledgeDoc = {
@@ -82,8 +82,7 @@ export default function KnowledgePage() {
   const [loadingDoc, setLoadingDoc] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE}/knowledge`, { cache: "no-store" })
-      .then((r) => r.json())
+    fetchWithFallback<{ docs: KnowledgeDoc[] }>("/knowledge", "knowledge_list")
       .then((data) => { setDocs(data.docs); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);

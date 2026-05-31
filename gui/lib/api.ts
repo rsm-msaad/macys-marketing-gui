@@ -116,6 +116,56 @@ export async function callWithFallback<T>(
   }
 }
 
+// ----- Cached panel fallbacks (GET endpoints for sidebar pages) -----
+
+let _cachedPanels: Record<string, unknown> | null = null;
+
+async function getCachedPanels(): Promise<Record<string, unknown>> {
+  if (_cachedPanels) return _cachedPanels;
+  try {
+    const res = await fetch("/cached-panels.json");
+    if (res.ok) _cachedPanels = await res.json();
+  } catch {
+    // Silent
+  }
+  return _cachedPanels ?? {};
+}
+
+/**
+ * Fetch a GET endpoint with a timeout, falling back silently to cached
+ * panel data if the backend is asleep or slow.
+ */
+export async function fetchWithFallback<T>(
+  path: string,
+  cachedKey: string,
+  opts: { timeoutMs?: number } = {},
+): Promise<T> {
+  const { timeoutMs = 15_000 } = opts;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(`${API_BASE}${path}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      console.debug(`[fetchWithFallback] ${cachedKey}: live response`);
+      return data as T;
+    }
+    throw new Error(`${res.status}`);
+  } catch {
+    const cached = await getCachedPanels();
+    const fallback = cached[cachedKey];
+    if (fallback) {
+      console.debug(`[fetchWithFallback] ${cachedKey}: using cached fallback`);
+      return fallback as T;
+    }
+    throw new Error(`GET ${path} failed and no cached fallback for ${cachedKey}`);
+  }
+}
+
 // ----- Personas -----
 export type Persona = {
   id: string;
@@ -177,7 +227,7 @@ export type Campaign = {
 };
 
 export async function fetchCampaigns(): Promise<Campaign[]> {
-  return request<Campaign[]>("/campaigns");
+  return fetchWithFallback<Campaign[]>("/campaigns", "campaigns_list");
 }
 
 // ----- Campaign live state (approval flow) -----

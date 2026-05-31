@@ -12,7 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { API_BASE } from "@/lib/api";
+import { fetchWithFallback } from "@/lib/api";
 import { PageTransition, PulsingDots } from "@/components/motion";
 
 type DashboardData = {
@@ -66,8 +66,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/dashboard/overview`, { cache: "no-store" })
-      .then((r) => r.json())
+    fetchWithFallback<DashboardData>("/dashboard/overview", "dashboard_overview")
       .then(setData)
       .catch(() => {});
   }, []);

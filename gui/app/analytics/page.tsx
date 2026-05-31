@@ -12,7 +12,7 @@ import {
   Wrench,
 } from "lucide-react";
 
-import { API_BASE } from "@/lib/api";
+import { fetchWithFallback } from "@/lib/api";
 import { PageTransition } from "@/components/motion";
 
 type CampaignMetric = {
@@ -60,8 +60,7 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/analytics/overview`, { cache: "no-store" })
-      .then((r) => r.json())
+    fetchWithFallback<AnalyticsData>("/analytics/overview", "analytics_overview")
       .then(setData)
       .catch(() => {});
   }, []);
