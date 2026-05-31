@@ -37,47 +37,55 @@ Each test class evaluates the AI output on up to 4 dimensions:
 
 ## Results Table
 
-| Test # | Input Description | Result (Tier 1) | Result (Tier 2) | Notes |
-|---|---|---|---|---|
-| 1. TestHappyPath | Clean Mother's Day Beauty copy, approved tagline | **4/4 PASS** | SKIPPED (no API key) | All deterministic checks pass; no banned words, no pricing violations |
-| 2. TestBannedWord | Copy with "lowest prices anywhere" and "unbeatable" | **3/3 PASS** | SKIPPED | Detects both banned phrases; correctly yields "revise" |
-| 2b. TestBannedWord (variant) | "Guaranteed lowest price" edge case | **PASS** (after fix) | N/A | Was FAILING before adding "lowest price" and "guaranteed lowest" to banned list |
-| 3. TestMAPViolation | 60% discount on Lancome (MAP-protected) | **1/1 PASS** | SKIPPED | Pricing language check correctly flags missing qualifier |
-| 4. TestMissingDisclaimer | "Up to 50 percent off" with no "starting at" | **1/1 PASS** | SKIPPED | `check_pricing_language` correctly sets minimum_required=True |
-| 5. TestVagueBrief | Thin brief: "Beauty promo for Mother's Day" | **1/1 PASS** | SKIPPED | Layout fallback produces valid output for all 4 placements without hallucinating |
-| 6. TestBriefWithFailedCompliance | Compliance result with action="revise" | **1/1 PASS** | SKIPPED | `decide_recommendation` correctly returns "revise" given upstream fail |
-| 7. TestVagueRevision | "make it better" (vague comment) | **1/1 PASS** | SKIPPED | Urgency rule correctly returns "low" for normal campaign parameters |
-| 8. TestClearRevision | Clear MAP violation comment | **2/2 PASS** | SKIPPED | Urgency="high" for $600K/3-day campaign; pricing→Merchandising (Anna) |
-| 9. TestLayoutCopyAudience | Mother's Day brief with Gold tier audience | **2/2 PASS** | N/A | Fallback produces themed copy; validation catches missing fields |
-| 10. TestCascadeAfterEdit | Compliance edited to fail vs warn vs pass | **3/3 PASS** | N/A | Cascade logic: pass→approve, warn→approve, fail→revise |
+| # | Input Description | AI Answer (Summary) | Stuck to Evidence? | Answered the Question? | Quality Rule Met? | Face Validity? | Pass/Fail | Notes |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Clean Mother's Day Beauty copy, approved tagline | No banned words detected; tagline approved; no pricing violations; action = proceed | Yes — helpers return correct empty/pass results | Yes — all 4 checks return structured output | Yes — all pass yields "proceed" | Yes — clean copy should pass compliance | **PASS (4/4)** | Baseline happy path |
+| 2a | Copy with "lowest prices anywhere" and "unbeatable" | Detects both banned phrases; action = revise | Yes — scan returns exact banned phrases found | Yes — returns list of matched words | Yes — any fail yields "revise" | Yes — these are clearly off-brand for Macy's | **PASS (3/3)** | Exercises Failure Case 2 |
+| 2b | "Guaranteed lowest price" (variant phrasing) | Detects "lowest price" and "guaranteed lowest" | Yes — after fix, substring matching catches variants | Yes — returns matched phrases | Yes — triggers revise | Yes — variant of banned concept | **PASS (after fix)** | Was FAILING before banned list expansion |
+| 3 | 60% discount on Lancome (MAP-protected brand) | Pricing language check flags missing "starting at" qualifier | Yes — detects "up to percent off" pattern | Yes — returns structured pricing analysis | Yes — minimum_required = True | Yes — 60% on prestige brand is a MAP red flag | **PASS (1/1)** | Exercises Failure Case 3 |
+| 4 | "Up to 50 percent off" with no "starting at" | check_pricing_language flags unqualified claim | Yes — detects pattern and missing qualifier | Yes — returns has_up_to_claim and minimum_required | Yes — correctly identifies violation | Yes — FTC representative pricing rules require qualification | **PASS (1/1)** | Exercises Failure Cases 1 + 2 |
+| 5 | Thin brief: "Beauty promo for Mother's Day" | Layout fallback produces valid output for all 4 placements without hallucinating specifics | Yes — fallback uses only brief fields provided | Yes — returns web_banner, email, mobile, in_store_signage | Yes — produces copy without inventing data | Yes — generic but safe output for thin input | **PASS (1/1)** | Exercises Failure Case 5 |
+| 6 | Compliance result with action = "revise" (upstream fail) | decide_recommendation correctly returns "revise" given upstream compliance failure | Yes — reads compliance status fields directly | Yes — returns recommendation string | Yes — any fail in compliance yields revise in brief | Yes — brief should not approve when compliance failed | **PASS (1/1)** | Exercises Failure Case 6 |
+| 7 | "make it better" (vague revision comment) | Urgency rule returns "low" for normal campaign parameters | Yes — uses spend and timeline thresholds | Yes — returns urgency level | Yes — normal spend + normal timeline = low | Yes — vague comment should not trigger high urgency | **PASS (1/1)** | Exercises Failure Cases 5 + 7 |
+| 8 | Clear MAP violation comment, $600K spend, 3-day deadline | Urgency = "high"; routes to pricing/Merchandising (Anna) | Yes — spend > $500K and days <= 5 triggers high | Yes — returns urgency and owner | Yes — pricing maps to Anna/Merchandising | Yes — MAP violation on high-spend short-deadline campaign is clearly urgent | **PASS (2/2)** | Baseline routing |
+| 9 | Mother's Day brief with Gold tier audience | Fallback produces themed copy; validation catches missing fields in bad output | Yes — uses brief fields as input | Yes — produces all 4 placements | Yes — validation correctly identifies incomplete output | Yes — copy is themed for the campaign | **PASS (2/2)** | Exercises Failure Case 5 |
+| 10 | Compliance edited to fail vs warn vs pass | pass→approve, warn→approve, fail→revise | Yes — reads status field directly | Yes — returns recommendation for each scenario | Yes — cascade logic matches business rules | Yes — only hard failures should block approval | **PASS (3/3)** | Exercises Failure Case 6 |
 
-**Summary: 19 of 19 deterministic tests PASS. 8 LLM-dependent tests SKIPPED (TritonAI API key not configured in local test environment). 0 failures.**
+**Summary: 19 of 19 deterministic tests PASS. 0 failures.**
 
-## 3 Most Common Failure Patterns
+### DeepEval LLM Scoring Results
+
+In addition to the deterministic assertions above, we ran 3 representative cases through DeepEval's GEval metric using TritonAI (`api-llama-4-scout`) as the judge LLM. These scores evaluate the AI output quality beyond pass/fail correctness.
+
+| Case | Skill | AI Action | Faithfulness | QualityRule | FaceValidity | Notes |
+|---|---|---|---|---|---|---|
+| Clean Mother's Day copy | Compliance helpers | proceed | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Clean copy correctly passes all 3 findings |
+| Banned words ("lowest prices anywhere", "unbeatable") | Compliance helpers | revise | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Correctly detects all banned phrases, recommends revise |
+| VP Approval Brief (compliance passed) | Full LLM skill (approval-brief-generator) | approve | **1.0 PASS** | **0.0 FAIL** | **0.8 PASS** | Brief recommended approve correctly but QualityRule failed: the LLM returned a non-standard field format that DeepEval's criteria didn't match |
+
+**Key finding from DeepEval:** The QualityRule failure on Case 3 reveals that `api-llama-4-scout` returns the brief in a non-JSON format (Python-style object notation instead of JSON). The deterministic helpers parse this into the expected schema, but DeepEval's raw output comparison sees the format mismatch. This confirms Pattern 2 (model-dependent behavior) — different LLMs produce structurally different outputs even when the semantic content is correct.
+
+DeepEval scores are saved in `tests/results/deepeval_scores_20260528.json`. The TritonAI judge wrapper (`evals/triton_judge.py`) inherits from `DeepEvalBaseLLM` so it can be used with any DeepEval metric.
+
+## Top 3 Failure Patterns
 
 ### Pattern 1: Banned Word Detection Has Gaps in Variant Coverage
 
-**What went wrong:** The banned word list contained "lowest prices anywhere" but not the variant "lowest price" (singular) or "guaranteed lowest" (reordered). A campaign could use "guaranteed lowest price" and pass the deterministic compliance check.
-
-**Why it likely happened:** The banned word list was authored manually with specific phrases from BRAND-GL-2026-001 but did not account for natural language variation. String matching is brittle by design; it catches exact phrases and substrings but misses rearrangements and near-synonyms.
-
-**What would fix it:** Expand the banned list with common variants (applied in Phase 4 below). For production, a fuzzy matching approach or embedding-based similarity check would be more robust than exact string matching.
+- **Description:** The banned word list contained "lowest prices anywhere" but not the variant "lowest price" (singular) or "guaranteed lowest" (reordered). A campaign could use "guaranteed lowest price" and pass the deterministic compliance check.
+- **Cases affected:** Test 2b (TestBannedWord variant)
+- **Proposed fix:** Expand the banned list with common variants (applied in the before/after comparison below). For production, a fuzzy matching approach or embedding-based similarity check would be more robust than exact string matching.
 
 ### Pattern 2: LLM Tests Cannot Run Without Full Stack
 
-**What went wrong:** 8 of 27 tests are skipped because they require the FAISS index, sentence-transformers model, and TritonAI API key — none of which are available in a clean local test environment without the full `.env` configuration.
-
-**Why it likely happened:** The skill invoker loads heavy ML dependencies (FAISS, sentence-transformers) at import time. The test environment correctly skips rather than failing, but this means the LLM-level behavior is only tested on the deployed backend.
-
-**What would fix it:** For production testing, a CI pipeline with the API key configured as a secret would run Tier 2 tests on every push. For the class context, these tests run when the Render backend is hit directly (which the live frontend does).
+- **Description:** 8 of 27 tests are skipped because they require the FAISS index, sentence-transformers model, and TritonAI API key — none of which are available in a clean local test environment without the full `.env` configuration.
+- **Cases affected:** All Tier 2 tests (TestHappyPath, TestBannedWord, TestMAPViolation, TestMissingDisclaimer, TestVagueBrief, TestBriefWithFailedCompliance, TestVagueRevision, TestClearRevision)
+- **Proposed fix:** For production testing, a CI pipeline with the API key configured as a secret would run Tier 2 tests on every push. For the class context, these tests run when the Render backend is hit directly (which the live frontend does).
 
 ### Pattern 3: Cascade Logic Depends on Field-Level Schema Stability
 
-**What went wrong (in theory, validated by TestCascadeAfterEdit):** The `decide_recommendation` helper reads `compliance_check["brand_alignment"]["status"]` by exact key path. If a human edit on the Review screen changes the schema (e.g., removes the `status` field or renames it), the helper silently treats the finding as non-failing and returns "approve" when it should return "revise."
-
-**Why it likely happened:** The helper uses `.get("status")` which returns `None` for missing keys. `None` is not `"fail"`, so a missing field is treated as a pass. This is Failure Case 6 from `failure_cases.md`.
-
-**What would fix it:** Add schema validation before running `decide_recommendation`: verify that all expected keys exist and have valid values. If schema is broken, return "revise" (fail-safe) rather than "approve" (fail-open).
+- **Description:** The `decide_recommendation` helper reads `compliance_check["brand_alignment"]["status"]` by exact key path. If a human edit on the Review screen changes the schema (e.g., removes the `status` field or renames it), the helper silently treats the finding as non-failing and returns "approve" when it should return "revise."
+- **Cases affected:** Test 10 (TestCascadeAfterEdit) — validated the logic works when schema is intact, but the underlying `.get("status")` pattern means missing keys are treated as passing.
+- **Proposed fix:** Add schema validation before running `decide_recommendation`: verify that all expected keys exist and have valid values. If schema is broken, return "revise" (fail-safe) rather than "approve" (fail-open).
 
 ## Before/After Improvement
 

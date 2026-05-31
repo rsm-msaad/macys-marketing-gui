@@ -38,18 +38,23 @@ All numbers in this document use the following assumptions:
 | Human review time | Embedded throughout, hard to isolate | 4 to 8 hours of explicit review across all gates | More concentrated, more visible |
 | Number of manual data handoffs | M1 documented "every single transfer is manual" across all 10 steps | 0 between AI skills and automations; ~5 human approval gates | Near-elimination of manual handoffs |
 | Revision rounds at Step 6 | 2 to 4 rounds per campaign | 1 round in most cases (AI pre-check catches issues earlier) | 50-75% reduction |
+| Rework risk | High — compliance defects, MAP violations, and brief inconsistencies frequently trigger mid-flight corrections or post-launch rework | Low — Compliance Pre Check and structured brief validation catch most defects before the VP review gate | Substantial reduction; remaining risk covered in `failure_cases.md` |
 | Localization variants per campaign | 40 to 50 manually created files | 40 to 50 auto-generated, 4 to 6 spot-checked | Same output, ~95% less labor |
 | Stakeholder wait time for VP approval | 2 to 3 days after submission | Same day or next day (brief is pre-drafted, compliance pre-checked) | Faster decision cycle |
 
 ## Cost Reasoning
 
+```
+Estimated labor cost per case = estimated minutes per case / 60 * estimated hourly cost
+```
+
 **Labor cost per campaign (current):** At $75/hour fully loaded and conservatively 30 business days at 6 productive hours per day, a campaign consumes roughly 180 person-hours across all roles (campaign manager, designer, production artist, analyst, legal reviewer). Total labor cost per campaign: approximately $13,500. This is the cost of one campaign for one team. Macy's runs dozens of campaigns concurrently across categories and seasons, so total annual marketing operations labor runs into the millions.
 
 **Labor cost per campaign (AI-supported):** At the same $75/hour and our estimated 5 to 10 business days at 4 productive hours per day (less time on manual coordination, more concentrated on judgment and review), a campaign consumes roughly 30 person-hours. Total labor cost per campaign: approximately $2,250. Estimated savings per campaign: approximately $11,000. At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $715,000 to $1.1 million. This is a class-context estimate based on reasoned assumptions, not a guaranteed projection.
 
-### Where does the 65 to 100 campaigns per year estimate come from?
+### Where Does the 65 to 100 Campaigns per Year Estimate Come From?
 
-| Campaign source | Annual count | Notes |
+| Campaign Source | Annual Count | Notes |
 |---|---:|---|
 | Weekly promotional campaigns | ~52 | Macy's documented weekly promo slot running through the year |
 | Major event-driven campaigns | 10-15 | Mother's Day, Father's Day, Back to School, Black Friday, Christmas, Valentine's Day, and similar tentpole events that may fall outside the weekly slot |
@@ -88,13 +93,29 @@ Time savings are necessary but not sufficient. If AI saves time at the cost of q
 
 **AI-supported:** The Audience Segment Builder automation reads directly from `macys.db` (simulated in M3; in production it would connect to the Star Rewards loyalty database via API per M1's data requirements document). Data freshness gap closes from 2 to 3 weeks to near-zero. This eliminates one of M1's most concrete pain points and directly improves segment targeting accuracy.
 
-## Face Validity Anchors
+## Face Validity Check
 
-These estimates pass a basic face validity check. Two anchors:
+### 1. Direction
 
-**Anchor 1: Industry benchmarks.** Public reporting on AI-supported marketing automation suggests 30-70% time savings on creative production cycles when AI handles initial drafts and humans refine. Our 70-80% total cycle reduction estimate sits at the high end of this range. The high estimate is plausible for our case because we automate not just creative production (Steps 4-5) but also segmentation (Step 2), SKU selection (Step 3), localization (Step 7), and reporting (Step 10), which are each separate manual workflows in many marketing organizations.
+The AI-supported process reduces time at the coordination-heavy steps (Steps 2-5, 7) where M1 documented the worst manual friction, while preserving or increasing human review time at the judgment-heavy steps (Steps 6a, 6b, 8, 10). This is exactly the pattern expected from a well-designed AI augmentation: maximum savings on mechanical work, minimal cuts on strategic judgment. If the direction were reversed — huge savings on judgment steps, small savings on coordination — that would be a red flag.
 
-**Anchor 2: M1 user stories.** M1's own user stories projected segmentation dropping from 2-3 business days to 2-4 hours, creative production from 10-17 days to 2-4 hours, and localization from 5-8 days to 1-2 hours. Our per-step estimates align with these documented projections from the team's own M1 analysis. We are not inventing new numbers; we are organizing M1's projections into the M4 format and extending them to the steps that M1 did not explicitly project (Steps 1, 8, 10).
+### 2. Magnitude
+
+The 70-80% end-to-end reduction sits at the high end of the 30-70% range reported in industry benchmarks for AI-assisted marketing operations. The high end is defensible because we automate not just one workflow segment but the entire 10-step process end-to-end. M1's own user story projections for individual steps (segmentation: ~95% reduction, localization: ~97% reduction) exceed our overall estimate. Our 70-80% is actually more conservative than summing M1's per-step projections because we account for steps with modest improvements (briefing, activation, monitoring).
+
+### 3. Evidence Alignment
+
+Every AI output is paired with an evidence record showing retrieved RAG passages, MCP tool inputs/outputs, and prior step references via the Evidence side panel. Reviewers can verify whether the AI's conclusion is supported by its sources in seconds rather than minutes. The confidence indicator is derived heuristically and can mislead (Failure Case 4), but the Evidence pill provides the factual check that the confidence label cannot.
+
+### 4. Practical Constraints
+
+The design preserves human authority at all consequential gates (Steps 6a, 6b, 8, 10), respects Macy's compliance requirements by flagging pricing and brand violations before they reach customers, does not eliminate any role (it shifts task mix toward higher-value work), and acknowledges that production deployment requires data integration work documented in M1. The time savings will not materialize until those integrations are built.
+
+### Face Validity Anchors
+
+**Anchor 1: Industry benchmarks.** Public reporting on AI-supported marketing automation suggests 30-70% time savings on creative production cycles when AI handles initial drafts and humans refine. Our estimate sits at the high end because we automate the full 10-step process, not just creative production.
+
+**Anchor 2: M1 user stories.** M1's own user stories projected per-step reductions that individually exceed our overall estimate (segmentation: 2-3 days to 2-4 hours, creative production: 10-17 days to 2-4 hours, localization: 5-8 days to 1-2 hours). We are organizing M1's projections into the M4 format, not inventing new numbers.
 
 ## Limitations
 
