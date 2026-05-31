@@ -434,6 +434,9 @@ export async function runLayoutCopy(brief: {
   target_customer: string;
   promotional_offer: string[];
   category: string;
+  segment_name?: string;
+  segment_customer_count?: number;
+  segment_avg_monetary?: number;
 }): Promise<LayoutCopyResult> {
   return callWithFallback<LayoutCopyResult>(
     "/skills/generate-layout-copy",

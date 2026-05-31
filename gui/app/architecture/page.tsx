@@ -20,7 +20,7 @@ type StepType = "human" | "ai" | "automation" | "human-ai";
 
 type Pill = {
   label: string;
-  kind: "rag" | "mcp" | "data";
+  kind: "rag" | "mcp" | "data" | "skill";
 };
 
 type Step = {
@@ -77,7 +77,7 @@ const STEPS: Step[] = [
     label: "5",
     name: "Layout Assembly",
     type: "ai",
-    pills: [{ label: "Layout Copy Generator", kind: "mcp" }],
+    pills: [{ label: "Layout Copy Generator", kind: "skill" }],
     lane: "creative",
   },
   {
@@ -150,7 +150,7 @@ const STEPS: Step[] = [
     label: "10",
     name: "Reporting",
     type: "ai",
-    pills: [{ label: "send_campaign_summary", kind: "mcp" }],
+    pills: [{ label: "Report Generator", kind: "skill" }],
     lane: "dist",
   },
 ];
@@ -189,6 +189,7 @@ const PILL_COLORS: Record<string, { bg: string; text: string }> = {
   rag: { bg: "bg-amber-500/20", text: "text-amber-300" },
   mcp: { bg: "bg-teal-500/20", text: "text-teal-300" },
   data: { bg: "bg-slate-500/20", text: "text-slate-300" },
+  skill: { bg: "bg-rose-500/20", text: "text-rose-300" },
 };
 
 /* Lane labels are rendered inline below */
@@ -257,6 +258,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
                 {pill.kind === "rag" && "📄 "}
                 {pill.kind === "mcp" && "🔧 "}
                 {pill.kind === "data" && "💾 "}
+                {pill.kind === "skill" && "🤖 "}
                 {pill.label}
               </span>
             );

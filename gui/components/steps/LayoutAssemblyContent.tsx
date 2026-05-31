@@ -99,6 +99,9 @@ export function LayoutAssemblyContent({
         target_customer: brief.target_customer,
         promotional_offer: brief.promotional_offer,
         category,
+        segment_name: segmentName ?? undefined,
+        segment_customer_count: segmentOutput?.customer_count as number | undefined,
+        segment_avg_monetary: segmentOutput?.avg_monetary as number | undefined,
       });
       setPlacements(result.placements);
 

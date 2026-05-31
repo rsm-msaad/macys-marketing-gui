@@ -232,6 +232,7 @@ def score_sku(
     category: str,
     discount_pct: float,
     campaign_season: str,
+    segment_top_category: str | None = None,
 ) -> dict[str, Any]:
     """Score a single SKU. Returns the SKU dict augmented with score fields."""
     # Category filter (already filtered at DB level, but belt-and-suspenders)
@@ -255,7 +256,18 @@ def score_sku(
     ven = _vendor_score(sku.get("vendor_commitment", "low"))
     sea = _seasonality_score(sku.get("seasonal_tags", []), campaign_season)
 
-    composite = inv * W_INVENTORY + mar * W_MARGIN + ven * W_VENDOR + sea * W_SEASONALITY
+    # Segment affinity bonus: if the selected segment's top category matches
+    # this SKU's subcategory, apply a small lift. This means choosing a
+    # different segment (e.g., "VIP Loyalists" whose top category is
+    # "Accessories") shifts the ranking even within the same main category.
+    # The bonus is additive and capped at 5% of the composite score.
+    seg_bonus = 0.0
+    if segment_top_category:
+        subcat = sku.get("subcategory", "").lower()
+        if subcat and segment_top_category.lower() in subcat:
+            seg_bonus = 0.05
+
+    composite = inv * W_INVENTORY + mar * W_MARGIN + ven * W_VENDOR + sea * W_SEASONALITY + seg_bonus
 
     scores = [
         (inv * W_INVENTORY, "High inventory availability"),
@@ -302,12 +314,13 @@ def recommend_skus(
     category = brief.get("category", "Beauty")
     discount_pct = brief.get("discount_pct", 25)
     campaign_season = brief.get("season", "")
+    seg_top_cat = brief.get("segment_top_category")
 
     effective_db = Path(db_path) if db_path else DEFAULT_DB_PATH
     catalog = _load_catalog_from_db(category, db_path=effective_db)
 
     scored = [
-        score_sku(sku, category, discount_pct, campaign_season)
+        score_sku(sku, category, discount_pct, campaign_season, seg_top_cat)
         for sku in catalog
     ]
 

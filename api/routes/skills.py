@@ -409,6 +409,9 @@ class LayoutCopyBody(BaseModel):
     target_customer: str = Field(default="")
     promotional_offer: list[str] = Field(default_factory=list)
     category: str = Field(default="Beauty")
+    segment_name: str | None = Field(default=None)
+    segment_customer_count: int | None = Field(default=None)
+    segment_avg_monetary: float | None = Field(default=None)
 
 
 @router.post("/generate-layout-copy")
@@ -426,12 +429,16 @@ def run_layout_copy(body: LayoutCopyBody) -> dict:
     # Try Claude via skill_invoker first; fall back to deterministic if unavailable
     try:
         from ai_engine.orchestrator.skill_invoker import invoke_skill
+        # Build audience context from segment data if available
+        audience = body.target_customer
+        if body.segment_name:
+            audience = f"{body.segment_name} ({body.segment_customer_count or '?'} customers, avg spend ${body.segment_avg_monetary or 0:,.0f}). {body.target_customer}"
         state = {
             "campaign": {
                 "title": body.name,
                 "copy": body.objective,
                 "category": body.category,
-                "audience_segment": body.target_customer,
+                "audience_segment": audience,
                 "promotional_offer": body.promotional_offer,
             },
             "status": "submitted",
@@ -458,6 +465,9 @@ def run_layout_copy(body: LayoutCopyBody) -> dict:
 
     # Deterministic fallback (always works, no API key needed)
     try:
+        # Enrich target_customer with segment data for the fallback too
+        if body.segment_name:
+            brief["target_customer"] = f"{body.segment_name} ({body.segment_customer_count or '?'} customers)"
         placements = helpers.generate_fallback(brief)
         errors = helpers.validate_placements(placements)
         elapsed = round((time.monotonic() - started) * 1000, 1)
