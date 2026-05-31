@@ -68,7 +68,7 @@ In addition to the deterministic assertions above, we ran 3 representative cases
 
 DeepEval scores are saved in `tests/results/deepeval_scores_20260528.json`. The TritonAI judge wrapper (`evals/triton_judge.py`) inherits from `DeepEvalBaseLLM` so it can be used with any DeepEval metric.
 
-## Top 3 Failure Patterns
+## Top 4 Failure Patterns
 
 ### Pattern 1: Banned Word Detection Has Gaps in Variant Coverage
 
@@ -87,6 +87,15 @@ DeepEval scores are saved in `tests/results/deepeval_scores_20260528.json`. The 
 - **Description:** The `decide_recommendation` helper reads `compliance_check["brand_alignment"]["status"]` by exact key path. If a human edit on the Review screen changes the schema (e.g., removes the `status` field or renames it), the helper silently treats the finding as non-failing and returns "approve" when it should return "revise."
 - **Cases affected:** Test 10 (TestCascadeAfterEdit) — validated the logic works when schema is intact, but the underlying `.get("status")` pattern means missing keys are treated as passing.
 - **Proposed fix:** Add schema validation before running `decide_recommendation`: verify that all expected keys exist and have valid values. If schema is broken, return "revise" (fail-safe) rather than "approve" (fail-open).
+
+### Pattern 4: Agentic Compliance Skill Over-Flags Clean Copy (Found Failure)
+
+- **Finding:** The compliance-pre-check skill, running in agentic mode via Claude, flags clean compliant copy as `"revise"` instead of `"proceed"`. The happy-path test (Case 1, TestCase01HappyPath) fails the assertion `recommended_action == "proceed"` consistently across multiple runs. The campaign copy contains no banned words, uses an approved tagline ("find your magic"), has no unqualified pricing claims, and passes all deterministic helper checks. Despite this, the agentic LLM returns a revise recommendation.
+- **Why it happens:** The agentic skill gives Claude tool-calling authority to verify claims mid-reasoning. Claude leans conservative — when it retrieves compliance policy documents via RAG, it interprets broad guidance (e.g., "ensure all promotional claims are substantiated") as grounds to flag copy that the deterministic helpers correctly pass. The non-deterministic reasoning path means Claude sometimes invents soft concerns that do not correspond to concrete rule violations in the cited documents.
+- **Business consequence for Macy's:** Clean campaigns that should proceed without delay trigger unnecessary review cycles. If every compliant campaign gets flagged for revision, the time savings documented in `estimates.md` (Step 6 dropping from 3-7 days to 2-4 hours) erode because human reviewers must manually override false positives. At scale, this undermines trust in the AI coworker — reviewers learn to ignore compliance findings, which is exactly the rubber-stamping pattern (Failure Case 7) the system was designed to prevent.
+- **How the user notices:** The happy-path Tier 2 test fails the `recommended_action == "proceed"` assertion. In the live app, the Campaign Manager sees a "revise" recommendation on the Step 6a compliance card for copy that has no actual violations. The Evidence panel shows cited passages that do not support the flagged findings, revealing the over-flagging.
+- **Cases affected:** Test 1 (TestCase01HappyPath, Tier 2). The Tier 1 deterministic tests for the same input all pass (4/4), confirming the helpers correctly identify no violations. The discrepancy is between the deterministic logic and the agentic LLM reasoning.
+- **Proposed fix:** (1) Tighten the compliance SKILL.md prompt to instruct Claude to flag only concrete, specific violations documented in the retrieved policy passages — not soft interpretive concerns. (2) Add a clean few-shot example to the prompt showing compliant copy that should return `"proceed"`, so the model has a calibration anchor. (3) As a fallback, add a post-processing step that cross-checks the LLM's finding statuses against the deterministic helpers: if all helpers pass but the LLM flags a finding, downgrade it to `"warn"` rather than `"fail"` and surface the discrepancy to the reviewer.
 
 ## Before/After Improvement
 
