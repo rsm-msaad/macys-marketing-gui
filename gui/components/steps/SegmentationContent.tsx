@@ -327,7 +327,7 @@ export function SegmentationContent({
         {running && (
           <div className="mt-3 flex items-center gap-2 text-sm text-charcoal/60">
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
-            Running RFM clustering...
+            Running the segment builder on 50,000 customer profiles...
           </div>
         )}
 

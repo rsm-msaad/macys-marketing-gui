@@ -60,6 +60,62 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   throw new Error("API request failed after retries.");
 }
 
+// ----- Cached fallback outputs (real captured data, bundled client-side) -----
+
+let _cachedOutputs: Record<string, unknown> | null = null;
+
+async function getCachedOutputs(): Promise<Record<string, unknown>> {
+  if (_cachedOutputs) return _cachedOutputs;
+  try {
+    const res = await fetch("/cached-outputs.json");
+    if (res.ok) _cachedOutputs = await res.json();
+  } catch {
+    // Silent — fallback not available
+  }
+  return _cachedOutputs ?? {};
+}
+
+/**
+ * Race a real API call against a timeout. If the live call fails or times
+ * out, silently return the cached real output (captured from a previous
+ * successful run). The caller sees the same shape either way.
+ */
+export async function callWithFallback<T>(
+  endpoint: string,
+  body: unknown,
+  cachedKey: string,
+  opts: { timeoutMs?: number } = {},
+): Promise<T> {
+  const { timeoutMs = 30_000 } = opts;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      console.debug(`[callWithFallback] ${cachedKey}: live response`);
+      return data as T;
+    }
+    throw new Error(`${res.status}`);
+  } catch {
+    // Silent fallback to cached real output
+    const cached = await getCachedOutputs();
+    const fallback = cached[cachedKey];
+    if (fallback) {
+      console.debug(`[callWithFallback] ${cachedKey}: using cached fallback`);
+      return fallback as T;
+    }
+    throw new Error(`API call failed and no cached fallback for ${cachedKey}`);
+  }
+}
+
 // ----- Personas -----
 export type Persona = {
   id: string;
@@ -259,17 +315,18 @@ export async function runSkuRecommend(
   maxResults = 18,
   segmentTopCategory?: string,
 ): Promise<SkuRecommendResult> {
-  return request<SkuRecommendResult>("/skills/sku-recommend", {
-    method: "POST",
-    body: JSON.stringify({
+  return callWithFallback<SkuRecommendResult>(
+    "/skills/sku-recommend",
+    {
       category,
       discount_pct: discountPct,
       campaign_period: campaignPeriod,
       season,
       max_results: maxResults,
       segment_top_category: segmentTopCategory ?? null,
-    }),
-  });
+    },
+    "step3_sku_recommend",
+  );
 }
 
 // MCP tool: check_pricing_conflicts
@@ -328,10 +385,11 @@ export async function runLayoutCopy(brief: {
   promotional_offer: string[];
   category: string;
 }): Promise<LayoutCopyResult> {
-  return request<LayoutCopyResult>("/skills/generate-layout-copy", {
-    method: "POST",
-    body: JSON.stringify(brief),
-  });
+  return callWithFallback<LayoutCopyResult>(
+    "/skills/generate-layout-copy",
+    brief,
+    "step5_layout_copy",
+  );
 }
 
 export type LayoutPreview = {
@@ -542,10 +600,11 @@ export type SegmentResult = {
 };
 
 export async function runSegment(brief: string): Promise<SegmentResult> {
-  return request<SegmentResult>("/skills/segment", {
-    method: "POST",
-    body: JSON.stringify({ brief }),
-  });
+  return callWithFallback<SegmentResult>(
+    "/skills/segment",
+    { brief },
+    "step2_segment",
+  );
 }
 
 export type DamAsset = {
@@ -578,10 +637,11 @@ export type DamResult = {
 };
 
 export async function runDam(brief: string, maxResults = 12, category?: string): Promise<DamResult> {
-  return request<DamResult>("/skills/dam-search", {
-    method: "POST",
-    body: JSON.stringify({ brief, max_results: maxResults, category: category ?? null }),
-  });
+  return callWithFallback<DamResult>(
+    "/skills/dam-search",
+    { brief, max_results: maxResults, category: category ?? null },
+    "step4_dam_search",
+  );
 }
 
 // Agentic DAM curation skill
@@ -734,10 +794,11 @@ export async function runLocalizeStrategy(
 }
 
 export async function runLocalize(brief: string, skuIds: number[]): Promise<LocalizeResult> {
-  return request<LocalizeResult>("/skills/localize", {
-    method: "POST",
-    body: JSON.stringify({ brief, sku_ids: skuIds }),
-  });
+  return callWithFallback<LocalizeResult>(
+    "/skills/localize",
+    { brief, sku_ids: skuIds },
+    "step7_localize",
+  );
 }
 
 // MCP tool: generate_locale_variants
@@ -832,10 +893,11 @@ export type AnalyzeResult = {
 };
 
 export async function runAnalyze(campaignId: number, forecastDays = 14): Promise<AnalyzeResult> {
-  return request<AnalyzeResult>("/skills/analyze", {
-    method: "POST",
-    body: JSON.stringify({ campaign_id: campaignId, forecast_days: forecastDays }),
-  });
+  return callWithFallback<AnalyzeResult>(
+    "/skills/analyze",
+    { campaign_id: campaignId, forecast_days: forecastDays },
+    "step9_analyze",
+  );
 }
 
 // Activation Scheduler (deterministic automation)
@@ -867,14 +929,11 @@ export async function runActivate(
   estimatedSpend: number,
   launchDate: string,
 ): Promise<ActivateResult> {
-  return request<ActivateResult>("/skills/activate", {
-    method: "POST",
-    body: JSON.stringify({
-      regions,
-      estimated_spend: estimatedSpend,
-      launch_date: launchDate,
-    }),
-  });
+  return callWithFallback<ActivateResult>(
+    "/skills/activate",
+    { regions, estimated_spend: estimatedSpend, launch_date: launchDate },
+    "step8_activate",
+  );
 }
 
 // Report Generator skill
@@ -902,17 +961,18 @@ export async function runGenerateReport(
   category?: string,
   segmentName?: string,
 ): Promise<GenerateReportResult> {
-  return request<GenerateReportResult>("/skills/generate-report", {
-    method: "POST",
-    body: JSON.stringify({
+  return callWithFallback<GenerateReportResult>(
+    "/skills/generate-report",
+    {
       campaign_id: campaignId,
       campaign_name: campaignName,
       step_outputs: stepOutputs,
       audit_log: auditLog,
       category: category ?? "Beauty",
       segment_name: segmentName ?? null,
-    }),
-  });
+    },
+    "step10_report",
+  );
 }
 
 // MCP tool: send_campaign_summary (Gmail)

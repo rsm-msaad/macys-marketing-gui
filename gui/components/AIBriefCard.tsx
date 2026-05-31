@@ -354,7 +354,7 @@ export function AIBriefCard({
           <div className="relative">
             <div className="flex items-center gap-2 text-xs text-charcoal/65 font-medium">
               <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
-              Drafting approval brief from compliance findings...
+              Claude is drafting the approval brief, about 10 seconds...
             </div>
             <div className="mt-3 space-y-2">
               {[1,2,3].map((i) => (

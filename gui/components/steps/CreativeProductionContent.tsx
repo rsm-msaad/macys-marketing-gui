@@ -315,7 +315,7 @@ export function CreativeProductionContent({
         {running && (
           <div className="mt-3 flex items-center gap-2 text-sm text-charcoal/60">
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
-            Searching DAM...
+            Searching 5,000 DAM assets by relevance...
           </div>
         )}
 

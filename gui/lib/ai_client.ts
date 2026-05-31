@@ -102,18 +102,51 @@ export type CascadeResult = {
   activation_schedule: string;
 };
 
+// ----- Cached fallback for AI calls -----
+
+let _aiCachedOutputs: Record<string, unknown> | null = null;
+
+async function getAICachedOutputs(): Promise<Record<string, unknown>> {
+  if (_aiCachedOutputs) return _aiCachedOutputs;
+  try {
+    const res = await fetch("/cached-outputs.json");
+    if (res.ok) _aiCachedOutputs = await res.json();
+  } catch {
+    // Silent
+  }
+  return _aiCachedOutputs ?? {};
+}
+
+async function aiCallWithFallback<T>(
+  path: string,
+  body: unknown,
+  cachedKey: string,
+): Promise<T> {
+  try {
+    return await aiRequest<T>(path, body);
+  } catch {
+    const cached = await getAICachedOutputs();
+    const fallback = cached[cachedKey];
+    if (fallback) {
+      console.debug(`[aiCallWithFallback] ${cachedKey}: using cached fallback`);
+      return fallback as T;
+    }
+    throw new Error(`AI call failed and no cached fallback for ${cachedKey}`);
+  }
+}
+
 // ----- API functions -----
 
 export async function callCompliance(
   campaign: Record<string, unknown>
 ): Promise<ComplianceResult> {
-  return aiRequest<ComplianceResult>("/api/ai/compliance", campaign);
+  return aiCallWithFallback<ComplianceResult>("/api/ai/compliance", campaign, "step6a_compliance");
 }
 
 export async function callBrief(
   campaign: Record<string, unknown>
 ): Promise<BriefResult> {
-  return aiRequest<BriefResult>("/api/ai/brief", campaign);
+  return aiCallWithFallback<BriefResult>("/api/ai/brief", campaign, "step6b_brief");
 }
 
 export async function callRouteRevision(

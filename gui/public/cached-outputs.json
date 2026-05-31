@@ -1,0 +1,4060 @@
+{
+  "step2_segment": {
+    "ok": true,
+    "brief": "Mother's Day Beauty Event",
+    "segments": [
+      {
+        "name": "VIP Loyalists",
+        "definition": "K-means RFM cluster: avg recency 39d, frequency 17.9 txns, monetary $4,035",
+        "customer_count": 9590,
+        "avg_recency_days": 39.0,
+        "avg_frequency": 17.9,
+        "avg_monetary": 4037.7,
+        "top_category": "Accessories",
+        "top_category_lift": 0.156,
+        "loyalty_mix": {
+          "Bronze": 2.6,
+          "Gold": 52.7,
+          "Platinum": 15.2,
+          "Silver": 29.4
+        }
+      },
+      {
+        "name": "Mid Tier Engaged",
+        "definition": "K-means RFM cluster: avg recency 71d, frequency 6.7 txns, monetary $1,308",
+        "customer_count": 31631,
+        "avg_recency_days": 70.4,
+        "avg_frequency": 6.7,
+        "avg_monetary": 1308.58,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0866,
+        "loyalty_mix": {
+          "Bronze": 68.7,
+          "Gold": 2.9,
+          "Platinum": 0.0,
+          "Silver": 28.4
+        }
+      },
+      {
+        "name": "Lapsed or New",
+        "definition": "K-means RFM cluster: avg recency 314d, frequency 3.8 txns, monetary $769",
+        "customer_count": 8586,
+        "avg_recency_days": 314.0,
+        "avg_frequency": 3.8,
+        "avg_monetary": 770.07,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0315,
+        "loyalty_mix": {
+          "Bronze": 91.9,
+          "Gold": 0.2,
+          "Silver": 7.9
+        }
+      }
+    ],
+    "total_clustered": 49807
+  },
+  "step3_sku_recommend": {
+    "ok": true,
+    "recommended_skus": [
+      {
+        "sku_id": "1406",
+        "name": "MAC Fragrance Issue",
+        "brand": "MAC",
+        "category": "Beauty",
+        "subcategory": "Fragrance",
+        "msrp": 156.42,
+        "margin_pct": 0.4591,
+        "inventory_level": 1411,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.753,
+        "score_pct": 75.3,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.706,
+          "margin": 0.706,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "782",
+        "name": "Bobbi Brown Makeup Tell",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Makeup",
+        "msrp": 93.96,
+        "margin_pct": 0.4198,
+        "inventory_level": 1447,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.7423,
+        "score_pct": 74.2,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.724,
+          "margin": 0.646,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "287",
+        "name": "Bobbi Brown Skincare Remain",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 90.84,
+        "margin_pct": 0.4605,
+        "inventory_level": 1246,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "fall"
+        ],
+        "score": 0.7329,
+        "score_pct": 73.3,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.623,
+          "margin": 0.708,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1058",
+        "name": "Chanel Skincare Support",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 88.79,
+        "margin_pct": 0.4708,
+        "inventory_level": 1173,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.7277,
+        "score_pct": 72.8,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.587,
+          "margin": 0.724,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1630",
+        "name": "Bobbi Brown Makeup Soon",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Makeup",
+        "msrp": 83.33,
+        "margin_pct": 0.4701,
+        "inventory_level": 1116,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "winter"
+        ],
+        "score": 0.7203,
+        "score_pct": 72.0,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.558,
+          "margin": 0.723,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "744",
+        "name": "Bobbi Brown Wellnes Contain",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Wellness",
+        "msrp": 62.41,
+        "margin_pct": 0.488,
+        "inventory_level": 969,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "summer"
+        ],
+        "score": 0.7088,
+        "score_pct": 70.9,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.484,
+          "margin": 0.751,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1501",
+        "name": "MAC Skincare Check",
+        "brand": "MAC",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 50.15,
+        "margin_pct": 0.4957,
+        "inventory_level": 824,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "winter"
+        ],
+        "score": 0.6937,
+        "score_pct": 69.4,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.412,
+          "margin": 0.763,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "427",
+        "name": "Bobbi Brown Fragrance Art",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Fragrance",
+        "msrp": 124.97,
+        "margin_pct": 0.4707,
+        "inventory_level": 852,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "winter"
+        ],
+        "score": 0.6875,
+        "score_pct": 68.8,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.426,
+          "margin": 0.724,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "264",
+        "name": "MAC Haircare Space",
+        "brand": "MAC",
+        "category": "Beauty",
+        "subcategory": "Haircare",
+        "msrp": 120.91,
+        "margin_pct": 0.499,
+        "inventory_level": 719,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "fall"
+        ],
+        "score": 0.6818,
+        "score_pct": 68.2,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.359,
+          "margin": 0.768,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "398",
+        "name": "Chanel Wellnes Community",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Wellness",
+        "msrp": 131.59,
+        "margin_pct": 0.4767,
+        "inventory_level": 744,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "winter"
+        ],
+        "score": 0.6763,
+        "score_pct": 67.6,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.372,
+          "margin": 0.733,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1783",
+        "name": "Chanel Makeup Community",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Makeup",
+        "msrp": 175.47,
+        "margin_pct": 0.4831,
+        "inventory_level": 1465,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "medium",
+        "seasonal_tags": [
+          "fall"
+        ],
+        "score": 0.6639,
+        "score_pct": 66.4,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.733,
+          "margin": 0.743,
+          "vendor": 0.65,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "714",
+        "name": "Chanel Haircare Available",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Haircare",
+        "msrp": 59.88,
+        "margin_pct": 0.495,
+        "inventory_level": 1424,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "medium",
+        "seasonal_tags": [
+          "spring"
+        ],
+        "score": 0.6634,
+        "score_pct": 66.3,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.712,
+          "margin": 0.762,
+          "vendor": 0.65,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "358",
+        "name": "Bobbi Brown Skincare Boy",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 176.46,
+        "margin_pct": 0.4978,
+        "inventory_level": 560,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.6615,
+        "score_pct": 66.1,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.28,
+          "margin": 0.766,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "40",
+        "name": "Bobbi Brown Skincare Song",
+        "brand": "Bobbi Brown",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 100.83,
+        "margin_pct": 0.4598,
+        "inventory_level": 1477,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "medium",
+        "seasonal_tags": [
+          "fall"
+        ],
+        "score": 0.6565,
+        "score_pct": 65.6,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.739,
+          "margin": 0.707,
+          "vendor": 0.65,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1751",
+        "name": "Chanel Haircare Production",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Haircare",
+        "msrp": 119.57,
+        "margin_pct": 0.4334,
+        "inventory_level": 705,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "summer"
+        ],
+        "score": 0.6548,
+        "score_pct": 65.5,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.352,
+          "margin": 0.667,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "934",
+        "name": "Chanel Makeup Player",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Makeup",
+        "msrp": 67.36,
+        "margin_pct": 0.4547,
+        "inventory_level": 1424,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "medium",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.6479,
+        "score_pct": 64.8,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.712,
+          "margin": 0.7,
+          "vendor": 0.65,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "905",
+        "name": "MAC Haircare Kitchen",
+        "brand": "MAC",
+        "category": "Beauty",
+        "subcategory": "Haircare",
+        "msrp": 21.84,
+        "margin_pct": 0.4429,
+        "inventory_level": 1455,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "medium",
+        "seasonal_tags": [
+          "all",
+          "everyday"
+        ],
+        "score": 0.6472,
+        "score_pct": 64.7,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.728,
+          "margin": 0.681,
+          "vendor": 0.65,
+          "seasonality": 0.5
+        }
+      },
+      {
+        "sku_id": "1331",
+        "name": "Chanel Skincare Building",
+        "brand": "Chanel",
+        "category": "Beauty",
+        "subcategory": "Skincare",
+        "msrp": 163.4,
+        "margin_pct": 0.4933,
+        "inventory_level": 452,
+        "map_protected": false,
+        "map_floor_pct": 0,
+        "vendor_commitment": "high",
+        "seasonal_tags": [
+          "spring"
+        ],
+        "score": 0.6462,
+        "score_pct": 64.6,
+        "top_reason": "Active vendor commitment",
+        "excluded": false,
+        "excluded_reason": null,
+        "detail": {
+          "inventory": 0.226,
+          "margin": 0.759,
+          "vendor": 1.0,
+          "seasonality": 0.5
+        }
+      }
+    ],
+    "excluded_skus": [
+      {
+        "sku_id": "4",
+        "name": "Dior Skincare Site",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "19",
+        "name": "Dior Skincare All",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "25",
+        "name": "Dior Skincare Agreement",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "28",
+        "name": "Lancome Haircare Sense",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "29",
+        "name": "Clinique Makeup Rate",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "49",
+        "name": "Lancome Haircare Source",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "90",
+        "name": "Dior Skincare Blood",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "94",
+        "name": "Clinique Haircare Prove",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "98",
+        "name": "Estee Lauder Fragrance Hospital",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "120",
+        "name": "Dior Wellnes Rise",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "130",
+        "name": "Dior Skincare Term",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "137",
+        "name": "Clinique Makeup Development",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "143",
+        "name": "Clinique Wellnes Forward",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "154",
+        "name": "Lancome Makeup Chair",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "173",
+        "name": "Lancome Skincare Anyone",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "188",
+        "name": "Lancome Haircare Newspaper",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "211",
+        "name": "Clinique Wellnes Seven",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "222",
+        "name": "Dior Fragrance Process",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "233",
+        "name": "Clinique Fragrance Notice",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "256",
+        "name": "Dior Haircare Bar",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "276",
+        "name": "Estee Lauder Skincare Land",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "285",
+        "name": "Estee Lauder Wellnes Forget",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "288",
+        "name": "Clinique Fragrance Rate",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "290",
+        "name": "Clinique Fragrance Left",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "296",
+        "name": "Lancome Fragrance Down",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "302",
+        "name": "Dior Skincare Drug",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "307",
+        "name": "Estee Lauder Makeup Second",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "311",
+        "name": "Dior Haircare Author",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "321",
+        "name": "Lancome Haircare Mention",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "327",
+        "name": "Clinique Wellnes Us",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "339",
+        "name": "Lancome Haircare Reason",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "341",
+        "name": "Lancome Fragrance Health",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "344",
+        "name": "Lancome Haircare Manage",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "360",
+        "name": "Dior Wellnes Dark",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "363",
+        "name": "Estee Lauder Fragrance List",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "403",
+        "name": "Dior Haircare With",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "416",
+        "name": "Estee Lauder Haircare Clear",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "424",
+        "name": "Dior Fragrance Ask",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "452",
+        "name": "Estee Lauder Haircare Employee",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "456",
+        "name": "Estee Lauder Haircare President",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "458",
+        "name": "Estee Lauder Fragrance Kind",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "483",
+        "name": "Dior Makeup Act",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "485",
+        "name": "Clinique Wellnes Pretty",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "502",
+        "name": "Dior Fragrance Coach",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "521",
+        "name": "Dior Makeup Unit",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "527",
+        "name": "Clinique Wellnes Situation",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "549",
+        "name": "Dior Fragrance Protect",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "551",
+        "name": "Clinique Makeup Themselves",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "553",
+        "name": "Clinique Wellnes Another",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "566",
+        "name": "Dior Skincare Option",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "571",
+        "name": "Lancome Wellnes Use",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "581",
+        "name": "Lancome Wellnes Choose",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "606",
+        "name": "Clinique Haircare So",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "624",
+        "name": "Clinique Makeup Word",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "627",
+        "name": "Estee Lauder Skincare Relationship",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "633",
+        "name": "Estee Lauder Wellnes Collection",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "634",
+        "name": "Estee Lauder Haircare Store",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "637",
+        "name": "Estee Lauder Makeup Idea",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "647",
+        "name": "Estee Lauder Makeup Hard",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "652",
+        "name": "Lancome Haircare Drive",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "653",
+        "name": "Estee Lauder Haircare Dog",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "655",
+        "name": "Estee Lauder Makeup Receive",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "660",
+        "name": "Lancome Fragrance Treatment",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "674",
+        "name": "Lancome Wellnes Business",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "675",
+        "name": "Clinique Makeup Understand",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "692",
+        "name": "Dior Makeup Image",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "693",
+        "name": "Dior Wellnes We",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "701",
+        "name": "Estee Lauder Makeup Nature",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "713",
+        "name": "Estee Lauder Wellnes Lawyer",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "725",
+        "name": "Clinique Fragrance First",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "741",
+        "name": "Estee Lauder Makeup Research",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "748",
+        "name": "Estee Lauder Haircare Into",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "789",
+        "name": "Dior Haircare Decide",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "792",
+        "name": "Estee Lauder Haircare Any",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "793",
+        "name": "Estee Lauder Fragrance Election",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "798",
+        "name": "Lancome Fragrance Baby",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "803",
+        "name": "Clinique Makeup Parent",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "805",
+        "name": "Lancome Wellnes Serious",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "809",
+        "name": "Estee Lauder Makeup Instead",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "816",
+        "name": "Dior Makeup Social",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "817",
+        "name": "Estee Lauder Skincare Traditional",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "830",
+        "name": "Lancome Wellnes Onto",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "832",
+        "name": "Estee Lauder Fragrance Whose",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "835",
+        "name": "Lancome Skincare Loss",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "836",
+        "name": "Dior Makeup Cell",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "839",
+        "name": "Clinique Skincare Region",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "850",
+        "name": "Lancome Skincare Wait",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "858",
+        "name": "Dior Makeup Cold",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "865",
+        "name": "Clinique Wellnes End",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "866",
+        "name": "Clinique Fragrance Though",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "911",
+        "name": "Lancome Haircare Safe",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "915",
+        "name": "Estee Lauder Makeup Southern",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "922",
+        "name": "Clinique Skincare Fire",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "925",
+        "name": "Clinique Fragrance Tonight",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "928",
+        "name": "Dior Fragrance Kind",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "940",
+        "name": "Lancome Wellnes Least",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "950",
+        "name": "Dior Wellnes Company",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "957",
+        "name": "Dior Skincare Agreement",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "969",
+        "name": "Dior Makeup Main",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "970",
+        "name": "Lancome Haircare Court",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "977",
+        "name": "Lancome Skincare General",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "979",
+        "name": "Dior Makeup Sort",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "980",
+        "name": "Clinique Fragrance Until",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "986",
+        "name": "Dior Fragrance Entire",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "988",
+        "name": "Dior Makeup Beat",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "994",
+        "name": "Lancome Makeup Hard",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1002",
+        "name": "Estee Lauder Makeup Allow",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1010",
+        "name": "Dior Makeup Card",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1018",
+        "name": "Lancome Haircare Scene",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1026",
+        "name": "Lancome Haircare Serious",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1041",
+        "name": "Estee Lauder Skincare Industry",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1052",
+        "name": "Dior Haircare Same",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1065",
+        "name": "Clinique Wellnes No",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1076",
+        "name": "Estee Lauder Skincare Test",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1086",
+        "name": "Clinique Makeup Claim",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1094",
+        "name": "Dior Fragrance System",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1114",
+        "name": "Clinique Skincare Either",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1115",
+        "name": "Dior Wellnes Social",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1116",
+        "name": "Clinique Wellnes Majority",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1126",
+        "name": "Lancome Makeup Court",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1140",
+        "name": "Lancome Makeup Action",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1144",
+        "name": "Clinique Makeup Bed",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1176",
+        "name": "Estee Lauder Fragrance Oil",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1180",
+        "name": "Clinique Fragrance Long",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1205",
+        "name": "Dior Fragrance Fear",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1208",
+        "name": "Dior Fragrance Daughter",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1211",
+        "name": "Lancome Haircare Herself",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1212",
+        "name": "Estee Lauder Makeup Country",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1223",
+        "name": "Dior Fragrance Save",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1225",
+        "name": "Lancome Makeup Card",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1230",
+        "name": "Dior Fragrance Board",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1238",
+        "name": "Clinique Wellnes Grow",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1252",
+        "name": "Dior Haircare Professional",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1256",
+        "name": "Estee Lauder Haircare Church",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1260",
+        "name": "Estee Lauder Wellnes Bed",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1264",
+        "name": "Dior Fragrance South",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1275",
+        "name": "Dior Wellnes When",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1280",
+        "name": "Lancome Makeup Laugh",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1286",
+        "name": "Estee Lauder Skincare Sister",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1293",
+        "name": "Dior Haircare Everything",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1304",
+        "name": "Lancome Skincare Little",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1313",
+        "name": "Lancome Fragrance Fear",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1315",
+        "name": "Lancome Fragrance Trade",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1352",
+        "name": "Clinique Haircare Capital",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1360",
+        "name": "Clinique Skincare Month",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1380",
+        "name": "Lancome Haircare People",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1390",
+        "name": "Dior Fragrance Continue",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1394",
+        "name": "Lancome Skincare Letter",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1419",
+        "name": "Dior Wellnes You",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1422",
+        "name": "Dior Makeup Soon",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1432",
+        "name": "Clinique Skincare International",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1433",
+        "name": "Estee Lauder Wellnes Treatment",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1454",
+        "name": "Dior Haircare Example",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1468",
+        "name": "Lancome Skincare Education",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1471",
+        "name": "Dior Wellnes Foreign",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1474",
+        "name": "Clinique Wellnes Old",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1483",
+        "name": "Clinique Haircare Buy",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1490",
+        "name": "Estee Lauder Haircare Film",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1507",
+        "name": "Estee Lauder Makeup Skin",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1508",
+        "name": "Clinique Wellnes Until",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1525",
+        "name": "Estee Lauder Wellnes She",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1530",
+        "name": "Lancome Haircare Receive",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1535",
+        "name": "Clinique Makeup Nothing",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1546",
+        "name": "Clinique Fragrance True",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1558",
+        "name": "Clinique Haircare Size",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1571",
+        "name": "Lancome Haircare Although",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1580",
+        "name": "Lancome Fragrance Less",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1584",
+        "name": "Lancome Haircare Loss",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1588",
+        "name": "Estee Lauder Wellnes It",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1606",
+        "name": "Lancome Skincare Town",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1610",
+        "name": "Clinique Makeup Produce",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1619",
+        "name": "Lancome Wellnes Authority",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1621",
+        "name": "Estee Lauder Wellnes Program",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1623",
+        "name": "Clinique Skincare Will",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1628",
+        "name": "Clinique Makeup Leader",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1641",
+        "name": "Lancome Makeup Any",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1643",
+        "name": "Clinique Haircare Style",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1657",
+        "name": "Estee Lauder Makeup Conference",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1660",
+        "name": "Clinique Haircare Poor",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1662",
+        "name": "Estee Lauder Makeup Idea",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1688",
+        "name": "Estee Lauder Fragrance You",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1692",
+        "name": "Dior Makeup Purpose",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1700",
+        "name": "Clinique Fragrance If",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1702",
+        "name": "Estee Lauder Skincare Meeting",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1714",
+        "name": "Lancome Makeup Reason",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1734",
+        "name": "Clinique Skincare Drug",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1740",
+        "name": "Lancome Fragrance Customer",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1745",
+        "name": "Lancome Skincare Set",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1746",
+        "name": "Estee Lauder Haircare Speak",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1760",
+        "name": "Clinique Makeup Along",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1761",
+        "name": "Dior Makeup Particularly",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1768",
+        "name": "Dior Makeup General",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1771",
+        "name": "Clinique Makeup Continue",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1790",
+        "name": "Lancome Fragrance Find",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1826",
+        "name": "Dior Haircare Pull",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1833",
+        "name": "Dior Fragrance Ago",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1843",
+        "name": "Estee Lauder Haircare At",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1858",
+        "name": "Lancome Haircare Mind",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1864",
+        "name": "Clinique Haircare Central",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1873",
+        "name": "Estee Lauder Skincare Kind",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1876",
+        "name": "Lancome Fragrance Short",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1878",
+        "name": "Lancome Skincare Value",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1895",
+        "name": "Estee Lauder Makeup Top",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1901",
+        "name": "Estee Lauder Wellnes Week",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1928",
+        "name": "Lancome Haircare Themselves",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1931",
+        "name": "Estee Lauder Haircare Despite",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1932",
+        "name": "Estee Lauder Fragrance Peace",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1939",
+        "name": "Lancome Skincare Choose",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1947",
+        "name": "Dior Haircare Case",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1953",
+        "name": "Clinique Wellnes Recent",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1958",
+        "name": "Lancome Fragrance Help",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1962",
+        "name": "Lancome Wellnes Per",
+        "brand": "Lancome",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1965",
+        "name": "Dior Wellnes Contain",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1966",
+        "name": "Clinique Fragrance Evidence",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1974",
+        "name": "Dior Haircare Attack",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1978",
+        "name": "Clinique Haircare High",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1983",
+        "name": "Clinique Makeup Most",
+        "brand": "Clinique",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1984",
+        "name": "Estee Lauder Wellnes Do",
+        "brand": "Estee Lauder",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      },
+      {
+        "sku_id": "1988",
+        "name": "Dior Fragrance Short",
+        "brand": "Dior",
+        "reason": "Would violate MAP at 25.0% discount (floor: 10%)"
+      }
+    ],
+    "total_in_category": 377,
+    "criteria_used": "Inventory (25%) + Margin (25%) + Vendor commitment (30%) + Seasonality (20%)"
+  },
+  "step4_dam_search": {
+    "ok": true,
+    "brief": "Mother's Day Beauty Event",
+    "max_results": 12,
+    "results": [
+      {
+        "asset_id": 660,
+        "filename": "luxury-perfume-bottle_06_79FmeCtL9NE.jpg",
+        "asset_type": "product",
+        "tags": [
+          "sale",
+          "model",
+          "lifestyle",
+          "luxury",
+          "womens",
+          "beauty"
+        ],
+        "resolution": "1920x1080",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2026-04-28",
+        "rank": 1
+      },
+      {
+        "asset_id": 658,
+        "filename": "perfume_05_xQwRvghauaU.jpg",
+        "asset_type": "product",
+        "tags": [
+          "mothers-day",
+          "outerwear"
+        ],
+        "resolution": "2560x1440",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.5,
+        "_created_date": "2023-02-15",
+        "rank": 2
+      },
+      {
+        "asset_id": 638,
+        "filename": "cosmetics_06_tWng4d9Njxo.jpg",
+        "asset_type": "lifestyle",
+        "tags": [
+          "mens",
+          "studio",
+          "model",
+          "beauty",
+          "dresses",
+          "outdoor"
+        ],
+        "resolution": "1920x1080",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2023-03-18",
+        "rank": 3
+      },
+      {
+        "asset_id": 607,
+        "filename": "spa-wellness_05_hCTLx7QrE-w.jpg",
+        "asset_type": "product",
+        "tags": [
+          "shoes",
+          "dresses",
+          "mothers-day",
+          "accessories"
+        ],
+        "resolution": "2560x1440",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.5,
+        "_created_date": "2025-03-16",
+        "rank": 4
+      },
+      {
+        "asset_id": 605,
+        "filename": "skincare_10_SfkPaoE_i34.jpg",
+        "asset_type": "product",
+        "tags": [
+          "fragrance",
+          "sale",
+          "dresses",
+          "mothers-day",
+          "summer"
+        ],
+        "resolution": "1920x1080",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.8,
+        "_created_date": "2024-09-09",
+        "rank": 5
+      },
+      {
+        "asset_id": 593,
+        "filename": "product-photography-white_04_y3On8ZLjSvY.jpg",
+        "asset_type": "product",
+        "tags": [
+          "mothers-day",
+          "flatlay",
+          "fragrance",
+          "home",
+          "outerwear"
+        ],
+        "resolution": "3840x2160",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.8,
+        "_created_date": "2022-09-12",
+        "rank": 6
+      },
+      {
+        "asset_id": 586,
+        "filename": "eyeshadow-palette_10_PZ_-sCaBCaQ.jpg",
+        "asset_type": "product",
+        "tags": [
+          "mens",
+          "home",
+          "model",
+          "beauty",
+          "skincare"
+        ],
+        "resolution": "3840x2160",
+        "usage_rights": "restricted",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2026-04-24",
+        "rank": 7
+      },
+      {
+        "asset_id": 555,
+        "filename": "cosmetics_08_DEuob2v77wI.jpg",
+        "asset_type": "lifestyle",
+        "tags": [
+          "luxury",
+          "beauty",
+          "model"
+        ],
+        "resolution": "3840x2160",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2025-03-08",
+        "rank": 8
+      },
+      {
+        "asset_id": 545,
+        "filename": "makeup-brushes-flatlay_09_TwMFnifOyI8.jpg",
+        "asset_type": "product",
+        "tags": [
+          "outdoor",
+          "mothers-day",
+          "luxury"
+        ],
+        "resolution": "2560x1440",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.5,
+        "_created_date": "2025-03-16",
+        "rank": 9
+      },
+      {
+        "asset_id": 539,
+        "filename": "summer-fashion-outfit_09_aX3wFOC87Z8.jpg",
+        "asset_type": "product",
+        "tags": [
+          "denim",
+          "mothers-day",
+          "valentines"
+        ],
+        "resolution": "2560x1440",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.5,
+        "_created_date": "2023-11-20",
+        "rank": 10
+      },
+      {
+        "asset_id": 524,
+        "filename": "beauty-editorial-photo_03_BzSfM6n_LIE.jpg",
+        "asset_type": "product",
+        "tags": [
+          "summer",
+          "spring",
+          "flatlay",
+          "lunar-new-year",
+          "beauty"
+        ],
+        "resolution": "2560x1440",
+        "usage_rights": "free",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2023-05-09",
+        "rank": 11
+      },
+      {
+        "asset_id": 519,
+        "filename": "moisturizer-cream-jar_04_1kCDtHVl064.jpg",
+        "asset_type": "product",
+        "tags": [
+          "winter",
+          "beauty",
+          "lifestyle",
+          "indoor",
+          "model"
+        ],
+        "resolution": "1920x1080",
+        "usage_rights": "restricted",
+        "relevance_score": 1.0,
+        "quality_flag": "clean",
+        "has_photo": true,
+        "_raw_relevance": 0.55,
+        "_created_date": "2024-06-29",
+        "rank": 12
+      }
+    ],
+    "stats": {
+      "total_searched": 5000,
+      "filtered_out": {
+        "degraded": 1440,
+        "expired_rights": 358,
+        "low_resolution": 322
+      },
+      "filtered_total": 2120,
+      "kept": 2880,
+      "returned": 12,
+      "avg_relevance": 1.0,
+      "photo_backed_in_pool": 254,
+      "photo_backed_in_top": 12
+    }
+  },
+  "step5_layout_copy": {
+    "ok": true,
+    "placements": {
+      "web_banner": {
+        "tagline": "Celebrate Her with the Gift of Beauty",
+        "body": "Save 25% on select Beauty favorites. Plus, earn a free gift with any $75+ purchase. For Star Rewards members.",
+        "cta": "Shop the Gift Edit",
+        "visual_direction": "Feature a warm, softly lit flat lay of luxury beauty products with a ribbon or gift box accent, evoking celebration and indulgence."
+      },
+      "email": {
+        "tagline": "The Perfect Mother's Day Beauty Gift Awaits",
+        "body": "Show Mom how much she means with 25% off select Beauty. Spend $75 or more and receive a free gift — exclusively for our Gold and Platinum Star Rewards members.",
+        "cta": "Explore Beauty Gifts",
+        "visual_direction": "Open with a hero image of an elegantly wrapped beauty gift set surrounded by florals in soft pinks and creams, conveying warmth and appreciation."
+      },
+      "mobile": {
+        "tagline": "Gift Her Something Beautiful",
+        "body": "25% off select Beauty + free gift with $75+. Star Rewards members only.",
+        "cta": "Shop Now",
+        "visual_direction": "Bold, close-up product shot with a soft blush background and a subtle gift ribbon overlay to draw the eye quickly on a small screen."
+      },
+      "in_store_signage": {
+        "tagline": "Find Your Magic This Mother's Day",
+        "body": "25% off select Beauty. Free gift with $75+.",
+        "cta": "Shop the Event",
+        "visual_direction": "Clean, high-contrast layout with a single hero beauty product and warm gold typography to signal exclusivity and celebration in-aisle."
+      }
+    },
+    "validation_errors": [
+      "web_banner.body: 109 chars exceeds limit of 100"
+    ],
+    "generation_metadata": {
+      "skill": "layout-copy-generator",
+      "method": "claude_via_skill_invoker",
+      "duration_ms": 21257.0
+    }
+  },
+  "step6a_compliance": {
+    "brand_alignment": {
+      "status": "warn",
+      "reason": "Tagline 'find your magic' matches the pre-approved tagline 'Find Your Magic' on the BRAND-GL-2026-001 approved list (case-insensitive match — confirm casing is title-case in final creative). No banned words from the BRAND-GL-2026-001 list ('cheap', 'basic', 'last chance', 'clearance blowout', 'dirt cheap', 'unbeatable', 'lowest prices anywhere', 'nobody beats Macys') appear in the campaign copy. However, the copy uses 'free gift with purchase' — per BRAND-GL-2026-001 Pricing Language, 'free' must specify conditions in the same line of copy. The current copy partially satisfies this ('free gift with purchase of $75 or more') but the word 'free' should be reviewed to confirm it meets the same-line conditions requirement in all creative executions (email, display, social). Warn issued pending creative execution review; no outright banned word violation found.",
+      "cited_doc": "BRAND-GL-2026-001"
+    },
+    "disclaimers": {
+      "status": "fail",
+      "reason": "The campaign copy states Star Rewards members get '25% off select Beauty items' — this is a flat percentage claim on a select assortment, which functions as a range claim because not all items will be discounted equally. Per LEGAL-DIS-2026-002 (Pricing Claims, Up To Claims) and BRAND-GL-2026-001 (Pricing Language), any 'up to X percent off' or selective discount claim must include the minimum discount available: e.g., 'Up to 25 percent off, starting at [Y] percent off.' The current copy omits the required 'starting at' minimum disclosure. This mirrors the pattern in COMP-EX-2026-001 Example 2 ('Up to 50 percent off Home Refresh' flagged for missing minimum). Additionally, the copy references a Star Rewards member benefit without a disclaimer clarifying enrollment or program terms, which may be required under LEGAL-DIS-2026-002. Required fix: add 'starting at [minimum]% off' to the discount claim and add Star Rewards program terms disclosure.",
+      "cited_doc": "LEGAL-DIS-2026-002"
+    },
+    "pricing_cross_check": {
+      "status": "fail",
+      "reason": "The check_pricing_conflicts tool returned catalog lookup failures for all three SKUs (MAC-001, EL-001, CLQ-001) — none were found in the active product catalog. This is itself a blocking issue: SKUs that cannot be resolved cannot be validated for MAP compliance or discount eligibility. Beyond the catalog failure, SKU prefix analysis against PRICE-RULES-2026-001 strongly indicates MAP exposure: EL-001 maps to Estée Lauder and CLQ-001 maps to Clinique, both of which are explicitly listed as MAP-enforced brands requiring written Merchandising approval before any discount is advertised. A 25% discount on these brands without documented Merchandising sign-off would violate PRICE-RULES-2026-001 and risk vendor chargebacks or account loss (see COMP-EX-2026-001 Example 9 for precedent). Required fixes: (1) resolve all three SKU IDs in the product catalog before resubmission; (2) obtain written Merchandising approval for any Estée Lauder and Clinique SKUs included in the 25% off offer; (3) confirm MAC-001 brand identity and MAP status with Merchandising.",
+      "cited_doc": "PRICE-RULES-2026-001"
+    },
+    "recommended_action": "revise",
+    "retrieved_docs": [
+      "BRAND-GL-2026-001",
+      "LEGAL-DIS-2026-002",
+      "PRICE-RULES-2026-001",
+      "COMP-EX-2026-001"
+    ]
+  },
+  "step6b_brief": {
+    "campaign_goal": "Drive incremental revenue and brand engagement among VIP Loyalists during the Mother's Day gifting window through a curated prestige Beauty event with a 25% discount across three SKUs in four U.S. regions.",
+    "target_audience": "VIP Loyalists — high-value customers with active Star Rewards accounts and prior prestige Beauty purchase history, targeted across NY, CA, FL, and TX.",
+    "expected_roi": "Based on RETRO-Q4-2025, the Beauty Loyalists segment outperformed plan by 23%, with email open rates of 41% (vs. a 28% target) and conversion at 1.6x the segment average; no Mother's Day-specific spring beauty benchmark was available in retrieved retros, so Q4 Holiday figures represent the closest comparable.",
+    "risk_flags": [
+      "PRICING CONFLICT — FAIL: check_pricing_conflicts returned status 'fail' for all three SKUs (MAC-001, EL-001, CLQ-001); none were found in the active product catalog. Discounting cannot be validated and MAP compliance for Estée Lauder (EL-001) and Clinique (CLQ-001), both MAP-enforced brands, cannot be confirmed until SKUs are resolved.",
+      "CATALOG INTEGRITY — FAIL: All three campaign SKUs are unresolvable in the catalog system. Campaign cannot activate until valid SKU IDs are confirmed with Merchandising.",
+      "MISSING CAMPAIGN MANAGER: The campaign_manager field is null. No owner is assigned for post-launch retro, revision routing, or activation accountability — required per FAQ-INT-2026-001.",
+      "MAP BRAND RISK: Estée Lauder and Clinique are on the MAP-enforced brand list under PRICE-RULES-2026-001. Even if SKUs are corrected, a 25% discount must be verified against MAP floors before approval.",
+      "COMPLIANCE CHECK NOT RUN: compliance_check is null in workflow state, meaning the standard pre-check gate was not completed prior to VP submission. Brief is based on direct MCP tool verification only.",
+      "SPEND TIER NOTE: Estimated spend of $200,000 is below the $500K VP+Legal dual-approval threshold (ref: TICKET-INC-2025-4471), so no Legal co-sign is required at this tier — but Legal pre-clearance on any comparative claims in final copy is recommended per Q4-2025 retro lessons."
+    ],
+    "ai_recommendation": "revise — The check_pricing_conflicts tool returned a hard 'fail' on all three SKUs (catalog not found), MAP compliance for two enforced brands cannot be confirmed at 25% off, and no campaign manager is assigned; the campaign must not proceed to activation until valid SKUs are submitted, MAP clearance is obtained, and an owner is designated.",
+    "retrieved_docs": [
+      "RETRO-Q4-2025",
+      "TICKET-INC-2025-4471",
+      "FAQ-INT-2026-001"
+    ]
+  },
+  "step7_localize": {
+    "ok": true,
+    "brief": "Mother's Day Beauty Event",
+    "sku_ids": [
+      4,
+      18
+    ],
+    "variants": [
+      {
+        "variant_id": "V-northeast-web_banner-00004",
+        "region": "Northeast",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.92,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0223,
+        "inventory_status": "low_stock",
+        "inventory_units": 43,
+        "copy_headline": "Spring Blooms, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-email-00004",
+        "region": "Northeast",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.92,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0223,
+        "inventory_status": "low_stock",
+        "inventory_units": 43,
+        "copy_headline": "Weekend Treat call for favorite shade",
+        "copy_subhead": "From spring blooms to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-in_store_signage-00004",
+        "region": "Northeast",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.92,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0223,
+        "inventory_status": "low_stock",
+        "inventory_units": 43,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-mobile-00004",
+        "region": "Northeast",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.92,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0223,
+        "inventory_status": "low_stock",
+        "inventory_units": 43,
+        "copy_headline": "Spring Blooms: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-web_banner-00004",
+        "region": "Mid-Atlantic",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 63.13,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0657,
+        "inventory_status": "in_stock",
+        "inventory_units": 156,
+        "copy_headline": "City Evenings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-email-00004",
+        "region": "Mid-Atlantic",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 63.13,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0657,
+        "inventory_status": "in_stock",
+        "inventory_units": 156,
+        "copy_headline": "City Sophistication call for favorite shade",
+        "copy_subhead": "From city evenings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-in_store_signage-00004",
+        "region": "Mid-Atlantic",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 63.13,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0657,
+        "inventory_status": "in_stock",
+        "inventory_units": 156,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-mobile-00004",
+        "region": "Mid-Atlantic",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 63.13,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0657,
+        "inventory_status": "in_stock",
+        "inventory_units": 156,
+        "copy_headline": "City Evenings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-web_banner-00004",
+        "region": "Southeast",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 56.64,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0439,
+        "inventory_status": "in_stock",
+        "inventory_units": 155,
+        "copy_headline": "Porch-Side Sunshine, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-email-00004",
+        "region": "Southeast",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 56.64,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0439,
+        "inventory_status": "in_stock",
+        "inventory_units": 155,
+        "copy_headline": "Porch-Side Moments call for favorite shade",
+        "copy_subhead": "From porch-side sunshine to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-in_store_signage-00004",
+        "region": "Southeast",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 56.64,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0439,
+        "inventory_status": "in_stock",
+        "inventory_units": 155,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-mobile-00004",
+        "region": "Southeast",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 56.64,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0439,
+        "inventory_status": "in_stock",
+        "inventory_units": 155,
+        "copy_headline": "Porch-Side Sunshine: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-web_banner-00004",
+        "region": "Midwest-North",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.99,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0717,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Crisp Mornings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-email-00004",
+        "region": "Midwest-North",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.99,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0717,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Neighborly Gatherings call for favorite shade",
+        "copy_subhead": "From crisp mornings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-in_store_signage-00004",
+        "region": "Midwest-North",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.99,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0717,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-mobile-00004",
+        "region": "Midwest-North",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.99,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0717,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Crisp Mornings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-web_banner-00004",
+        "region": "Midwest-South",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.2,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0851,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Warm Afternoons, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-email-00004",
+        "region": "Midwest-South",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.2,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0851,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Family Weekends call for favorite shade",
+        "copy_subhead": "From warm afternoons to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-in_store_signage-00004",
+        "region": "Midwest-South",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.2,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0851,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-mobile-00004",
+        "region": "Midwest-South",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 54.2,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0851,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Warm Afternoons: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-web_banner-00004",
+        "region": "South",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.47,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0545,
+        "inventory_status": "in_stock",
+        "inventory_units": 109,
+        "copy_headline": "Sun-Drenched Days, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-email-00004",
+        "region": "South",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.47,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0545,
+        "inventory_status": "in_stock",
+        "inventory_units": 109,
+        "copy_headline": "Everyday Luxury call for favorite shade",
+        "copy_subhead": "From sun-drenched days to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-in_store_signage-00004",
+        "region": "South",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.47,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0545,
+        "inventory_status": "in_stock",
+        "inventory_units": 109,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-mobile-00004",
+        "region": "South",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.47,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0545,
+        "inventory_status": "in_stock",
+        "inventory_units": 109,
+        "copy_headline": "Sun-Drenched Days: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-web_banner-00004",
+        "region": "Southwest",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 53.38,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0989,
+        "inventory_status": "in_stock",
+        "inventory_units": 138,
+        "copy_headline": "Warm Desert Evenings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-email-00004",
+        "region": "Southwest",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 53.38,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0989,
+        "inventory_status": "in_stock",
+        "inventory_units": 138,
+        "copy_headline": "Desert Chic call for favorite shade",
+        "copy_subhead": "From warm desert evenings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-in_store_signage-00004",
+        "region": "Southwest",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 53.38,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0989,
+        "inventory_status": "in_stock",
+        "inventory_units": 138,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-mobile-00004",
+        "region": "Southwest",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 53.38,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0989,
+        "inventory_status": "in_stock",
+        "inventory_units": 138,
+        "copy_headline": "Warm Desert Evenings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-web_banner-00004",
+        "region": "Mountain",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 61.69,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0414,
+        "inventory_status": "in_stock",
+        "inventory_units": 185,
+        "copy_headline": "Alpine Mornings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-email-00004",
+        "region": "Mountain",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 61.69,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0414,
+        "inventory_status": "in_stock",
+        "inventory_units": 185,
+        "copy_headline": "Fresh-Air Rituals call for favorite shade",
+        "copy_subhead": "From alpine mornings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-in_store_signage-00004",
+        "region": "Mountain",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 61.69,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0414,
+        "inventory_status": "in_stock",
+        "inventory_units": 185,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-mobile-00004",
+        "region": "Mountain",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 61.69,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0414,
+        "inventory_status": "in_stock",
+        "inventory_units": 185,
+        "copy_headline": "Alpine Mornings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-web_banner-00004",
+        "region": "Pacific-Northwest",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.45,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0542,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Rainy Day Glow, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-email-00004",
+        "region": "Pacific-Northwest",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.45,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0542,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Rainy Day Self-Care call for favorite shade",
+        "copy_subhead": "From rainy day glow to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-in_store_signage-00004",
+        "region": "Pacific-Northwest",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.45,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0542,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-mobile-00004",
+        "region": "Pacific-Northwest",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 62.45,
+        "master_price": 59.24,
+        "price_difference_pct": 0.0542,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Rainy Day Glow: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-web_banner-00004",
+        "region": "Pacific-Southwest",
+        "placement": "web_banner",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.56,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0284,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Coastal Sunshine, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-email-00004",
+        "region": "Pacific-Southwest",
+        "placement": "email",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.56,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0284,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Beach-Day Brightness call for favorite shade",
+        "copy_subhead": "From coastal sunshine to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-in_store_signage-00004",
+        "region": "Pacific-Southwest",
+        "placement": "in_store_signage",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.56,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0284,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-mobile-00004",
+        "region": "Pacific-Southwest",
+        "placement": "mobile",
+        "sku_id": 4,
+        "sku_name": "Dior Skincare Site",
+        "regional_price": 57.56,
+        "master_price": 59.24,
+        "price_difference_pct": -0.0284,
+        "inventory_status": "in_stock",
+        "inventory_units": 169,
+        "copy_headline": "Coastal Sunshine: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "dior_skincare_site_00004_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-web_banner-00018",
+        "region": "Northeast",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 156.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0017,
+        "inventory_status": "in_stock",
+        "inventory_units": 103,
+        "copy_headline": "Spring Blooms, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-email-00018",
+        "region": "Northeast",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 156.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0017,
+        "inventory_status": "in_stock",
+        "inventory_units": 103,
+        "copy_headline": "Weekend Treat call for favorite shade",
+        "copy_subhead": "From spring blooms to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-in_store_signage-00018",
+        "region": "Northeast",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 156.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0017,
+        "inventory_status": "in_stock",
+        "inventory_units": 103,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-northeast-mobile-00018",
+        "region": "Northeast",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 156.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0017,
+        "inventory_status": "in_stock",
+        "inventory_units": 103,
+        "copy_headline": "Spring Blooms: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-web_banner-00018",
+        "region": "Mid-Atlantic",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 146.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0654,
+        "inventory_status": "in_stock",
+        "inventory_units": 178,
+        "copy_headline": "City Evenings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-email-00018",
+        "region": "Mid-Atlantic",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 146.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0654,
+        "inventory_status": "in_stock",
+        "inventory_units": 178,
+        "copy_headline": "City Sophistication call for favorite shade",
+        "copy_subhead": "From city evenings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-in_store_signage-00018",
+        "region": "Mid-Atlantic",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 146.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0654,
+        "inventory_status": "in_stock",
+        "inventory_units": 178,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mid_atlantic-mobile-00018",
+        "region": "Mid-Atlantic",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 146.66,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0654,
+        "inventory_status": "in_stock",
+        "inventory_units": 178,
+        "copy_headline": "City Evenings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-web_banner-00018",
+        "region": "Southeast",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 153.73,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0203,
+        "inventory_status": "in_stock",
+        "inventory_units": 187,
+        "copy_headline": "Porch-Side Sunshine, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-email-00018",
+        "region": "Southeast",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 153.73,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0203,
+        "inventory_status": "in_stock",
+        "inventory_units": 187,
+        "copy_headline": "Porch-Side Moments call for favorite shade",
+        "copy_subhead": "From porch-side sunshine to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-in_store_signage-00018",
+        "region": "Southeast",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 153.73,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0203,
+        "inventory_status": "in_stock",
+        "inventory_units": 187,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southeast-mobile-00018",
+        "region": "Southeast",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 153.73,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0203,
+        "inventory_status": "in_stock",
+        "inventory_units": 187,
+        "copy_headline": "Porch-Side Sunshine: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-web_banner-00018",
+        "region": "Midwest-North",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.16,
+        "master_price": 156.92,
+        "price_difference_pct": 0.027,
+        "inventory_status": "in_stock",
+        "inventory_units": 130,
+        "copy_headline": "Crisp Mornings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-email-00018",
+        "region": "Midwest-North",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.16,
+        "master_price": 156.92,
+        "price_difference_pct": 0.027,
+        "inventory_status": "in_stock",
+        "inventory_units": 130,
+        "copy_headline": "Neighborly Gatherings call for favorite shade",
+        "copy_subhead": "From crisp mornings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-in_store_signage-00018",
+        "region": "Midwest-North",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.16,
+        "master_price": 156.92,
+        "price_difference_pct": 0.027,
+        "inventory_status": "in_stock",
+        "inventory_units": 130,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_north-mobile-00018",
+        "region": "Midwest-North",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.16,
+        "master_price": 156.92,
+        "price_difference_pct": 0.027,
+        "inventory_status": "in_stock",
+        "inventory_units": 130,
+        "copy_headline": "Crisp Mornings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-web_banner-00018",
+        "region": "Midwest-South",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 152.98,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0251,
+        "inventory_status": "low_stock",
+        "inventory_units": 12,
+        "copy_headline": "Warm Afternoons, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-email-00018",
+        "region": "Midwest-South",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 152.98,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0251,
+        "inventory_status": "low_stock",
+        "inventory_units": 12,
+        "copy_headline": "Family Weekends call for favorite shade",
+        "copy_subhead": "From warm afternoons to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-in_store_signage-00018",
+        "region": "Midwest-South",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 152.98,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0251,
+        "inventory_status": "low_stock",
+        "inventory_units": 12,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-midwest_south-mobile-00018",
+        "region": "Midwest-South",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 152.98,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0251,
+        "inventory_status": "low_stock",
+        "inventory_units": 12,
+        "copy_headline": "Warm Afternoons: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-web_banner-00018",
+        "region": "South",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 157.02,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0006,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Sun-Drenched Days, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-email-00018",
+        "region": "South",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 157.02,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0006,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Everyday Luxury call for favorite shade",
+        "copy_subhead": "From sun-drenched days to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-in_store_signage-00018",
+        "region": "South",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 157.02,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0006,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-south-mobile-00018",
+        "region": "South",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 157.02,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0006,
+        "inventory_status": "out_of_stock",
+        "inventory_units": 0,
+        "copy_headline": "Sun-Drenched Days: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-web_banner-00018",
+        "region": "Southwest",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.9,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0317,
+        "inventory_status": "in_stock",
+        "inventory_units": 71,
+        "copy_headline": "Warm Desert Evenings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-email-00018",
+        "region": "Southwest",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.9,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0317,
+        "inventory_status": "in_stock",
+        "inventory_units": 71,
+        "copy_headline": "Desert Chic call for favorite shade",
+        "copy_subhead": "From warm desert evenings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-in_store_signage-00018",
+        "region": "Southwest",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.9,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0317,
+        "inventory_status": "in_stock",
+        "inventory_units": 71,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-southwest-mobile-00018",
+        "region": "Southwest",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 161.9,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0317,
+        "inventory_status": "in_stock",
+        "inventory_units": 71,
+        "copy_headline": "Warm Desert Evenings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-web_banner-00018",
+        "region": "Mountain",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 143.44,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0859,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Alpine Mornings, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-email-00018",
+        "region": "Mountain",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 143.44,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0859,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Fresh-Air Rituals call for favorite shade",
+        "copy_subhead": "From alpine mornings to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-in_store_signage-00018",
+        "region": "Mountain",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 143.44,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0859,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-mountain-mobile-00018",
+        "region": "Mountain",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 143.44,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0859,
+        "inventory_status": "in_stock",
+        "inventory_units": 117,
+        "copy_headline": "Alpine Mornings: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-web_banner-00018",
+        "region": "Pacific-Northwest",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 142.06,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0947,
+        "inventory_status": "in_stock",
+        "inventory_units": 66,
+        "copy_headline": "Rainy Day Glow, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-email-00018",
+        "region": "Pacific-Northwest",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 142.06,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0947,
+        "inventory_status": "in_stock",
+        "inventory_units": 66,
+        "copy_headline": "Rainy Day Self-Care call for favorite shade",
+        "copy_subhead": "From rainy day glow to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-in_store_signage-00018",
+        "region": "Pacific-Northwest",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 142.06,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0947,
+        "inventory_status": "in_stock",
+        "inventory_units": 66,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_northwest-mobile-00018",
+        "region": "Pacific-Northwest",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 142.06,
+        "master_price": 156.92,
+        "price_difference_pct": -0.0947,
+        "inventory_status": "in_stock",
+        "inventory_units": 66,
+        "copy_headline": "Rainy Day Glow: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-web_banner-00018",
+        "region": "Pacific-Southwest",
+        "placement": "web_banner",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 170.74,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0881,
+        "inventory_status": "in_stock",
+        "inventory_units": 88,
+        "copy_headline": "Coastal Sunshine, Bold Lips",
+        "copy_subhead": "Shop Mother's Day Beauty Event",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1200x628",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-email-00018",
+        "region": "Pacific-Southwest",
+        "placement": "email",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 170.74,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0881,
+        "inventory_status": "in_stock",
+        "inventory_units": 88,
+        "copy_headline": "Beach-Day Brightness call for favorite shade",
+        "copy_subhead": "From coastal sunshine to standout favorite shade, this is Mother's Day Beauty Event. Free shipping on Beauty orders over $50.",
+        "cta_text": "Shop Mother's Day Beauty Event now",
+        "placement_dimensions": "600x800",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-in_store_signage-00018",
+        "region": "Pacific-Southwest",
+        "placement": "in_store_signage",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 170.74,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0881,
+        "inventory_status": "in_stock",
+        "inventory_units": 88,
+        "copy_headline": "Bold Lips.",
+        "copy_subhead": "Mother's Day Beauty Event.",
+        "cta_text": "Shop now.",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      },
+      {
+        "variant_id": "V-pacific_southwest-mobile-00018",
+        "region": "Pacific-Southwest",
+        "placement": "mobile",
+        "sku_id": 18,
+        "sku_name": "Chanel Makeup Almost",
+        "regional_price": 170.74,
+        "master_price": 156.92,
+        "price_difference_pct": 0.0881,
+        "inventory_status": "in_stock",
+        "inventory_units": 88,
+        "copy_headline": "Coastal Sunshine: bold lips",
+        "copy_subhead": "Your Mother's Day Beauty Event pick, picked locally.",
+        "cta_text": "Shop Mother's Day Beauty Event",
+        "placement_dimensions": "1080x1920",
+        "master_image_reference": "chanel_makeup_almost_00018_master.jpg",
+        "generated_at": "2026-05-31T02:33:41.562606+00:00"
+      }
+    ],
+    "stats": {
+      "total_variants": 80,
+      "regions": 10,
+      "placements": 4,
+      "skus": 2,
+      "by_region": {
+        "Northeast": 8,
+        "Mid-Atlantic": 8,
+        "Southeast": 8,
+        "Midwest-North": 8,
+        "Midwest-South": 8,
+        "South": 8,
+        "Southwest": 8,
+        "Mountain": 8,
+        "Pacific-Northwest": 8,
+        "Pacific-Southwest": 8
+      },
+      "by_placement": {
+        "web_banner": 20,
+        "email": 20,
+        "in_store_signage": 20,
+        "mobile": 20
+      },
+      "inventory_alerts": [
+        {
+          "sku_id": 4,
+          "sku_name": "Dior Skincare Site",
+          "region": "Northeast",
+          "status": "low_stock",
+          "units": 43
+        },
+        {
+          "sku_id": 4,
+          "sku_name": "Dior Skincare Site",
+          "region": "Midwest-South",
+          "status": "out_of_stock",
+          "units": 0
+        },
+        {
+          "sku_id": 18,
+          "sku_name": "Chanel Makeup Almost",
+          "region": "Midwest-South",
+          "status": "low_stock",
+          "units": 12
+        },
+        {
+          "sku_id": 18,
+          "sku_name": "Chanel Makeup Almost",
+          "region": "South",
+          "status": "out_of_stock",
+          "units": 0
+        }
+      ],
+      "price_alerts": [],
+      "avg_price_diff_pct": 0.0503
+    }
+  },
+  "step8_activate": {
+    "ok": true,
+    "schedule": {
+      "schedule_by_region": [
+        {
+          "region": "NY",
+          "timezone": "America/New_York",
+          "email_send_utc": "2026-06-01T14:00:00Z",
+          "paid_social_window_local": "18:00 to 21:00",
+          "display_frequency_cap": 3,
+          "signage_window_local": "10:00 to 21:00"
+        },
+        {
+          "region": "CA",
+          "timezone": "America/Los_Angeles",
+          "email_send_utc": "2026-06-01T17:00:00Z",
+          "paid_social_window_local": "18:00 to 21:00",
+          "display_frequency_cap": 3,
+          "signage_window_local": "10:00 to 21:00"
+        },
+        {
+          "region": "FL",
+          "timezone": "America/New_York",
+          "email_send_utc": "2026-06-01T14:00:00Z",
+          "paid_social_window_local": "18:00 to 21:00",
+          "display_frequency_cap": 3,
+          "signage_window_local": "10:00 to 21:00"
+        },
+        {
+          "region": "TX",
+          "timezone": "America/Chicago",
+          "email_send_utc": "2026-06-01T15:00:00Z",
+          "paid_social_window_local": "18:00 to 21:00",
+          "display_frequency_cap": 3,
+          "signage_window_local": "10:00 to 21:00"
+        }
+      ],
+      "human_confirmation_required": true,
+      "retrieved_docs": []
+    },
+    "generation_metadata": {
+      "skill": "activation-scheduler",
+      "method": "deterministic",
+      "duration_ms": 1.2
+    }
+  },
+  "step9_analyze": {
+    "ok": true,
+    "analysis": {
+      "campaign_id": 7,
+      "campaign_name": "Fall Style Edit 2025",
+      "campaign_status": "completed",
+      "campaign_window": {
+        "start": "2025-09-08",
+        "end": "2026-01-06",
+        "days": 121
+      },
+      "totals": {
+        "revenue": 20046407.87,
+        "spend": 1078492.99,
+        "conversions": 190107,
+        "roas": 18.59
+      },
+      "attribution": {
+        "by_channel": [
+          {
+            "channel": "email",
+            "revenue": 12459098.62,
+            "spend": 220803.56,
+            "conversions": 125940,
+            "impressions": 110714229,
+            "clicks": 3365108,
+            "roas": 56.43,
+            "cac": 1.75,
+            "rank": 1
+          },
+          {
+            "channel": "search",
+            "revenue": 4308552.46,
+            "spend": 211638.47,
+            "conversions": 37361,
+            "impressions": 18065780,
+            "clicks": 724758,
+            "roas": 20.36,
+            "cac": 5.66,
+            "rank": 2
+          },
+          {
+            "channel": "instore",
+            "revenue": 2596553.13,
+            "spend": 203154.92,
+            "conversions": 18763,
+            "impressions": 241746,
+            "clicks": 0,
+            "roas": 12.78,
+            "cac": 10.83,
+            "rank": 3
+          },
+          {
+            "channel": "paid_social",
+            "revenue": 429574.78,
+            "spend": 223161.85,
+            "conversions": 4847,
+            "impressions": 26659483,
+            "clicks": 265011,
+            "roas": 1.92,
+            "cac": 46.04,
+            "rank": 4
+          },
+          {
+            "channel": "display",
+            "revenue": 252628.88,
+            "spend": 219734.19,
+            "conversions": 3196,
+            "impressions": 55972824,
+            "clicks": 279383,
+            "roas": 1.15,
+            "cac": 68.75,
+            "rank": 5
+          }
+        ],
+        "by_segment": [
+          {
+            "segment": "Platinum",
+            "conversions": 1448,
+            "revenue": 1273494.24,
+            "customer_base": 1468,
+            "conversion_rate": 0.986376,
+            "lift_vs_avg": 0.4352
+          },
+          {
+            "segment": "Gold",
+            "conversions": 5697,
+            "revenue": 3677819.44,
+            "customer_base": 5989,
+            "conversion_rate": 0.951244,
+            "lift_vs_avg": 0.3841
+          },
+          {
+            "segment": "Silver",
+            "conversions": 10137,
+            "revenue": 4316450.72,
+            "customer_base": 12494,
+            "conversion_rate": 0.811349,
+            "lift_vs_avg": 0.1805
+          },
+          {
+            "segment": "Bronze",
+            "conversions": 17082,
+            "revenue": 5222923.8,
+            "customer_base": 30049,
+            "conversion_rate": 0.568471,
+            "lift_vs_avg": -0.1729
+          }
+        ],
+        "by_sku_revenue": [
+          {
+            "sku_id": 386,
+            "name": "Coach Jewelry Some",
+            "revenue": 34116.96,
+            "units": 57
+          },
+          {
+            "sku_id": 1600,
+            "name": "Coach Handbag Rate",
+            "revenue": 33933.82,
+            "units": 54
+          },
+          {
+            "sku_id": 1099,
+            "name": "Fossil Sunglasse Make",
+            "revenue": 33799.53,
+            "units": 55
+          },
+          {
+            "sku_id": 1244,
+            "name": "Kate Spade Jewelry Mean",
+            "revenue": 33728.93,
+            "units": 52
+          },
+          {
+            "sku_id": 1510,
+            "name": "Kate Spade Scarve Treat",
+            "revenue": 32774.06,
+            "units": 56
+          },
+          {
+            "sku_id": 1124,
+            "name": "Fossil Watche Today",
+            "revenue": 32401.06,
+            "units": 58
+          },
+          {
+            "sku_id": 756,
+            "name": "Michael Kors Jewelry Stock",
+            "revenue": 31932.62,
+            "units": 55
+          },
+          {
+            "sku_id": 1713,
+            "name": "Tag Heuer Handbag Themselves",
+            "revenue": 31875.2,
+            "units": 49
+          },
+          {
+            "sku_id": 1003,
+            "name": "Tory Burch Watche End",
+            "revenue": 30678.07,
+            "units": 52
+          },
+          {
+            "sku_id": 869,
+            "name": "Kate Spade Handbag Space",
+            "revenue": 30624.16,
+            "units": 58
+          }
+        ],
+        "by_sku_units": [
+          {
+            "sku_id": 419,
+            "name": "Charter Club Decor Director",
+            "units": 82,
+            "revenue": 25177.84
+          },
+          {
+            "sku_id": 478,
+            "name": "Chanel Skincare Four",
+            "units": 79,
+            "revenue": 5271.33
+          },
+          {
+            "sku_id": 451,
+            "name": "Tag Heuer Scarve Over",
+            "units": 77,
+            "revenue": 24440.3
+          },
+          {
+            "sku_id": 859,
+            "name": "MAC Haircare Six",
+            "units": 73,
+            "revenue": 9655.35
+          },
+          {
+            "sku_id": 1760,
+            "name": "Clinique Makeup Along",
+            "units": 72,
+            "revenue": 6384.85
+          },
+          {
+            "sku_id": 424,
+            "name": "Dior Fragrance Ask",
+            "units": 71,
+            "revenue": 8187.21
+          },
+          {
+            "sku_id": 482,
+            "name": "Martha Stewart Luggage Baby",
+            "units": 71,
+            "revenue": 7338.42
+          },
+          {
+            "sku_id": 126,
+            "name": "Chanel Haircare Special",
+            "units": 70,
+            "revenue": 6208.16
+          },
+          {
+            "sku_id": 1710,
+            "name": "Cuisinart Furniture Scene",
+            "units": 70,
+            "revenue": 24143.27
+          },
+          {
+            "sku_id": 104,
+            "name": "Bobbi Brown Makeup Write",
+            "units": 69,
+            "revenue": 4582.66
+          }
+        ],
+        "top_channel": "email",
+        "worst_channel": "display",
+        "top_segment": "Platinum"
+      },
+      "forecast": {
+        "horizon_days": 14,
+        "history_days": 30,
+        "forecast_status": "success",
+        "revenue": {
+          "predicted": 171767.5,
+          "lower_bound": 116271.85,
+          "upper_bound": 227263.14,
+          "trend_direction": "up"
+        },
+        "conversions": {
+          "predicted": 1475,
+          "lower_bound": 977,
+          "upper_bound": 1973,
+          "trend_direction": "up"
+        },
+        "roas": {
+          "predicted": 20.71,
+          "lower_bound": 15.04,
+          "upper_bound": 26.39,
+          "trend_direction": "up"
+        }
+      },
+      "summary": "The Fall Style Edit 2025 generated $20.05M in revenue across 121 days. email was the strongest channel (56.4x ROAS), while display underperformed (1.1x ROAS). The Platinum segment over indexed at +44% vs the campaign average conversion rate. Looking ahead to the next 14 days, revenue is forecast to trend up to $172K (80 percent CI: $116K to $227K).",
+      "generated_at": "2026-05-31T02:33:43.145904+00:00"
+    }
+  },
+  "step10_report": {
+    "ok": true,
+    "report": {
+      "executive_summary": "**Campaign Overview**\n\nThe Mother's Day Beauty Event (Campaign ID: MDC-2026-MD-001) is a Beauty category campaign targeting the General audience segment with a 25% discount offer. The campaign was submitted for workflow processing under status \"submitted.\" At the time of this report, the campaign brief has been logged and entered the 10-step production workflow; however, step outputs for Steps 1–9 are not yet recorded in the current state, indicating the campaign is in early-stage processing and has not yet completed the full workflow cycle.\n\n**Key Decisions and Workflow Status**\n\nBecause Steps 1–9 have not yet produced recorded outputs, key downstream decisions — including final audience segment refinement, SKU selection and lock, compliance review findings, copy development, locale variant generation, and approval recommendation — remain pending. The campaign brief establishes the foundational parameters: Beauty category, General segment, 25% discount depth, and a Mother's Day event framing. No SKUs have been locked, no copy has been drafted, and no compliance or approval determinations have been made at this stage. The audit log is currently empty, meaning no decisions, escalations, or rejections have been recorded against this campaign ID.\n\n**Benchmarking Context**\n\nRetro data from the Spring 2025 Beauty campaign (RETRO-SP-2025-BTY) provides relevant performance benchmarks for this event. That campaign delivered $42.1M in revenue against a $39.3M plan, a 32% email open rate versus a 26% segment average, a paid social ROAS of 4.2 against a 3.5 target, and an 18% in-store conversion uplift in the Beauty department. The Beauty Discovery sub-segment — customers who browsed but did not purchase in the prior 90 days — converted at 2.1x the segment baseline, driven primarily by a sampling offer. These benchmarks suggest that the current General segment targeting may underperform relative to a more precisely defined Beauty Discovery or lapsed-buyer segment, and that an incentive mechanic beyond a straight discount (e.g., a sampling offer) could meaningfully lift conversion.\n\n**Risks and Concerns**\n\nThe most significant risk at this stage is that the campaign is proceeding with a General audience designation rather than a higher-performing targeted segment. Historical retro data consistently shows that segmented Beauty campaigns outperform General audience campaigns in both open rate and conversion. Additionally, the approval ticket from the Memorial Day 2025 Home campaign (TICKET-INC-2025-4471) documents that two preventable revision cycles cost approximately three production days — one due to insufficient Brand review rigor and one due to a comparative claim that was not pre-cleared with Legal at kickoff. These lessons are directly applicable here: Legal should be engaged early on any promotional claim methodology, and Brand review should apply a higher revision bar before advancing copy. Finally, with no step outputs yet recorded, there is a reporting completeness risk; this report should be refreshed once Steps 1–9 are finalized.\n\n**Recommendations for Next Steps and Future Cycles**\n\nFor this campaign, the team should prioritize segment refinement in Step 1 — specifically evaluating a Beauty Discovery or lapsed-buyer cut against the General segment — and engage Legal at kickoff on the 25% discount claim and any comparative or \"best value\" language before copy is drafted. For the next campaign cycle, the retro process should be scheduled within four weeks of campaign close per internal FAQ guidance (FAQ-INT-2026-001), with Marketing Operations owning the retro template and action item tracking. Incorporating a sampling or value-add mechanic alongside the discount, as demonstrated in the Spring 2025 Beauty retro, should be evaluated as a conversion lever. This report will require a full refresh once all step outputs are available.",
+      "key_metrics": {
+        "segment_targeted": "General",
+        "skus_selected": 0,
+        "compliance_status": "Pending — Step outputs not yet recorded",
+        "approval_recommendation": "Pending — Step outputs not yet recorded",
+        "locale_variants": 0
+      },
+      "recommendations": [
+        "Refine audience segment from General to a higher-performing cut (e.g., Beauty Discovery or lapsed-buyer segment) based on Spring 2025 retro data showing 2.1x conversion lift for that cohort.",
+        "Engage Legal at campaign kickoff — before copy is drafted — to pre-clear the 25% discount claim and any comparative or superlative promotional language, avoiding the revision cycles documented in TICKET-INC-2025-4471.",
+        "Evaluate adding a sampling or value-add mechanic (e.g., free sample with qualifying purchase) alongside the 25% discount, consistent with the primary conversion driver identified in the Spring 2025 Beauty retro.",
+        "Apply a stronger initial Brand review standard to copy before advancing to approval, reducing preventable revision cycles as noted in the Memorial Day 2025 lessons learned.",
+        "Refresh this executive report once Steps 1–9 are fully completed and all step outputs, SKU selections, compliance findings, and approval decisions are recorded in the audit log.",
+        "Schedule the post-launch retro within four weeks of campaign close, with Marketing Operations owning the retro template and action item tracking per FAQ-INT-2026-001."
+      ],
+      "risks_and_concerns": [
+        "Campaign is currently at submitted status with no Step 1–9 outputs recorded; all downstream decisions (segment, SKUs, compliance, copy, approval) remain pending, creating a reporting completeness gap.",
+        "General audience segment targeting is historically underperforming relative to targeted Beauty sub-segments; Spring 2025 retro shows Beauty Discovery segment converted at 2.1x baseline — current targeting may leave significant revenue on the table.",
+        "No SKUs have been selected or locked; without SKU confirmation, compliance review, pricing validation, and copy development cannot proceed on schedule.",
+        "Audit log is empty — no decisions, escalations, or rejections have been documented, which limits accountability and traceability if issues arise later in the workflow.",
+        "Risk of preventable revision cycles if Legal is not pre-engaged on promotional claim methodology at kickoff, as documented in the Memorial Day 2025 approval ticket (TICKET-INC-2025-4471) where a comparable oversight cost three production days.",
+        "Mother's Day is a time-sensitive event; any delays in segment finalization, SKU lock, or compliance review compress the production timeline and increase the risk of a late or incomplete launch."
+      ],
+      "retrieved_docs": [
+        "FAQ-INT-2026-001 — 12_team_faq_internal.md — 'Who owns the post launch retro?'",
+        "TICKET-INC-2025-4471 — 09_approval_ticket_INC_2025_4471.md — 'Lessons'",
+        "RETRO-SP-2025-BTY — 08_campaign_retro_spring_2025_beauty.md — 'Performance'",
+        "TICKET-INC-2025-4471 — 09_approval_ticket_INC_2025_4471.md — 'Ticket Summary'"
+      ]
+    },
+    "generation_metadata": {
+      "skill": "report-generator",
+      "method": "claude_via_skill_invoker",
+      "duration_ms": 34519.5
+    }
+  }
+}

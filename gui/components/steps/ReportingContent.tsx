@@ -187,7 +187,7 @@ export function ReportingContent({
             {generating ? (
               <>
                 <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Generating executive summary...
+                Claude is writing the executive summary, about 10 seconds...
               </>
             ) : (
               <>

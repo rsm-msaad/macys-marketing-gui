@@ -298,7 +298,7 @@ export function CompliancePreCheck({
           <div className="relative">
             <div className="flex items-center gap-2 text-xs text-charcoal/65 font-medium">
               <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-600" />
-              Scanning copy for compliance issues...
+              Claude is scanning copy against compliance policies, about 15 seconds...
             </div>
             <div className="mt-3 flex gap-2">
               {["Brand guidelines", "Legal disclaimers", "Pricing rules"].map((label) => (
