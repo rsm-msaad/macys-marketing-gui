@@ -287,8 +287,8 @@ def get_portfolio_impact() -> dict:
         },
         "costs_not_netted": {
             "ai_api_cost_per_campaign": "$0.50 to $2.00",
-            "ai_api_note": "4 LLM skills via TritonAI/Claude; 7 automations at negligible compute cost",
-            "pattern4_rework_per_campaign": "estimated 1-2h (~$75-$150) on ~30% of campaigns",
+            "ai_api_note": "5 LLM skills via TritonAI/Claude; 7 automations at negligible compute cost",
+            "pattern4_rework_per_campaign": "estimated 1-2h (~$75-$150) on ~30% of campaigns (estimated from limited testing, 2 runs, not a measured production rate)",
             "pattern4_note": "Agentic compliance skill over-flags clean copy (Pattern 4 in test_report.md)",
         },
         "quality_aggregate": {

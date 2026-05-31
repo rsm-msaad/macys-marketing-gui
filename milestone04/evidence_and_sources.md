@@ -41,21 +41,13 @@ The RAG retrieval pipeline works as follows: the skill sends a natural-language 
 
 ### MCP Tools
 
-Two MCP tools are used as genuine tool-calling interfaces where an AI agent or user triggers the call. Two additional Python helper functions are called directly by automations (not via MCP).
+3 tools are registered via MCP: `check_pricing_conflicts`, `find_dam_assets`, and `generate_locale_variants`. `check_pricing_conflicts` is invoked agentically by Claude during the Step 6 compliance skill. `find_dam_assets` and `generate_locale_variants` are MCP-registered but called as deterministic Python helpers by the automations at Steps 4 and 7.
 
-**MCP Tools (AI-agent or user-triggered):**
-
-| Tool | Used By | What It Does |
-|---|---|---|
-| `check_pricing_conflicts` | Compliance Pre Check (agentic, Steps 6a/6b) | Claude calls mid-reasoning to validate SKUs against MAP-enforced brand list |
-| `send_campaign_summary` | Report Generator (user-triggered, Step 10) | Sends campaign report via Gmail SMTP to team members |
-
-**Python Helper Functions (called directly by automations, not MCP):**
-
-| Function | Used By | What It Does |
-|---|---|---|
-| `find_dam_assets` | DAM Asset Finder automation (Step 4) | DAM lookup with rights filtering and relevance scoring |
-| `generate_locale_variants` | Localization Generator automation (Step 7) | Phrase substitution with regional pricing for Spanish and Quebec French |
+| Tool | Used By | Mode | What It Does |
+|---|---|---|---|
+| `check_pricing_conflicts` | Compliance Pre Check (Steps 6a/6b) | Agentic (Claude calls mid-reasoning) | Validates SKUs against MAP-enforced brand list |
+| `find_dam_assets` | DAM Asset Finder automation (Step 4) | Deterministic Python helper | DAM lookup with rights filtering and relevance scoring |
+| `generate_locale_variants` | Localization Generator automation (Step 7) | Deterministic Python helper | Phrase substitution with regional pricing for Spanish and Quebec French |
 
 The Evidence screen shows every MCP tool call with its exact input parameters and output JSON, so the reviewer can verify what the tool was asked and what it returned. This is the primary mitigation for Failure Case 3 (MCP tool returns stale or incomplete data): the tool's output is not hidden behind the AI's summary, it is visible in full.
 
@@ -77,7 +69,7 @@ Because these are deterministic, their outputs are fully reproducible given the 
 
 ### LLM Skills
 
-Four skills invoke Claude via the TritonAI API through the `ask()` helper in `utils/connect.py`. Each skill receives pre-fetched RAG context and MCP tool outputs, then produces structured JSON:
+Five skills invoke Claude via the TritonAI API through the `ask()` helper in `utils/connect.py`. Each skill receives pre-fetched RAG context and MCP tool outputs, then produces structured JSON:
 
 | Skill | Prompt Contract | Step |
 |---|---|---|
@@ -85,6 +77,7 @@ Four skills invoke Claude via the TritonAI API through the `ask()` helper in `ut
 | Approval Brief Generator | Writes VP-ready brief with goal, audience, ROI, risk flags, recommendation | Step 6b |
 | Revision Router | Classifies VP revision comment into change type, owner, and urgency | Step 6c |
 | Layout Copy Generator | Drafts tagline, body, CTA, and visual direction for 4 placements | Step 5 |
+| Report Generator | Drafts executive summary from full audit trail across all 10 steps | Step 10 |
 
 ## How the User Sees the Evidence
 

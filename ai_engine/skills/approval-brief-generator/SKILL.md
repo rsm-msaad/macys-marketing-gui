@@ -5,7 +5,7 @@ agentic: true
 # Approval Brief Generator
 
 **Workflow step:** 6b, generate the VP approval brief
-**Model:** gemini-3-flash (chosen for speed; brief generation is structured output that doesn't need claude-opus quality)
+**Model:** claude-sonnet-4-6 via TritonAI
 **Owner persona:** VP (the skill runs automatically when the VP opens the approval modal)
 **Input from previous step:** campaign block plus compliance_check from workflow state
 **Output to next step:** approval_brief object written to workflow state

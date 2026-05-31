@@ -40,7 +40,8 @@ Step 10 (Reporting) → step_outputs["10"]  ← reads ALL upstream steps 2-9
 | `check_pricing_conflicts` | Step 3 (SKU lock-in) | Python helper | Validates SKUs against MAP-enforced brands per PRICE-RULES-2026-001 |
 | `check_pricing_conflicts` | Step 6a (compliance) | **MCP — Agentic** | Claude calls mid-reasoning to verify pricing claims |
 | `check_pricing_conflicts` | Step 6b (brief) | **MCP — Agentic** | Claude may re-verify pricing for risk_flags |
-| `send_campaign_summary` | Step 10 (reporting) | **MCP — User-triggered** | Sends campaign report via Gmail SMTP to team members |
+| `find_dam_assets` | Step 4 (creative) | Python helper (MCP-registered) | DAM lookup with rights filtering and relevance scoring |
+| `generate_locale_variants` | Step 7 (localization) | Python helper (MCP-registered) | Phrase-level transcreation to Spanish and Quebec French |
 
 ## Agentic vs Deterministic
 
@@ -67,10 +68,8 @@ Agentic skills pre-fetch RAG documents deterministically. Only MCP tool calls at
   - Revision Router (pre-fetch, Step 6c)
   - Report Generator (pre-fetch, Step 10)
 - **6 Deterministic Automations:** Audience Segment Builder, SKU Recommender, DAM Asset Finder, Localization Generator, Activation Scheduler, Campaign Performance Analyzer
-- **2 MCP Tools:**
+- **3 MCP Tools:**
   - `check_pricing_conflicts` — agentic at Steps 6a/6b (Claude decides when to call), also used as Python helper at Step 3
-  - `send_campaign_summary` — real Gmail SMTP integration at Step 10, sends campaign reports to team via email
-- **2 Python Helper Functions** (not MCP, called directly by automations):
-  - `find_dam_assets` — DAM lookup at Step 4
-  - `generate_locale_variants` — phrase-level transcreation at Step 7
+  - `find_dam_assets` — MCP-registered, called as deterministic Python helper at Step 4
+  - `generate_locale_variants` — MCP-registered, called as deterministic Python helper at Step 7
 - **12 RAG Documents:** BRAND-GL through TEAM-FAQ in HyQ FAISS index (381 entries)

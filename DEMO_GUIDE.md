@@ -53,7 +53,7 @@
 - **Role:** Pulls the data, runs attribution, drafts the readout
 - **Sidebar:** Dashboard, Campaigns, Knowledge Base, Analytics
 - **Authority:** Steps 9, 10
-- **Unique:** Owns monitoring and final reporting. Step 10 has "Generate Report via Claude" and "Send to Team via Email" (Gmail MCP).
+- **Unique:** Owns monitoring and final reporting. Step 10 has "Generate Report via Claude".
 
 ### Prof. Vincent — Co-CEO
 - **Role:** Co-CEO with executive authority over campaign approvals and overrides
@@ -109,7 +109,7 @@
 - **Review page:** "Accept Findings" button (not "Approve") — locks substep, does not advance campaign
 
 ### Step 6b: Approval Brief Generator
-- **Owner:** Merna (proxy for VP) | **Badge:** HUMAN_PLUS_SKILL | **Calls Claude:** Yes (agentic, uses gemini-3-flash for speed)
+- **Owner:** Merna (proxy for VP) | **Badge:** HUMAN_PLUS_SKILL | **Calls Claude:** Yes (agentic)
 - **Reads from:** Compliance result, copy, SKUs, segment
 - **Outputs:** Evidence `["6b"]` — 5-field brief, agentic_trace
 - **Review page:** "Accept Brief" button
@@ -141,7 +141,7 @@
 - **Owner:** Anna | **Badge:** HUMAN_PLUS_SKILL | **Calls Claude:** Yes (pre-fetch, fallback if unavailable)
 - **What runs:** Report Generator LLM skill from full audit trail
 - **Reads from:** ALL step_outputs 2-9
-- **UI:** "Generate Report via Claude" button + "Send to Team via Email" (Gmail MCP tool)
+- **UI:** "Generate Report via Claude" button
 - **Outputs:** `step_outputs["10"]` — summary, upstream_steps_used
 
 ## Section 4: The 5 LLM Skills
@@ -150,29 +150,32 @@
 |---|---|---|---|---|---|
 | Layout Copy Generator | 5 | Pre-fetch | claude-sonnet-4-6 | Brand voice guidelines | None |
 | Compliance Pre Check | 6a | Agentic | claude-sonnet-4-6 | 4 docs (brand, legal, pricing, compliance) | check_pricing_conflicts |
-| Approval Brief Generator | 6b | Agentic | **gemini-3-flash** (speed) | Campaign retro benchmarks | check_pricing_conflicts (optional) |
+| Approval Brief Generator | 6b | Agentic | claude-sonnet-4-6 | Campaign retro benchmarks | check_pricing_conflicts (optional) |
 | Revision Router | 6c | Pre-fetch | claude-sonnet-4-6 | None | None |
 | Report Generator | 10 | Pre-fetch | claude-sonnet-4-6 | Campaign retro benchmarks | None |
 
 All skills have deterministic fallbacks if the API is unavailable. Agentic skills capture reasoning traces in the Evidence panel.
 
-## Section 5: The 2 MCP Tools
+## Section 5: The 3 MCP Tools
+
+3 tools are registered via MCP: `check_pricing_conflicts`, `find_dam_assets`, and `generate_locale_variants`. `check_pricing_conflicts` is invoked agentically by Claude during the Step 6 compliance skill. `find_dam_assets` and `generate_locale_variants` are MCP-registered but called as deterministic Python helpers by the automations at Steps 4 and 7.
 
 ### check_pricing_conflicts
 - **What:** Validates SKUs against MAP-enforced brand list (14 brands) and discount floor
 - **Fires at:** Step 3 (Python helper), Steps 6a/6b (agentically by Claude)
 - **Integration:** Internal (queries macys.db sku_catalog)
 
-### send_campaign_summary
-- **What:** Sends campaign report via Gmail SMTP using App Password
-- **Fires at:** Step 10 (user-triggered via "Send to Team via Email" button)
-- **Integration:** External (Gmail SMTP, requires GMAIL_USER + GMAIL_APP_PASSWORD env vars)
+### find_dam_assets
+- **What:** DAM lookup by category and region with active rights filter
+- **Fires at:** Step 4 (deterministic Python helper)
+- **Integration:** Internal (queries macys.db dam_assets)
 
-### Python Helper Functions (not MCP)
-- `find_dam_assets` — DAM lookup at Step 4
-- `generate_locale_variants` — phrase-level transcreation at Step 7
+### generate_locale_variants
+- **What:** Phrase-level transcreation to Spanish and Quebec French
+- **Fires at:** Step 7 (deterministic Python helper)
+- **Integration:** Internal (40+ phrase substitution table)
 
-## Section 6: The 6 Automations
+## Section 6: The 7 Automations
 
 | Automation | Step | Input | Output |
 |---|---|---|---|
@@ -243,12 +246,12 @@ All 12 indexed in HyQ FAISS vector store (381 entries: 78 chunks + 303 generated
 4. Switch to **Abdullah** → **Step 4:** Run DAM Asset Finder → Lock in
 5. **Step 5:** Generate Layout Copy (Claude, 5-15 sec) → see visual mockups with DAM photos → Approve
 6. Switch to **Merna** → **Step 6a:** Compliance fires agentically (Claude calls check_pricing_conflicts)
-7. **Step 6b:** Brief fires (gemini-3-flash, ~10 sec) → review 5-field VP brief
+7. **Step 6b:** Brief fires (~10 sec) → review 5-field VP brief
 8. Final Approval → campaign advances
 9. Switch to **Shankar** → **Step 7:** Run Localization → toggle variants → Lock in
 10. **Merna** → **Step 8:** Activate Campaign
 11. **Anna** → **Step 9:** Run Performance Analyzer → Lock in
-12. **Step 10:** Generate Report via Claude → optionally Send to Team via Email → Send to Leadership
+12. **Step 10:** Generate Report via Claude → Send to Leadership
 
 ### Flow 2: Agentic Compliance + Evidence Deep Dive
 1. Select Mother's Day Beauty (pre-seeded at Step 6)
@@ -272,9 +275,8 @@ All 12 indexed in HyQ FAISS vector store (381 entries: 78 chunks + 303 generated
 
 ### Honest Component Tally
 - **5 LLM Skills** (2 agentic, 3 pre-fetch) — all verified calling Claude via TritonAI
-- **6 Deterministic Automations** — no LLM, pure Python
-- **2 MCP Tools** — check_pricing_conflicts (agentic), send_campaign_summary (Gmail)
-- **2 Python Helper Functions** — find_dam_assets, generate_locale_variants
+- **7 Deterministic Automations** — no LLM, pure Python
+- **3 MCP Tools** — check_pricing_conflicts (agentic), find_dam_assets and generate_locale_variants (MCP-registered Python helpers)
 - **12 RAG Documents** — HyQ FAISS index (381 entries)
 - **6 Personas** — 4 team + 2 co-CEOs
 
@@ -282,7 +284,7 @@ All 12 indexed in HyQ FAISS vector store (381 entries: 78 chunks + 303 generated
 - **Cache pattern:** Agentic skills fire once per campaign, replay from evidence store on revisit
 - **Polling guard:** useRef prevents 5-second poll from re-firing skills
 - **Loading flash fix:** useState initializes from cache to avoid skeleton flicker
-- **Model routing:** Brief skill uses gemini-3-flash for 2-3x speed; others use claude-sonnet-4-6
+- **Model routing:** All skills use claude-sonnet-4-6 via TritonAI
 
 ### UI Labels (Honest)
 - Steps 2-4, 7-9: **Automation** badge (deterministic)
@@ -294,4 +296,4 @@ All 12 indexed in HyQ FAISS vector store (381 entries: 78 chunks + 303 generated
 
 ---
 
-*5 LLM skills · 6 automations · 2 MCP tools · 12 RAG docs · 6 personas · 3 campaigns*
+*5 LLM skills · 7 automations · 3 MCP tools · 12 RAG docs · 6 personas · 3 campaigns*

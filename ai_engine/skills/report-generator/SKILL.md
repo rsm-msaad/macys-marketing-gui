@@ -47,4 +47,4 @@ CRITICAL: Return ONLY a JSON object. No explanatory text before or after. No mar
 
 ## Handoff
 
-Anna (Marketing Analyst) reviews the generated report, edits in business context and qualitative learnings, then sends to leadership. The send_campaign_summary MCP tool can email the final version to the team.
+Anna (Marketing Analyst) reviews the generated report, edits in business context and qualitative learnings, then sends to leadership.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-M4 requires testing AI performance against realistic failure modes before a real user encounters a bad answer. This report documents the 10 test cases we built (mapped to `failure_cases.md`), the actual results from running them against our prototype, the patterns we found, and one before/after improvement we made based on the findings. The test code lives at `evals/test_m4_failure_modes.py` and exercises the 4 LLM skills through their deterministic helpers and (where API access is available) through full end-to-end skill invocation.
+M4 requires testing AI performance against realistic failure modes before a real user encounters a bad answer. This report documents the 10 test cases we built (mapped to `failure_cases.md`), the actual results from running them against our prototype, the patterns we found, and one before/after improvement we made based on the findings. The test code lives at `evals/test_m4_failure_modes.py` and exercises the 5 LLM skills through their deterministic helpers and (where API access is available) through full end-to-end skill invocation.
 
 ## Test Set Design
 

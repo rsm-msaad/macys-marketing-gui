@@ -13,7 +13,7 @@ An AI coworker for Macy's campaign managers that walks marketing campaigns throu
 
 ## What This Project Does
 
-A Macy's campaign manager (persona: Merna) opens the app, picks a campaign, and steps through a 10 stage workflow. Each step is either a human task, a deterministic automation, or one of three LLM powered skills. The AI coworker handles compliance checking, approval brief writing, and revision routing at Step 6. Everything before and after Step 6 is math, lookups, or templates. The result is a production grade demo where the professor can see the full lifecycle of a marketing campaign: brief, segment, select SKUs, produce creative, assemble layouts, approve, localize, activate, monitor performance, and report. Three seeded campaigns let you view an active campaign with live AI, a completed campaign with all outputs, and a planned campaign with partial progress.
+A Macy's campaign manager (persona: Merna) opens the app, picks a campaign, and steps through a 10 stage workflow. Each step is either a human task, a deterministic automation, or one of five LLM-powered skills. Three handle Step 6 (compliance checking, approval brief writing, and revision routing), one drafts layout copy at Step 5, and one generates the executive report at Step 10. The remaining steps are deterministic automations. The result is a production grade demo where the professor can see the full lifecycle of a marketing campaign: brief, segment, select SKUs, produce creative, assemble layouts, approve, localize, activate, monitor performance, and report. Three seeded campaigns let you view an active campaign with live AI, a completed campaign with all outputs, and a planned campaign with partial progress.
 
 ## Architecture at a Glance
 
@@ -27,10 +27,12 @@ FastAPI backend (Render)
    |
    +--- AI engine
    |      |
-   |      +--- 4 Skills (LLM judgment via TritonAI / Claude)
+   |      +--- 5 Skills (LLM judgment via TritonAI / Claude)
    |      |      compliance-pre-check
    |      |      approval-brief-generator
    |      |      revision-router
+   |      |      layout-copy-generator
+   |      |      report-generator
    |      |
    |      +--- 7 Automations (deterministic Python)
    |      |      audience-segment-builder
@@ -75,7 +77,7 @@ Every row maps a workflow step to its implementation, data source, and RAG docum
 | 9 | Monitoring | Automation | Steps 2-3 (segment, SKUs) | — | RETRO-Q4, RETRO-SP-BTY |
 | 10 | Reporting | AI + Human | **All steps 2-9** | — | — |
 
-## The 4 Skills (LLM Judgment)
+## The 5 Skills (LLM Judgment)
 
 Skills are the only place in the workflow where an LLM is called. Each skill has a `SKILL.md` that defines the prompt contract and output schema.
 
@@ -138,7 +140,7 @@ No LLM is called. Automations use math, lookups, and templates.
 
 ## The 3 MCP Tools
 
-All tools are served via FastMCP at `ai_engine/mcp_server/server.py`.
+All 3 tools are registered via MCP (FastMCP at `ai_engine/mcp_server/server.py`). `check_pricing_conflicts` is invoked agentically by Claude during the Step 6 compliance skill. `find_dam_assets` and `generate_locale_variants` are MCP-registered but called as deterministic Python helpers by the automations at Steps 4 and 7.
 
 ### check_pricing_conflicts
 
@@ -151,7 +153,7 @@ Output: { status: "pass"|"warn"|"fail", conflicts: [...], checked_count: int }
 
 MAP enforced brands: Levi's, Coach, Lancome, Estee Lauder, Clinique, La Mer, Dior Beauty, Tag Heuer. Flags any combined promo + proposed discount exceeding 50%.
 
-Used by: **Step 3** (SKU lock-in, via `/skills/check-pricing`) and **Step 6a** (compliance, via skill invoker prefetch).
+Used by: **Step 3** (SKU lock-in, via `/skills/check-pricing`) and **Steps 6a/6b** (compliance, invoked agentically by Claude mid-reasoning).
 
 ### find_dam_assets
 
@@ -250,7 +252,7 @@ The skill invoker (`ai_engine/orchestrator/skill_invoker.py`) pre-fetches all co
 6. Parse the JSON response
 7. Merge result into `workflow_state.json`
 
-The model only produces structured JSON. It never issues tool calls or retrieval queries itself.
+Two skills (compliance-pre-check and approval-brief-generator) run in agentic mode where Claude decides when to call MCP tools mid-reasoning. The remaining skills use pre-fetched context and produce structured JSON without tool calls.
 
 ### State persistence
 
@@ -453,7 +455,7 @@ macys_ai_coworker/
 
 ## What We Learned
 
-**AI is for judgment, not everything.** Of the 10 workflow steps, only 3 call an LLM. The rest are k-means clustering, SQL queries, timezone arithmetic, and template expansion. Forcing everything through an LLM would be slower, more expensive, and harder to test. The n8n Reddit post Vincent shared crystallized this: "if you can write a deterministic rule, do not ask a model."
+**AI is for judgment, not everything.** Of the 10 workflow steps, only 5 call an LLM. The rest are k-means clustering, SQL queries, timezone arithmetic, and template expansion. Forcing everything through an LLM would be slower, more expensive, and harder to test. The n8n Reddit post Vincent shared crystallized this: "if you can write a deterministic rule, do not ask a model."
 
 **HyQ improved retrieval quality measurably.** On our 8 test queries, naive FAISS retrieval found the right document 62.5% of the time. Adding generated questions (HyQ) brought that to 100%. The 303 generated questions act as a synonym layer, catching intent phrased queries that do not match the original document text.
 

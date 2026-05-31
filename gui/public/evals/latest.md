@@ -8,7 +8,7 @@
 
 This project has two complementary test suites. Both run via pytest.
 
-**Suite 1: Skill-level evals (`evals/`)** — 67 parametrized tests across the 3 LLM skills and naive vs HyQ RAG comparison. These exercise the deterministic helpers (banned word scan, tagline check, pricing language, recommendation logic, urgency rules) with multiple input cases per function.
+**Suite 1: Skill-level evals (`evals/`)** — 67 parametrized tests across 3 of 5 LLM skills (compliance, brief, routing — the 3 with deterministic helper functions) and naive vs HyQ RAG comparison. These exercise the deterministic helpers (banned word scan, tagline check, pricing language, recommendation logic, urgency rules) with multiple input cases per function.
 
 **Suite 2: M4 failure-mode tests (`tests/test_workflow.py`)** — 10 test classes with 27 individual test functions mapped to the 7 failure cases in `failure_cases.md`. Split into Tier 1 (19 deterministic, no LLM) and Tier 2 (8 LLM-dependent via TritonAI). Tier 2 tests include DeepEval LLM-as-judge scoring.
 
