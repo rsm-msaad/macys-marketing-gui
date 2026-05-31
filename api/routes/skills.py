@@ -186,6 +186,61 @@ def run_analyze(body: AnalyzeBody) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+# Activation Scheduler (deterministic automation, no LLM)
+_ACTIVATION_HELPERS = None
+
+
+def _get_activation_helpers():
+    global _ACTIVATION_HELPERS
+    if _ACTIVATION_HELPERS is None:
+        helpers_path = REPO_ROOT / "ai_engine" / "automations" / "activation-scheduler" / "helpers.py"
+        spec = importlib.util.spec_from_file_location("activation_helpers", helpers_path)
+        assert spec and spec.loader
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _ACTIVATION_HELPERS = mod
+    return _ACTIVATION_HELPERS
+
+
+class ActivateBody(BaseModel):
+    regions: list[str] = Field(default_factory=lambda: ["NY", "CA", "FL", "TX"])
+    estimated_spend: int = Field(default=200_000)
+    launch_date: str = Field(default="2026-06-01")
+
+
+@router.post("/activate")
+def run_activate(body: ActivateBody) -> dict:
+    try:
+        helpers = _get_activation_helpers()
+        started = time.monotonic()
+        per_region = []
+        for region in body.regions:
+            tz = helpers.region_to_timezone(region)
+            per_region.append(
+                {
+                    "region": region,
+                    "timezone": tz,
+                    "email_send_utc": helpers.compute_send_time(tz, body.launch_date),
+                    "paid_social_window_local": helpers.peak_social_window(tz),
+                    "display_frequency_cap": helpers.display_cap(body.estimated_spend, region),
+                    "signage_window_local": helpers.signage_window(tz),
+                }
+            )
+        elapsed = round((time.monotonic() - started) * 1000, 1)
+        schedule = helpers.assemble_schedule(per_region, [])
+        return {
+            "ok": True,
+            "schedule": schedule,
+            "generation_metadata": {
+                "skill": "activation-scheduler",
+                "method": "deterministic",
+                "duration_ms": elapsed,
+            },
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
 class SkuRecommendBody(BaseModel):
     category: str = Field(default="Beauty")
     discount_pct: float = Field(default=25)

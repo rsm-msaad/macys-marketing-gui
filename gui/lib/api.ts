@@ -838,6 +838,45 @@ export async function runAnalyze(campaignId: number, forecastDays = 14): Promise
   });
 }
 
+// Activation Scheduler (deterministic automation)
+export type RegionSchedule = {
+  region: string;
+  timezone: string;
+  email_send_utc: string;
+  paid_social_window_local: string;
+  display_frequency_cap: number;
+  signage_window_local: string;
+};
+
+export type ActivateResult = {
+  ok: boolean;
+  schedule: {
+    schedule_by_region: RegionSchedule[];
+    human_confirmation_required: boolean;
+    retrieved_docs: string[];
+  };
+  generation_metadata: {
+    skill: string;
+    method: string;
+    duration_ms: number;
+  };
+};
+
+export async function runActivate(
+  regions: string[],
+  estimatedSpend: number,
+  launchDate: string,
+): Promise<ActivateResult> {
+  return request<ActivateResult>("/skills/activate", {
+    method: "POST",
+    body: JSON.stringify({
+      regions,
+      estimated_spend: estimatedSpend,
+      launch_date: launchDate,
+    }),
+  });
+}
+
 // Report Generator skill
 export type GenerateReportResult = {
   ok: boolean;
