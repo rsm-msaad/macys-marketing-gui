@@ -39,10 +39,6 @@ from tools.find_dam_assets import find_dam_assets as _find_dam  # noqa: E402
 from tools.generate_locale_variants import (  # noqa: E402
     generate_locale_variants as _generate_locale,
 )
-from tools.send_campaign_summary import (  # noqa: E402
-    send_campaign_summary as _send_summary,
-)
-
 mcp = FastMCP("macys-marketing")
 
 
@@ -116,34 +112,6 @@ def generate_locale_variants(
         applied_pricing, applied_phrases, and unmatched_words.
     """
     return _generate_locale(copy, target_language, regional_pricing)
-
-
-@mcp.tool()
-def send_campaign_summary(
-    recipients: list[str],
-    campaign_name: str,
-    subject: str,
-    summary_body: str,
-) -> dict[str, Any]:
-    """Send a campaign summary email to the specified recipients.
-
-    Sends via Gmail SMTP using an App Password. Used by the Report
-    Generator skill at workflow step 10 to notify the team when a
-    campaign report is finalized.
-
-    Requires GMAIL_USER and GMAIL_APP_PASSWORD environment variables.
-
-    Args:
-        recipients: list of email addresses to send to.
-        campaign_name: campaign name for the email header.
-        subject: email subject line.
-        summary_body: plain text body of the email.
-
-    Returns:
-        Dict with status (sent or error), recipients_count, message_id,
-        and error string if applicable.
-    """
-    return _send_summary(recipients, campaign_name, subject, summary_body)
 
 
 if __name__ == "__main__":

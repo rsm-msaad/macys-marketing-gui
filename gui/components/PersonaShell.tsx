@@ -865,7 +865,7 @@ const STEP_TOOLS: Record<number, string[]> = {
   7: ["generate_locale_variants (Python helper)"],
   8: ["Activation Scheduler (automation)"],
   9: ["Analytics Engine (automation)"],
-  10: ["Campaign Summary (LLM skill)", "send_campaign_summary (MCP tool)"],
+  10: ["Report Generator (LLM skill)"],
 };
 
 function StepTypeCard({ stepNumber, label }: { stepNumber: number; label: string }) {

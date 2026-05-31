@@ -9,18 +9,15 @@ imported directly:
         check_pricing_conflicts,
         find_dam_assets,
         generate_locale_variants,
-        send_campaign_summary,
     )
 """
 
 from tools.check_pricing_conflicts import check_pricing_conflicts
 from tools.find_dam_assets import find_dam_assets
 from tools.generate_locale_variants import generate_locale_variants
-from tools.send_campaign_summary import send_campaign_summary
 
 __all__ = [
     "check_pricing_conflicts",
     "find_dam_assets",
     "generate_locale_variants",
-    "send_campaign_summary",
 ]

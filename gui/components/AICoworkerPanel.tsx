@@ -23,10 +23,9 @@ const STEP_AI_NOTE: Record<number, string> = {
   8: "The Activation Scheduler automation fires automatically after VP approval. Timezone math and send time computation are deterministic, so no LLM is needed.",
 };
 
-// Tools that fire on each step. Only check_pricing_conflicts and
-// send_campaign_summary are real MCP tools used by AI agents.
-// find_dam_assets and generate_locale_variants are Python helper
-// functions called directly by automations.
+// Tools that fire on each step. check_pricing_conflicts is the MCP tool
+// invoked agentically by Claude. find_dam_assets and generate_locale_variants
+// are MCP-registered but called as Python helpers by automations.
 type ToolMeta = {
   name: string;
   description: string;

@@ -359,32 +359,6 @@ def run_generate_locale(body: GenerateLocaleBody) -> dict:
     }
 
 
-# MCP tool: send_campaign_summary — Gmail SMTP integration
-class SendSummaryBody(BaseModel):
-    recipients: list[str] = Field(default_factory=list)
-    campaign_name: str = Field(default="Campaign Report")
-    subject: str = Field(default="Campaign Complete")
-    summary_body: str = Field(default="")
-
-
-@router.post("/send-summary")
-def run_send_summary(body: SendSummaryBody) -> dict:
-    """MCP tool firing: send_campaign_summary at Step 10 (Reporting).
-
-    Sends a campaign summary email via Gmail SMTP to the specified
-    recipients. Requires GMAIL_USER and GMAIL_APP_PASSWORD env vars.
-    """
-    from ai_engine.tools.send_campaign_summary import send_campaign_summary
-    result = send_campaign_summary(
-        body.recipients, body.campaign_name, body.subject, body.summary_body,
-    )
-    return {
-        "ok": result["status"] == "sent",
-        "mcp_tool": "send_campaign_summary",
-        **result,
-    }
-
-
 # Layout Copy Generator (LLM skill with deterministic fallback)
 _LAYOUT_HELPERS = None
 
