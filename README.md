@@ -219,7 +219,7 @@ results = retrieve("banned words and approved taglines", k=4)
 
 ### Naive vs HyQ retrieval results
 
-Tested on 8 queries. HyQ retrieved the expected document in **8 of 8** cases. Naive retrieved the expected document in **5 of 8** cases. HyQ matched via generated questions on most queries, improving recall on intent phrased questions where the original chunk text did not contain the exact query wording.
+On 8 near-verbatim test queries, both indexes now retrieve the correct document (the embedding model is fetched at runtime and evolves over time, so we report rank and score rather than a fixed pass count). HyQ ranks the correct document #1 on all 8 queries and scores higher on 6 of 8. On a separate set of 5 realistic paraphrased queries (how a marketer would actually type), HyQ retrieves 5 of 5 correctly while naive misses 1 — the legal disclaimer document for a BOGO pricing question.
 
 ## The Orchestrator
 
@@ -289,7 +289,7 @@ uv run pytest evals/ -v
 | Revision Router | 9 | Owner lookup, urgency calculation |
 | RAG Comparison (naive vs HyQ) | 24 | Document recall, score comparison across 8 queries |
 
-Key finding: HyQ retrieves the correct document in 8/8 cases; naive retrieves correctly in 5/8 cases.
+Key finding: On 8 near-verbatim queries both indexes retrieve correctly, but HyQ ranks #1 on all 8 and scores higher on 6 of 8. On 5 realistic paraphrased queries, HyQ retrieves 5/5 while naive misses 1 (the LEGAL-DIS document on a BOGO question).
 
 Live dashboard: [macysai.vercel.app/evals](https://macysai.vercel.app/evals)
 

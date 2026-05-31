@@ -2,51 +2,89 @@
   "test_cases": [
     {
       "id": "disclaimer_percent_off",
+      "set": "near_verbatim",
       "query": "What disclaimer do I need for percent off claims?",
       "expected_doc_id": "LEGAL-DIS-2026-002",
       "expected_answer": "Percent off claims require a minimum purchase disclaimer, clear starting at language, and asterisk notation linking to terms."
     },
     {
       "id": "markdown_hold_time",
+      "set": "near_verbatim",
       "query": "How long should I hold a first markdown for?",
       "expected_doc_id": "PRICE-RULES-2026-001",
       "expected_answer": "First markdowns should be held for a minimum of 14 days before further reductions are applied."
     },
     {
       "id": "tagline_approval",
+      "set": "near_verbatim",
       "query": "Who can approve a campaign with a new tagline?",
       "expected_doc_id": "BRAND-GL-2026-001",
       "expected_answer": "New taglines require Brand Council approval. Only pre-approved taglines can be used without additional review."
     },
     {
       "id": "compliance_failures",
+      "set": "near_verbatim",
       "query": "What are common reasons campaigns fail compliance?",
       "expected_doc_id": "FAQ-INT-2026-001",
       "expected_answer": "Common compliance failures include banned words, missing disclaimers, unapproved taglines, and MAP violations."
     },
     {
       "id": "q4_underperformance",
+      "set": "near_verbatim",
       "query": "Why did the Q4 2025 holiday campaign underperform?",
       "expected_doc_id": "RETRO-Q4-2025",
       "expected_answer": "The Q4 2025 holiday campaign underperformed due to inventory shortages in key categories and a late launch window."
     },
     {
       "id": "spanish_style_guide",
+      "set": "near_verbatim",
       "query": "What style guide should I use for Spanish translations?",
       "expected_doc_id": "LOC-STYLE-2025-002",
       "expected_answer": "Use the Localization Style Guide which specifies conversational tone for US Spanish markets with regional adaptations."
     },
     {
       "id": "dam_tagging",
+      "set": "near_verbatim",
       "query": "How do I tag assets so they show up in DAM search?",
       "expected_doc_id": "DAM-TAG-2025-005",
       "expected_answer": "Assets must be tagged with category, season, model presence, and usage rights. Follow the DAM Tagging Policy naming conventions."
     },
     {
       "id": "beauty_roas",
+      "set": "near_verbatim",
       "query": "What is the average ROAS for beauty campaigns?",
       "expected_doc_id": "RETRO-SP-2025-BTY",
       "expected_answer": "The Spring 2025 Beauty campaign achieved a 4.2x ROAS, which serves as the benchmark for beauty category campaigns."
+    },
+    {
+      "id": "para_banned_phrase",
+      "set": "paraphrased",
+      "query": "Can I say lowest price ever in a Macy's ad?",
+      "expected_doc_id": "BRAND-GL-2026-001"
+    },
+    {
+      "id": "para_map_discount",
+      "set": "paraphrased",
+      "query": "Our vendor wants 60% off on Lancome, is that allowed?",
+      "expected_doc_id": "PRICE-RULES-2026-001"
+    },
+    {
+      "id": "para_vp_rejection",
+      "set": "paraphrased",
+      "query": "The VP rejected our campaign last week, what went wrong?",
+      "expected_doc_id": "TICKET-INC-2025-4471"
+    },
+    {
+      "id": "para_beauty_retro",
+      "set": "paraphrased",
+      "query": "How did last spring's beauty push do financially?",
+      "expected_doc_id": "RETRO-SP-2025-BTY"
+    },
+    {
+      "id": "para_bogo_legal",
+      "set": "paraphrased",
+      "query": "Do I need a lawyer to sign off on buy-one-get-one?",
+      "expected_doc_id": "LEGAL-DIS-2026-002"
     }
   ]
 }

@@ -48,9 +48,9 @@ Evaluates the owner lookup and urgency calculation helpers:
 Compares retrieval quality across 8 queries (3 tests per query):
 - **Document recall:** Does the expected document appear in top 4 results?
 - **Score comparison:** HyQ top score >= 90% of naive top score
-- **HyQ:** Retrieved expected document in 8 of 8 queries
-- **Naive:** Retrieved expected document in 5 of 8 queries
-- HyQ's hypothetical-question index improves recall on intent-phrased queries
+- **Near-verbatim (8 queries):** Both indexes retrieve the correct document; HyQ ranks #1 on all 8 and scores higher on 6 of 8
+- **Paraphrased (5 queries):** HyQ retrieves 5 of 5 correctly; naive misses 1 (LEGAL-DIS on a BOGO question)
+- The embedding model is fetched at runtime and evolves, so we report rank and score rather than a fixed pass count
 
 ## Suite 2: M4 Failure-Mode Tests (27 tests)
 

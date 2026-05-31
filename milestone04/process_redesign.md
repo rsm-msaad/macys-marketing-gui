@@ -98,7 +98,7 @@ The AI coworker draws on three categories of inputs documented in `evidence_and_
 | `find_dam_assets` | DAM lookup with rights filtering and relevance scoring | Step 4 |
 | `generate_locale_variants` | Phrase substitution with regional pricing and language mappings | Step 7 |
 
-**Documents.** Twelve RAG documents in a HyQ FAISS index (381 entries, 8/8 correct retrievals on benchmark vs. 5/8 for naive):
+**Documents.** Twelve RAG documents in a HyQ FAISS index (381 entries; on 8 near-verbatim queries both retrieve correctly but HyQ ranks #1 on all 8 and scores higher on 6/8; on 5 paraphrased queries HyQ gets 5/5 vs. naive 4/5):
 
 | # | Doc ID | Title | Used At |
 |---|---|---|---|

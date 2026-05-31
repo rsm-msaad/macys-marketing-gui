@@ -18,7 +18,7 @@ The M1 design called for Macy's real Star Rewards loyalty database (nearly 30 mi
 
 ## What Documents the AI Uses
 
-The AI retrieves context from 12 RAG documents stored in a FAISS vector index. Each document was chunked and embedded using a shared SentenceTransformer model. Two index variants exist: a naive FAISS index (78 chunks, keyword-level matching) and a HyQ index (381 entries including 303 synthetically generated questions, semantic-level matching). The system uses HyQ for production retrieval. On a benchmark of 8 test queries, HyQ retrieves the correct document in 8 of 8 cases versus 5 of 8 for naive.
+The AI retrieves context from 12 RAG documents stored in a FAISS vector index. Each document was chunked and embedded using a shared SentenceTransformer model. Two index variants exist: a naive FAISS index (78 chunks, keyword-level matching) and a HyQ index (381 entries including 303 synthetically generated questions, semantic-level matching). The system uses HyQ for production retrieval. On 8 near-verbatim test queries, both indexes now retrieve the correct document (the embedding model is fetched at runtime and evolves over time, so we report rank and score rather than a fixed pass count). HyQ ranks the correct document #1 on all 8 queries and scores higher on 6 of 8. On a separate set of 5 realistic paraphrased queries (how a marketer would actually type), HyQ retrieves 5 of 5 correctly while naive misses 1 — the legal disclaimer document for a BOGO pricing question.
 
 | # | Doc ID | Title | Used By | Step |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ If a skill is invoked but no RAG documents match above the relevance threshold, 
 
 ### Weak Evidence
 
-The HyQ retrieval index (381 entries) significantly outperforms the naive FAISS index (78 chunks) — 8 of 8 correct retrievals versus 5 of 8 on our benchmark. But even HyQ can return low-relevance matches when the query falls outside the training distribution of the 12 documents. When retrieval scores fall below 0.5, the confidence indicator drops and the Evidence panel shows the low scores explicitly. The `/rag-compare` demo page lets reviewers compare naive versus HyQ retrieval side-by-side, building intuition for when the RAG system is confident and when it is reaching. The system uses HyQ for all production retrieval and falls back to naive only for the comparison demo.
+The HyQ retrieval index (381 entries) outperforms the naive FAISS index (78 chunks). On 8 near-verbatim queries both indexes now retrieve the correct document, but HyQ ranks it #1 on all 8 and scores higher on 6 of 8. On 5 realistic paraphrased queries, HyQ retrieves 5 of 5 while naive misses 1 (the legal disclaimer document for a BOGO pricing question). But even HyQ can return low-relevance matches when the query falls outside the training distribution of the 12 documents. When retrieval scores fall below 0.5, the confidence indicator drops and the Evidence panel shows the low scores explicitly. The `/rag-compare` demo page lets reviewers compare naive versus HyQ retrieval side-by-side, building intuition for when the RAG system is confident and when it is reaching. The system uses HyQ for all production retrieval and falls back to naive only for the comparison demo.
 
 ### Conflicting Evidence
 
