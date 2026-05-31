@@ -259,7 +259,7 @@ export default function ImpactPage() {
             <p className="mt-1 text-[13px] text-charcoal/60">
               Time, cost, and quality impact of AI-supported campaign operations vs the manual baseline.
               Labor hours (for $) are separated from elapsed calendar days (for cycle %).
-              Baseline: $75/hr fully loaded, 154 labor hours and 30-40 business days per campaign.
+              Baseline: $75/hr fully loaded (reasoned assumption for mid-to-senior marketing operations roles in NYC — base salary $95K-$120K plus a 1.3-1.4x benefits/overhead multiplier, giving $59-$81/hr), 154 labor hours and 30-40 business days per campaign.
             </p>
           </div>
         </div>
