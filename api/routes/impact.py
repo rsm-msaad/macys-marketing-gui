@@ -285,6 +285,15 @@ def get_portfolio_impact() -> dict:
             "annual_campaign_volume_high": ANNUAL_CAMPAIGN_VOLUME_HIGH,
             "hourly_rate": HOURLY_RATE,
         },
+        "per_step_labor": [
+            {
+                "step": s,
+                "step_name": STEP_NAMES[s],
+                "baseline_hours": BASELINE_LABOR_HOURS[s],
+                "ai_hours": AI_LABOR_HOURS[s],
+            }
+            for s in sorted(STEP_NAMES, key=lambda x: int(x))
+        ],
         "costs_not_netted": {
             "ai_api_cost_per_campaign": "$0.50 to $2.00",
             "ai_api_note": "5 LLM skills via TritonAI/Claude; 7 automations at negligible compute cost",

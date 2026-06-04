@@ -90,6 +90,12 @@ type Portfolio = {
     pattern4_rework_per_campaign: string;
     pattern4_note: string;
   };
+  per_step_labor: {
+    step: string;
+    step_name: string;
+    baseline_hours: number;
+    ai_hours: number;
+  }[];
   quality_aggregate: {
     total_compliance_findings: number;
     total_compliance_failures: number;
@@ -223,6 +229,7 @@ export default function ImpactPage() {
   const [selectedId, setSelectedId] = useState<string>("MDC-2026-MD-001");
   const [loading, setLoading] = useState(true);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const [laborBreakdownOpen, setLaborBreakdownOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -420,6 +427,61 @@ export default function ImpactPage() {
                   <li><strong>AI API costs:</strong> {portfolio.costs_not_netted.ai_api_cost_per_campaign} per campaign run ({portfolio.costs_not_netted.ai_api_note})</li>
                   <li><strong>Pattern 4 rework:</strong> {portfolio.costs_not_netted.pattern4_rework_per_campaign} ({portfolio.costs_not_netted.pattern4_note})</li>
                 </ul>
+              </div>
+
+              {/* Per-step labor hour breakdown (expandable) */}
+              <div className="mt-3 rounded-lg border border-charcoal/8 bg-white">
+                <button
+                  type="button"
+                  onClick={() => setLaborBreakdownOpen((v) => !v)}
+                  className="flex w-full items-center gap-2 px-4 py-3 text-left"
+                >
+                  {laborBreakdownOpen
+                    ? <ChevronDown className="h-3.5 w-3.5 text-charcoal/40" />
+                    : <ChevronRight className="h-3.5 w-3.5 text-charcoal/40" />}
+                  <span className="text-[12px] font-medium text-charcoal/70">
+                    View per step labor breakdown (154h before, 34h after)
+                  </span>
+                </button>
+                {laborBreakdownOpen && portfolio.per_step_labor && (
+                  <div className="border-t border-charcoal/5 px-4 py-4">
+                    <table className="w-full text-[11px]">
+                      <thead className="text-xs uppercase text-charcoal/40">
+                        <tr>
+                          <th className="pb-2 text-left font-medium">Step</th>
+                          <th className="pb-2 text-left font-medium pl-3">Name</th>
+                          <th className="pb-2 text-right font-medium">Current (hrs)</th>
+                          <th className="pb-2 text-right font-medium">AI supported (hrs)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {portfolio.per_step_labor.map((row) => (
+                          <tr key={row.step} className="border-t border-charcoal/5">
+                            <td className="py-1.5 text-charcoal/70">{row.step}</td>
+                            <td className="py-1.5 pl-3 text-charcoal/70">{row.step_name}</td>
+                            <td className="py-1.5 text-right font-medium text-charcoal">{row.baseline_hours}</td>
+                            <td className="py-1.5 text-right font-medium text-teal-700">{row.ai_hours}</td>
+                          </tr>
+                        ))}
+                        <tr className="border-t border-charcoal/10 font-semibold">
+                          <td className="py-1.5" />
+                          <td className="py-1.5 pl-3 text-charcoal">Total</td>
+                          <td className="py-1.5 text-right text-charcoal">
+                            {portfolio.per_step_labor.reduce((s, r) => s + r.baseline_hours, 0)}
+                          </td>
+                          <td className="py-1.5 text-right text-teal-700">
+                            {portfolio.per_step_labor.reduce((s, r) => s + r.ai_hours, 0)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="mt-3 text-[11px] leading-relaxed text-charcoal/55">
+                      At the judgment steps (Briefing and Final Approval) the AI supported hours are the retained
+                      human judgment time. The reduction comes from removing coordination and prep work around those
+                      decisions, not from cutting the review itself. Values match estimates.md and api/routes/impact.py.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Campaign volume breakdown (expandable) */}

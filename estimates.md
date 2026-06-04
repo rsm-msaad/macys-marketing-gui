@@ -68,7 +68,7 @@ The per step elapsed times in the table above are calendar durations that includ
 | 10 | Reporting | 24 | 6 |
 | | **Total** | **154** | **34** |
 
-These values are defined in `api/routes/impact.py` and drive the Impact page computations. The difference (120 hours) at $75/hour yields the approximately $9,000 per campaign savings.
+These values are defined in `api/routes/impact.py` and drive the Impact page computations. The difference (120 hours) at $75/hour yields the approximately $9,000 per campaign savings. At the judgment steps (Briefing and Final Approval) the AI supported hours are the retained human judgment time, such as the strategic brief and the compliance and VP review; the reduction comes from removing the coordination and prep work around those decisions, not from cutting the review itself.
 
 **Labor hours per campaign (current):** Across all 10 steps, the campaign team (campaign manager, designer, production artist, analyst, legal reviewer) spends approximately 154 hands on labor hours per campaign. This is less than the elapsed calendar time (30 to 40 business days) because much of the elapsed time is waiting for handoffs, approvals, and coordination rather than active work. At $75/hour fully loaded, total labor cost per campaign: approximately $11,550.
 
