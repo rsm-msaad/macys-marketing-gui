@@ -140,7 +140,7 @@ No LLM is called. Automations use math, lookups, and templates.
 
 ## The 3 MCP Tools
 
-All 3 tools are registered via MCP (FastMCP at `ai_engine/mcp_server/server.py`). `check_pricing_conflicts` is invoked agentically by Claude during the Step 6 compliance skill. `find_dam_assets` and `generate_locale_variants` are MCP-registered but called as deterministic Python helpers by the automations at Steps 4 and 7.
+All 3 tools are exposed on a FastMCP server (`mcp_servers/macys_marketing.py`, also at `ai_engine/mcp_server/server.py`) launchable via the root `.mcp.json` and callable by any MCP client. At runtime, `check_pricing_conflicts` is invoked through the MCP protocol (stdio transport) with a direct call fallback if the server cannot launch; the protocol path is controlled by the `MCP_PROTOCOL_PRICING` environment variable (defaults to on). `find_dam_assets` and `generate_locale_variants` are called directly as Python functions while remaining available over the protocol for external MCP clients.
 
 ### check_pricing_conflicts
 

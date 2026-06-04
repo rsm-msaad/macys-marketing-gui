@@ -220,12 +220,68 @@ def _get_mcp_tools() -> dict[str, Callable[..., dict]]:
                 status = "pass"
             return {"status": status, "conflicts": conflicts, "checked_count": len(sku_ids)}
 
+        # Wrap check_pricing_conflicts to route through MCP protocol when
+        # MCP_PROTOCOL_PRICING is set (defaults to "1"). Falls back to the
+        # direct call on any protocol error. The wrapper is lazy: it does not
+        # spawn the server until the tool is actually called.
+        _direct_pricing = _check_pricing_via_main_db
+
+        def _check_pricing_with_protocol(
+            sku_ids: list[str],
+            proposed_discount_pct: float,
+        ) -> dict:
+            use_protocol = os.environ.get("MCP_PROTOCOL_PRICING", "1") == "1"
+            if use_protocol:
+                try:
+                    return _call_pricing_via_mcp(sku_ids, proposed_discount_pct)
+                except Exception as _proto_err:
+                    import warnings
+                    warnings.warn(
+                        f"MCP protocol path failed, falling back to direct call: {_proto_err}",
+                        stacklevel=2,
+                    )
+            return _direct_pricing(sku_ids, proposed_discount_pct)
+
         _MCP_TOOLS = {
-            "check_pricing_conflicts": _check_pricing_via_main_db,
+            "check_pricing_conflicts": _check_pricing_with_protocol,
             "find_dam_assets": find_dam_assets,
             "generate_locale_variants": generate_locale_variants,
         }
     return _MCP_TOOLS
+
+
+def _call_pricing_via_mcp(sku_ids: list[str], proposed_discount_pct: float) -> dict:
+    """Call check_pricing_conflicts through the real MCP protocol (stdio).
+
+    Launches the FastMCP server as a subprocess, sends a single tool call,
+    and returns the parsed result. The server exits when the client closes.
+    """
+    import asyncio
+
+    async def _run() -> dict:
+        from mcp.client.session import ClientSession
+        from mcp.client.stdio import StdioServerParameters, stdio_client
+
+        _repo = Path(__file__).resolve().parent.parent.parent
+        server_params = StdioServerParameters(
+            command="uv",
+            args=["run", "python", "-m", "mcp_servers.macys_marketing"],
+            cwd=str(_repo),
+            env={"PYTHONPATH": str(_repo / "ai_engine")},
+        )
+        async with stdio_client(server_params) as (read_stream, write_stream):
+            async with ClientSession(read_stream, write_stream) as session:
+                await session.initialize()
+                result = await session.call_tool(
+                    "check_pricing_conflicts",
+                    arguments={
+                        "sku_ids": sku_ids,
+                        "proposed_discount_pct": proposed_discount_pct,
+                    },
+                )
+                return json.loads(result.content[0].text)
+
+    return asyncio.run(_run())
 
 
 def _format_query(template: str, state: dict) -> str:

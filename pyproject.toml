@@ -27,6 +27,7 @@ dependencies = [
     "python-multipart>=0.0.28",
     "bcrypt>=5.0.0",
     "pyjwt>=2.12.1",
+    "mcp[cli]>=1.27",
 ]
 
 [dependency-groups]
