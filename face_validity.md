@@ -42,6 +42,8 @@ We are not inventing these numbers. They come from the team's own M1 analysis. N
 | Compliance defect reduction | 50 to 70 percent | BCG 2025: up to 70 percent text generation cost savings. Reckitt: 60 percent reduction in concept development. Our compliance check is a structured, rules based scan, comparable in automation potential. |
 | Marketing operations as a high value GenAI target | N/A (contextual anchor) | McKinsey 2023: marketing and sales capture about 75 percent of generative AI's estimated value across all business functions. |
 
+**Anchor 3: Domain experienced review.** Abdullah AlJarallah, a member of our team with extensive retail experience, reviewed the AI outputs and the workflow assumptions for plausibility against how promotional campaigns actually run in retail. This is an informed review by someone who has worked in the industry, which grounds the analysis in real domain knowledge. It does not replace testing with Macy's own operators, but it is a stronger check than reasoning alone.
+
 **What we are NOT claiming:**
 
 - We are not claiming 90%+ end-to-end reduction. That would require eliminating human review entirely, which our design explicitly does not do.
@@ -86,7 +88,7 @@ Three soft spots in our face validity argument, stated honestly:
 
 1. **Simulated data scale.** We use 50K synthetic customers, 5K DAM assets, 2,000 SKUs, and 12 RAG documents. Real Macy's data is orders of magnitude larger and messier. Our quality estimates (50-70% compliance defect reduction, 80%+ brief consistency improvement) may not survive the noise, edge cases, and data quality issues present at production scale. The HyQ retrieval benchmark (8/8 correct) was run on 8 test queries, not thousands.
 
-2. **No primary user testing.** We have not run the AI coworker with real Macy's marketing operators. Our claims about adoption, friction reduction, and quality improvement come from M1 secondary research and our own reasoning, not from observed user behavior. A grader or investor familiar with Macy's operations might reasonably ask: "Did anyone at Macy's actually try this?" The honest answer is no. This is a class project that simulates the production system.
+2. **No external operator testing.** A teammate with extensive retail experience, Abdullah AlJarallah, reviewed the outputs for plausibility, but we have not run the AI coworker with actual Macy's marketing operators. Our broader claims about adoption and quality come from that domain review, M1 secondary research, and our own reasoning, not from observed behavior of Macy's staff. The honest answer to whether anyone inside Macy's tried this is no; this is a class project that simulates the production system.
 
 3. **API cost at scale.** The TritonAI/Claude API is provided by the course at no direct cost. In production, Claude API costs across thousands of campaigns per year would add up. Our cost analysis treats API costs as negligible ($0.50-$2.00 per campaign run) because they are dwarfed by labor savings at our estimated volume. But if Macy's runs 5,000+ AI invocations per day across all concurrent campaigns, the math should be validated with actual API pricing rather than assumed.
 
