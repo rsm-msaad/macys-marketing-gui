@@ -44,8 +44,8 @@
   {
     "id": 8,
     "type": "image",
-    "image": "/storyboard/scenes/05_segmentation.jpg",
-    "notes": "Then she segments the customer base to figure out who to target."
+    "image": "/storyboard/scenes/03_sku_selection.jpg",
+    "notes": "Merna picks which products to feature based on inventory and margins."
   },
   {
     "id": 9,
@@ -56,8 +56,8 @@
   {
     "id": 10,
     "type": "image",
-    "image": "/storyboard/scenes/03_sku_selection.jpg",
-    "notes": "Merna picks which products to feature based on inventory and margins."
+    "image": "/storyboard/scenes/05_segmentation.jpg",
+    "notes": "Then she segments the customer base to figure out who to target."
   },
   {
     "id": 11,
