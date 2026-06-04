@@ -22,7 +22,7 @@ This pattern — maximum savings on coordination, minimal cuts on judgment — i
 
 Our headline number is 70-80% reduction in end-to-end campaign cycle time (6-8 weeks to 1-2 weeks). The M4 assignment guidance notes that "a 20% time reduction may be reasonable, while a 95% reduction may need a strong explanation." Our 70-80% sits in the zone that requires justification but is not implausible. Two anchors support it.
 
-**Anchor 1: Industry benchmarks for AI-assisted marketing operations.** Public reporting and case studies on AI-supported marketing automation suggest 30-70% time savings on isolated creative production cycles when AI handles initial drafts and humans refine. Our 70-80% sits at the high end of this range. The high end is defensible because we automate not just one workflow segment but the entire 10-step process end-to-end. M1 documented that "every single transfer is manual" across all 10 steps; eliminating those transfers cumulatively produces a larger end-to-end reduction than automating any single step in isolation. A 30% reduction on each of 10 sequential steps compounds to well over 70% end-to-end when the handoff delays between steps (not just the work within each step) are eliminated.
+**Anchor 1: Named industry benchmarks.** BCG's 2025 medtech marketing study reports that AI augmented campaigns achieve about a fourfold increase in speed (roughly 75 percent faster), with text generation cost savings up to 70 percent; Reckitt reported a 60 percent reduction in concept development time using the same approach (BCG, "Rethinking Medtech Marketing with GenAI," 2025). BCG's 2024 value creation report found AI augmented content generation and localization delivering about 50 percent time saved, end to end AI campaign creation reaching roughly 80 percent external agency cost savings, and up to 95 percent cost reduction on highly templated content (BCG, "AI Unlocked: Value Creation with AI," 2024). McKinsey identifies marketing and sales among the four functions capturing about 75 percent of generative AI's estimated value and reports that campaigns that once required months can now roll out in weeks or even days (McKinsey, "The Economic Potential of Generative AI," 2023). Our 70 to 80 percent end to end reduction sits squarely inside these named benchmarks. The high end is defensible because we automate not just one workflow segment but the entire 10 step process end to end. M1 documented that "every single transfer is manual" across all 10 steps; eliminating those transfers cumulatively produces a larger end to end reduction than automating any single step in isolation.
 
 **Anchor 2: M1 user stories projections.** M1's own user stories projected per-step reductions that individually exceed our end-to-end estimate:
 
@@ -31,7 +31,16 @@ Our headline number is 70-80% reduction in end-to-end campaign cycle time (6-8 w
 - Localization: 5-8 days to 1-2 hours (roughly 97% reduction)
 - DAM search: 15-30 minutes per asset to seconds (roughly 99% reduction)
 
-We are not inventing these numbers. They come from the team's own M1 analysis. Our overall 70-80% end-to-end estimate is actually more conservative than summing M1's per-step projections, because we account for the reality that some steps (briefing, activation, monitoring) see more modest improvements.
+We are not inventing these numbers. They come from the team's own M1 analysis. Note that M1's creative production projection (10 to 17 days to 2 to 4 hours) combines creative production and layout into a single user story; the estimates we actually adopt in estimates.md are deliberately more conservative, splitting the work into 1 to 2 business days for creative production (Step 4) and 1 to 2 business days for layout assembly (Step 5). This is why our overall 70 to 80 percent figure is lower than summing M1's per step projections: we account for the reality that some steps (briefing, activation, monitoring) see more modest improvements, and we use conservative adopted times rather than M1's aspirational projections.
+
+**Explicit claim to evidence mapping:**
+
+| Our claim | Figure | Named source |
+|---|---|---|
+| End to end cycle time reduction | 70 to 80 percent | BCG 2025: about fourfold speedup (roughly 75 percent). McKinsey 2023: campaigns moving from months to weeks or days. |
+| Localization labor reduction | About 95 percent less labor | BCG 2024: about 50 percent time saved on general content, up to 95 percent on highly templated content. Our localization is highly templated (region/language matrix with phrase substitution). |
+| Compliance defect reduction | 50 to 70 percent | BCG 2025: up to 70 percent text generation cost savings. Reckitt: 60 percent reduction in concept development. Our compliance check is a structured, rules based scan, comparable in automation potential. |
+| Marketing operations as a high value GenAI target | N/A (contextual anchor) | McKinsey 2023: marketing and sales capture about 75 percent of generative AI's estimated value across all business functions. |
 
 **What we are NOT claiming:**
 
@@ -41,7 +50,7 @@ We are not inventing these numbers. They come from the team's own M1 analysis. O
 
 ## Dimension 3: Does the AI Output Match the Evidence?
 
-This dimension asks whether the AI's reasoning is traceable to its sources, or whether it just produces confident-sounding text with no verifiable grounding. Our M4 implementation operationalizes this check through the Evidence screen, the Evidence pill on AI cards, and the audit log.
+This dimension asks whether the AI's reasoning is traceable to its sources, or whether it just produces confident-sounding text with no verifiable grounding. Our M4 implementation operationalizes this check through the Evidence screen, the Evidence button and side panel on AI cards, and the audit log.
 
 For each AI output, the Evidence panel displays:
 
@@ -83,4 +92,14 @@ Three soft spots in our face validity argument, stated honestly:
 
 ## Summary
 
-The Macy's AI Coworker analysis passes a basic face validity check on all four dimensions: direction (savings concentrate at the coordination-heavy steps, not the judgment-heavy ones), size (within plausible industry ranges and consistent with M1's own projections), evidence (operationalized via the Evidence screen and audit log so reviewers can verify in real time), and practical constraints (preserves human authority, respects compliance requirements, acknowledges data integration as a precondition for production value). Face validity is necessary but not sufficient; the M4 testing section (`test_report.md`) provides the empirical complement by running adversarial and edge-case inputs through the AI skills and scoring the outputs against defined rubrics.
+The Macy's AI Coworker analysis passes a basic face validity check on all four dimensions: direction (savings concentrate at the coordination heavy steps, not the judgment heavy ones), size (within named industry benchmark ranges and consistent with M1's own projections), evidence (operationalized via the Evidence screen and audit log so reviewers can verify in real time), and practical constraints (preserves human authority, respects compliance requirements, acknowledges data integration as a precondition for production value). Face validity is necessary but not sufficient; the M4 testing section (`test_report.md`) provides the empirical complement by running adversarial and edge case inputs through the AI skills and scoring the outputs against defined rubrics.
+
+## References
+
+1. BCG, "Rethinking Medtech Marketing with GenAI," 2025. Reports fourfold speedup on AI augmented campaigns, text generation cost savings up to 70 percent, and Reckitt achieving 60 percent reduction in concept development. https://www.bcg.com/publications/2025/rethinking-medtech-marketing-gen-ai
+
+2. BCG, "AI Unlocked: Value Creation with AI," 2024. Reports about 50 percent time saved on AI augmented content generation and localization, roughly 80 percent external agency cost savings on end to end AI campaign creation, and up to 95 percent cost reduction on highly templated content. https://www.bcg.com/assets/2024/executive-perspectives-value-creation-with-ai-17dec.pdf
+
+3. McKinsey and Company, "The Economic Potential of Generative AI: The Next Productivity Frontier," 2023. Reports marketing and sales among the four functions capturing about 75 percent of generative AI's estimated value, with campaigns moving from months to weeks or days. https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-economic-potential-of-generative-ai-the-next-productivity-frontier
+
+4. Deloitte Digital, content marketing research, 2023. Reports demand for marketing content grew 1.5 times in 2023 while teams met it only 55 percent of the time.

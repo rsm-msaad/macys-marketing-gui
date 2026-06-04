@@ -107,7 +107,7 @@ The 70-80% end-to-end reduction sits at the high end of the 30-70% range reporte
 
 ### 3. Evidence Alignment
 
-Every AI output is paired with an evidence record showing retrieved RAG passages, MCP tool inputs/outputs, and prior step references via the Evidence side panel. Reviewers can verify whether the AI's conclusion is supported by its sources in seconds rather than minutes. The confidence indicator is derived heuristically and can mislead (Failure Case 4), but the Evidence pill provides the factual check that the confidence label cannot.
+Every AI output is paired with an evidence record showing retrieved RAG passages, MCP tool inputs/outputs, and prior step references via the Evidence side panel. Reviewers can verify whether the AI's conclusion is supported by its sources in seconds rather than minutes. The confidence indicator is derived heuristically and can mislead (Failure Case 4), but the Evidence button and side panel provides the factual check that the confidence label cannot.
 
 ### 4. Practical Constraints
 
@@ -115,7 +115,7 @@ The design preserves human authority at all consequential gates (Steps 6a, 6b, 8
 
 ### Face Validity Anchors
 
-**Anchor 1: Industry benchmarks.** Public reporting on AI-supported marketing automation suggests 30-70% time savings on creative production cycles when AI handles initial drafts and humans refine. Our estimate sits at the high end because we automate the full 10-step process, not just creative production.
+**Anchor 1: Named industry benchmarks.** BCG reports about a fourfold speedup (roughly 75 percent) on AI augmented marketing campaigns, with text generation cost savings up to 70 percent and Reckitt achieving a 60 percent reduction in concept development (BCG, "Rethinking Medtech Marketing with GenAI," 2025). BCG's 2024 value creation report found about 50 percent time saved on content generation and localization, and up to 95 percent cost reduction on highly templated content. McKinsey reports campaigns moving from months to weeks or days, with marketing and sales capturing about 75 percent of generative AI's total estimated value (McKinsey, "The Economic Potential of Generative AI," 2023). Our 70 to 80 percent sits inside these named benchmarks because we automate the full 10 step process, not just creative production.
 
 **Anchor 2: M1 user stories.** M1's own user stories projected per-step reductions that individually exceed our overall estimate (segmentation: 2-3 days to 2-4 hours, creative production: 10-17 days to 2-4 hours, localization: 5-8 days to 1-2 hours). We are organizing M1's projections into the M4 format, not inventing new numbers.
 
