@@ -257,9 +257,9 @@ export default function ImpactPage() {
             </Link>
             <h1 className="font-serif text-2xl font-bold text-charcoal">Before GenAI vs After GenAI</h1>
             <p className="mt-1 text-[13px] text-charcoal/60">
-              Time, cost, and quality impact of AI-supported campaign operations vs the manual baseline.
+              Time, cost, and quality impact of AI supported campaign operations vs the manual baseline.
               Labor hours (for $) are separated from elapsed calendar days (for cycle %).
-              Baseline: $75/hr fully loaded (reasoned assumption for mid-to-senior marketing operations roles in NYC — base salary $95K-$120K plus a 1.3-1.4x benefits/overhead multiplier, giving $59-$81/hr), 154 labor hours and 30-40 business days per campaign.
+              Baseline: $75/hr fully loaded (reasoned assumption for mid to senior marketing operations roles in NYC, base salary $95K to $120K plus a 1.3 to 1.4x benefits and overhead multiplier, giving $59 to $81/hr), 154 labor hours and 30 to 40 business days per campaign.
             </p>
           </div>
         </div>
@@ -342,7 +342,7 @@ export default function ImpactPage() {
                   <HeroCard
                     icon={TrendingUp}
                     label="Projected Annual"
-                    value={`$${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M–$${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M`}
+                    value={`$${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M to $${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M`}
                     sub={`at ${portfolio.aggregate.annual_campaign_volume_low}-${portfolio.aggregate.annual_campaign_volume_high} campaigns/year`}
                     accent
                   />
@@ -396,6 +396,20 @@ export default function ImpactPage() {
                   range from <strong>${(portfolio.aggregate.projected_annual_low / 1_000_000).toFixed(1)}M</strong> to{" "}
                   <strong>${(portfolio.aggregate.projected_annual_high / 1_000_000).toFixed(1)}M</strong>.
                   This is a class-context estimate using reasoned assumptions, not a guaranteed projection.
+                </p>
+              </div>
+
+              {/* Named benchmark sources */}
+              <div className="mt-3 rounded-lg border border-violet-200/50 bg-violet-50/20 p-4">
+                <div className="text-xs font-semibold uppercase tracking-wider text-violet-600">Named Industry Benchmarks</div>
+                <p className="mt-1 text-[12px] leading-relaxed text-charcoal/70">
+                  Our 70 to 80 percent cycle time reduction sits inside published benchmarks:{" "}
+                  <strong>BCG (2025)</strong> reports about a fourfold speedup (roughly 75 percent reduction)
+                  on AI augmented marketing campaigns, with Reckitt achieving 60 percent faster concept development.{" "}
+                  <strong>BCG (2024)</strong> found about 50 percent time saved on content generation and
+                  up to 95 percent cost reduction on highly templated content.{" "}
+                  <strong>McKinsey (2023)</strong> reports campaign cycles dropping from months to weeks or days,
+                  with marketing and sales capturing about 75 percent of generative AI&apos;s total estimated value.
                 </p>
               </div>
 
