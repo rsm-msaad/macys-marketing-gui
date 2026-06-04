@@ -86,7 +86,7 @@ export async function callWithFallback<T>(
   cachedKey: string,
   opts: { timeoutMs?: number } = {},
 ): Promise<T> {
-  const { timeoutMs = 30_000 } = opts;
+  const { timeoutMs = 10_000 } = opts;
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -140,7 +140,7 @@ export async function fetchWithFallback<T>(
   cachedKey: string,
   opts: { timeoutMs?: number } = {},
 ): Promise<T> {
-  const { timeoutMs = 15_000 } = opts;
+  const { timeoutMs = 10_000 } = opts;
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -163,6 +163,65 @@ export async function fetchWithFallback<T>(
       return fallback as T;
     }
     throw new Error(`GET ${path} failed and no cached fallback for ${cachedKey}`);
+  }
+}
+
+/**
+ * GET endpoint with 10s timeout, falling back to cached-outputs.json.
+ * Used for pages that need skill-shaped output data (impact, review).
+ */
+export async function getWithOutputFallback<T>(
+  path: string,
+  cachedKey: string,
+  opts: { timeoutMs?: number } = {},
+): Promise<T> {
+  const { timeoutMs = 10_000 } = opts;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(`${API_BASE}${path}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) return (await res.json()) as T;
+    throw new Error(`${res.status}`);
+  } catch {
+    const cached = await getCachedOutputs();
+    const fallback = cached[cachedKey];
+    if (fallback) return fallback as T;
+    throw new Error(`GET ${path} failed and no cached fallback for ${cachedKey}`);
+  }
+}
+
+/**
+ * Wraps request() with a 10s timeout and panel fallback.
+ * For fetches where request() is currently used but we want graceful degradation.
+ */
+export async function requestWithFallback<T>(
+  path: string,
+  cachedKey: string,
+  init?: RequestInit,
+  opts: { timeoutMs?: number } = {},
+): Promise<T> {
+  const { timeoutMs = 10_000 } = opts;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...init,
+      headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) return (await res.json()) as T;
+    throw new Error(`${res.status}`);
+  } catch {
+    const cached = await getCachedPanels();
+    const fallback = cached[cachedKey];
+    if (fallback) return fallback as T;
+    throw new Error(`${path} failed and no cached fallback for ${cachedKey}`);
   }
 }
 

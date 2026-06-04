@@ -26,6 +26,7 @@ import {
   fetchCampaignContext,
   fetchCampaigns,
   fetchCampaignState,
+  fetchWithFallback,
   fetchWorkflow,
   requestRevisions,
   resetCampaign,
@@ -161,12 +162,31 @@ export function PersonaShell({
 
   const refresh = useCallback(async () => {
     try {
-      const [w, cs, st, ctx] = await Promise.all([
-        fetchWorkflow(personaId, campaignId),
-        fetchCampaigns(),
-        fetchCampaignState(campaignId),
-        fetchCampaignContext(campaignId),
-      ]);
+      // Try live API first; fall back to cached panel data on failure
+      let w: { persona_id: string; steps: WorkflowStep[] };
+      let cs: Campaign[];
+      let st: CampaignState;
+      let ctx: CampaignContext;
+      try {
+        [w, cs, st, ctx] = await Promise.all([
+          fetchWorkflow(personaId, campaignId),
+          fetchCampaigns(),
+          fetchCampaignState(campaignId),
+          fetchCampaignContext(campaignId),
+        ]);
+      } catch {
+        // Silent fallback to cached panel defaults
+        const [fw, fcs, fst, fctx] = await Promise.all([
+          fetchWithFallback<{ persona_id: string; steps: WorkflowStep[] }>(`/workflow/${personaId}?campaign_id=${encodeURIComponent(campaignId)}`, "workflow_default"),
+          fetchCampaigns(),
+          fetchWithFallback<CampaignState>(`/campaigns/${encodeURIComponent(campaignId)}/state`, "campaign_state_default"),
+          fetchWithFallback<CampaignContext>(`/campaigns/${encodeURIComponent(campaignId)}/context`, "campaign_context_default"),
+        ]);
+        w = fw;
+        cs = fcs;
+        st = fst;
+        ctx = fctx;
+      }
       setSteps(w.steps);
       setCampaigns(cs);
       // Guard: never go backwards from a known step (prevents stale poll from overwriting fresh advance)
@@ -231,8 +251,8 @@ export function PersonaShell({
           });
         }
       }
-    } catch (e) {
-      setPollError((e as Error).message);
+    } catch {
+      // Both live and fallback failed; silently degrade
     }
   }, [personaId, campaignId]);
 
@@ -481,8 +501,8 @@ export function PersonaShell({
           </motion.header>
 
           {pollError && (
-            <div className="mb-3 rounded-md border border-soft_red/30 bg-soft_red/5 px-3 py-2 text-xs text-soft_red">
-              Sync issue: {pollError}
+            <div className="mb-3 rounded-md border border-amber-300/40 bg-amber-50/30 px-3 py-2 text-xs text-amber-700/70">
+              Showing cached data. The backend may be starting up.
             </div>
           )}
 

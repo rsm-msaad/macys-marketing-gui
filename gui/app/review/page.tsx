@@ -20,15 +20,15 @@ import {
 } from "lucide-react";
 
 import {
+  API_BASE,
   approveStep,
   editStepOutput,
   escalateStep,
   fetchAuditLog,
   fetchCampaignState,
+  getWithOutputFallback,
   rejectStep,
 } from "@/lib/api";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const STEP_NAMES: Record<string, string> = {
   "6a": "Compliance Pre Check",
@@ -141,6 +141,7 @@ function ReviewContent() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [rerunning, setRerunning] = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -151,10 +152,23 @@ function ReviewContent() {
       setOutput(stepOutput as Record<string, unknown> | null);
       const statuses = (state as Record<string, unknown>).step_review_status as Record<string, string> | undefined;
       setReviewStatus(statuses?.[stepId] ?? "pending");
+      setUsingFallback(false);
       const log = await fetchAuditLog(campaignId);
       setAuditLog(log.filter((e) => String(e.step_id) === stepId));
-    } catch (e) {
-      setError((e as Error).message);
+    } catch {
+      // Attempt fallback to cached output data for the step
+      try {
+        const cachedOutput = await getWithOutputFallback<Record<string, unknown>>(
+          `/campaigns/${encodeURIComponent(campaignId)}/state`,
+          `step${stepId}_compliance`,
+        );
+        setOutput(cachedOutput);
+        setUsingFallback(true);
+      } catch {
+        // No fallback available either; show empty state
+        setOutput(null);
+        setUsingFallback(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -263,8 +277,14 @@ function ReviewContent() {
           </div>
         )}
 
-        {error && (
+        {error && !usingFallback && (
           <div className="mb-4 rounded-md border border-soft_red/30 bg-soft_red/5 px-4 py-3 text-sm text-soft_red">{error}</div>
+        )}
+
+        {usingFallback && (
+          <div className="mb-4 rounded-md border border-amber-300/40 bg-amber-50/30 px-4 py-3 text-[12px] text-amber-700/70">
+            Showing example data. The backend may be starting up.
+          </div>
         )}
 
         {!loading && !output && (

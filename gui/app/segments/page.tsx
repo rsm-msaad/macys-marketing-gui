@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Users } from "lucide-react";
 
-import { API_BASE } from "@/lib/api";
-import { PageTransition, PulsingDots } from "@/components/motion";
+import { fetchWithFallback } from "@/lib/api";
+import { PageTransition } from "@/components/motion";
 
 type Segment = {
   name: string;
@@ -35,18 +35,25 @@ const SEGMENT_COLORS = [
 
 export default function SegmentsPage() {
   const [data, setData] = useState<SegmentsData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/segments/overview`, { cache: "no-store" })
-      .then((r) => r.json())
-      .then(setData)
-      .catch(() => {});
+    fetchWithFallback<SegmentsData>("/segments/overview", "segments_overview")
+      .then((d) => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (!data) {
+    if (loading) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-cream/30">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+        </div>
+      );
+    }
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream/30">
-        <span className="h-5 w-5 animate-spin rounded-full border-2 border-teal-600 border-t-transparent" />
+      <div className="flex min-h-screen flex-col items-center justify-center bg-cream/30 text-charcoal/50">
+        <p className="text-sm">Unable to load segment data.</p>
       </div>
     );
   }

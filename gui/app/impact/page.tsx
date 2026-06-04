@@ -16,7 +16,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { API_BASE } from "@/lib/api";
+import { fetchWithFallback } from "@/lib/api";
 import {
   PageTransition,
   FadeInView,
@@ -233,12 +233,8 @@ export default function ImpactPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_BASE}/impact/portfolio`, { cache: "no-store" })
-      .then((r) => r.json())
-      .then((data) => {
-        setPortfolio(data);
-        setLoading(false);
-      })
+    fetchWithFallback<Portfolio>("/impact/portfolio", "impact_portfolio")
+      .then((data) => { setPortfolio(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
@@ -545,6 +541,9 @@ export default function ImpactPage() {
             </FadeInView>
           </>
         )}
+        <p className="mt-6 text-center text-[11px] text-charcoal/40">
+          Data may be preseeded if the backend is starting up.
+        </p>
       </div>
     </PageTransition>
   );

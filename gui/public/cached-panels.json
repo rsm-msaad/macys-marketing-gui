@@ -348,5 +348,153 @@
     ],
     "total_customers": 49807,
     "methodology": "K-means clustering (k=3) on RFM features (Recency, Frequency, Monetary) across 50,000 customers from macys.db."
+  },
+  "impact_portfolio": {
+    "campaigns": [
+      {
+        "campaign_id": "MDC-2025-SP-BTY",
+        "campaign_name": "Spring Beauty Refresh",
+        "current_step": 11,
+        "is_complete": true,
+        "completed_step_count": 10,
+        "hero": {
+          "labor_hours_saved": 120,
+          "dollars_saved": 9000,
+          "dollars_saved_range": { "low": 7200, "high": 10800 },
+          "baseline_elapsed_days": 35,
+          "ai_elapsed_days": 8,
+          "pct_reduction": 77,
+          "full_campaign_pct_reduction": 77
+        },
+        "labor_totals": {
+          "baseline_hours": 154,
+          "ai_hours": 34
+        },
+        "steps": [
+          { "step": "1", "step_name": "Briefing", "completed": true, "baseline_days": { "low": 3, "high": 5, "mid": 4 }, "ai_supported_days": { "low": 0.5, "high": 1, "mid": 0.75 }, "baseline_labor_hours": 12, "ai_labor_hours": 2, "labor_hours_saved": 10, "dollars_saved": 750 },
+          { "step": "2", "step_name": "Segmentation", "completed": true, "baseline_days": { "low": 2, "high": 4, "mid": 3 }, "ai_supported_days": { "low": 0.25, "high": 0.5, "mid": 0.375 }, "baseline_labor_hours": 8, "ai_labor_hours": 2, "labor_hours_saved": 6, "dollars_saved": 450 },
+          { "step": "3", "step_name": "SKU Selection", "completed": true, "baseline_days": { "low": 3, "high": 5, "mid": 4 }, "ai_supported_days": { "low": 0.5, "high": 1, "mid": 0.75 }, "baseline_labor_hours": 12, "ai_labor_hours": 4, "labor_hours_saved": 8, "dollars_saved": 600 },
+          { "step": "4", "step_name": "Asset Curation", "completed": true, "baseline_days": { "low": 4, "high": 6, "mid": 5 }, "ai_supported_days": { "low": 1, "high": 2, "mid": 1.5 }, "baseline_labor_hours": 24, "ai_labor_hours": 6, "labor_hours_saved": 18, "dollars_saved": 1350 },
+          { "step": "5", "step_name": "Layout and Copy", "completed": true, "baseline_days": { "low": 4, "high": 6, "mid": 5 }, "ai_supported_days": { "low": 1, "high": 2, "mid": 1.5 }, "baseline_labor_hours": 24, "ai_labor_hours": 6, "labor_hours_saved": 18, "dollars_saved": 1350 },
+          { "step": "6", "step_name": "Compliance and Approval", "completed": true, "baseline_days": { "low": 5, "high": 8, "mid": 6.5 }, "ai_supported_days": { "low": 1, "high": 2, "mid": 1.5 }, "baseline_labor_hours": 20, "ai_labor_hours": 3, "labor_hours_saved": 17, "dollars_saved": 1275 },
+          { "step": "7", "step_name": "Localization", "completed": true, "baseline_days": { "low": 3, "high": 5, "mid": 4 }, "ai_supported_days": { "low": 0.25, "high": 0.5, "mid": 0.375 }, "baseline_labor_hours": 18, "ai_labor_hours": 1, "labor_hours_saved": 17, "dollars_saved": 1275 },
+          { "step": "8", "step_name": "Activation", "completed": true, "baseline_days": { "low": 1, "high": 2, "mid": 1.5 }, "ai_supported_days": { "low": 0.25, "high": 0.5, "mid": 0.375 }, "baseline_labor_hours": 6, "ai_labor_hours": 2, "labor_hours_saved": 4, "dollars_saved": 300 },
+          { "step": "9", "step_name": "Analytics", "completed": true, "baseline_days": { "low": 2, "high": 3, "mid": 2.5 }, "ai_supported_days": { "low": 0.25, "high": 0.5, "mid": 0.375 }, "baseline_labor_hours": 6, "ai_labor_hours": 2, "labor_hours_saved": 4, "dollars_saved": 300 },
+          { "step": "10", "step_name": "Reporting", "completed": true, "baseline_days": { "low": 3, "high": 5, "mid": 4 }, "ai_supported_days": { "low": 1, "high": 2, "mid": 1.5 }, "baseline_labor_hours": 24, "ai_labor_hours": 6, "labor_hours_saved": 18, "dollars_saved": 1350 }
+        ],
+        "quality": {
+          "compliance_findings": 3,
+          "compliance_failures": 0,
+          "revision_rounds": 0,
+          "evidence_coverage_steps": 0,
+          "evidence_coverage_pct": 0,
+          "mcp_invocations": 0
+        }
+      }
+    ],
+    "campaign_count": 1,
+    "aggregate": {
+      "total_labor_hours_saved": 120,
+      "total_dollars_saved": 9000,
+      "savings_per_completed_campaign": 9000,
+      "projected_annual_low": 585000,
+      "projected_annual_high": 900000,
+      "annual_campaign_volume_low": 65,
+      "annual_campaign_volume_high": 100,
+      "hourly_rate": 75
+    },
+    "per_step_labor": [
+      { "step": "1", "step_name": "Briefing", "baseline_hours": 12, "ai_hours": 2 },
+      { "step": "2", "step_name": "Segmentation", "baseline_hours": 8, "ai_hours": 2 },
+      { "step": "3", "step_name": "SKU Selection", "baseline_hours": 12, "ai_hours": 4 },
+      { "step": "4", "step_name": "Asset Curation", "baseline_hours": 24, "ai_hours": 6 },
+      { "step": "5", "step_name": "Layout and Copy", "baseline_hours": 24, "ai_hours": 6 },
+      { "step": "6", "step_name": "Compliance and Approval", "baseline_hours": 20, "ai_hours": 3 },
+      { "step": "7", "step_name": "Localization", "baseline_hours": 18, "ai_hours": 1 },
+      { "step": "8", "step_name": "Activation", "baseline_hours": 6, "ai_hours": 2 },
+      { "step": "9", "step_name": "Analytics", "baseline_hours": 6, "ai_hours": 2 },
+      { "step": "10", "step_name": "Reporting", "baseline_hours": 24, "ai_hours": 6 }
+    ],
+    "quality_aggregate": {
+      "total_compliance_findings": 3,
+      "total_compliance_failures": 0,
+      "total_revision_rounds": 0,
+      "total_mcp_invocations": 0
+    },
+    "costs_not_netted": {
+      "ai_api_cost_per_campaign": "~$2 to $5",
+      "ai_api_note": "TritonAI on prem; commercial API would be higher",
+      "pattern4_rework_per_campaign": "~1 to 2 hours",
+      "pattern4_note": "Human review and edit of AI outputs"
+    }
+  },
+  "workflow_default": {
+    "persona_id": "campaign-manager",
+    "steps": [
+      { "number": 1, "name": "Briefing", "owner": "Campaign Manager", "owner_persona_id": "campaign-manager", "label": "HUMAN_ONLY", "status": "complete", "my_step": true },
+      { "number": 2, "name": "Segmentation", "owner": "Campaign Manager", "owner_persona_id": "campaign-manager", "label": "HUMAN_PLUS_AUTOMATION", "status": "complete", "my_step": true },
+      { "number": 3, "name": "SKU Selection", "owner": "Campaign Manager", "owner_persona_id": "campaign-manager", "label": "HUMAN_PLUS_AUTOMATION", "status": "complete", "my_step": true },
+      { "number": 4, "name": "Asset Curation", "owner": "Senior Designer", "owner_persona_id": "senior-designer", "label": "HUMAN_PLUS_AI", "status": "complete", "my_step": false },
+      { "number": 5, "name": "Layout and Copy", "owner": "Senior Designer", "owner_persona_id": "senior-designer", "label": "HUMAN_PLUS_SKILL", "status": "complete", "my_step": false },
+      { "number": 6, "name": "Compliance and Approval", "owner": "Campaign Manager", "owner_persona_id": "campaign-manager", "label": "HUMAN_PLUS_SKILL", "status": "active", "my_step": true },
+      { "number": 7, "name": "Localization", "owner": "Production Artist", "owner_persona_id": "production-artist", "label": "HUMAN_PLUS_AUTOMATION", "status": "pending", "my_step": false },
+      { "number": 8, "name": "Activation", "owner": "Campaign Manager", "owner_persona_id": "campaign-manager", "label": "HUMAN_PLUS_AUTOMATION", "status": "pending", "my_step": true },
+      { "number": 9, "name": "Analytics", "owner": "Marketing Analyst", "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_AUTOMATION", "status": "pending", "my_step": false },
+      { "number": 10, "name": "Reporting", "owner": "Marketing Analyst", "owner_persona_id": "marketing-analyst", "label": "HUMAN_PLUS_SKILL", "status": "pending", "my_step": false }
+    ]
+  },
+  "campaign_state_default": {
+    "current_step": 6,
+    "completed_steps": [1, 2, 3, 4, 5],
+    "step_outputs": {},
+    "history": [
+      { "step": 1, "step_name": "Briefing", "action": "Filed brief", "ts": "2026-05-01T10:00:00Z", "metadata": {} },
+      { "step": 2, "step_name": "Segmentation", "action": "Ran segment", "ts": "2026-05-01T10:05:00Z", "metadata": {} },
+      { "step": 3, "step_name": "SKU Selection", "action": "Ran sku-recommend", "ts": "2026-05-01T10:10:00Z", "metadata": {} },
+      { "step": 4, "step_name": "Asset Curation", "action": "Ran dam", "ts": "2026-05-01T10:15:00Z", "metadata": {} },
+      { "step": 5, "step_name": "Layout and Copy", "action": "Ran layout-copy", "ts": "2026-05-01T10:20:00Z", "metadata": {} }
+    ],
+    "is_complete": false,
+    "revisions": {},
+    "pending_revision": null
+  },
+  "campaign_context_default": {
+    "campaign_brief": {
+      "campaign_id": "MDC-2026-MD-001",
+      "name": "Mother's Day Beauty Event",
+      "sponsor": "Marketing",
+      "filed_days_before_launch": 30,
+      "objective": "Drive Beauty category revenue during Mother's Day gifting window with 15% off select SKUs and Star Rewards bonus points.",
+      "target_customer": "Beauty Loyalists and Mid Tier Engaged segments",
+      "promotional_offer": ["15% off select Beauty SKUs", "2x Star Rewards points"],
+      "campaign_window": { "soft_launch": "2026-04-28", "peak": "2026-05-08 to 2026-05-11", "closeout": "2026-05-12" },
+      "budget": { "media_spend": "$850K", "discount_cost": "$1.2M est." },
+      "success_metrics": { "target_revenue": "$8M", "target_roas": "4.0x" },
+      "constraints": ["MAP compliance on Lancome, Estee Lauder", "No more than 25% off any single SKU"]
+    },
+    "state": {
+      "current_step": 6,
+      "completed_steps": [1, 2, 3, 4, 5],
+      "step_outputs": {},
+      "history": [],
+      "is_complete": false,
+      "revisions": {},
+      "pending_revision": null
+    },
+    "mock_data": {
+      "sku_suggestions": [
+        { "sku_id": 1001, "name": "Lancome Idole EDP 50ml", "brand": "Lancome", "category": "Beauty", "subcategory": "Fragrance", "base_price": 104, "inventory_status": "in_stock", "inventory_units": 320, "margin_pct": 0.42, "segment_match_score": 0.91, "reason": "Top seller in Beauty Loyalists segment" }
+      ],
+      "layout_previews": [
+        { "placement": "Homepage Hero", "dimensions": "1920x600", "headline": "Make Her Day", "subhead": "15% off select beauty gifts", "cta": "Shop Now", "notes": "Full bleed floral" }
+      ],
+      "approval_checkpoints": [
+        { "name": "Brand Review", "reviewer": "Brand Council", "criteria": "Voice, banned words, tagline", "status": "pending", "reviewed_at": "" }
+      ],
+      "channel_schedule": [
+        { "channel": "Email", "deployment_time": "2026-04-28 08:00 ET", "audience": "Beauty Loyalists", "expected_volume": "2.4M sends", "status": "scheduled" }
+      ],
+      "executive_summary_template": "Campaign: Mother's Day Beauty Event. Objective: Drive Beauty revenue during gifting window."
+    }
   }
 }
