@@ -149,6 +149,7 @@ class TestHappyPath:
         assert action == "proceed"
 
     @requires_llm
+    @pytest.mark.integration
     def test_full_skill_clean_pass(self):
         """Full LLM compliance skill on clean input should return proceed."""
         state = _make_state()

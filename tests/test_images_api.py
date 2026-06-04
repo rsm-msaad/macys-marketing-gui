@@ -29,7 +29,7 @@ def test_personas_have_avatar_field():
     resp = client.get("/personas")
     assert resp.status_code == 200
     personas = resp.json()
-    assert len(personas) == 4
+    assert len(personas) == len(PERSONAS)
     for p in personas:
         assert "avatar" in p, f"Persona {p['name']} missing avatar field"
         assert p["avatar"].startswith("/avatars/")
@@ -57,6 +57,7 @@ MOCK_UNSPLASH_RESPONSE = {
 }
 
 
+@patch.dict("os.environ", {"UNSPLASH_ACCESS_KEY": "test-key"})
 @patch("api.routes.images.requests.get")
 def test_hero_image_returns_expected_fields(mock_get: MagicMock):
     mock_resp = MagicMock()
@@ -74,6 +75,7 @@ def test_hero_image_returns_expected_fields(mock_get: MagicMock):
     assert data["alt"] == "a beautiful scene"
 
 
+@patch.dict("os.environ", {"UNSPLASH_ACCESS_KEY": "test-key"})
 @patch("api.routes.images.requests.get")
 def test_hero_image_caches_results(mock_get: MagicMock):
     mock_resp = MagicMock()
@@ -93,6 +95,7 @@ def test_hero_image_caches_results(mock_get: MagicMock):
     assert mock_get.call_count == 1  # no new API call
 
 
+@patch.dict("os.environ", {"UNSPLASH_ACCESS_KEY": "test-key"})
 @patch("api.routes.images.requests.get")
 def test_hero_image_no_results(mock_get: MagicMock):
     mock_resp = MagicMock()
@@ -105,6 +108,7 @@ def test_hero_image_no_results(mock_get: MagicMock):
     assert resp.status_code == 404
 
 
+@patch.dict("os.environ", {"UNSPLASH_ACCESS_KEY": "test-key"})
 @patch("api.routes.images.requests.get")
 def test_hero_image_custom_query_override(mock_get: MagicMock):
     mock_resp = MagicMock()

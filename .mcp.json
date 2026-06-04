@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "milestone04-example": {
+    "macys-marketing": {
       "command": "uv",
-      "args": ["run", "python", "-m", "mcp_servers.example_server"]
+      "args": ["run", "python", "-m", "mcp_servers.macys_marketing"]
     }
   }
 }
