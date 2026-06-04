@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Shield } from "lucide-react";
+import { ArrowLeft, ArrowRight, Shield, Volume2, VolumeX } from "lucide-react";
 
 import { usePersonas } from "@/components/PersonaContext";
 import { CountUp } from "@/components/motion";
@@ -42,6 +42,7 @@ export default function LandingPage() {
   /* intro = video playing, reveal = video done → show carousel */
   const [videoEnded, setVideoEnded] = useState(false);
   const [entered, setEntered] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   /* carousel state */
   const [idx, setIdx] = useState(0);
@@ -134,7 +135,27 @@ export default function LandingPage() {
           onClick={skipIntro}
           className="absolute bottom-8 right-8 z-50 rounded-full border border-white/30 bg-black/20 backdrop-blur-sm px-4 py-2 text-xs font-semibold text-white/80 hover:bg-black/40 hover:text-white transition-all duration-300 cursor-pointer"
         >
-          Skip intro →
+          Skip intro
+        </motion.button>
+      )}
+
+      {/* Mute/unmute toggle - visible during video */}
+      {!videoEnded && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          onClick={() => {
+            const v = videoRef.current;
+            if (v) {
+              v.muted = !v.muted;
+              setIsMuted(v.muted);
+            }
+          }}
+          className="absolute bottom-8 left-8 z-50 flex items-center gap-1.5 rounded-full border border-white/30 bg-black/20 backdrop-blur-sm px-3.5 py-2 text-xs font-semibold text-white/80 hover:bg-black/40 hover:text-white transition-all duration-300 cursor-pointer"
+        >
+          {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+          {isMuted ? "Unmute" : "Mute"}
         </motion.button>
       )}
 
