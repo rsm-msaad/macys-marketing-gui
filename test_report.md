@@ -2,14 +2,29 @@
 
 ## Overview
 
-M4 requires testing AI performance against realistic failure modes before a real user encounters a bad answer. This report documents the 10 test cases we built (mapped to `failure_cases.md`), the actual results from running them against our prototype, the patterns we found, and one before/after improvement we made based on the findings. The test code lives at `evals/test_m4_failure_modes.py` and exercises the 5 LLM skills through their deterministic helpers and (where API access is available) through full end-to-end skill invocation.
+M4 requires testing AI performance against realistic failure modes before a real user encounters a bad answer. This report documents the test cases we built (mapped to `failure_cases.md`), the actual results from running them against our prototype, the patterns we found, and one before/after improvement we made based on the findings. The test code lives at `tests/test_workflow.py` and exercises all 5 LLM skills through their deterministic helpers and (where API access is available) through full end to end skill invocation scored with DeepEval.
 
 ## Test Set Design
 
-The 10 test classes contain 27 individual test functions organized in two tiers:
+The test file contains two layers:
 
-- **Tier 1 (Deterministic):** 19 tests that exercise the Python helper functions underlying each skill. These test the actual decision logic — banned word detection, pricing language parsing, urgency rules, cascade recommendation logic — without requiring LLM calls. They run in under 0.1 seconds and produce fully reproducible results.
-- **Tier 2 (LLM-dependent):** 8 tests that invoke the full skill chain via `invoke_skill()`, requiring the TritonAI API key and the FAISS/sentence-transformers stack. These are skipped when the API key is unavailable (local dev without `.env`) and run on the deployed Render backend.
+- **Tier 1 (Deterministic):** 10 original test classes with 25 individual test functions exercising the Python helper functions underlying each skill. These test decision logic (banned word detection, pricing language parsing, urgency rules, cascade recommendation logic) without requiring LLM calls. They run in under 0.1 seconds and produce fully reproducible results.
+- **Tier 2 (DeepEval LLM scored):** 10 cases (D1 through D10) that invoke the full skill chain via `invoke_skill()`, requiring the TritonAI API key and the FAISS/sentence transformers stack. Each case is scored with three DeepEval metrics: Faithfulness, MarketingComplianceQuality (GEval), and FaceValidity (GEval), using `api-llama-4-scout` as the TritonAI judge. Scores surface as pytest warnings, not hard failures. These are gated behind `@requires_llm` and `@pytest.mark.integration`, and are skipped when the API key is unavailable.
+
+### DeepEval Suite Coverage (D1 through D10)
+
+| Case | Skill | Input | Failure Case Tie |
+|---|---|---|---|
+| D1 | layout-copy-generator | Strong brief: Mother's Day Beauty, 25% off, Gold and Platinum | None (baseline) |
+| D2 | layout-copy-generator | Vague brief: "Beauty promo", no offer, no target | FC5 (vague brief) |
+| D3 | compliance-pre-check | Mixed English and Spanish copy | None (edge case) |
+| D4 | compliance-pre-check | Ambiguous copy with no explicit discount, 0% discount_pct | None (edge case) |
+| D5 | approval-brief-generator | Clean compliance upstream, all pass | None (baseline) |
+| D6 | approval-brief-generator | Mixed compliance: brand_alignment fail, disclaimers warn | FC6 (cascade failure) |
+| D7 | revision-router | Clear MAP violation comment, $600K spend, 3 day deadline | None (baseline) |
+| D8 | revision-router | Multi type comment spanning imagery and copy, low urgency | None (edge case) |
+| D9 | compliance-pre-check | Near miss banned phrase: "prices you won't believe" | FC2 (LLM hallucination or miss) |
+| D10 | report-generator | Full campaign with all steps completed, performance data | None (baseline) |
 
 ### Mapping to Failure Cases
 
@@ -55,18 +70,34 @@ Each test class evaluates the AI output on up to 4 dimensions:
 
 ### DeepEval LLM Scoring Results
 
-In addition to the deterministic assertions above, we ran 3 representative cases through DeepEval's GEval metric using TritonAI (`api-llama-4-scout`) as the judge LLM. These scores evaluate the AI output quality beyond pass/fail correctness.
+The 10 case DeepEval suite (D1 through D10) covers all 5 LLM skills and scores each output with Faithfulness, MarketingComplianceQuality, and FaceValidity using `api-llama-4-scout` as the TritonAI judge. The earlier partial run (4 recorded results from 2026-05-28) is preserved below; the full 10 case suite is written and awaiting a run with a live TRITONAI_API_KEY.
+
+**Earlier recorded scores (from tests/results/deepeval_scores_20260528.json):**
 
 | Case | Skill | AI Action | Faithfulness | QualityRule | FaceValidity | Notes |
 |---|---|---|---|---|---|---|
 | Clean Mother's Day copy | Compliance helpers | proceed | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Clean copy correctly passes all 3 findings |
-| Banned words ("lowest prices anywhere", "unbeatable") | Compliance helpers | revise | N/A (deterministic) | **1.0 PASS** | **1.0 PASS** | Correctly detects all banned phrases, recommends revise |
-| Banned words (Tier 2 full skill) | Full LLM skill (compliance-pre-check) | revise | **1.0 PASS** | **0.8 PASS** | **1.0 PASS** | Agentic skill correctly detects banned phrases; FaithfulnessMetric confirms output aligns with RAG passages. QualityRule 0.8: minor deduction for reporting additional findings beyond the specific banned-phrase check. |
-| VP Approval Brief (compliance passed) | Full LLM skill (approval-brief-generator) | approve | **1.0 PASS** | **0.0 FAIL** | **0.8 PASS** | Brief recommended approve correctly but QualityRule failed: the LLM returned a non-standard field format that DeepEval's criteria didn't match |
+| Banned words (full skill) | Full LLM skill (compliance-pre-check) | revise | **1.0 PASS** | **0.8 PASS** | **1.0 PASS** | Correctly detects banned phrases; minor QualityRule deduction |
+| VP Approval Brief | Full LLM skill (approval-brief-generator) | approve | **1.0 PASS** | **0.0 FAIL** | **0.8 PASS** | QualityRule failed on non standard field format |
 
-**Key finding from DeepEval:** The QualityRule failure on Case 3 reveals that `api-llama-4-scout` returns the brief in a non-JSON format (Python-style object notation instead of JSON). The deterministic helpers parse this into the expected schema, but DeepEval's raw output comparison sees the format mismatch. This confirms Pattern 2 (model-dependent behavior) — different LLMs produce structurally different outputs even when the semantic content is correct.
+**New D1 through D10 suite (10 cases, awaiting live run):**
 
-DeepEval scores are saved in `tests/results/deepeval_scores_20260528.json`. The TritonAI judge wrapper (`evals/triton_judge.py`) inherits from `DeepEvalBaseLLM` so it can be used with any DeepEval metric.
+| Case | Skill | Input Summary | Checks Applied |
+|---|---|---|---|
+| D1 | layout-copy-generator | Strong brief, Mother's Day Beauty, 25% off | Quality (character limits, 4 placements), FaceValidity |
+| D2 | layout-copy-generator | Vague brief, no offer, no target (FC5) | Stuck to evidence (no hallucinated offers), Quality, FaceValidity |
+| D3 | compliance-pre-check | Mixed English and Spanish copy | Faithfulness, Quality (brand voice), FaceValidity |
+| D4 | compliance-pre-check | Ambiguous discount, 0% discount_pct | Faithfulness, Quality (no invented violations), FaceValidity |
+| D5 | approval-brief-generator | Clean compliance, all pass upstream | Faithfulness, Quality (all 5 fields, approve), FaceValidity |
+| D6 | approval-brief-generator | Mixed compliance: brand fail, disclaimer warn (FC6) | Faithfulness, Quality (risk_flags, revise), FaceValidity |
+| D7 | revision-router | Clear MAP comment, $600K spend, 3 days | Faithfulness, Quality (pricing, Anna, high urgency), FaceValidity |
+| D8 | revision-router | Multi type: imagery and copy, low urgency | Faithfulness, Quality (valid classification), FaceValidity |
+| D9 | compliance-pre-check | "Prices you won't believe" near miss (FC2) | Faithfulness, Quality (flag or warn), FaceValidity |
+| D10 | report-generator | Full campaign, all 10 steps, $450K revenue | Faithfulness, Quality (4 to 6 paragraph summary), FaceValidity |
+
+**Key finding from earlier scoring:** The QualityRule failure on the approval brief case reveals that `api-llama-4-scout` returns the brief in a non standard format. The deterministic helpers parse this into the expected schema, but DeepEval's raw output comparison sees the format mismatch. This confirms Pattern 2 (model dependent behavior).
+
+DeepEval scores are saved in `tests/results/`. The TritonAI judge wrapper (`evals/triton_judge.py`) inherits from `DeepEvalBaseLLM` so it can be used with any DeepEval metric.
 
 ## Top 4 Failure Patterns
 
@@ -152,10 +183,10 @@ This fix partially addresses Pattern 1. It catches two specific variants but doe
 
 ## Limitations
 
-- **DeepEval scoring not used for Tier 1 tests.** The deterministic tests use standard pytest assertions rather than DeepEval's GEval metric, because the helper functions produce exact, reproducible outputs. GEval (AI judging AI) is appropriate for the Tier 2 LLM tests, which were skipped in this run.
-- **LLM behavior is probabilistic.** Re-running Tier 2 tests may produce different results. The deterministic helpers that wrap LLM output (evaluate_recommended_action, decide_recommendation, assess_urgency) are designed to reduce this variability by making consequential decisions deterministically.
-- **Test set is small.** 10 test classes with 27 assertions covers the 7 failure cases but is not exhaustive. A production rollout would need 50+ cases per skill, with adversarial fuzzing and boundary testing.
-- **No TritonAI API key in local test env.** The 8 LLM-dependent tests run on the deployed Render backend but could not be executed in this local test run. Results for those tests would come from running against the live API.
+- **DeepEval scoring requires live API access.** The 10 case DeepEval suite (D1 through D10) is gated behind `@requires_llm` and `@pytest.mark.integration`. Without a TRITONAI_API_KEY, these cases are skipped. The deterministic Tier 1 tests run without any API access.
+- **LLM behavior is probabilistic.** Rerunning Tier 2 tests may produce different results. The deterministic helpers that wrap LLM output (evaluate_recommended_action, decide_recommendation, assess_urgency) are designed to reduce this variability by making consequential decisions deterministically.
+- **Test set covers breadth, not exhaustive depth.** 10 Tier 1 classes with 25 deterministic assertions plus 10 DeepEval cases across all 5 skills covers the 7 failure cases but is not exhaustive. A production rollout would need 50+ cases per skill, with adversarial fuzzing and boundary testing.
+- **Report generator has no helpers.py.** D10 invokes report-generator through `invoke_skill()` with a seeded state. The skill has a SKILL.md and prefetch config but no deterministic helpers, so it cannot be tested at Tier 1.
 
 ## Connection to M4
 

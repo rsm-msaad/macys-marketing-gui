@@ -8,7 +8,7 @@ This document identifies seven specific failure modes grounded in our actual M3 
 
 ## How This List Connects to Testing
 
-These seven failure cases directly informed the 8 to 12 DeepEval test cases in our automated test suite (`tests/test_workflow.py`). Each test case exercises one or more of the failure modes below by feeding adversarial or edge-case inputs through the orchestrator chain and scoring the AI output against rubrics that check for the specific errors described here. The audit log, Evidence screen, and five Review actions (Approve, Edit, Reject, Rerun, Escalate) are the runtime mitigations that appear in the "How the process handles it" column. They exist because we designed the process around these predicted failures, not as afterthoughts.
+These seven failure cases directly informed the 10 case DeepEval suite in `tests/test_workflow.py`, which covers all 5 LLM skills (compliance pre check, approval brief generator, revision router, layout copy generator, and report generator). Three cases tie directly to specific failure modes: D2 exercises Failure Case 5 (vague brief), D6 exercises Failure Case 6 (cascade failure), and D9 exercises Failure Case 2 (LLM hallucination or miss on a near miss banned phrase). Each case feeds adversarial or edge case inputs through the skill chain and scores the AI output with DeepEval's Faithfulness, Quality, and Face Validity metrics using TritonAI as the judge. The audit log, Evidence screen, and five Review actions (Approve, Edit, Reject, Rerun, Escalate) are the runtime mitigations that appear in the "How the process handles it" column. They exist because we designed the process around these predicted failures, not as afterthoughts.
 
 ## Failure Cases
 

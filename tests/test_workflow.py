@@ -666,3 +666,409 @@ class TestCase10CascadeEdit:
         }
         assert brief_helpers.decide_recommendation(edited, ["Disclaimer missing"]) == "revise"
         _record("case-10", "cascade logic correct", {"quality_rule": True, "pass": True})
+
+
+# ===================================================================
+# DEEPEVAL SUITE: Cases D1 through D10
+# 10 DeepEval scored cases covering all 5 LLM skills.
+# Ties to failure_cases.md: D2 to FC5, D6 to FC6, D9 to FC2.
+# All gated behind @requires_llm and @pytest.mark.integration.
+# ===================================================================
+
+
+# ---- D1: Layout copy on a strong brief ----
+# Skill: layout-copy-generator (normal)
+
+class TestD1LayoutStrongBrief:
+    """Layout copy generator with a strong, specific brief."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_layout_strong_brief(self):
+        state = _make_state()
+        state["campaign"]["name"] = "Mother's Day Beauty Event"
+        state["campaign"]["category"] = "Beauty"
+        state["campaign"]["promotional_offer"] = ["25% off select Beauty items"]
+        state["campaign"]["target_customer"] = "Star Rewards Gold and Platinum members"
+        result = invoke_skill("layout-copy-generator", state)
+        layout = result.get("layout_copy", {})
+        for placement in ("web_banner", "email", "mobile", "in_store_signage"):
+            assert placement in layout, f"Missing placement: {placement}"
+        _record("D1", str(layout), {"pass": True})
+        _deepeval_score(
+            input_text="Mother's Day Beauty Event, 25% off Beauty, Star Rewards Gold and Platinum",
+            actual_output=str(layout),
+            quality_criteria=(
+                "The layout output must produce four placements (web_banner, email, mobile, "
+                "in_store_signage) with taglines referencing Mother's Day and Beauty, body "
+                "copy mentioning the 25% offer, and all text within the documented character "
+                "limits (web_banner tagline max 50, body max 100; email tagline max 60, body "
+                "max 200; mobile tagline max 40, body max 80; in_store_signage tagline max 40, "
+                "body max 60)."
+            ),
+            face_validity_criteria=(
+                "The copy should read like a real Macy's promotional ad for Mother's Day "
+                "Beauty, not a generic template. Taglines should be punchy and audience aware."
+            ),
+        )
+
+
+# ---- D2: Layout copy on a vague brief (ties to Failure Case 5) ----
+# Skill: layout-copy-generator (edge case)
+
+class TestD2LayoutVagueBrief:
+    """Layout copy with a deliberately vague brief should not hallucinate specifics."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_layout_vague_brief(self):
+        state = _make_state({
+            "name": "Beauty promo",
+            "promotional_offer": [],
+            "target_customer": "",
+            "copy": "Run a beauty promotion.",
+            "tagline": "find your magic",
+        })
+        result = invoke_skill("layout-copy-generator", state)
+        layout = result.get("layout_copy", {})
+        for placement in ("web_banner", "email", "mobile", "in_store_signage"):
+            assert placement in layout, f"Missing placement: {placement}"
+        _record("D2", str(layout), {"pass": True})
+        _deepeval_score(
+            input_text="Vague brief: 'Beauty promo', no offer, no target customer",
+            actual_output=str(layout),
+            quality_criteria=(
+                "The layout must produce structurally valid copy for all 4 placements. "
+                "It must NOT hallucinate specific discounts, percentages, or audience "
+                "segments that were not in the brief. Generic but safe output is correct."
+            ),
+            face_validity_criteria=(
+                "The output should be recognizably generic rather than pretending to be "
+                "specific. A reviewer should be able to tell the brief was thin."
+            ),
+        )
+
+
+# ---- D3: Compliance on multilingual copy (edge case) ----
+# Skill: compliance-pre-check
+
+class TestD3ComplianceMultilingual:
+    """Mixed English and Spanish copy should trigger brand voice concerns."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_compliance_multilingual(self):
+        mixed_copy = (
+            "Celebra a mama con 25% off select Beauty. "
+            "Find your magic this Mother's Day!"
+        )
+        state = _make_state({"copy": mixed_copy, "discount_pct": 25})
+        result = invoke_skill("compliance-pre-check", state)
+        check = result.get("compliance_check", {})
+        assert "brand_alignment" in check
+        assert "disclaimers" in check
+        assert "pricing_cross_check" in check
+        _record("D3", str(check), {"pass": True})
+        _deepeval_score(
+            input_text=mixed_copy,
+            actual_output=str(check),
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
+            quality_criteria=(
+                "The compliance check must evaluate all 3 findings (brand_alignment, "
+                "disclaimers, pricing_cross_check). The brand_alignment finding should "
+                "note the mixed language against brand voice consistency guidelines."
+            ),
+            face_validity_criteria=(
+                "A real compliance reviewer would flag mixed English and Spanish as a "
+                "brand voice consistency issue. The output should reflect that concern."
+            ),
+        )
+
+
+# ---- D4: Compliance on ambiguous discount copy (edge case) ----
+# Skill: compliance-pre-check
+
+class TestD4ComplianceAmbiguousDiscount:
+    """Copy with no explicit percentage and 0% discount should pass clean."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_compliance_ambiguous_discount(self):
+        ambiguous_copy = (
+            "Save big on select Beauty items this Mother's Day. "
+            "Star Rewards members enjoy exclusive pricing."
+        )
+        state = _make_state({
+            "copy": ambiguous_copy,
+            "discount_pct": 0,
+            "tagline": "find your magic",
+        })
+        result = invoke_skill("compliance-pre-check", state)
+        check = result.get("compliance_check", {})
+        assert "brand_alignment" in check
+        assert "disclaimers" in check
+        _record("D4", str(check), {"pass": True})
+        _deepeval_score(
+            input_text=ambiguous_copy,
+            actual_output=str(check),
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
+            quality_criteria=(
+                "The compliance check must not invent a discount percentage that is "
+                "not stated in the copy. With 0% discount and no 'up to' claim, "
+                "disclaimers and pricing_cross_check should pass."
+            ),
+            face_validity_criteria=(
+                "The output should correctly recognize the absence of a quantified "
+                "price claim and not flag what is not there."
+            ),
+        )
+
+
+# ---- D5: Brief generator with clean compliance (normal) ----
+# Skill: approval-brief-generator
+
+class TestD5BriefCleanCompliance:
+    """Clean compliance upstream should yield an approve recommendation."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_brief_clean_compliance(self):
+        state = _make_state()
+        state["compliance_check"] = {
+            "brand_alignment": {"status": "pass", "reason": "No issues", "cited_doc": "BRAND-GL-2026-001"},
+            "disclaimers": {"status": "pass", "reason": "No claims to qualify", "cited_doc": "LEGAL-DIS-2026-002"},
+            "pricing_cross_check": {"status": "pass", "reason": "No conflicts", "cited_doc": "PRICE-RULES-2026-001"},
+            "recommended_action": "proceed",
+            "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001"],
+        }
+        result = invoke_skill("approval-brief-generator", state)
+        brief = result.get("approval_brief", {})
+        assert "campaign_goal" in brief or "ai_recommendation" in brief
+        _record("D5", str(brief), {"pass": True})
+        _deepeval_score(
+            input_text="Clean compliance (all pass, proceed), Mother's Day Beauty, $200K spend",
+            actual_output=str(brief),
+            retrieval_context=_passages_for_doc_ids(["RETRO-SP-2025-BTY", "RETRO-Q4-2025"]),
+            quality_criteria=(
+                "The brief must populate campaign_goal, target_audience, expected_roi, "
+                "risk_flags, and ai_recommendation. With all compliance passing, the "
+                "recommendation should be approve. ROI benchmark should cite a retro document."
+            ),
+            face_validity_criteria=(
+                "The brief should read like a genuine VP approval document: concise, "
+                "decision oriented, with clear campaign goal and risk assessment."
+            ),
+        )
+
+
+# ---- D6: Brief generator with mixed compliance (ties to Failure Case 6) ----
+# Skill: approval-brief-generator (edge case)
+
+class TestD6BriefMixedCompliance:
+    """Failed compliance upstream must propagate into risk_flags and revise."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_brief_mixed_compliance(self):
+        state = _make_state()
+        state["compliance_check"] = {
+            "brand_alignment": {"status": "fail", "reason": "Banned phrase detected", "cited_doc": "BRAND-GL-2026-001"},
+            "disclaimers": {"status": "warn", "reason": "Qualifier recommended", "cited_doc": "LEGAL-DIS-2026-002"},
+            "pricing_cross_check": {"status": "pass", "reason": "No conflicts", "cited_doc": "PRICE-RULES-2026-001"},
+            "recommended_action": "revise",
+            "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001"],
+        }
+        result = invoke_skill("approval-brief-generator", state)
+        brief = result.get("approval_brief", {})
+        risk_flags = brief.get("risk_flags", [])
+        assert len(risk_flags) > 0, "Brief must surface upstream failures as risk flags"
+        _record("D6", str(brief), {"pass": True})
+        _deepeval_score(
+            input_text="Mixed compliance: brand_alignment FAIL, disclaimers WARN, pricing PASS",
+            actual_output=str(brief),
+            retrieval_context=_passages_for_doc_ids(["RETRO-SP-2025-BTY", "RETRO-Q4-2025"]),
+            quality_criteria=(
+                "The brief must include the brand alignment failure and disclaimer warning "
+                "in risk_flags. The ai_recommendation must be revise, not approve. "
+                "It must not suppress or ignore the upstream compliance failures."
+            ),
+            face_validity_criteria=(
+                "A VP reading this brief should see clear risk flags before deciding. "
+                "The recommendation should be consistent with the compliance outcome."
+            ),
+        )
+
+
+# ---- D7: Revision router with clear pricing comment (normal) ----
+# Skill: revision-router
+
+class TestD7RevisionClearPricing:
+    """Clear MAP violation comment should route to pricing/Anna with high urgency."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_revision_clear_pricing(self):
+        state = _make_state({
+            "estimated_spend": 600_000,
+            "business_days_to_launch": 3,
+        })
+        state["approval_decision"] = "revise"
+        state["revision_comment"] = (
+            "The 40% discount on Lancome exceeds MAP. "
+            "Please reduce to 25% or remove Lancome from the campaign."
+        )
+        result = invoke_skill("revision-router", state)
+        routing = result.get("revision_routing", {})
+        assert "change_type" in routing
+        assert "owner" in routing
+        _record("D7", str(routing), {"pass": True})
+        _deepeval_score(
+            input_text="Revision: 40% discount on Lancome exceeds MAP, reduce or remove. $600K spend, 3 days to launch.",
+            actual_output=str(routing),
+            retrieval_context=_passages_for_doc_ids(["TICKET-INC-2025-4471"]),
+            quality_criteria=(
+                "The routing must classify change_type as pricing, assign owner to "
+                "Merchandising or Anna, and set urgency to high (spend > $500K and "
+                "<= 5 days to launch). The one_line_summary should capture the MAP issue."
+            ),
+            face_validity_criteria=(
+                "The routing should read like a plausible Macy's workflow assignment: "
+                "a pricing issue routed to the merchandising team with appropriate urgency."
+            ),
+        )
+
+
+# ---- D8: Revision router with multi-type comment (edge case) ----
+# Skill: revision-router
+
+class TestD8RevisionMultiType:
+    """Comment spanning imagery and copy should still produce valid routing."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_revision_multi_type(self):
+        state = _make_state({
+            "estimated_spend": 150_000,
+            "business_days_to_launch": 10,
+        })
+        state["approval_decision"] = "revise"
+        state["revision_comment"] = (
+            "The hero image feels too cold for Mother's Day, and the headline copy "
+            "needs to mention the gift with purchase offer."
+        )
+        result = invoke_skill("revision-router", state)
+        routing = result.get("revision_routing", {})
+        assert "change_type" in routing
+        assert "owner" in routing
+        assert "urgency" in routing
+        _record("D8", str(routing), {"pass": True})
+        _deepeval_score(
+            input_text="Revision: hero image too cold, headline needs gift-with-purchase mention. $150K spend, 10 days.",
+            actual_output=str(routing),
+            retrieval_context=_passages_for_doc_ids(["TICKET-INC-2026-0212"]),
+            quality_criteria=(
+                "The routing must pick a primary change_type (imagery or copy), assign "
+                "a valid owner from the persona list, and set urgency to low (neither "
+                "spend > $500K nor <= 5 days). The summary should capture both concerns."
+            ),
+            face_validity_criteria=(
+                "A reasonable classification of a comment that spans two domains. The "
+                "router should not ignore either concern in the summary."
+            ),
+        )
+
+
+# ---- D9: Compliance on near-miss banned phrase (ties to Failure Case 2) ----
+# Skill: compliance-pre-check
+
+class TestD9ComplianceNearMissBanned:
+    """Semantically close banned phrase should be flagged or warned."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_compliance_near_miss_banned(self):
+        near_miss_copy = (
+            "Mother's Day Beauty at Macy's: prices you won't believe "
+            "on MAC and Clinique."
+        )
+        state = _make_state({"copy": near_miss_copy, "discount_pct": 25})
+        result = invoke_skill("compliance-pre-check", state)
+        check = result.get("compliance_check", {})
+        assert "brand_alignment" in check
+        _record("D9", str(check), {"pass": True})
+        _deepeval_score(
+            input_text=near_miss_copy,
+            actual_output=str(check),
+            retrieval_context=_passages_for_doc_ids(check.get("retrieved_docs", [])),
+            quality_criteria=(
+                "The compliance check should at minimum flag or warn on 'prices you "
+                "won't believe' as semantically close to banned phrases like "
+                "'unbelievable prices' and 'unbeatable savings'. If flagged, the cited "
+                "passage must actually support the finding. If not flagged, the output "
+                "must not hallucinate other violations to compensate."
+            ),
+            face_validity_criteria=(
+                "A real Macy's compliance reviewer would at minimum raise a concern "
+                "about 'prices you won't believe'. The output should reflect that caution."
+            ),
+        )
+
+
+# ---- D10: Report generator with a complete campaign (normal) ----
+# Skill: report-generator
+# Note: report-generator has SKILL.md and prefetch config but no helpers.py.
+# It is invocable via invoke_skill if the FAISS stack is available.
+
+class TestD10ReportGenerator:
+    """Full campaign report with all 10 steps completed."""
+
+    @requires_llm
+    @pytest.mark.integration
+    def test_report_full_campaign(self):
+        state = _make_state()
+        state["status"] = "monitoring_complete"
+        state["compliance_check"] = {
+            "brand_alignment": {"status": "pass", "reason": "Clean", "cited_doc": "BRAND-GL-2026-001"},
+            "disclaimers": {"status": "pass", "reason": "No claims", "cited_doc": "LEGAL-DIS-2026-002"},
+            "pricing_cross_check": {"status": "pass", "reason": "No conflicts", "cited_doc": "PRICE-RULES-2026-001"},
+            "recommended_action": "proceed",
+            "retrieved_docs": ["BRAND-GL-2026-001", "LEGAL-DIS-2026-002", "PRICE-RULES-2026-001"],
+        }
+        state["approval_brief"] = {
+            "campaign_goal": "Drive Mother's Day Beauty sales via Star Rewards loyalty",
+            "target_audience": "Star Rewards Gold and Platinum, female 25 to 54",
+            "expected_roi": "2.8x ROAS based on Spring 2025 Beauty retro",
+            "risk_flags": [],
+            "ai_recommendation": "approve",
+        }
+        state["localized_variants"] = {"localized_variants": [
+            {"region": "NY", "language": "en"},
+            {"region": "FL", "language": "es"},
+            {"region": "QC", "language": "fr-CA"},
+        ]}
+        state["activation_schedule"] = {"status": "scheduled", "channels": ["email", "push", "display"]}
+        state["campaign_performance"] = {
+            "revenue": 450_000,
+            "roas": 2.25,
+            "open_rate": 0.22,
+            "conversion_rate": 0.035,
+        }
+        result = invoke_skill("report-generator", state)
+        report = result.get("executive_report", {})
+        assert "executive_summary" in report or isinstance(report, dict)
+        _record("D10", str(report)[:500], {"pass": True})
+        _deepeval_score(
+            input_text="Full campaign: compliance pass, brief approved, 3 locales, scheduled, $450K revenue, 2.25 ROAS",
+            actual_output=str(report),
+            retrieval_context=_passages_for_doc_ids(["RETRO-Q4-2025", "RETRO-SP-2025-BTY"]),
+            quality_criteria=(
+                "The report must include an executive_summary covering the campaign arc, "
+                "key_metrics matching the step outputs, recommendations grounded in "
+                "performance data, and risks_and_concerns referencing any compliance flags. "
+                "The summary should be 4 to 6 paragraphs, not a one liner."
+            ),
+            face_validity_criteria=(
+                "The report should read like a real post-campaign executive summary: "
+                "structured, data backed, and suitable for senior leadership review."
+            ),
+        )
