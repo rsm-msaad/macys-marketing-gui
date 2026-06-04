@@ -229,6 +229,12 @@
   },
   {
     "id": 39,
+    "type": "image",
+    "notes": "",
+    "image": "/storyboard/scenes/slide_new_1780605270.jpg"
+  },
+  {
+    "id": 40,
     "type": "divider",
     "label": "MILESTONE 2",
     "title": "BUILDING THE FOUNDATION",
@@ -236,16 +242,10 @@
     "notes": "Milestone 2. We built the foundation."
   },
   {
-    "id": 40,
+    "id": 41,
     "type": "image",
     "image": "/storyboard/scenes/29_m2_demo_day.jpg",
     "notes": "Demo day. We showed Professor Vincent a working prototype with four skills."
-  },
-  {
-    "id": 41,
-    "type": "image",
-    "notes": "",
-    "image": "/storyboard/scenes/slide_new_1780605270.jpg"
   },
   {
     "id": 42,
