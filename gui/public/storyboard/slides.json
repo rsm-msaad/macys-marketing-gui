@@ -224,20 +224,20 @@
   {
     "id": 38,
     "type": "image",
-    "image": "/storyboard/scenes/05_macys_workflow.jpg",
-    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
+    "image": "/storyboard/scenes/claude_hero.jpg",
+    "notes": "We chose Claude as our AI backbone. Not to replace anyone, but to remove the grunt work."
   },
   {
     "id": 39,
     "type": "image",
-    "image": "/storyboard/scenes/31_rady_what_if.jpg",
-    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
+    "image": "/storyboard/scenes/05_macys_workflow.jpg",
+    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
   },
   {
     "id": 40,
     "type": "image",
-    "image": "/storyboard/scenes/claude_hero.jpg",
-    "notes": "We chose Claude as our AI backbone. Not to replace anyone, but to remove the grunt work."
+    "image": "/storyboard/scenes/31_rady_what_if.jpg",
+    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
   },
   {
     "id": 41,
