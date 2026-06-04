@@ -38,26 +38,26 @@
   {
     "id": 7,
     "type": "image",
-    "image": "/storyboard/scenes/06_writing_the_brief.jpg",
-    "notes": "Merna writes the creative brief and hands it off to the design team."
+    "image": "/storyboard/scenes/03_sku_selection.jpg",
+    "notes": "Merna picks which products to feature based on inventory and margins."
   },
   {
     "id": 8,
+    "type": "image",
+    "image": "/storyboard/scenes/04_pricing.jpg",
+    "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
+  },
+  {
+    "id": 9,
     "type": "image",
     "image": "/storyboard/scenes/05_segmentation.jpg",
     "notes": "Then she segments the customer base to figure out who to target."
   },
   {
-    "id": 9,
-    "type": "image",
-    "image": "/storyboard/scenes/03_sku_selection.jpg",
-    "notes": "Merna picks which products to feature based on inventory and margins."
-  },
-  {
     "id": 10,
     "type": "image",
-    "image": "/storyboard/scenes/04_pricing.jpg",
-    "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
+    "image": "/storyboard/scenes/06_writing_the_brief.jpg",
+    "notes": "Merna writes the creative brief and hands it off to the design team."
   },
   {
     "id": 11,
@@ -152,8 +152,8 @@
   {
     "id": 26,
     "type": "image",
-    "image": "/storyboard/scenes/21_reality_manager_beach.jpg",
-    "notes": "The campaign manager goes on vacation and everything stalls because the knowledge is in her head."
+    "image": "/storyboard/scenes/22_rady_team_break.jpg",
+    "notes": "We stepped back and admitted the ideal was a fantasy."
   },
   {
     "id": 27,
@@ -496,14 +496,14 @@
   {
     "id": 82,
     "type": "image",
-    "image": "/storyboard/scenes/22_rady_team_break.jpg",
-    "notes": "We stepped back and admitted the ideal was a fantasy."
+    "notes": "",
+    "image": "/storyboard/scenes/slide_new_1780170278.jpg"
   },
   {
     "id": 83,
     "type": "image",
-    "notes": "",
-    "image": "/storyboard/scenes/slide_new_1780170278.jpg"
+    "image": "/storyboard/scenes/21_reality_manager_beach.jpg",
+    "notes": "The campaign manager goes on vacation and everything stalls because the knowledge is in her head."
   },
   {
     "id": 84,
