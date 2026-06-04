@@ -745,7 +745,19 @@ def _invoke_llm_skill(skill_name: str, state: dict) -> dict:
     try:
         result = json.loads(cleaned)
     except json.JSONDecodeError as exc:
-        raise ValueError(f"Skill {skill_name} returned non JSON response:\n{cleaned[:500]}") from exc
+        # For layout-copy-generator, fall back to deterministic copy so a
+        # vague brief produces valid output instead of crashing the skill.
+        if skill_name == "layout-copy-generator":
+            import importlib.util as _ilu
+
+            _hp = SKILLS_DIR / "layout-copy-generator" / "helpers.py"
+            _sp = _ilu.spec_from_file_location("_layout_fallback", _hp)
+            _mod = _ilu.module_from_spec(_sp)
+            _sp.loader.exec_module(_mod)
+            campaign = state.get("campaign", {})
+            result = _mod.generate_fallback(campaign)
+        else:
+            raise ValueError(f"Skill {skill_name} returned non JSON response:\n{cleaned[:500]}") from exc
     return update_state_field(state, skill_name, result)
 
 

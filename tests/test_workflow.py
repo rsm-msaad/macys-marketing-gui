@@ -109,14 +109,21 @@ def _deepeval_score(
     ]
 
     for metric in metrics:
-        metric.measure(tc)
-        score = getattr(metric, "score", None)
-        passed = getattr(metric, "success", None)
-        label = getattr(metric, "name", type(metric).__name__)
-        # Surface score via pytest warnings so it appears in the output without
-        # blocking the test on a soft quality miss.
         import warnings
 
+        label = getattr(metric, "name", type(metric).__name__)
+        try:
+            metric.measure(tc)
+        except (ValueError, Exception) as _metric_err:
+            warnings.warn(
+                f"DeepEval [{label}] scoring error (judge LLM returned invalid output): {_metric_err}",
+                stacklevel=2,
+            )
+            continue
+        score = getattr(metric, "score", None)
+        passed = getattr(metric, "success", None)
+        # Surface score via pytest warnings so it appears in the output without
+        # blocking the test on a soft quality miss.
         warnings.warn(
             f"DeepEval [{label}] score={score} passed={passed} — {getattr(metric, 'reason', '')}",
             stacklevel=2,
