@@ -44,20 +44,20 @@
   {
     "id": 8,
     "type": "image",
-    "image": "/storyboard/scenes/03_sku_selection.jpg",
-    "notes": "Merna picks which products to feature based on inventory and margins."
+    "image": "/storyboard/scenes/05_segmentation.jpg",
+    "notes": "Then she segments the customer base to figure out who to target."
   },
   {
     "id": 9,
     "type": "image",
-    "image": "/storyboard/scenes/04_pricing.jpg",
-    "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
+    "image": "/storyboard/scenes/03_sku_selection.jpg",
+    "notes": "Merna picks which products to feature based on inventory and margins."
   },
   {
     "id": 10,
     "type": "image",
-    "image": "/storyboard/scenes/05_segmentation.jpg",
-    "notes": "Then she segments the customer base to figure out who to target."
+    "image": "/storyboard/scenes/04_pricing.jpg",
+    "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
   },
   {
     "id": 11,
