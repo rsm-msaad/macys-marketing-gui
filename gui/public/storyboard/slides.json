@@ -7,254 +7,228 @@
   },
   {
     "id": 2,
-    "type": "divider",
-    "label": "MILESTONE 1",
-    "title": "UNDERSTANDING THE WORLD",
-    "subtitle": "how marketing campaigns work at Macys, in theory and in reality",
-    "notes": "In Milestone 1, we documented how marketing campaigns actually work at Macys."
-  },
-  {
-    "id": 3,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1780170301.jpg"
   },
   {
-    "id": 4,
+    "id": 3,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778962249.jpg"
   },
   {
-    "id": 5,
+    "id": 4,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778970037.jpg"
   },
   {
-    "id": 6,
+    "id": 5,
     "type": "image",
     "image": "/storyboard/scenes/01_monday_morning.jpg",
     "notes": "Monday morning. Merna opens her laptop and sees a new campaign brief from leadership."
   },
   {
-    "id": 7,
+    "id": 6,
     "type": "image",
     "image": "/storyboard/scenes/02_briefing.jpg",
     "notes": "Step one is the briefing. Leadership sets the goal, budget, and timeline."
   },
   {
-    "id": 8,
+    "id": 7,
     "type": "image",
     "image": "/storyboard/scenes/03_sku_selection.jpg",
     "notes": "Merna picks which products to feature based on inventory and margins."
   },
   {
-    "id": 9,
+    "id": 8,
     "type": "image",
     "image": "/storyboard/scenes/04_pricing.jpg",
     "notes": "She sets the promotional prices, checking every SKU against minimum advertised price rules."
   },
   {
-    "id": 10,
+    "id": 9,
     "type": "image",
     "image": "/storyboard/scenes/05_segmentation.jpg",
     "notes": "Then she segments the customer base to figure out who to target."
   },
   {
-    "id": 11,
+    "id": 10,
     "type": "image",
     "image": "/storyboard/scenes/06_writing_the_brief.jpg",
     "notes": "Merna writes the creative brief and hands it off to the design team."
   },
   {
-    "id": 12,
+    "id": 11,
     "type": "image",
     "image": "/storyboard/scenes/07_handoff_to_creative.jpg",
     "notes": "First major handoff. The brief goes from Merna to Abdullah, the senior designer."
   },
   {
-    "id": 13,
+    "id": 12,
     "type": "image",
     "image": "/storyboard/scenes/08_dam_search.jpg",
     "notes": "Abdullah searches the DAM for product photos that match the campaign theme."
   },
   {
-    "id": 14,
+    "id": 13,
     "type": "image",
     "image": "/storyboard/scenes/09_master_ad.jpg",
     "notes": "He builds the master ad, the one creative asset everything else gets adapted from."
   },
   {
-    "id": 15,
+    "id": 14,
     "type": "image",
     "image": "/storyboard/scenes/10_legal_review.jpg",
     "notes": "Legal reviews every word, every price claim, every disclaimer. This step can take days."
   },
   {
-    "id": 16,
+    "id": 15,
     "type": "image",
     "image": "/storyboard/scenes/11_brand_approval.jpg",
     "notes": "Brand team checks that the creative matches the Macys guidelines."
   },
   {
-    "id": 17,
+    "id": 16,
     "type": "image",
     "image": "/storyboard/scenes/12_handoff_to_production.jpg",
     "notes": "Another handoff. Abdullah sends the approved creative to Shankar for production."
   },
   {
-    "id": 18,
+    "id": 17,
     "type": "image",
     "image": "/storyboard/scenes/13_localization.jpg",
     "notes": "Shankar turns one master ad into 40 regional variants. Ten regions, four placements each."
   },
   {
-    "id": 19,
+    "id": 18,
     "type": "image",
     "image": "/storyboard/scenes/14_handoff_to_media.jpg",
     "notes": "The finished variants get handed off to the media coordinator for scheduling."
   },
   {
-    "id": 20,
+    "id": 19,
     "type": "image",
     "image": "/storyboard/scenes/15_activation.jpg",
     "notes": "Activation. Emails, social ads, display banners, and in store signage all go live."
   },
   {
-    "id": 21,
+    "id": 20,
     "type": "image",
     "image": "/storyboard/scenes/16_live.jpg",
     "notes": "The campaign is live. Everyone watches the numbers."
   },
   {
-    "id": 22,
+    "id": 21,
     "type": "image",
     "image": "/storyboard/scenes/17_data_analysis.jpg",
     "notes": "Anna the analyst pulls performance data and runs attribution analysis."
   },
   {
-    "id": 23,
+    "id": 22,
     "type": "image",
     "image": "/storyboard/scenes/18_reporting.jpg",
     "notes": "She writes up what worked and what did not. The report goes back to leadership."
   },
   {
-    "id": 24,
+    "id": 23,
     "type": "image",
     "image": "/storyboard/scenes/19_cycle_complete.jpg",
     "notes": "That was the ideal version. Now let us talk about what actually happens."
   },
   {
-    "id": 25,
+    "id": 24,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778989792.jpg"
   },
   {
-    "id": 26,
+    "id": 25,
     "type": "image",
-    "image": "/storyboard/scenes/20_reality_check.jpg",
-    "notes": "Reality check. The textbook workflow almost never goes this smoothly."
+    "notes": "",
+    "image": "/storyboard/scenes/slide_new_1780581231.jpg"
   },
   {
-    "id": 27,
+    "id": 26,
     "type": "image",
     "image": "/storyboard/scenes/22_rady_team_break.jpg",
     "notes": "We stepped back and admitted the ideal was a fantasy."
   },
   {
-    "id": 28,
+    "id": 27,
     "type": "image",
     "image": "/storyboard/scenes/21_reality_manager_beach.jpg",
     "notes": "The campaign manager goes on vacation and everything stalls because the knowledge is in her head."
   },
   {
-    "id": 29,
+    "id": 28,
     "type": "image",
     "image": "/storyboard/scenes/22_reality_merna_owns.jpg",
     "notes": "Merna owns five of the ten steps. One person, half the workflow. Classic bottleneck."
   },
   {
-    "id": 30,
+    "id": 29,
     "type": "image",
     "image": "/storyboard/scenes/23_reality_leadership_pivot.jpg",
     "notes": "Two weeks in, leadership changes the campaign theme. Start over."
   },
   {
-    "id": 31,
-    "type": "image",
-    "notes": "",
-    "image": "/storyboard/scenes/slide_new_1778965674.jpg"
-  },
-  {
-    "id": 32,
+    "id": 30,
     "type": "image",
     "image": "/storyboard/scenes/24_reality_filename_chaos.jpg",
     "notes": "160 files with names like final_v2_FINAL. Nobody knows which is current."
   },
   {
-    "id": 33,
+    "id": 31,
     "type": "image",
     "image": "/storyboard/scenes/25_reality_legal_rejection.jpg",
     "notes": "Legal sends everything back because a disclaimer is missing. Two more days lost."
   },
   {
-    "id": 34,
+    "id": 32,
     "type": "image",
     "image": "/storyboard/scenes/26_reality_pricing_shift.jpg",
     "notes": "A brand changes their minimum price after the creative is approved. Every variant needs updating."
   },
   {
-    "id": 35,
+    "id": 33,
     "type": "image",
     "image": "/storyboard/scenes/27_reality_shankar_redo.jpg",
     "notes": "Shankar builds 40 variants, then a typo is found in the master. Redo all of them."
   },
   {
-    "id": 36,
+    "id": 34,
     "type": "image",
     "image": "/storyboard/scenes/act2_calendar_pressure.jpg",
     "notes": "The deadline does not move. The team is in crunch mode."
   },
   {
-    "id": 37,
+    "id": 35,
     "type": "image",
     "image": "/storyboard/scenes/28_reality_rock_bottom.jpg",
     "notes": "Rock bottom. The team is exhausted and the launch is in three days."
   },
   {
-    "id": 38,
+    "id": 36,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778970160.jpg"
   },
   {
-    "id": 39,
+    "id": 37,
     "type": "image",
     "image": "/storyboard/scenes/claude_flying.jpg",
     "notes": "What if AI could handle the repetitive parts?"
   },
   {
-    "id": 40,
-    "type": "image",
-    "image": "/storyboard/scenes/05_macys_workflow.jpg",
-    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
-  },
-  {
-    "id": 41,
-    "type": "image",
-    "image": "/storyboard/scenes/31_rady_what_if.jpg",
-    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
-  },
-  {
-    "id": 42,
+    "id": 38,
     "type": "image",
     "image": "/storyboard/scenes/claude_hero.jpg",
     "notes": "We chose Claude as our AI backbone. Not to replace anyone, but to remove the grunt work."
   },
   {
-    "id": 43,
+    "id": 39,
     "type": "divider",
     "label": "MILESTONE 2",
     "title": "BUILDING THE FOUNDATION",
@@ -262,55 +236,55 @@
     "notes": "Milestone 2. We built the foundation."
   },
   {
-    "id": 44,
+    "id": 40,
     "type": "image",
     "image": "/storyboard/scenes/29_m2_demo_day.jpg",
     "notes": "Demo day. We showed Professor Vincent a working prototype with four skills."
   },
   {
-    "id": 45,
+    "id": 41,
     "type": "image",
     "image": "/storyboard/scenes/30_m2_first_demo.jpg",
     "notes": "The first demo. Pick a persona, see the workflow, trigger a skill."
   },
   {
-    "id": 46,
+    "id": 42,
     "type": "image",
     "image": "/storyboard/scenes/31_m2_four_skills.jpg",
     "notes": "Four skills, like Lego blocks. Segmentation, DAM search, localization, and analytics."
   },
   {
-    "id": 47,
+    "id": 43,
     "type": "image",
     "image": "/storyboard/scenes/32_m2_scripted_chat.jpg",
     "notes": "The chat looked like AI but was really just a script. We knew we had to fix that."
   },
   {
-    "id": 48,
+    "id": 44,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778965046.jpg"
   },
   {
-    "id": 49,
+    "id": 45,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778968998.jpg"
   },
   {
-    "id": 50,
+    "id": 46,
     "type": "image",
     "image": "/storyboard/scenes/33_m2_data_layer.jpg",
     "notes": "Under the hood, a real database with 50,000 customers. Every skill queried real data."
   },
   {
-    "id": 51,
+    "id": 47,
     "type": "image",
     "image": "/storyboard/scenes/42_rady_m2_to_m3.jpg",
     "notes": "M2 worked, but the skills could not talk to each other. That was the next problem to solve."
   },
   {
-    "id": 52,
+    "id": 48,
     "type": "divider",
     "label": "MILESTONE 3",
     "title": "BUILDING THE COWORKER",
@@ -318,85 +292,85 @@
     "notes": "Milestone 3. We built the real AI coworker."
   },
   {
-    "id": 53,
+    "id": 49,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide1_title.jpg",
     "notes": "In M3 we wired the skills together into a system that runs like a real team member."
   },
   {
-    "id": 54,
+    "id": 50,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide5_m2_to_m3.jpg",
     "notes": "M2 had 4 standalone skills. M3 added 3 skills and 2 automations chained together, 3 tools, and a 12 document knowledge base."
   },
   {
-    "id": 55,
+    "id": 51,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide2_workflow_skills.jpg",
     "notes": "This diagram shows which skills fire at which workflow step, automatically."
   },
   {
-    "id": 56,
+    "id": 52,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778994040.jpg"
   },
   {
-    "id": 57,
+    "id": 53,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide4_mcp_rag.jpg",
     "notes": "MCP gives Claude the keys to real functions. RAG gives Claude a filing cabinet of company documents."
   },
   {
-    "id": 58,
+    "id": 54,
     "type": "image",
     "image": "/storyboard/scenes/34_m3_live_production.jpg",
     "notes": "The live production interface. Each persona sees only their steps."
   },
   {
-    "id": 59,
+    "id": 55,
     "type": "image",
     "image": "/storyboard/scenes/35_m3_compliance_check.jpg",
     "notes": "Compliance pre check catches problems in seconds that used to take days to discover."
   },
   {
-    "id": 60,
+    "id": 56,
     "type": "image",
     "image": "/storyboard/scenes/36_m3_brief_card.jpg",
     "notes": "The VP gets an AI generated brief card with benchmarks from past campaigns, via RAG."
   },
   {
-    "id": 61,
+    "id": 57,
     "type": "image",
     "image": "/storyboard/scenes/37_m3_revision_routing.jpg",
     "notes": "If the VP says revise, the AI reads the comment, classifies it, and routes it to the right person."
   },
   {
-    "id": 62,
+    "id": 58,
     "type": "image",
     "image": "/storyboard/scenes/38_m3_cascade.jpg",
     "notes": "When the VP approves, an approval cascade fires automatically."
   },
   {
-    "id": 63,
+    "id": 59,
     "type": "image",
     "image": "/storyboard/scenes/39_m3_activity_feed.jpg",
     "notes": "The activity feed shows everything the AI is doing. Transparency builds trust."
   },
   {
-    "id": 64,
+    "id": 60,
     "type": "image",
     "image": "/storyboard/scenes/40_m3_live_chat.jpg",
     "notes": "The chat is now real. Every message goes to a live AI model with RAG grounding."
   },
   {
-    "id": 65,
+    "id": 61,
     "type": "image",
     "image": "/storyboard/scenes/41_m3_mcp_behind_scenes.jpg",
     "notes": "Behind the scenes: orchestrator picks the skill, pre fetches documents, calls Claude, saves the result."
   },
   {
-    "id": 66,
+    "id": 62,
     "type": "divider",
     "label": "MILESTONE 4",
     "title": "THE NEW NORMAL",
@@ -404,31 +378,31 @@
     "notes": "Milestone 4. Shipping and learning."
   },
   {
-    "id": 67,
+    "id": 63,
     "type": "image",
     "image": "/storyboard/scenes/42_after_team_calm.jpg",
     "notes": "The team is calmer. The AI handles grunt work, the humans handle judgment."
   },
   {
-    "id": 68,
+    "id": 64,
     "type": "image",
     "image": "/storyboard/scenes/43_after_campaign_live.jpg",
     "notes": "The campaign launches on time, on budget, without the usual last minute panic."
   },
   {
-    "id": 69,
+    "id": 65,
     "type": "image",
     "image": "/storyboard/scenes/44_after_before_vs.jpg",
     "notes": "Before: 8 weeks, constant rework. After: 11 days, zero avoidable errors."
   },
   {
-    "id": 70,
+    "id": 66,
     "type": "image",
     "image": "/storyboard/scenes/45_closing_framing.jpg",
     "notes": "We started building a tool. We ended up building a teammate. Thank you."
   },
   {
-    "id": 71,
+    "id": 67,
     "type": "divider",
     "label": "APPENDIX",
     "title": "FOR THE CURIOUS",
@@ -436,93 +410,111 @@
     "notes": "Appendix slides for anyone who wants to go deeper."
   },
   {
-    "id": 72,
+    "id": 68,
     "type": "image",
     "image": "/storyboard/scenes/00_project_overview.jpg",
     "notes": "Project overview showing how all the pieces connect."
   },
   {
-    "id": 73,
+    "id": 69,
     "type": "image",
     "image": "/storyboard/scenes/01_what_is_skill.jpg",
     "notes": "A skill is a small program that does one specific job."
   },
   {
-    "id": 74,
+    "id": 70,
     "type": "image",
     "image": "/storyboard/scenes/02_what_is_mcp.jpg",
     "notes": "MCP lets the AI call real Python functions instead of guessing."
   },
   {
-    "id": 75,
+    "id": 71,
     "type": "image",
     "image": "/storyboard/scenes/03_what_is_rag.jpg",
     "notes": "RAG means the AI reads your documents before answering."
   },
   {
-    "id": 76,
+    "id": 72,
     "type": "image",
     "image": "/storyboard/scenes/14_rag_steps.jpg",
     "notes": "The RAG pipeline: chunk documents, embed them, search at query time."
   },
   {
-    "id": 77,
+    "id": 73,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778989833.jpg"
   },
   {
-    "id": 78,
+    "id": 74,
     "type": "image",
     "image": "/storyboard/scenes/04_what_is_orchestrator.jpg",
     "notes": "The orchestrator decides which skill runs next."
   },
   {
-    "id": 79,
+    "id": 75,
     "type": "image",
     "image": "/storyboard/scenes/15_two_orchestrators.jpg",
     "notes": "Two orchestrator options. Deterministic for production, agentic as an alternative."
   },
   {
-    "id": 80,
+    "id": 76,
     "type": "image",
     "image": "/storyboard/scenes/11_skill_chain.jpg",
     "notes": "Skills chain together through shared state, like a relay race."
   },
   {
-    "id": 81,
+    "id": 77,
     "type": "image",
     "image": "/storyboard/scenes/12_mcp_tools.jpg",
     "notes": "Three MCP tools: pricing check, DAM search, and translation."
   },
   {
-    "id": 82,
+    "id": 78,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018437.jpg"
   },
   {
-    "id": 83,
+    "id": 79,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018469.jpg"
   },
   {
-    "id": 84,
+    "id": 80,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018488.jpg"
   },
   {
-    "id": 85,
+    "id": 81,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018505.jpg"
   },
   {
-    "id": 86,
+    "id": 82,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1780170278.jpg"
+  },
+  {
+    "id": 83,
+    "type": "image",
+    "image": "/storyboard/scenes/20_reality_check.jpg",
+    "notes": "Reality check. The textbook workflow almost never goes this smoothly.\n\nswap this for my pic\n"
+  },
+  {
+    "id": 84,
+    "type": "image",
+    "image": "/storyboard/scenes/05_macys_workflow.jpg",
+    "notes": "This is the 10 step Macys campaign workflow, from briefing all the way to reporting."
+  },
+  {
+    "id": 85,
+    "type": "image",
+    "image": "/storyboard/scenes/31_rady_what_if.jpg",
+    "notes": "We asked ourselves what an AI coworker would actually need to be useful."
   }
 ]
