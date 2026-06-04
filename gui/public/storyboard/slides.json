@@ -312,68 +312,68 @@
   {
     "id": 52,
     "type": "image",
+    "notes": "Here is the polished, 60-second script for you to deliver while this updated slide is on the screen. It is designed so that your final sentence delivers the \"Strategic Beachhead\" point that we removed from the slide, giving you a powerful concluding moment.\r\n\r\n***\r\n\r\n**[The Setup]**\r\n\"We’ve shown you how we solved the orchestration bottleneck for Macy's. But what happens if we spin this technology out as a standalone B2B SaaS platform? What is the actual 'Big Picture' opportunity?\"\r\n\r\n**[The Operational Floor]**\r\n\"Looking at the 392,000 active, scaled e-commerce retailers in the US, they are executing over 5 million campaigns a year using broken, manual workflows. If our Agentic AI platform takes over just the deterministic steps of those campaigns, we establish an operational floor of **$7.42 Billion in annual cost savings**. That is 93 million hours of manual data entry wiped out.\"\r\n\r\n**[The Revenue Ceiling]**\r\n\"But cost savings are just the floor. The true value of this AI is acting as a *Revenue Ceiling*. By shrinking a campaign cycle from 8 weeks down to 2 weeks, we unlock agile marketing. Brands can suddenly launch opportunistic campaigns to capture fleeting micro-trends before they vanish. We calculate this agility recovers **$23.84 Billion in lost sales**.\"\r\n\r\n**[The \"Mic Drop\" Conclusion]**\r\n\"Combined, this is a **$31.26 Billion dollar total value creation opportunity**. \r\n\r\nAnd to capture it, we aren't going to boil the ocean. Our strategic beachhead is to target the **30,000 Mid-Market retailers**. They have the cash to afford high-value software, but they lack the enterprise capital to build it themselves. Our platform gives them an enterprise-grade AI marketing department out of the box.\"\r\n\r\n***\r\n\r\n**Delivery Tip:** Pause for just a second after you say *\"31.26 Billion dollar total value creation opportunity\"* so the audience processes the massive number, and then confidently pivot into the \"And to capture it...\" strategy.",
+    "image": "/storyboard/scenes/slide_new_1780601964.jpg"
+  },
+  {
+    "id": 53,
+    "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778994040.jpg"
   },
   {
-    "id": 53,
+    "id": 54,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide4_mcp_rag.jpg",
     "notes": "MCP gives Claude the keys to real functions. RAG gives Claude a filing cabinet of company documents."
   },
   {
-    "id": 54,
+    "id": 55,
     "type": "image",
     "image": "/storyboard/scenes/34_m3_live_production.jpg",
     "notes": "The live production interface. Each persona sees only their steps."
   },
   {
-    "id": 55,
+    "id": 56,
     "type": "image",
     "image": "/storyboard/scenes/35_m3_compliance_check.jpg",
     "notes": "Compliance pre check catches problems in seconds that used to take days to discover."
   },
   {
-    "id": 56,
+    "id": 57,
     "type": "image",
     "image": "/storyboard/scenes/36_m3_brief_card.jpg",
     "notes": "The VP gets an AI generated brief card with benchmarks from past campaigns, via RAG."
   },
   {
-    "id": 57,
+    "id": 58,
     "type": "image",
     "image": "/storyboard/scenes/37_m3_revision_routing.jpg",
     "notes": "If the VP says revise, the AI reads the comment, classifies it, and routes it to the right person."
   },
   {
-    "id": 58,
+    "id": 59,
     "type": "image",
     "image": "/storyboard/scenes/38_m3_cascade.jpg",
     "notes": "When the VP approves, an approval cascade fires automatically."
   },
   {
-    "id": 59,
+    "id": 60,
     "type": "image",
     "image": "/storyboard/scenes/39_m3_activity_feed.jpg",
     "notes": "The activity feed shows everything the AI is doing. Transparency builds trust."
   },
   {
-    "id": 60,
+    "id": 61,
     "type": "image",
     "image": "/storyboard/scenes/40_m3_live_chat.jpg",
     "notes": "The chat is now real. Every message goes to a live AI model with RAG grounding."
   },
   {
-    "id": 61,
+    "id": 62,
     "type": "image",
     "image": "/storyboard/scenes/41_m3_mcp_behind_scenes.jpg",
     "notes": "Behind the scenes: orchestrator picks the skill, pre fetches documents, calls Claude, saves the result."
-  },
-  {
-    "id": 62,
-    "type": "image",
-    "notes": "Here is the polished, 60-second script for you to deliver while this updated slide is on the screen. It is designed so that your final sentence delivers the \"Strategic Beachhead\" point that we removed from the slide, giving you a powerful concluding moment.\r\n\r\n***\r\n\r\n**[The Setup]**\r\n\"We’ve shown you how we solved the orchestration bottleneck for Macy's. But what happens if we spin this technology out as a standalone B2B SaaS platform? What is the actual 'Big Picture' opportunity?\"\r\n\r\n**[The Operational Floor]**\r\n\"Looking at the 392,000 active, scaled e-commerce retailers in the US, they are executing over 5 million campaigns a year using broken, manual workflows. If our Agentic AI platform takes over just the deterministic steps of those campaigns, we establish an operational floor of **$7.42 Billion in annual cost savings**. That is 93 million hours of manual data entry wiped out.\"\r\n\r\n**[The Revenue Ceiling]**\r\n\"But cost savings are just the floor. The true value of this AI is acting as a *Revenue Ceiling*. By shrinking a campaign cycle from 8 weeks down to 2 weeks, we unlock agile marketing. Brands can suddenly launch opportunistic campaigns to capture fleeting micro-trends before they vanish. We calculate this agility recovers **$23.84 Billion in lost sales**.\"\r\n\r\n**[The \"Mic Drop\" Conclusion]**\r\n\"Combined, this is a **$31.26 Billion dollar total value creation opportunity**. \r\n\r\nAnd to capture it, we aren't going to boil the ocean. Our strategic beachhead is to target the **30,000 Mid-Market retailers**. They have the cash to afford high-value software, but they lack the enterprise capital to build it themselves. Our platform gives them an enterprise-grade AI marketing department out of the box.\"\r\n\r\n***\r\n\r\n**Delivery Tip:** Pause for just a second after you say *\"31.26 Billion dollar total value creation opportunity\"* so the audience processes the massive number, and then confidently pivot into the \"And to capture it...\" strategy.",
-    "image": "/storyboard/scenes/slide_new_1780601964.jpg"
   },
   {
     "id": 63,
