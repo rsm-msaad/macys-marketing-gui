@@ -4,7 +4,7 @@
 
 An AI coworker that just gives an answer is a black box. Our system is designed so every AI output can be traced back to the data, documents, and tools it relied on. M1's process analysis found that the manual workflow produced "files named 'final,' 'final2,' 'final_v3' with no version control," a symptom of decisions made without traceable evidence. Our M4 system inverts this pattern: every AI-generated compliance finding, approval brief, and revision routing is paired with a persistent evidence record that shows exactly what went in and what came out. The Evidence screen, the Evidence side panel, and the audit log are the runtime mechanisms that make this traceability real.
 
-## What Data the AI Uses
+## 1. What Data Does the AI Use?
 
 The AI coworker draws on three structured data sources, each connected to specific workflow steps:
 
@@ -16,7 +16,7 @@ The AI coworker draws on three structured data sources, each connected to specif
 
 The M1 design called for Macy's real Star Rewards loyalty database (nearly 30 million members), the Xinet WebNative DAM (100,000+ production images), and the Pricing Engine API. The M3 implementation simulates these with SQLite and JSON to make the system reproducible for the class context. The architecture is designed so swapping in real data sources requires changing only the data layer, not the skill or automation interfaces. The AI skills and MCP tools consume data through defined contracts, not direct database queries.
 
-## What Documents the AI Uses
+## 2. What Documents Does the AI Use?
 
 The AI retrieves context from 12 RAG documents stored in a FAISS vector index. Each document was chunked and embedded using a shared SentenceTransformer model. Two index variants exist: a naive FAISS index (78 chunks, keyword-level matching) and a HyQ index (381 entries including 303 synthetically generated questions, semantic-level matching). The system uses HyQ for production retrieval. On 8 near-verbatim test queries, both indexes now retrieve the correct document (the embedding model is fetched at runtime and evolves over time, so we report rank and score rather than a fixed pass count). HyQ ranks the correct document #1 on all 8 queries and scores higher on 6 of 8. On a separate set of 5 realistic paraphrased queries (how a marketer would actually type), HyQ retrieves 5 of 5 correctly while naive misses 1 — the legal disclaimer document for a BOGO pricing question.
 
@@ -37,7 +37,7 @@ The AI retrieves context from 12 RAG documents stored in a FAISS vector index. E
 
 The RAG retrieval pipeline works as follows: the skill sends a natural-language query (e.g., "What are the brand alignment rules for beauty campaigns?"), the retriever embeds the query and searches the HyQ FAISS index, and the top-k passages are injected into the LLM prompt as grounding context. The skill's output includes the `retrieved_docs` field listing which document IDs were used, and this field is captured in the evidence record.
 
-## What Tools and Functions the AI Uses
+## 3. What Tools or Python Functions Does the AI Use?
 
 ### MCP Tools
 
@@ -79,7 +79,7 @@ Five skills invoke Claude via the TritonAI API through the `ask()` helper in `ut
 | Layout Copy Generator | Drafts tagline, body, CTA, and visual direction for 4 placements | Step 5 |
 | Report Generator | Drafts executive summary from full audit trail across all 10 steps | Step 10 |
 
-## How the User Sees the Evidence
+## 4. How Does the User See the Evidence?
 
 The M4 UI provides two surfaces for inspecting evidence, designed so reviewers never need to trust the AI's output without seeing what it used.
 
@@ -111,7 +111,7 @@ This trace is captured once at invocation time and replayed on subsequent views.
 
 Evidence is captured at the moment of AI invocation and persisted to the backend via the `storeEvidence()` API call. The frontend fires this call as soon as the AI skill returns, storing the RAG documents retrieved, MCP tool inputs and outputs, prior step references, and a result summary. This evidence is then available indefinitely — re-reviewing a decision a week later shows the same evidence the AI actually used at decision time, not a reconstructed approximation. The audit log records every Review action (Approve, Edit, Reject, Rerun, Escalate) alongside the evidence that was available when the decision was made.
 
-## What Happens If Evidence Is Missing, Weak, or Conflicting
+## 5. What Happens If the Evidence Is Missing, Weak, or Conflicting?
 
 ### Missing Evidence
 

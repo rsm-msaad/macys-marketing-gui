@@ -50,9 +50,29 @@ Elapsed calendar days and labor hours are separate measures. Elapsed days includ
 Labor savings per campaign = (baseline labor hours - AI labor hours) * hourly rate
 ```
 
-**Labor hours per campaign (current):** Across all 10 steps, the campaign team (campaign manager, designer, production artist, analyst, legal reviewer) spends approximately 154 hands-on labor hours per campaign. This is less than the elapsed calendar time (30-40 business days) because much of the elapsed time is waiting for handoffs, approvals, and coordination rather than active work. At $75/hour fully loaded, total labor cost per campaign: approximately $11,550.
+### Per Step Labor Hour Breakdown
 
-**Labor hours per campaign (AI-supported):** With AI automations and skills handling data gathering, drafting, and computation, the team spends approximately 34 hands-on labor hours per campaign — concentrated on review, judgment, and strategic decisions at the 5 approval gates. The AI-supported hours deliberately preserve human time where judgment matters: Final Approval (Step 6) retains 3 hours for compliance review and VP sign-off, Reporting (Step 10) retains 6 hours for executive editing, and every automation step includes review time for the step owner to inspect and approve AI output. AI reduces coordination and production labor, not the human judgment layer. At $75/hour, total labor cost: approximately $2,550. Estimated savings per campaign: approximately $9,000 (range: $7,500 to $10,500). At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $585,000 to $900,000. This is a class-context estimate based on reasoned assumptions, not a guaranteed projection.
+The per step elapsed times in the table above are calendar durations that include waiting, handoffs, and coordination overhead, and they often overlap or run in parallel across team members. They do not sum to the 30 to 40 business day end to end total, which comes from M1's documented full campaign cycle. Labor hours below count only hands on work and are the basis for the dollar savings.
+
+| Step | Name | Current Labor Hours | AI Supported Labor Hours |
+|---|---|---:|---:|
+| 1 | Briefing | 12 | 2 |
+| 2 | Segmentation | 8 | 2 |
+| 3 | SKU Selection | 12 | 4 |
+| 4 | Creative Production | 24 | 6 |
+| 5 | Layout Assembly | 24 | 6 |
+| 6 | Final Approval (6a+6b+6c) | 20 | 3 |
+| 7 | Localization | 18 | 1 |
+| 8 | Activation | 6 | 2 |
+| 9 | Monitoring | 6 | 2 |
+| 10 | Reporting | 24 | 6 |
+| | **Total** | **154** | **34** |
+
+These values are defined in `api/routes/impact.py` and drive the Impact page computations. The difference (120 hours) at $75/hour yields the approximately $9,000 per campaign savings. At the judgment steps (Briefing and Final Approval) the AI supported hours are the retained human judgment time, such as the strategic brief and the compliance and VP review; the reduction comes from removing the coordination and prep work around those decisions, not from cutting the review itself.
+
+**Labor hours per campaign (current):** Across all 10 steps, the campaign team (campaign manager, designer, production artist, analyst, legal reviewer) spends approximately 154 hands on labor hours per campaign. This is less than the elapsed calendar time (30 to 40 business days) because much of the elapsed time is waiting for handoffs, approvals, and coordination rather than active work. At $75/hour fully loaded, total labor cost per campaign: approximately $11,550.
+
+**Labor hours per campaign (AI supported):** With AI automations and skills handling data gathering, drafting, and computation, the team spends approximately 34 hands on labor hours per campaign, concentrated on review, judgment, and strategic decisions at the 5 approval gates. The AI supported hours deliberately preserve human time where judgment matters: Final Approval (Step 6) retains 3 hours for compliance review and VP sign off, Reporting (Step 10) retains 6 hours for executive editing, and every automation step includes review time for the step owner to inspect and approve AI output. AI reduces coordination and production labor, not the human judgment layer. At $75/hour, total labor cost: approximately $2,550. Estimated savings per campaign: approximately $9,000 (range: $7,500 to $10,500). At 65 to 100 distinct campaigns per year (see breakdown below), annual labor savings range from approximately $585,000 to $900,000. This is a class context estimate based on reasoned assumptions, not a guaranteed projection.
 
 **Costs not yet netted:** These savings are gross labor savings before subtracting: (1) AI API costs ($0.50 to $2.00 per campaign run for 5 LLM skills via TritonAI/Claude; 7 deterministic automations at negligible compute cost), and (2) estimated rework from Pattern 4 agentic over-flagging (~1-2h on an estimated ~30% of campaigns — estimated from limited testing (2 runs), not a measured production rate — where the compliance skill flags clean copy for unnecessary revision). Net savings after these costs are approximately 90-95% of gross savings.
 
@@ -66,7 +86,6 @@ Labor savings per campaign = (baseline labor hours - AI labor hours) * hourly ra
 | **Total distinct campaigns** | **65-100** | Each unique campaign counted once, regardless of overlapping classifications |
 
 A single Macy's campaign can be classified multiple ways simultaneously. The Mother's Day Beauty Event, for example, is a weekly campaign slot, a seasonal Spring campaign, a vendor co-op campaign (Lancome and Estee Lauder share funding), an event-driven campaign (Mother's Day), and a Star Rewards loyalty campaign. We count each distinct campaign once. This range is a reasoned estimate from Macy's documented operations, public reporting, and industry norms. Actual volume would require internal data to confirm.
-
 
 ## Quality Estimates
 
@@ -108,7 +127,7 @@ The 70-80% end-to-end reduction sits at the high end of the 30-70% range reporte
 
 ### 3. Evidence Alignment
 
-Every AI output is paired with an evidence record showing retrieved RAG passages, MCP tool inputs/outputs, and prior step references via the Evidence side panel. Reviewers can verify whether the AI's conclusion is supported by its sources in seconds rather than minutes. The confidence indicator is derived heuristically and can mislead (Failure Case 4), but the Evidence pill provides the factual check that the confidence label cannot.
+Every AI output is paired with an evidence record showing retrieved RAG passages, MCP tool inputs/outputs, and prior step references via the Evidence side panel. Reviewers can verify whether the AI's conclusion is supported by its sources in seconds rather than minutes. The confidence indicator is derived heuristically and can mislead (Failure Case 4), but the Evidence button and side panel provides the factual check that the confidence label cannot.
 
 ### 4. Practical Constraints
 
@@ -116,7 +135,7 @@ The design preserves human authority at all consequential gates (Steps 6a, 6b, 8
 
 ### Face Validity Anchors
 
-**Anchor 1: Industry benchmarks.** Public reporting on AI-supported marketing automation suggests 30-70% time savings on creative production cycles when AI handles initial drafts and humans refine. Our estimate sits at the high end because we automate the full 10-step process, not just creative production.
+**Anchor 1: Named industry benchmarks.** BCG reports about a fourfold speedup (roughly 75 percent) on AI augmented marketing campaigns, with text generation cost savings up to 70 percent and Reckitt achieving a 60 percent reduction in concept development (BCG, "Rethinking Medtech Marketing with GenAI," 2025). BCG's 2024 value creation report found about 50 percent time saved on content generation and localization, and up to 95 percent cost reduction on highly templated content. McKinsey reports campaigns moving from months to weeks or days, with marketing and sales capturing about 75 percent of generative AI's total estimated value (McKinsey, "The Economic Potential of Generative AI," 2023). Our 70 to 80 percent sits inside these named benchmarks because we automate the full 10 step process, not just creative production.
 
 **Anchor 2: M1 user stories.** M1's own user stories projected per-step reductions that individually exceed our overall estimate (segmentation: 2-3 days to 2-4 hours, creative production: 10-17 days to 2-4 hours, localization: 5-8 days to 1-2 hours). We are organizing M1's projections into the M4 format, not inventing new numbers.
 

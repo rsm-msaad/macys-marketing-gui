@@ -4,7 +4,7 @@ import path from "path";
 /**
  * Metadata for each doc entry in the sidebar.
  * `file` is resolved relative to the repo root (two levels up from gui/).
- * We check milestone04/<slug>.md first, then root <slug>.md.
+ * We check root <slug>.md first, then milestone04/<slug>.md as fallback.
  */
 export type DocEntry = {
   slug: string;
@@ -20,7 +20,7 @@ const DOC_DEFS: { slug: string; title: string; section: string; candidates: stri
     slug: "README",
     title: "Overview",
     section: "Overview",
-    candidates: ["milestone04/README.md"],
+    candidates: ["README.md", "milestone04/README.md"],
   },
   {
     slug: "failure_cases",
@@ -32,31 +32,31 @@ const DOC_DEFS: { slug: string; title: string; section: string; candidates: stri
     slug: "human_review_plan",
     title: "Human Review Plan",
     section: "M4 Deliverables",
-    candidates: ["milestone04/human_review_plan.md", "human_review_plan.md"],
+    candidates: ["human_review_plan.md", "milestone04/human_review_plan.md"],
   },
   {
     slug: "evidence_and_sources",
     title: "Evidence & Sources",
     section: "M4 Deliverables",
-    candidates: ["milestone04/evidence_and_sources.md", "evidence_and_sources.md"],
+    candidates: ["evidence_and_sources.md", "milestone04/evidence_and_sources.md"],
   },
   {
     slug: "estimates",
     title: "Estimates",
     section: "M4 Deliverables",
-    candidates: ["milestone04/estimates.md", "estimates.md"],
+    candidates: ["estimates.md", "milestone04/estimates.md"],
   },
   {
     slug: "face_validity",
     title: "Face Validity",
     section: "M4 Deliverables",
-    candidates: ["milestone04/face_validity.md", "face_validity.md"],
+    candidates: ["face_validity.md", "milestone04/face_validity.md"],
   },
   {
     slug: "test_report",
     title: "Test Report",
     section: "M4 Deliverables",
-    candidates: ["milestone04/test_report.md", "test_report.md"],
+    candidates: ["test_report.md", "milestone04/test_report.md"],
   },
 ];
 
