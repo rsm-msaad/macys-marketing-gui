@@ -92,7 +92,7 @@ function SegmentCard({
 
   return (
     <div
-      className={`overflow-hidden rounded-lg border p-3 transition-all ${
+      className={`rounded-lg border p-3 transition-all ${
         selected
           ? `${color.border} ${color.bg} ring-2 ring-teal-600/40`
           : muted
@@ -100,84 +100,70 @@ function SegmentCard({
             : `border-charcoal/10 bg-cream/30 hover:${color.border}`
       }`}
     >
-      {/* Header: name + badge */}
-      <div className="flex items-start justify-between gap-1.5">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <Icon className={`h-3.5 w-3.5 flex-shrink-0 ${selected ? color.text : "text-charcoal/45"}`} />
-            <div className="truncate font-serif text-sm font-semibold text-charcoal">{title}</div>
-          </div>
-          <div className="mt-0.5 text-[11px] text-charcoal/55">
-            {segment.customer_count.toLocaleString()} customers
-          </div>
-        </div>
+      {/* Badge row */}
+      <div className="flex items-center justify-between gap-1 mb-1">
+        <Icon className={`h-3.5 w-3.5 flex-shrink-0 ${selected ? color.text : "text-charcoal/45"}`} />
         {selected && (
-          <span className="flex-shrink-0 whitespace-nowrap rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+          <span className="rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
             Selected
           </span>
         )}
         {recommended && !selected && (
-          <span className="flex-shrink-0 whitespace-nowrap rounded-full bg-mustard/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mustard">
+          <span className="rounded-full bg-mustard/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mustard">
             Recommended
           </span>
         )}
       </div>
 
-      {/* Descriptor (truncated to 2 lines) */}
-      {segment.descriptor && (
-        <div className="mt-1 line-clamp-2 text-[10px] italic leading-snug text-charcoal/50">
-          {segment.descriptor}
-        </div>
-      )}
+      {/* Name (wraps, never truncated) */}
+      <div className="font-serif text-sm font-semibold leading-tight text-charcoal">
+        {title}
+      </div>
+      <div className="text-[11px] text-charcoal/55">
+        {segment.customer_count.toLocaleString()} customers
+      </div>
 
-      {/* Top category chip (prominent) */}
-      <div className="mt-2">
+      {/* Top category chip */}
+      <div className="mt-1.5">
         {hasStrongCategory ? (
           <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${color.border} ${color.bg} ${color.text}`}>
-            {segment.top_category} +{liftPct}% lift
+            {segment.top_category} +{liftPct}%
             <InfoTip>
-              This segment buys {liftPct}% more {segment.top_category} than the overall customer base. A lift above 10% indicates a meaningful preference worth targeting.
+              This segment buys {liftPct}% more {segment.top_category} than average. Above 10% is meaningful.
             </InfoTip>
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full border border-charcoal/10 bg-charcoal/5 px-2 py-0.5 text-[10px] text-charcoal/45">
             No strong category
-            <InfoTip>
-              No product category stands out. The difference between this segment's mix and the average is less than 10%.
-            </InfoTip>
           </span>
         )}
       </div>
 
-      {/* RFM profile (compact row) */}
-      <div className="mt-2 grid grid-cols-3 gap-1 text-center">
-        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
-          <div className="text-[10px] font-semibold text-charcoal">{segment.avg_recency_days}d</div>
-          <div className="text-[9px] text-charcoal/45">Recency <InfoTip>Average days since the last purchase. Lower means more recently active. This segment: {segment.avg_recency_days} days.</InfoTip></div>
+      {/* RFM row */}
+      <div className="mt-2 grid grid-cols-3 gap-1 text-center text-[10px]">
+        <div className="rounded border border-charcoal/8 bg-white py-0.5">
+          <div className="font-semibold text-charcoal">{segment.avg_recency_days}d</div>
+          <div className="text-charcoal/40">Recency</div>
         </div>
-        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
-          <div className="text-[10px] font-semibold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
-          <div className="text-[9px] text-charcoal/45">Frequency <InfoTip>Average purchases per customer. Higher means they buy more often. This segment: {segment.avg_frequency.toFixed(1)} transactions.</InfoTip></div>
+        <div className="rounded border border-charcoal/8 bg-white py-0.5">
+          <div className="font-semibold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
+          <div className="text-charcoal/40">Freq</div>
         </div>
-        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
-          <div className="text-[10px] font-semibold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
-          <div className="text-[9px] text-charcoal/45">Spend <InfoTip>Average total spend per customer. This segment: ${segment.avg_monetary.toFixed(0)}.</InfoTip></div>
+        <div className="rounded border border-charcoal/8 bg-white py-0.5">
+          <div className="font-semibold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
+          <div className="text-charcoal/40">Spend</div>
         </div>
       </div>
 
-      {/* Response rate and estimated value (compact row) */}
-      <div className="mt-1.5 grid grid-cols-2 gap-1 text-center">
-        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
-          <div className="text-[10px] font-semibold text-charcoal">
-            {formatPct(segment.response_likelihood)}
-          </div>
-          <div className="text-[9px] text-charcoal/45">Response <InfoTip wide>Estimated campaign response rate from recency ({segment.avg_recency_days}d) and frequency ({segment.avg_frequency.toFixed(1)}x), mapped to 5% to 35%.</InfoTip></div>
+      {/* Response and value row */}
+      <div className="mt-1 grid grid-cols-2 gap-1 text-center text-[10px]">
+        <div className="rounded border border-charcoal/8 bg-white py-0.5">
+          <div className="font-semibold text-charcoal">{formatPct(segment.response_likelihood)}</div>
+          <div className="text-charcoal/40">Response</div>
         </div>
-        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
-          <div className="text-[10px] font-semibold text-charcoal">
-            {formatDollars(segment.estimated_value)}
-          </div>
-          <div className="text-[9px] text-charcoal/45">Value <InfoTip wide>{segment.customer_count.toLocaleString()} × {formatPct(segment.response_likelihood)} × ${segment.avg_monetary.toFixed(0)} = {formatDollars(segment.estimated_value)}</InfoTip></div>
+        <div className="rounded border border-charcoal/8 bg-white py-0.5">
+          <div className="font-semibold text-charcoal">{formatDollars(segment.estimated_value)}</div>
+          <div className="text-charcoal/40">Est. value</div>
         </div>
       </div>
 
@@ -187,7 +173,7 @@ function SegmentCard({
         <button
           type="button"
           onClick={onSelect}
-          className="mt-3 w-full rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-700"
+          className="mt-2 w-full rounded-md bg-teal-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-teal-700"
         >
           Select this segment
         </button>
