@@ -69,10 +69,12 @@ function InfoTip({ children, wide }: { children: React.ReactNode; wide?: boolean
   );
 }
 
-function SegmentDetailOverlay({ segment, color, onClose }: {
+function SegmentDetailOverlay({ segment, color, onClose, onSelect, selected }: {
   segment: Segment;
   color: { border: string; bg: string; text: string };
   onClose: () => void;
+  onSelect: () => void;
+  selected: boolean;
 }) {
   const title = segment.display_name || segment.name;
   const hasStrongCat = !!(segment.top_category && (segment.top_category_lift ?? 0) >= 0.10);
@@ -180,6 +182,23 @@ function SegmentDetailOverlay({ segment, color, onClose }: {
             </p>
           </div>
         )}
+
+        {/* Select button */}
+        <div className="pt-2">
+          {selected ? (
+            <div className="flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white">
+              <span>&#10003;</span> Selected
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { onSelect(); onClose(); }}
+              className="w-full rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-700 transition-colors"
+            >
+              Select this segment
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -214,7 +233,7 @@ function SegmentCard({
   return (
     <>
     {detailOpen && (
-      <SegmentDetailOverlay segment={segment} color={color} onClose={() => setDetailOpen(false)} />
+      <SegmentDetailOverlay segment={segment} color={color} onClose={() => setDetailOpen(false)} onSelect={onSelect} selected={selected} />
     )}
     <div
       className={`cursor-pointer rounded-lg border p-3 transition-all ${
