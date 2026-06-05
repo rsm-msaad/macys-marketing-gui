@@ -39,7 +39,7 @@ function LoyaltyBar({ mix }: { mix: Record<string, number> | undefined | null })
     <div className="mt-1.5 flex items-center gap-1.5 text-xs text-charcoal/55">
       {tiers.slice(0, 3).map(([tier, pct]) => (
         <span key={tier}>
-          {tier} {formatPct(pct)}
+          {tier} {typeof pct === "number" ? `${pct.toFixed(0)}%` : "0%"}
         </span>
       ))}
     </div>
