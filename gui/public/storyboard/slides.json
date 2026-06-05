@@ -158,44 +158,44 @@
   {
     "id": 27,
     "type": "image",
-    "image": "/storyboard/scenes/22_rady_team_break.jpg",
-    "notes": "We stepped back and admitted the ideal was a fantasy."
-  },
-  {
-    "id": 28,
-    "type": "image",
     "image": "/storyboard/scenes/22_reality_merna_owns.jpg",
     "notes": "Merna owns five of the ten steps. One person, half the workflow. Classic bottleneck."
   },
   {
-    "id": 29,
+    "id": 28,
     "type": "image",
     "image": "/storyboard/scenes/23_reality_leadership_pivot.jpg",
     "notes": "Two weeks in, leadership changes the campaign theme. Start over."
   },
   {
-    "id": 30,
+    "id": 29,
     "type": "image",
     "image": "/storyboard/scenes/24_reality_filename_chaos.jpg",
     "notes": "160 files with names like final_v2_FINAL. Nobody knows which is current."
   },
   {
-    "id": 31,
+    "id": 30,
     "type": "image",
     "image": "/storyboard/scenes/25_reality_legal_rejection.jpg",
     "notes": "Legal sends everything back because a disclaimer is missing. Two more days lost."
   },
   {
-    "id": 32,
+    "id": 31,
     "type": "image",
     "image": "/storyboard/scenes/26_reality_pricing_shift.jpg",
     "notes": "A brand changes their minimum price after the creative is approved. Every variant needs updating."
   },
   {
-    "id": 33,
+    "id": 32,
     "type": "image",
     "image": "/storyboard/scenes/27_reality_shankar_redo.jpg",
     "notes": "Shankar builds 40 variants, then a typo is found in the master. Redo all of them."
+  },
+  {
+    "id": 33,
+    "type": "image",
+    "image": "/storyboard/scenes/22_rady_team_break.jpg",
+    "notes": "We stepped back and admitted the ideal was a fantasy."
   },
   {
     "id": 34,
