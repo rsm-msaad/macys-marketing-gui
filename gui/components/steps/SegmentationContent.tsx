@@ -266,21 +266,39 @@ export function SegmentationContent({
     }
   }
 
+  // Compute brief suggestion dynamically based on the SELECTED segment,
+  // not the backend's recommended segment. Only suggest when the selected
+  // segment has meaningful category lift (>=10%) and the category is not
+  // already in the brief.
+  const MIN_LIFT = 0.10;
+  const selectedSegment = (selectedIdx !== null && segments) ? segments[selectedIdx] : null;
+  const selectionBriefSuggestion = (() => {
+    if (!selectedSegment) return null;
+    const lift = selectedSegment.top_category_lift ?? 0;
+    const cat = selectedSegment.top_category ?? "";
+    if (!cat || lift < MIN_LIFT) return null;
+    const briefText = `${context.campaign_brief.name} ${context.campaign_brief.objective}`.toLowerCase();
+    if (briefText.includes(cat.toLowerCase())) return null;
+    return (
+      `The selected segment (${selectedSegment.display_name || selectedSegment.name}) ` +
+      `over indexes in ${cat} by ${(lift * 100).toFixed(0)}%. ` +
+      `Consider adjusting the brief to emphasize ${cat} for stronger segment alignment.`
+    );
+  })();
+
   async function handleApplyBriefSuggestion() {
-    if (!segmentResult?.brief_suggestion) return;
+    if (!selectionBriefSuggestion || !selectedSegment) return;
     try {
       await updateCampaign(context.campaign_brief.campaign_id, {
         name: context.campaign_brief.name,
-        objective: context.campaign_brief.objective + " " + segmentResult.brief_suggestion,
+        objective: context.campaign_brief.objective + " " + selectionBriefSuggestion,
       });
-      // Also persist the target category to backend state so Step 3 reads it
-      const recIdx = getRecommendedIdx();
-      const recSeg = segments?.[recIdx];
-      if (recSeg?.top_category) {
+      // Persist the selected segment's category to backend state
+      if (selectedSegment.top_category) {
         await fetch(`${API_BASE}/campaigns/${context.campaign_brief.campaign_id}/target-category`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ category: recSeg.top_category }),
+          body: JSON.stringify({ category: selectedSegment.top_category }),
         }).catch(() => {});
       }
       setBriefApplied(true);
@@ -366,9 +384,6 @@ export function SegmentationContent({
       </StepVideoBackground>
     );
   }
-
-  // Interactive flow: build segments, pick one, approve.
-  const selectedSegment = segments && selectedIdx !== null ? segments[selectedIdx] : null;
 
   return (
     <StepVideoBackground stepNumber={2}>
@@ -515,14 +530,14 @@ export function SegmentationContent({
         </div>
       )}
 
-      {/* Brief suggestion callout */}
-      {segmentResult?.brief_suggestion && !briefApplied && (
+      {/* Brief suggestion callout (follows the selected segment, not the recommended one) */}
+      {selectionBriefSuggestion && !briefApplied && (
         <div className="rounded-md border border-amber-300/50 bg-amber-50/40 px-3 py-2">
           <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
             Brief alignment note
           </div>
           <div className="mt-0.5 text-[12px] text-charcoal/70">
-            {segmentResult.brief_suggestion}
+            {selectionBriefSuggestion}
           </div>
           <button
             type="button"
