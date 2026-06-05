@@ -68,6 +68,117 @@ function InfoTip({ children, wide }: { children: React.ReactNode; wide?: boolean
   );
 }
 
+function SegmentDetailOverlay({ segment, color, onClose }: {
+  segment: Segment;
+  color: { border: string; bg: string; text: string };
+  onClose: () => void;
+}) {
+  const title = segment.display_name || segment.name;
+  const hasStrongCat = !!(segment.top_category && (segment.top_category_lift ?? 0) >= 0.10);
+  const liftPct = ((segment.top_category_lift ?? 0) * 100).toFixed(0);
+  const mix = segment.loyalty_mix;
+  const tiers = mix ? Object.entries(mix).sort(([, a], [, b]) => b - a) : [];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className={`relative mx-4 w-full max-w-md rounded-xl border ${color.border} bg-white p-5 shadow-2xl`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close */}
+        <button onClick={onClose} className="absolute right-3 top-3 text-charcoal/40 hover:text-charcoal text-lg leading-none">&times;</button>
+
+        {/* Title */}
+        <div className={`font-serif text-xl font-bold ${color.text}`}>{title}</div>
+        <div className="text-sm text-charcoal/60">{segment.customer_count.toLocaleString()} customers</div>
+        {segment.descriptor && (
+          <div className="mt-1 text-xs italic text-charcoal/50">{segment.descriptor}</div>
+        )}
+
+        {/* Category */}
+        <div className="mt-3">
+          {hasStrongCat ? (
+            <div className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${color.border} ${color.bg} ${color.text}`}>
+              {segment.top_category} +{liftPct}% lift
+            </div>
+          ) : (
+            <div className="inline-flex items-center rounded-full border border-charcoal/10 bg-charcoal/5 px-3 py-1 text-xs text-charcoal/50">
+              No strong category preference
+            </div>
+          )}
+          <p className="mt-1 text-[11px] leading-relaxed text-charcoal/50">
+            {hasStrongCat
+              ? `This segment buys ${liftPct}% more ${segment.top_category} than the overall customer base. Lift is calculated as (segment category share minus overall share) divided by overall share. Above 10% indicates a meaningful preference.`
+              : `No product category stands out for this segment. The difference between this segment's category mix and the overall average is less than 10%.`
+            }
+          </p>
+        </div>
+
+        {/* RFM */}
+        <div className="mt-4">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">RFM Profile</div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
+              <div className="text-lg font-bold text-charcoal">{segment.avg_recency_days}d</div>
+              <div className="text-[10px] font-semibold text-charcoal/50">Recency</div>
+              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Days since last purchase. Lower is better.</div>
+            </div>
+            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
+              <div className="text-lg font-bold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
+              <div className="text-[10px] font-semibold text-charcoal/50">Frequency</div>
+              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Avg purchases per customer. Higher is better.</div>
+            </div>
+            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
+              <div className="text-lg font-bold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
+              <div className="text-[10px] font-semibold text-charcoal/50">Monetary</div>
+              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Avg total spend per customer.</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Value estimate */}
+        <div className="mt-4">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">Campaign Value Estimate</div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
+              <div className="text-lg font-bold text-charcoal">{formatPct(segment.response_likelihood)}</div>
+              <div className="text-[10px] font-semibold text-charcoal/50">Response Rate</div>
+              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">
+                Estimated from recency ({segment.avg_recency_days}d) and frequency ({segment.avg_frequency.toFixed(1)}x), mapped to a 5% to 35% range based on typical campaign response rates.
+              </div>
+            </div>
+            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
+              <div className="text-lg font-bold text-charcoal">{formatDollars(segment.estimated_value)}</div>
+              <div className="text-[10px] font-semibold text-charcoal/50">Estimated Value</div>
+              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">
+                {segment.customer_count.toLocaleString()} customers &times; {formatPct(segment.response_likelihood)} response &times; ${segment.avg_monetary.toFixed(0)} spend
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Loyalty mix */}
+        {tiers.length > 0 && (
+          <div className="mt-4">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">Star Rewards Loyalty Mix</div>
+            <div className="flex flex-wrap gap-2">
+              {tiers.map(([tier, pct]) => (
+                <div key={tier} className="rounded-lg border border-charcoal/10 bg-cream/30 px-3 py-1.5 text-center">
+                  <div className="text-sm font-bold text-charcoal">{typeof pct === "number" ? `${pct.toFixed(0)}%` : "0%"}</div>
+                  <div className="text-[10px] text-charcoal/50">{tier}</div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-1 text-[10px] text-charcoal/40">
+              Loyalty tiers show what share of this segment holds each Star Rewards level.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SegmentCard({
   segment,
   index,
@@ -83,6 +194,7 @@ function SegmentCard({
   recommended?: boolean;
   onSelect: () => void;
 }) {
+  const [detailOpen, setDetailOpen] = useState(false);
   const Icon = SEGMENT_ICONS[index % SEGMENT_ICONS.length];
   const color = SEGMENT_COLORS[index % SEGMENT_COLORS.length];
   const title = segment.display_name || segment.name;
@@ -91,14 +203,19 @@ function SegmentCard({
   const liftPct = ((segment.top_category_lift ?? 0) * 100).toFixed(0);
 
   return (
+    <>
+    {detailOpen && (
+      <SegmentDetailOverlay segment={segment} color={color} onClose={() => setDetailOpen(false)} />
+    )}
     <div
-      className={`rounded-lg border p-3 transition-all ${
+      className={`cursor-pointer rounded-lg border p-3 transition-all ${
         selected
           ? `${color.border} ${color.bg} ring-2 ring-teal-600/40`
           : muted
             ? "border-charcoal/10 bg-charcoal/5 opacity-60"
-            : `border-charcoal/10 bg-cream/30 hover:${color.border}`
+            : `border-charcoal/10 bg-cream/30 hover:${color.border} hover:shadow-md`
       }`}
+      onClick={() => setDetailOpen(true)}
     >
       {/* Badge row */}
       <div className="flex items-center justify-between gap-1 mb-1">
@@ -172,13 +289,14 @@ function SegmentCard({
       {!selected && !muted && (
         <button
           type="button"
-          onClick={onSelect}
+          onClick={(e) => { e.stopPropagation(); onSelect(); }}
           className="mt-2 w-full rounded-md bg-teal-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-teal-700"
         >
           Select this segment
         </button>
       )}
     </div>
+    </>
   );
 }
 
