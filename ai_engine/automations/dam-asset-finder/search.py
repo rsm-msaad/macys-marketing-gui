@@ -161,10 +161,10 @@ def compute_relevance(
 ) -> float:
     """Fraction of search tokens present in the asset's tag/type haystack.
 
-    If `category_tags` is provided, any asset whose tags overlap with the
-    category tag set gets a 0.3 bonus (capped at 1.0). This ensures that
-    category-relevant assets rank higher even when the brief text itself
-    doesn't contain the exact DAM tag (e.g., "Apparel" → "womens"/"dresses").
+    If `category_tags` is provided, matching assets get a strong 0.8 bonus
+    (capped at 1.0) so category relevant assets clearly outrank others.
+    Non matching assets are not excluded but rank much lower, providing
+    graceful widening if the target category has few assets.
     """
     if not brief_tokens:
         return 0.0
@@ -175,11 +175,14 @@ def compute_relevance(
     matched = sum(1 for tok in brief_tokens if tok in haystack)
     base = matched / len(brief_tokens)
 
-    # Category boost: if any of the mapped DAM tags appear in asset tags
+    # Strong category boost: assets matching the target category rank
+    # decisively higher. The 0.8 bonus ensures the top results are
+    # overwhelmingly from the target category while still returning
+    # non matching assets as fallback if too few match.
     if category_tags:
         tag_lower = {t.lower() for t in tags}
         if any(ct in tag_lower for ct in category_tags):
-            base = min(1.0, base + 0.3)
+            base = min(1.0, base + 0.8)
 
     return base
 

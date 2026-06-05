@@ -173,7 +173,7 @@ export function CreativeProductionContent({
       if (approvedSkus.length > 0) {
         brief += ` (${approvedSkus.length} SKUs selected in Step 3)`;
       }
-      const result = await runDam(brief, 12, category);
+      const result = await runDam(brief, 12, category, context.campaign_brief.campaign_id);
       setAssets(result.results);
       setStats(result.stats);
       setIncluded(new Set(result.results.map((a) => a.asset_id)));
@@ -197,7 +197,7 @@ export function CreativeProductionContent({
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
       const nextBatch = batchCount + 1;
-      const result = await runDam(brief, 12 * nextBatch, category);
+      const result = await runDam(brief, 12 * nextBatch, category, context.campaign_brief.campaign_id);
       // Keep only the new assets that are not already in the list
       const existingIds = new Set((assets ?? []).map((a) => a.asset_id));
       const newAssets = result.results.filter((a) => !existingIds.has(a.asset_id));

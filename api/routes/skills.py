@@ -25,6 +25,7 @@ class DamBody(BaseModel):
     brief: str = Field(default="Mother's Day Beauty Event")
     max_results: int = Field(default=12, ge=1, le=50)
     category: str | None = Field(default=None)
+    campaign_id: str | None = Field(default=None)
 
 
 class LocalizeBody(BaseModel):
@@ -119,12 +120,20 @@ def run_segment(body: SegmentBody) -> dict:
 
 @router.post("/dam-search")
 def run_dam(body: DamBody) -> dict:
+    # Read target category from backend state if campaign_id provided
+    effective_category = body.category
+    if body.campaign_id:
+        from api import state as st
+        server_cat = st.get_target_category(body.campaign_id)
+        if server_cat:
+            effective_category = server_cat
     try:
-        results, stats = DAM.search_with_stats(body.brief, max_results=body.max_results, category=body.category)
+        results, stats = DAM.search_with_stats(body.brief, max_results=body.max_results, category=effective_category)
         return {
             "ok": True,
             "brief": body.brief,
             "max_results": body.max_results,
+            "effective_category": effective_category,
             "results": results,
             "stats": stats,
         }

@@ -87,9 +87,12 @@ function SegmentCard({
   const color = SEGMENT_COLORS[index % SEGMENT_COLORS.length];
   const title = segment.display_name || segment.name;
 
+  const hasStrongCategory = !!(segment.top_category && (segment.top_category_lift ?? 0) >= 0.10);
+  const liftPct = ((segment.top_category_lift ?? 0) * 100).toFixed(0);
+
   return (
     <div
-      className={`rounded-lg border p-4 transition-all ${
+      className={`overflow-hidden rounded-lg border p-3 transition-all ${
         selected
           ? `${color.border} ${color.bg} ring-2 ring-teal-600/40`
           : muted
@@ -97,100 +100,84 @@ function SegmentCard({
             : `border-charcoal/10 bg-cream/30 hover:${color.border}`
       }`}
     >
-      <div className="flex items-start gap-2">
-        <Icon className={`mt-0.5 h-4 w-4 flex-shrink-0 ${selected ? color.text : "text-charcoal/45"}`} />
+      {/* Header: name + badge */}
+      <div className="flex items-start justify-between gap-1.5">
         <div className="min-w-0 flex-1">
-          <div className="font-serif text-base font-semibold text-charcoal">
-            {title}
+          <div className="flex items-center gap-1.5">
+            <Icon className={`h-3.5 w-3.5 flex-shrink-0 ${selected ? color.text : "text-charcoal/45"}`} />
+            <div className="truncate font-serif text-sm font-semibold text-charcoal">{title}</div>
           </div>
-          {segment.descriptor && (
-            <div className="mt-0.5 text-[11px] italic text-charcoal/55">
-              {segment.descriptor}
-            </div>
-          )}
-          <div className="mt-0.5 text-[12px] text-charcoal/55">
+          <div className="mt-0.5 text-[11px] text-charcoal/55">
             {segment.customer_count.toLocaleString()} customers
           </div>
         </div>
         {selected && (
-          <span className="flex-shrink-0 rounded-full bg-teal-600 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
+          <span className="flex-shrink-0 whitespace-nowrap rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
             Selected
           </span>
         )}
         {recommended && !selected && (
-          <span className="flex-shrink-0 rounded-full bg-mustard/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-mustard">
+          <span className="flex-shrink-0 whitespace-nowrap rounded-full bg-mustard/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mustard">
             Recommended
           </span>
         )}
       </div>
 
-      {/* RFM profile */}
-      <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
-          <div className="text-[11px] font-semibold text-charcoal">
-            {segment.avg_recency_days}d
-            <InfoTip>
-              <strong>Recency:</strong> average days since the last purchase for customers in this segment. Lower means more recently active. This segment's customers last bought about {segment.avg_recency_days} days ago on average.
-            </InfoTip>
-          </div>
-          <div className="text-xs text-charcoal/50">Recency</div>
+      {/* Descriptor (truncated to 2 lines) */}
+      {segment.descriptor && (
+        <div className="mt-1 line-clamp-2 text-[10px] italic leading-snug text-charcoal/50">
+          {segment.descriptor}
         </div>
-        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
-          <div className="text-[11px] font-semibold text-charcoal">
-            {segment.avg_frequency.toFixed(1)}x
+      )}
+
+      {/* Top category chip (prominent) */}
+      <div className="mt-2">
+        {hasStrongCategory ? (
+          <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${color.border} ${color.bg} ${color.text}`}>
+            {segment.top_category} +{liftPct}% lift
             <InfoTip>
-              <strong>Frequency:</strong> average number of purchases per customer in this segment. Higher means they buy more often. This segment averages {segment.avg_frequency.toFixed(1)} transactions per customer.
+              This segment buys {liftPct}% more {segment.top_category} than the overall customer base. A lift above 10% indicates a meaningful preference worth targeting.
             </InfoTip>
-          </div>
-          <div className="text-xs text-charcoal/50">Frequency</div>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 rounded-full border border-charcoal/10 bg-charcoal/5 px-2 py-0.5 text-[10px] text-charcoal/45">
+            No strong category
+            <InfoTip>
+              No product category stands out. The difference between this segment's mix and the average is less than 10%.
+            </InfoTip>
+          </span>
+        )}
+      </div>
+
+      {/* RFM profile (compact row) */}
+      <div className="mt-2 grid grid-cols-3 gap-1 text-center">
+        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
+          <div className="text-[10px] font-semibold text-charcoal">{segment.avg_recency_days}d</div>
+          <div className="text-[9px] text-charcoal/45">Recency <InfoTip>Average days since the last purchase. Lower means more recently active. This segment: {segment.avg_recency_days} days.</InfoTip></div>
         </div>
-        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
-          <div className="text-[11px] font-semibold text-charcoal">
-            ${segment.avg_monetary.toFixed(0)}
-            <InfoTip>
-              <strong>Monetary:</strong> average total spend per customer in this segment. This segment spends ${segment.avg_monetary.toFixed(0)} on average across all their purchases.
-            </InfoTip>
-          </div>
-          <div className="text-xs text-charcoal/50">Monetary</div>
+        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
+          <div className="text-[10px] font-semibold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
+          <div className="text-[9px] text-charcoal/45">Frequency <InfoTip>Average purchases per customer. Higher means they buy more often. This segment: {segment.avg_frequency.toFixed(1)} transactions.</InfoTip></div>
+        </div>
+        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
+          <div className="text-[10px] font-semibold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
+          <div className="text-[9px] text-charcoal/45">Spend <InfoTip>Average total spend per customer. This segment: ${segment.avg_monetary.toFixed(0)}.</InfoTip></div>
         </div>
       </div>
 
-      {/* Top category */}
-      <div className="mt-1.5 text-xs text-charcoal/55">
-        {segment.top_category && (segment.top_category_lift ?? 0) >= 0.10
-          ? <>
-              Top category: {segment.top_category} (+{((segment.top_category_lift ?? 0) * 100).toFixed(0)}% lift)
-              <InfoTip wide>
-                <strong>Category lift:</strong> this segment buys {((segment.top_category_lift ?? 0) * 100).toFixed(0)}% more {segment.top_category} than the overall customer base. Calculated as (segment share minus overall share) divided by overall share. A lift above 10% indicates a meaningful preference worth targeting.
-              </InfoTip>
-            </>
-          : <>No strong category preference
-              <InfoTip wide>
-                No product category stands out for this segment. The difference between this segment's category mix and the overall average is less than 10%, so there is no meaningful category preference to target.
-              </InfoTip>
-            </>
-        }
-      </div>
-
-      {/* Response likelihood and estimated value */}
-      <div className="mt-2 grid grid-cols-2 gap-2 text-center">
-        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
-          <div className="text-[11px] font-semibold text-charcoal">
+      {/* Response rate and estimated value (compact row) */}
+      <div className="mt-1.5 grid grid-cols-2 gap-1 text-center">
+        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
+          <div className="text-[10px] font-semibold text-charcoal">
             {formatPct(segment.response_likelihood)}
-            <InfoTip wide>
-              <strong>Response rate:</strong> estimated likelihood that customers in this segment will respond to the campaign. Derived from recency ({segment.avg_recency_days} days, lower is better) and frequency ({segment.avg_frequency.toFixed(1)} transactions, higher is better), normalized and mapped to a 5% to 35% range based on typical campaign response rates.
-            </InfoTip>
           </div>
-          <div className="text-xs text-charcoal/50">Response rate</div>
+          <div className="text-[9px] text-charcoal/45">Response <InfoTip wide>Estimated campaign response rate from recency ({segment.avg_recency_days}d) and frequency ({segment.avg_frequency.toFixed(1)}x), mapped to 5% to 35%.</InfoTip></div>
         </div>
-        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
-          <div className="text-[11px] font-semibold text-charcoal">
+        <div className="rounded border border-charcoal/8 bg-white px-1 py-0.5">
+          <div className="text-[10px] font-semibold text-charcoal">
             {formatDollars(segment.estimated_value)}
-            <InfoTip wide>
-              <strong>Estimated value:</strong> {segment.customer_count.toLocaleString()} customers × {formatPct(segment.response_likelihood)} response rate × ${segment.avg_monetary.toFixed(0)} avg spend = {formatDollars(segment.estimated_value)}. This is the projected revenue if this segment is targeted with this campaign.
-            </InfoTip>
           </div>
-          <div className="text-xs text-charcoal/50">Est. value</div>
+          <div className="text-[9px] text-charcoal/45">Value <InfoTip wide>{segment.customer_count.toLocaleString()} × {formatPct(segment.response_likelihood)} × ${segment.avg_monetary.toFixed(0)} = {formatDollars(segment.estimated_value)}</InfoTip></div>
         </div>
       </div>
 

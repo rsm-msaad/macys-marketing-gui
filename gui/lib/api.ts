@@ -793,10 +793,10 @@ export type DamResult = {
   stats: DamStats;
 };
 
-export async function runDam(brief: string, maxResults = 12, category?: string): Promise<DamResult> {
+export async function runDam(brief: string, maxResults = 12, category?: string, campaignId?: string): Promise<DamResult> {
   return callWithFallback<DamResult>(
     "/skills/dam-search",
-    { brief, max_results: maxResults, category: category ?? null },
+    { brief, max_results: maxResults, category: category ?? null, campaign_id: campaignId ?? null },
     "step4_dam_search",
   );
 }
