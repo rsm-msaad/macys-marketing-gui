@@ -435,9 +435,42 @@ def advance(
         s["history"].append(entry)
         if metadata:
             s["step_outputs"][str(step)] = metadata
+        # When step 2 (segmentation) completes, extract target_category from
+        # the chosen segment so downstream steps can read it from state.
+        if step == 2 and metadata:
+            cat = metadata.get("top_category", "")
+            if cat:
+                s["target_category"] = cat
         result = _snapshot(s)
         _persist()
         return result
+
+
+def get_target_category(campaign_id: str) -> str | None:
+    """Return the resolved target category for a campaign, or None."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            return None
+        # Explicit target_category (set when step 2 completes or brief updated)
+        cat = s.get("target_category")
+        if cat:
+            return cat
+        # Fallback: read from step 2 output if completed
+        out = s.get("step_outputs", {}).get("2", {})
+        if isinstance(out, dict) and out.get("top_category"):
+            return out["top_category"]
+        return None
+
+
+def set_target_category(campaign_id: str, category: str) -> None:
+    """Explicitly set the target category (e.g. when a brief suggestion is applied)."""
+    with _LOCK:
+        s = _STATE.get(campaign_id)
+        if s is None:
+            raise KeyError(f"unknown campaign: {campaign_id}")
+        s["target_category"] = category
+        _persist()
 
 
 def reset(campaign_id: str) -> dict[str, Any]:

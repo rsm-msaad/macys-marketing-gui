@@ -315,14 +315,23 @@ class SkuRecommendBody(BaseModel):
     season: str = Field(default="")
     max_results: int = Field(default=18, ge=1, le=50)
     segment_top_category: str | None = Field(default=None)
+    campaign_id: str | None = Field(default=None)
 
 
 @router.post("/sku-recommend")
 def run_sku_recommend(body: SkuRecommendBody) -> dict:
+    # If a campaign_id is provided, read the target category from backend state
+    # as the single source of truth. The browser-passed category is the fallback.
+    effective_category = body.category
+    if body.campaign_id:
+        from api import state as st
+        server_cat = st.get_target_category(body.campaign_id)
+        if server_cat:
+            effective_category = server_cat
     try:
         result = SKU_RECOMMEND.recommend_skus(
             brief={
-                "category": body.category,
+                "category": effective_category,
                 "discount_pct": body.discount_pct,
                 "campaign_period": body.campaign_period,
                 "season": body.season,
@@ -330,7 +339,7 @@ def run_sku_recommend(body: SkuRecommendBody) -> dict:
             },
             max_results=body.max_results,
         )
-        return {"ok": True, **result}
+        return {"ok": True, "effective_category": effective_category, **result}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 

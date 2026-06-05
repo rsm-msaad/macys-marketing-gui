@@ -348,6 +348,28 @@ def update_campaign(campaign_id: str, body: CampaignBriefBody) -> dict:
     return saved
 
 
+# ---------- target category ----------
+
+@campaigns_router.get("/campaigns/{campaign_id}/target-category")
+def get_target_category(campaign_id: str) -> dict:
+    """Return the resolved target category from backend state."""
+    cat = state_mod.get_target_category(campaign_id)
+    return {"campaign_id": campaign_id, "target_category": cat}
+
+
+@campaigns_router.post("/campaigns/{campaign_id}/target-category")
+def set_target_category(campaign_id: str, body: dict) -> dict:
+    """Set the target category (e.g. when a brief suggestion is applied)."""
+    category = body.get("category", "")
+    if not category:
+        raise HTTPException(status_code=400, detail="category is required")
+    try:
+        state_mod.set_target_category(campaign_id, category)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    return {"ok": True, "campaign_id": campaign_id, "target_category": category}
+
+
 # ---------- evidence capture endpoints ----------
 
 

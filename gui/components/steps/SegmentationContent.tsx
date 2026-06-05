@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Clock, Info, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { runSegment, updateCampaign, type Segment, type SegmentResult, type CampaignBrief } from "@/lib/api";
+import { API_BASE, runSegment, updateCampaign, type Segment, type SegmentResult, type CampaignBrief } from "@/lib/api";
 import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
 const CLUSTER_OPTIONS = [2, 3, 4, 5, 6, 7, 8] as const;
@@ -273,6 +273,16 @@ export function SegmentationContent({
         name: context.campaign_brief.name,
         objective: context.campaign_brief.objective + " " + segmentResult.brief_suggestion,
       });
+      // Also persist the target category to backend state so Step 3 reads it
+      const recIdx = getRecommendedIdx();
+      const recSeg = segments?.[recIdx];
+      if (recSeg?.top_category) {
+        await fetch(`${API_BASE}/campaigns/${context.campaign_brief.campaign_id}/target-category`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ category: recSeg.top_category }),
+        }).catch(() => {});
+      }
       setBriefApplied(true);
     } catch {
       // Silent, user can try again

@@ -173,7 +173,7 @@ export function SKUSelectionContent({
       const launchDate = brief.campaign_window?.soft_launch ?? brief.campaign_window?.peak ?? "";
       const campaignPeriod = launchDate ? `${launchDate.slice(0, 4)}` : "2026";
 
-      const result = await runSkuRecommend(category, discountPct, campaignPeriod, season, 18, segmentTopCategory ?? undefined);
+      const result = await runSkuRecommend(category, discountPct, campaignPeriod, season, 18, segmentTopCategory ?? undefined, context.campaign_brief.campaign_id);
       setRecommended(result.recommended_skus);
       setExcluded(result.excluded_skus);
       setIncluded(new Set(result.recommended_skus.map((s) => s.sku_id)));

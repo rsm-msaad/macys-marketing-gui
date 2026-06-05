@@ -423,6 +423,7 @@ export async function runSkuRecommend(
   season: string,
   maxResults = 18,
   segmentTopCategory?: string,
+  campaignId?: string,
 ): Promise<SkuRecommendResult> {
   return callWithFallback<SkuRecommendResult>(
     "/skills/sku-recommend",
@@ -433,6 +434,7 @@ export async function runSkuRecommend(
       season,
       max_results: maxResults,
       segment_top_category: segmentTopCategory ?? null,
+      campaign_id: campaignId ?? null,
     },
     "step3_sku_recommend",
   );

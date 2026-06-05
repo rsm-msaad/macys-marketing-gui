@@ -152,3 +152,38 @@ def test_demo_brief_still_exists():
     b = state_mod.get_brief(state_mod.DEMO_CAMPAIGN_ID)
     assert b is not None
     assert b["name"] == "Mother's Day Beauty Event"
+
+
+# --- Target category drives SKU selection ---
+
+
+def test_target_category_persists_on_step2_advance():
+    """When step 2 advances with top_category, it is stored in state."""
+    campaign_id = state_mod.DEMO_CAMPAIGN_ID
+    state_mod.reset(campaign_id)
+    state_mod.advance(campaign_id, 1, "Approve Brief")
+    state_mod.advance(campaign_id, 2, "Approve Segment", {"name": "VIP Loyalists", "top_category": "Apparel"})
+    cat = state_mod.get_target_category(campaign_id)
+    assert cat == "Apparel"
+
+
+def test_set_target_category():
+    """set_target_category persists the category in state."""
+    campaign_id = state_mod.DEMO_CAMPAIGN_ID
+    state_mod.set_target_category(campaign_id, "Home")
+    cat = state_mod.get_target_category(campaign_id)
+    assert cat == "Home"
+
+
+def test_target_category_fallback_to_step2_output():
+    """get_target_category falls back to step_outputs['2']['top_category']."""
+    campaign_id = state_mod.DEMO_CAMPAIGN_ID
+    state_mod.reset(campaign_id)
+    state_mod.advance(campaign_id, 1, "Approve Brief")
+    state_mod.advance(campaign_id, 2, "Approve Segment", {"name": "Test", "top_category": "Accessories"})
+    # Clear the explicit field to test the fallback
+    with state_mod._LOCK:
+        s = state_mod._STATE[campaign_id]
+        s.pop("target_category", None)
+    cat = state_mod.get_target_category(campaign_id)
+    assert cat == "Accessories"
