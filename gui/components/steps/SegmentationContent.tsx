@@ -46,21 +46,22 @@ function LoyaltyBar({ mix }: { mix: Record<string, number> | undefined | null })
   );
 }
 
-function ValueTooltip({ formula }: { formula: string }) {
+function InfoTip({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <span className="relative inline-block">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="ml-1 inline-flex items-center text-charcoal/40 hover:text-charcoal/70"
-        title="How this value was estimated"
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        className="ml-1 inline-flex items-center text-charcoal/30 hover:text-charcoal/60 transition-colors"
+        aria-label="How this is calculated"
       >
         <Info className="h-3 w-3" />
       </button>
       {open && (
-        <span className="absolute bottom-full left-0 z-10 mb-1 w-56 rounded border border-charcoal/15 bg-white p-2 text-[10px] leading-snug text-charcoal/70 shadow-md">
-          {formula}
+        <span className={`absolute bottom-full left-1/2 z-20 mb-1.5 ${wide ? "w-64" : "w-56"} -translate-x-1/2 rounded-lg border border-charcoal/12 bg-white p-2.5 text-[10px] leading-relaxed text-charcoal/70 shadow-lg`}>
+          {children}
         </span>
       )}
     </span>
@@ -128,18 +129,27 @@ function SegmentCard({
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             {segment.avg_recency_days}d
+            <InfoTip>
+              <strong>Recency:</strong> average days since the last purchase for customers in this segment. Lower means more recently active. This segment's customers last bought about {segment.avg_recency_days} days ago on average.
+            </InfoTip>
           </div>
           <div className="text-xs text-charcoal/50">Recency</div>
         </div>
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             {segment.avg_frequency.toFixed(1)}x
+            <InfoTip>
+              <strong>Frequency:</strong> average number of purchases per customer in this segment. Higher means they buy more often. This segment averages {segment.avg_frequency.toFixed(1)} transactions per customer.
+            </InfoTip>
           </div>
           <div className="text-xs text-charcoal/50">Frequency</div>
         </div>
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             ${segment.avg_monetary.toFixed(0)}
+            <InfoTip>
+              <strong>Monetary:</strong> average total spend per customer in this segment. This segment spends ${segment.avg_monetary.toFixed(0)} on average across all their purchases.
+            </InfoTip>
           </div>
           <div className="text-xs text-charcoal/50">Monetary</div>
         </div>
@@ -148,8 +158,17 @@ function SegmentCard({
       {/* Top category */}
       <div className="mt-1.5 text-xs text-charcoal/55">
         {segment.top_category && (segment.top_category_lift ?? 0) >= 0.10
-          ? <>Top category: {segment.top_category} (+{((segment.top_category_lift ?? 0) * 100).toFixed(0)}% lift)</>
-          : <>No strong category preference</>
+          ? <>
+              Top category: {segment.top_category} (+{((segment.top_category_lift ?? 0) * 100).toFixed(0)}% lift)
+              <InfoTip wide>
+                <strong>Category lift:</strong> this segment buys {((segment.top_category_lift ?? 0) * 100).toFixed(0)}% more {segment.top_category} than the overall customer base. Calculated as (segment share minus overall share) divided by overall share. A lift above 10% indicates a meaningful preference worth targeting.
+              </InfoTip>
+            </>
+          : <>No strong category preference
+              <InfoTip wide>
+                No product category stands out for this segment. The difference between this segment's category mix and the overall average is less than 10%, so there is no meaningful category preference to target.
+              </InfoTip>
+            </>
         }
       </div>
 
@@ -158,13 +177,18 @@ function SegmentCard({
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             {formatPct(segment.response_likelihood)}
+            <InfoTip wide>
+              <strong>Response rate:</strong> estimated likelihood that customers in this segment will respond to the campaign. Derived from recency ({segment.avg_recency_days} days, lower is better) and frequency ({segment.avg_frequency.toFixed(1)} transactions, higher is better), normalized and mapped to a 5% to 35% range based on typical campaign response rates.
+            </InfoTip>
           </div>
           <div className="text-xs text-charcoal/50">Response rate</div>
         </div>
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
             {formatDollars(segment.estimated_value)}
-            <ValueTooltip formula={segment.value_formula} />
+            <InfoTip wide>
+              <strong>Estimated value:</strong> {segment.customer_count.toLocaleString()} customers × {formatPct(segment.response_likelihood)} response rate × ${segment.avg_monetary.toFixed(0)} avg spend = {formatDollars(segment.estimated_value)}. This is the projected revenue if this segment is targeted with this campaign.
+            </InfoTip>
           </div>
           <div className="text-xs text-charcoal/50">Est. value</div>
         </div>
