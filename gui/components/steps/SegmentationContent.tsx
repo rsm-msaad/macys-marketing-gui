@@ -146,11 +146,12 @@ function SegmentCard({
       </div>
 
       {/* Top category */}
-      {segment.top_category && (
-        <div className="mt-1.5 text-xs text-charcoal/55">
-          Top category: {segment.top_category} (+{(segment.top_category_lift * 100).toFixed(0)}% lift)
-        </div>
-      )}
+      <div className="mt-1.5 text-xs text-charcoal/55">
+        {segment.top_category && (segment.top_category_lift ?? 0) >= 0.10
+          ? <>Top category: {segment.top_category} (+{((segment.top_category_lift ?? 0) * 100).toFixed(0)}% lift)</>
+          : <>No strong category preference</>
+        }
+      </div>
 
       {/* Response likelihood and estimated value */}
       <div className="mt-2 grid grid-cols-2 gap-2 text-center">

@@ -30,6 +30,7 @@ def _make_segment(
     customer_count: int = 5000,
     avg_monetary: float = 320.0,
     top_category: str = "Beauty",
+    top_category_lift: float = 0.25,
     estimated_value: float = 48000.0,
     response_likelihood: float = 0.30,
 ) -> dict:
@@ -38,15 +39,16 @@ def _make_segment(
         "customer_count": customer_count,
         "avg_monetary": avg_monetary,
         "top_category": top_category,
+        "top_category_lift": top_category_lift,
         "estimated_value": estimated_value,
         "response_likelihood": response_likelihood,
     }
 
 
 THREE_SEGMENTS = [
-    _make_segment("VIP Loyalists", 5000, 320, "Beauty", 48000, 0.30),
-    _make_segment("Lapsed Bargain Hunters", 12000, 85, "Apparel", 10200, 0.10),
-    _make_segment("Occasional Browsers", 8000, 140, "Home", 22400, 0.20),
+    _make_segment("VIP Loyalists", 5000, 320, "Beauty", 0.25, 48000, 0.30),
+    _make_segment("Lapsed Bargain Hunters", 12000, 85, "Apparel", 0.15, 10200, 0.10),
+    _make_segment("Occasional Browsers", 8000, 140, "Home", 0.12, 22400, 0.20),
 ]
 
 
@@ -60,7 +62,11 @@ class TestFallbackNames:
             assert entry["original_name"] == seg["name"]
             assert entry["display_name"] == seg["name"]
             assert "customers" in entry["descriptor"]
-            assert seg["top_category"] in entry["descriptor"]
+            # Segments with lift >= 10% show category; below show "no strong"
+            if seg.get("top_category_lift", 0) >= 0.10:
+                assert seg["top_category"] in entry["descriptor"]
+            else:
+                assert "no strong" in entry["descriptor"]
 
     def test_preserves_order(self):
         result = fallback_names(THREE_SEGMENTS)
@@ -82,7 +88,7 @@ class TestFallbackNames:
         assert result[0]["original_name"] == "Segment"
         assert result[0]["display_name"] == "Segment"
         assert "0 customers" in result[0]["descriptor"]
-        assert "N/A" in result[0]["descriptor"]
+        assert "no strong category preference" in result[0]["descriptor"]
 
     def test_monetary_formatted_as_dollars(self):
         result = fallback_names([_make_segment(avg_monetary=1234.56)])
@@ -128,3 +134,17 @@ class TestFallbackRecommendation:
         seg = _make_segment(top_category="")
         result = fallback_recommendation([seg], "Random brief")
         assert result["brief_suggestion"] is None
+
+    def test_low_lift_skips_suggestion(self):
+        """A tiny lift (below 10%) should not trigger a brief suggestion."""
+        seg = _make_segment(top_category="Accessories", top_category_lift=0.03)
+        result = fallback_recommendation([seg], "Summer sale")
+        assert result["brief_suggestion"] is None
+
+    def test_high_lift_triggers_suggestion(self):
+        """Lift above 10% and category not in brief should trigger suggestion."""
+        seg = _make_segment(top_category="Home", top_category_lift=0.20)
+        result = fallback_recommendation([seg], "Beauty campaign")
+        assert result["brief_suggestion"] is not None
+        assert "Home" in result["brief_suggestion"]
+        assert "20%" in result["brief_suggestion"]

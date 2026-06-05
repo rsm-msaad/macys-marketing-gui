@@ -16,7 +16,7 @@ You also receive the campaign brief description.
 
 2. Produce a `recommended_segment` field naming the segment you recommend for this campaign, and a `recommendation_reason` explaining why in 1 to 2 sentences grounded in the numbers.
 
-3. If the campaign brief's category does not match the segment with the highest estimated_value, note this as a `brief_suggestion`: a short sentence suggesting the brief could be adjusted, and which category might perform better based on the data. If the brief already matches, set `brief_suggestion` to null.
+3. If the recommended segment's top_category_lift is at least 0.10 (10%) AND the campaign brief does not already mention that category, produce a `brief_suggestion`: a short sentence suggesting the brief could be adjusted, naming the category and the lift percentage. If the lift is below 10%, or the brief already mentions the category, set `brief_suggestion` to null. A tiny lift (under 10%) is not a meaningful category preference and should not drive a brief change.
 
 ## Rules
 
