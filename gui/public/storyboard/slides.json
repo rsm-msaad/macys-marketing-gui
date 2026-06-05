@@ -152,89 +152,95 @@
   {
     "id": 26,
     "type": "image",
+    "image": "/storyboard/scenes/21_reality_manager_beach.jpg",
+    "notes": "The campaign manager goes on vacation and everything stalls because the knowledge is in her head."
+  },
+  {
+    "id": 27,
+    "type": "image",
     "image": "/storyboard/scenes/22_rady_team_break.jpg",
     "notes": "We stepped back and admitted the ideal was a fantasy."
   },
   {
-    "id": 27,
+    "id": 28,
     "type": "image",
     "image": "/storyboard/scenes/22_reality_merna_owns.jpg",
     "notes": "Merna owns five of the ten steps. One person, half the workflow. Classic bottleneck."
   },
   {
-    "id": 28,
+    "id": 29,
     "type": "image",
     "image": "/storyboard/scenes/23_reality_leadership_pivot.jpg",
     "notes": "Two weeks in, leadership changes the campaign theme. Start over."
   },
   {
-    "id": 29,
+    "id": 30,
     "type": "image",
     "image": "/storyboard/scenes/24_reality_filename_chaos.jpg",
     "notes": "160 files with names like final_v2_FINAL. Nobody knows which is current."
   },
   {
-    "id": 30,
+    "id": 31,
     "type": "image",
     "image": "/storyboard/scenes/25_reality_legal_rejection.jpg",
     "notes": "Legal sends everything back because a disclaimer is missing. Two more days lost."
   },
   {
-    "id": 31,
+    "id": 32,
     "type": "image",
     "image": "/storyboard/scenes/26_reality_pricing_shift.jpg",
     "notes": "A brand changes their minimum price after the creative is approved. Every variant needs updating."
   },
   {
-    "id": 32,
+    "id": 33,
     "type": "image",
     "image": "/storyboard/scenes/27_reality_shankar_redo.jpg",
     "notes": "Shankar builds 40 variants, then a typo is found in the master. Redo all of them."
   },
   {
-    "id": 33,
+    "id": 34,
     "type": "image",
     "image": "/storyboard/scenes/act2_calendar_pressure.jpg",
     "notes": "The deadline does not move. The team is in crunch mode."
   },
   {
-    "id": 34,
+    "id": 35,
     "type": "image",
     "image": "/storyboard/scenes/28_reality_rock_bottom.jpg",
     "notes": "Rock bottom. The team is exhausted and the launch is in three days."
   },
   {
-    "id": 35,
+    "id": 36,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778970160.jpg"
   },
   {
-    "id": 36,
+    "id": 37,
     "type": "image",
     "image": "/storyboard/scenes/claude_flying.jpg",
     "notes": "What if AI could handle the repetitive parts?"
   },
   {
-    "id": 37,
+    "id": 38,
     "type": "image",
     "image": "/storyboard/scenes/claude_hero.jpg",
     "notes": "We chose Claude as our AI backbone. Not to replace anyone, but to remove the grunt work."
   },
   {
-    "id": 38,
+    "id": 39,
     "type": "image",
     "notes": "**[The Setup]**\n\"We’ve shown you how we solved the orchestration bottleneck for Macy's. But what happens if we spin this technology out as a standalone B2B SaaS platform? What is the actual 'Big Picture' opportunity?\"\n\n**[The Operational Floor]**\n\"Looking at the 392,000 active, scaled e-commerce retailers in the US, they are executing over 5 million campaigns a year using broken, manual workflows. If our Agentic AI platform takes over just the deterministic steps of those campaigns, we establish an operational floor of **$7.42 Billion in annual cost savings**. That is 93 million hours of manual data entry wiped out.\"\n\n**[The Revenue Ceiling]**\n\"But cost savings are just the floor. The true value of this AI is acting as a *Revenue Ceiling*. By shrinking a campaign cycle from 8 weeks down to 2 weeks, we unlock agile marketing. Brands can suddenly launch opportunistic campaigns to capture fleeting micro-trends before they vanish. We calculate this agility recovers **$23.84 Billion in lost sales**.\"\n\n**[The \"Mic Drop\" Conclusion]**\n\"Combined, this is a **$31.26 Billion dollar total value creation opportunity**. \n\nAnd to capture it, we aren't going to boil the ocean. Our strategic beachhead is to target the **30,000 Mid-Market retailers**. They have the cash to afford high-value software, but they lack the enterprise capital to build it themselves. Our platform gives them an enterprise-grade AI marketing department out of the box.\"\n",
     "image": "/storyboard/scenes/slide_new_1780601964.jpg"
   },
   {
-    "id": 39,
+    "id": 40,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1780692452.jpg"
   },
   {
-    "id": 40,
+    "id": 41,
     "type": "divider",
     "label": "MILESTONE 2",
     "title": "BUILDING THE FOUNDATION",
@@ -242,55 +248,55 @@
     "notes": "Milestone 2. We built the foundation."
   },
   {
-    "id": 41,
+    "id": 42,
     "type": "image",
     "image": "/storyboard/scenes/29_m2_demo_day.jpg",
     "notes": "Demo day. We showed Professor Vincent a working prototype with four skills."
   },
   {
-    "id": 42,
+    "id": 43,
     "type": "image",
     "image": "/storyboard/scenes/30_m2_first_demo.jpg",
     "notes": "The first demo. Pick a persona, see the workflow, trigger a skill."
   },
   {
-    "id": 43,
+    "id": 44,
     "type": "image",
     "image": "/storyboard/scenes/31_m2_four_skills.jpg",
     "notes": "Four skills, like Lego blocks. Segmentation, DAM search, localization, and analytics."
   },
   {
-    "id": 44,
+    "id": 45,
     "type": "image",
     "image": "/storyboard/scenes/32_m2_scripted_chat.jpg",
     "notes": "The chat looked like AI but was really just a script. We knew we had to fix that."
   },
   {
-    "id": 45,
+    "id": 46,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778965046.jpg"
   },
   {
-    "id": 46,
+    "id": 47,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778968998.jpg"
   },
   {
-    "id": 47,
+    "id": 48,
     "type": "image",
     "image": "/storyboard/scenes/33_m2_data_layer.jpg",
     "notes": "Under the hood, a real database with 50,000 customers. Every skill queried real data."
   },
   {
-    "id": 48,
+    "id": 49,
     "type": "image",
     "image": "/storyboard/scenes/42_rady_m2_to_m3.jpg",
     "notes": "M2 worked, but the skills could not talk to each other. That was the next problem to solve."
   },
   {
-    "id": 49,
+    "id": 50,
     "type": "divider",
     "label": "MILESTONE 3",
     "title": "BUILDING THE COWORKER",
@@ -298,85 +304,85 @@
     "notes": "Milestone 3. We built the real AI coworker."
   },
   {
-    "id": 50,
+    "id": 51,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide1_title.jpg",
     "notes": "In M3 we wired the skills together into a system that runs like a real team member."
   },
   {
-    "id": 51,
+    "id": 52,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide5_m2_to_m3.jpg",
     "notes": "M2 had 4 standalone skills. M3 added 3 skills and 2 automations chained together, 3 tools, and a 12 document knowledge base."
   },
   {
-    "id": 52,
+    "id": 53,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide2_workflow_skills.jpg",
     "notes": "This diagram shows which skills fire at which workflow step, automatically."
   },
   {
-    "id": 53,
+    "id": 54,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778994040.jpg"
   },
   {
-    "id": 54,
+    "id": 55,
     "type": "image",
     "image": "/storyboard/scenes/m3_slide4_mcp_rag.jpg",
     "notes": "MCP gives Claude the keys to real functions. RAG gives Claude a filing cabinet of company documents."
   },
   {
-    "id": 55,
+    "id": 56,
     "type": "image",
     "image": "/storyboard/scenes/34_m3_live_production.jpg",
     "notes": "The live production interface. Each persona sees only their steps."
   },
   {
-    "id": 56,
+    "id": 57,
     "type": "image",
     "image": "/storyboard/scenes/35_m3_compliance_check.jpg",
     "notes": "Compliance pre check catches problems in seconds that used to take days to discover."
   },
   {
-    "id": 57,
+    "id": 58,
     "type": "image",
     "image": "/storyboard/scenes/36_m3_brief_card.jpg",
     "notes": "The VP gets an AI generated brief card with benchmarks from past campaigns, via RAG."
   },
   {
-    "id": 58,
+    "id": 59,
     "type": "image",
     "image": "/storyboard/scenes/37_m3_revision_routing.jpg",
     "notes": "If the VP says revise, the AI reads the comment, classifies it, and routes it to the right person."
   },
   {
-    "id": 59,
+    "id": 60,
     "type": "image",
     "image": "/storyboard/scenes/38_m3_cascade.jpg",
     "notes": "When the VP approves, an approval cascade fires automatically."
   },
   {
-    "id": 60,
+    "id": 61,
     "type": "image",
     "image": "/storyboard/scenes/39_m3_activity_feed.jpg",
     "notes": "The activity feed shows everything the AI is doing. Transparency builds trust."
   },
   {
-    "id": 61,
+    "id": 62,
     "type": "image",
     "image": "/storyboard/scenes/40_m3_live_chat.jpg",
     "notes": "The chat is now real. Every message goes to a live AI model with RAG grounding."
   },
   {
-    "id": 62,
+    "id": 63,
     "type": "image",
     "image": "/storyboard/scenes/41_m3_mcp_behind_scenes.jpg",
     "notes": "Behind the scenes: orchestrator picks the skill, pre fetches documents, calls Claude, saves the result."
   },
   {
-    "id": 63,
+    "id": 64,
     "type": "divider",
     "label": "MILESTONE 4",
     "title": "THE NEW NORMAL",
@@ -384,37 +390,37 @@
     "notes": "Milestone 4. Shipping and learning."
   },
   {
-    "id": 64,
+    "id": 65,
     "type": "image",
     "image": "/storyboard/scenes/42_after_team_calm.jpg",
     "notes": "The team is calmer. The AI handles grunt work, the humans handle judgment."
   },
   {
-    "id": 65,
+    "id": 66,
     "type": "image",
     "image": "/storyboard/scenes/43_after_campaign_live.jpg",
     "notes": "The campaign launches on time, on budget, without the usual last minute panic."
   },
   {
-    "id": 66,
+    "id": 67,
     "type": "image",
     "image": "/storyboard/scenes/44_after_before_vs.jpg",
     "notes": "Before: 8 weeks, constant rework. After: 11 days, zero avoidable errors."
   },
   {
-    "id": 67,
+    "id": 68,
     "type": "image",
     "image": "/storyboard/scenes/15_two_orchestrators.jpg",
     "notes": "Two orchestrator options. Deterministic for production, agentic as an alternative."
   },
   {
-    "id": 68,
+    "id": 69,
     "type": "image",
     "image": "/storyboard/scenes/45_closing_framing.jpg",
     "notes": "We started building a tool. We ended up building a teammate. Thank you."
   },
   {
-    "id": 69,
+    "id": 70,
     "type": "divider",
     "label": "APPENDIX",
     "title": "FOR THE CURIOUS",
@@ -422,94 +428,88 @@
     "notes": "Appendix slides for anyone who wants to go deeper."
   },
   {
-    "id": 70,
+    "id": 71,
     "type": "image",
     "image": "/storyboard/scenes/00_project_overview.jpg",
     "notes": "Project overview showing how all the pieces connect."
   },
   {
-    "id": 71,
+    "id": 72,
     "type": "image",
     "image": "/storyboard/scenes/01_what_is_skill.jpg",
     "notes": "A skill is a small program that does one specific job."
   },
   {
-    "id": 72,
+    "id": 73,
     "type": "image",
     "image": "/storyboard/scenes/02_what_is_mcp.jpg",
     "notes": "MCP lets the AI call real Python functions instead of guessing."
   },
   {
-    "id": 73,
+    "id": 74,
     "type": "image",
     "image": "/storyboard/scenes/03_what_is_rag.jpg",
     "notes": "RAG means the AI reads your documents before answering."
   },
   {
-    "id": 74,
+    "id": 75,
     "type": "image",
     "image": "/storyboard/scenes/14_rag_steps.jpg",
     "notes": "The RAG pipeline: chunk documents, embed them, search at query time."
   },
   {
-    "id": 75,
+    "id": 76,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1778989833.jpg"
   },
   {
-    "id": 76,
+    "id": 77,
     "type": "image",
     "image": "/storyboard/scenes/04_what_is_orchestrator.jpg",
     "notes": "The orchestrator decides which skill runs next."
   },
   {
-    "id": 77,
+    "id": 78,
     "type": "image",
     "image": "/storyboard/scenes/11_skill_chain.jpg",
     "notes": "Skills chain together through shared state, like a relay race."
   },
   {
-    "id": 78,
+    "id": 79,
     "type": "image",
     "image": "/storyboard/scenes/12_mcp_tools.jpg",
     "notes": "Three MCP tools: pricing check, DAM search, and translation."
   },
   {
-    "id": 79,
+    "id": 80,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018437.jpg"
   },
   {
-    "id": 80,
+    "id": 81,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018469.jpg"
   },
   {
-    "id": 81,
+    "id": 82,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018488.jpg"
   },
   {
-    "id": 82,
+    "id": 83,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1779018505.jpg"
   },
   {
-    "id": 83,
+    "id": 84,
     "type": "image",
     "notes": "",
     "image": "/storyboard/scenes/slide_new_1780170278.jpg"
-  },
-  {
-    "id": 84,
-    "type": "image",
-    "image": "/storyboard/scenes/21_reality_manager_beach.jpg",
-    "notes": "The campaign manager goes on vacation and everything stalls because the knowledge is in her head."
   },
   {
     "id": 85,
