@@ -1,0 +1,916 @@
+{
+  "step2_segment_k2": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 2,
+    "segments": [
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 39d, frequency 16.7 txns, monetary $3,739",
+        "customer_count": 11820,
+        "avg_recency_days": 39.4,
+        "avg_frequency": 16.7,
+        "avg_monetary": 3734.85,
+        "top_category": "Accessories",
+        "top_category_lift": 0.1355,
+        "loyalty_mix": {
+          "Bronze": 4.9,
+          "Gold": 46.4,
+          "Platinum": 12.4,
+          "Silver": 36.3
+        },
+        "response_likelihood": 0.3078,
+        "estimated_value": 13586155.7,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Elite Loyal Shoppers",
+        "descriptor": "High-frequency, high-spending customers who shop every ~39 days with an average of 16.7 transactions and $3,735 in spend, predominantly Gold and Silver loyalty tier members."
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 127d, frequency 5.8 txns, monetary $1,122",
+        "customer_count": 37987,
+        "avg_recency_days": 127.2,
+        "avg_frequency": 5.8,
+        "avg_monetary": 1120.89,
+        "top_category": "Beauty",
+        "top_category_lift": 0.084,
+        "loyalty_mix": {
+          "Bronze": 77.1,
+          "Gold": 1.3,
+          "Platinum": 0.0,
+          "Silver": 21.6
+        },
+        "response_likelihood": 0.1856,
+        "estimated_value": 7903592.63,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Beauty Enthusiasts",
+        "descriptor": "Moderately engaged customers with a strong affinity for Beauty products, averaging 5.8 transactions and $1,121 in spend, though they last purchased around 127 days ago."
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "High Value Engaged",
+    "recommendation_reason": "The High Value Engaged segment has Beauty as its top category with a lift of 0.084, making it the most naturally aligned audience for a Mother's Day Beauty Event. With 37,987 customers and an estimated value of $7,903,593, this segment offers strong scale and direct category relevance for a beauty-focused campaign.",
+    "brief_suggestion": "While the High Value Engaged segment aligns well with the Beauty category, the Premium Loyalists segment carries a significantly higher estimated value of $13,586,156 versus $7,903,593, and their top category is Accessories \u2014 consider broadening the Mother's Day event to include Accessories or gifting categories to capture this higher-value audience.",
+    "naming_source": "skill"
+  },
+  "step2_segment_k3": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 3,
+    "segments": [
+      {
+        "name": "VIP Loyalists",
+        "definition": "K-means RFM cluster: avg recency 39d, frequency 17.9 txns, monetary $4,035",
+        "customer_count": 9590,
+        "avg_recency_days": 39.0,
+        "avg_frequency": 17.9,
+        "avg_monetary": 4037.7,
+        "top_category": "Accessories",
+        "top_category_lift": 0.156,
+        "loyalty_mix": {
+          "Bronze": 2.6,
+          "Gold": 52.7,
+          "Platinum": 15.2,
+          "Silver": 29.4
+        },
+        "response_likelihood": 0.3174,
+        "estimated_value": 12289972.07,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Elite Power Shoppers",
+        "descriptor": "High-value loyalists averaging $4,038 per customer with 17.9 transactions and a recent 39-day purchase window, predominantly Gold and Platinum tier members who shop frequently and spend significantly."
+      },
+      {
+        "name": "Mid Tier Engaged",
+        "definition": "K-means RFM cluster: avg recency 71d, frequency 6.7 txns, monetary $1,308",
+        "customer_count": 31631,
+        "avg_recency_days": 70.4,
+        "avg_frequency": 6.7,
+        "avg_monetary": 1308.58,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0866,
+        "loyalty_mix": {
+          "Bronze": 68.7,
+          "Gold": 2.9,
+          "Platinum": 0.0,
+          "Silver": 28.4
+        },
+        "response_likelihood": 0.2161,
+        "estimated_value": 8943440.95,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Active Beauty Seekers",
+        "descriptor": "A large, moderately engaged segment of 31,631 customers averaging $1,309 per customer with 6.7 transactions, whose top category is Beauty with a positive lift of 0.087, making them a natural fit for beauty-focused campaigns."
+      },
+      {
+        "name": "Lapsed or New",
+        "definition": "K-means RFM cluster: avg recency 314d, frequency 3.8 txns, monetary $769",
+        "customer_count": 8586,
+        "avg_recency_days": 314.0,
+        "avg_frequency": 3.8,
+        "avg_monetary": 770.07,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0315,
+        "loyalty_mix": {
+          "Bronze": 91.9,
+          "Gold": 0.2,
+          "Silver": 7.9
+        },
+        "response_likelihood": 0.0931,
+        "estimated_value": 615323.62,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Dormant Reactivation Prospects",
+        "descriptor": "Low-engagement customers averaging 314 days since last purchase with only 3.8 transactions and $770 average spend, representing a re-engagement opportunity with the lowest estimated campaign value at $615,324."
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "Mid Tier Engaged",
+    "recommendation_reason": "The Mid Tier Engaged segment has Beauty as its top category with a lift of 0.087, making it the strongest natural fit for a Mother's Day Beauty Event. With 31,631 customers and an estimated campaign value of $8,943,441, it offers the best alignment between campaign category and segment purchasing behavior.",
+    "brief_suggestion": "While VIP Loyalists deliver the highest estimated value at $12,289,972, their top category is Accessories rather than Beauty; layering an Accessories gifting angle into the Mother's Day Beauty Event brief could unlock incremental spend from this high-value segment.",
+    "naming_source": "skill"
+  },
+  "step2_segment_k4": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 4,
+    "segments": [
+      {
+        "name": "Mid Value Active",
+        "definition": "K-means RFM cluster: avg recency 81d, frequency 5.5 txns, monetary $1,012",
+        "customer_count": 24903,
+        "avg_recency_days": 80.5,
+        "avg_frequency": 5.5,
+        "avg_monetary": 1012.56,
+        "top_category": "Beauty",
+        "top_category_lift": 0.1428,
+        "loyalty_mix": {
+          "Bronze": 82.1,
+          "Gold": 0.4,
+          "Silver": 17.5
+        },
+        "response_likelihood": 0.2024,
+        "estimated_value": 5104786.83,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Active Beauty Regulars",
+        "descriptor": "A large base of 24,903 moderately engaged shoppers who purchase every ~81 days with an average spend of $1,012 and a demonstrated affinity for Beauty (lift 0.14)."
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 52d, frequency 12.0 txns, monetary $2,534",
+        "customer_count": 12848,
+        "avg_recency_days": 51.8,
+        "avg_frequency": 12.0,
+        "avg_monetary": 2534.27,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0057,
+        "loyalty_mix": {
+          "Bronze": 19.5,
+          "Gold": 24.2,
+          "Platinum": 1.2,
+          "Silver": 55.2
+        },
+        "response_likelihood": 0.2656,
+        "estimated_value": 8646532.29,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Engaged Beauty Enthusiasts",
+        "descriptor": "12,848 frequent, high-spending customers averaging 12 transactions and $2,534 per customer, with Beauty as their top category and a strong 26.6% response likelihood."
+      },
+      {
+        "name": "Moderate Occasional",
+        "definition": "K-means RFM cluster: avg recency 332d, frequency 3.8 txns, monetary $771",
+        "customer_count": 7506,
+        "avg_recency_days": 331.2,
+        "avg_frequency": 3.8,
+        "avg_monetary": 771.81,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0176,
+        "loyalty_mix": {
+          "Bronze": 92.0,
+          "Gold": 0.2,
+          "Silver": 7.9
+        },
+        "response_likelihood": 0.086,
+        "estimated_value": 498190.64,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Lapsed Casual Shoppers",
+        "descriptor": "7,506 infrequent buyers who last purchased over 331 days ago, spend an average of $771, and skew toward Apparel rather than Beauty."
+      },
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 31d, frequency 21.5 txns, monetary $5,090",
+        "customer_count": 4550,
+        "avg_recency_days": 31.2,
+        "avg_frequency": 21.5,
+        "avg_monetary": 5089.18,
+        "top_category": "Accessories",
+        "top_category_lift": 0.2665,
+        "loyalty_mix": {
+          "Bronze": 0.3,
+          "Gold": 60.9,
+          "Platinum": 28.9,
+          "Silver": 10.0
+        },
+        "response_likelihood": 0.3372,
+        "estimated_value": 7807617.78,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Elite Brand Champions",
+        "descriptor": "4,550 top-tier customers with the highest recency (31 days), frequency (21.5 transactions), and spend ($5,090 avg), predominantly Gold and Platinum loyalty members whose top category is Accessories."
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "High Value Engaged",
+    "recommendation_reason": "High Value Engaged delivers the highest estimated campaign value at $8,646,532 and has Beauty as its top category \u2014 a direct match for the Mother's Day Beauty Event. With a response likelihood of 26.6% and an average monetary value of $2,534 across 12,848 customers, this segment offers the strongest combination of Beauty affinity, engagement, and revenue potential.",
+    "brief_suggestion": "While High Value Engaged is the best fit for a Beauty campaign, the highest per-customer spend segment \u2014 Premium Loyalists ($5,090 avg monetary, estimated value $7,807,618) \u2014 skews toward Accessories with a lift of 0.27; broadening the Mother's Day brief to include a curated Accessories gifting angle could unlock additional revenue from this high-value audience.",
+    "naming_source": "skill"
+  },
+  "step2_segment_k5": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 5,
+    "segments": [
+      {
+        "name": "Mid Value Active",
+        "definition": "K-means RFM cluster: avg recency 54d, frequency 5.8 txns, monetary $1,073",
+        "customer_count": 20383,
+        "avg_recency_days": 54.3,
+        "avg_frequency": 5.8,
+        "avg_monetary": 1073.35,
+        "top_category": "Beauty",
+        "top_category_lift": 0.1455,
+        "loyalty_mix": {
+          "Bronze": 78.7,
+          "Gold": 0.6,
+          "Silver": 20.7
+        },
+        "response_likelihood": 0.2156,
+        "estimated_value": 4716472.04,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Mid Value Active",
+        "descriptor": "20,383 customers, avg spend $1,073, top category Beauty"
+      },
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 31d, frequency 21.8 txns, monetary $5,165",
+        "customer_count": 4306,
+        "avg_recency_days": 30.9,
+        "avg_frequency": 21.8,
+        "avg_monetary": 5166.9,
+        "top_category": "Accessories",
+        "top_category_lift": 0.2802,
+        "loyalty_mix": {
+          "Bronze": 0.2,
+          "Gold": 60.4,
+          "Platinum": 30.1,
+          "Silver": 9.3
+        },
+        "response_likelihood": 0.3373,
+        "estimated_value": 7504507.34,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Premium Loyalists",
+        "descriptor": "4,306 customers, avg spend $5,167, top category Accessories"
+      },
+      {
+        "name": "Value Infrequent",
+        "definition": "K-means RFM cluster: avg recency 436d, frequency 3.0 txns, monetary $602",
+        "customer_count": 3116,
+        "avg_recency_days": 436.5,
+        "avg_frequency": 3.0,
+        "avg_monetary": 601.12,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0227,
+        "loyalty_mix": {
+          "Bronze": 96.0,
+          "Gold": 0.1,
+          "Silver": 4.0
+        },
+        "response_likelihood": 0.0658,
+        "estimated_value": 123229.6,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Value Infrequent",
+        "descriptor": "3,116 customers, avg spend $601, top category Apparel"
+      },
+      {
+        "name": "Moderate Occasional",
+        "definition": "K-means RFM cluster: avg recency 204d, frequency 4.8 txns, monetary $953",
+        "customer_count": 10254,
+        "avg_recency_days": 204.5,
+        "avg_frequency": 4.8,
+        "avg_monetary": 951.93,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0471,
+        "loyalty_mix": {
+          "Bronze": 86.9,
+          "Gold": 0.4,
+          "Silver": 12.7
+        },
+        "response_likelihood": 0.146,
+        "estimated_value": 1424718.03,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Moderate Occasional",
+        "descriptor": "10,254 customers, avg spend $952, top category Beauty"
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 51d, frequency 12.4 txns, monetary $2,635",
+        "customer_count": 11748,
+        "avg_recency_days": 51.2,
+        "avg_frequency": 12.4,
+        "avg_monetary": 2635.68,
+        "top_category": "Accessories",
+        "top_category_lift": 0.0063,
+        "loyalty_mix": {
+          "Bronze": 16.3,
+          "Gold": 27.4,
+          "Platinum": 1.5,
+          "Silver": 54.8
+        },
+        "response_likelihood": 0.269,
+        "estimated_value": 8328035.07,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "High Value Engaged",
+        "descriptor": "11,748 customers, avg spend $2,636, top category Accessories"
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "High Value Engaged",
+    "recommendation_reason": "Highest estimated value at $8,328,035 with 27% projected response rate",
+    "brief_suggestion": "The highest value segment (High Value Engaged) over indexes in Accessories. Consider adjusting the brief to emphasize Accessories for stronger segment alignment.",
+    "naming_source": "fallback"
+  },
+  "step2_segment_k6": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 6,
+    "segments": [
+      {
+        "name": "Mid Value Active",
+        "definition": "K-means RFM cluster: avg recency 57d, frequency 9.7 txns, monetary $2,095",
+        "customer_count": 12473,
+        "avg_recency_days": 57.2,
+        "avg_frequency": 9.7,
+        "avg_monetary": 2097.09,
+        "top_category": "Home",
+        "top_category_lift": 0.0282,
+        "loyalty_mix": {
+          "Bronze": 35.5,
+          "Gold": 8.9,
+          "Platinum": 0.1,
+          "Silver": 55.5
+        },
+        "response_likelihood": 0.2452,
+        "estimated_value": 6413105.11,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Mid Value Active",
+        "descriptor": "12,473 customers, avg spend $2,097, top category Home"
+      },
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 28d, frequency 24.0 txns, monetary $6,167",
+        "customer_count": 2187,
+        "avg_recency_days": 28.1,
+        "avg_frequency": 24.0,
+        "avg_monetary": 6170.21,
+        "top_category": "Accessories",
+        "top_category_lift": 0.5032,
+        "loyalty_mix": {
+          "Bronze": 0.1,
+          "Gold": 53.3,
+          "Platinum": 42.3,
+          "Silver": 4.3
+        },
+        "response_likelihood": 0.3385,
+        "estimated_value": 4567156.39,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Premium Loyalists",
+        "descriptor": "2,187 customers, avg spend $6,170, top category Accessories"
+      },
+      {
+        "name": "Budget Dormant",
+        "definition": "K-means RFM cluster: avg recency 441d, frequency 2.9 txns, monetary $595",
+        "customer_count": 2993,
+        "avg_recency_days": 441.2,
+        "avg_frequency": 2.9,
+        "avg_monetary": 595.29,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0253,
+        "loyalty_mix": {
+          "Bronze": 96.1,
+          "Gold": 0.1,
+          "Silver": 3.9
+        },
+        "response_likelihood": 0.065,
+        "estimated_value": 115810.69,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Budget Dormant",
+        "descriptor": "2,993 customers, avg spend $595, top category Apparel"
+      },
+      {
+        "name": "Moderate Infrequent",
+        "definition": "K-means RFM cluster: avg recency 212d, frequency 4.7 txns, monetary $938",
+        "customer_count": 9506,
+        "avg_recency_days": 211.9,
+        "avg_frequency": 4.7,
+        "avg_monetary": 938.15,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0507,
+        "loyalty_mix": {
+          "Bronze": 87.6,
+          "Gold": 0.3,
+          "Silver": 12.0
+        },
+        "response_likelihood": 0.1421,
+        "estimated_value": 1267508.15,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Moderate Infrequent",
+        "descriptor": "9,506 customers, avg spend $938, top category Beauty"
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 40d, frequency 16.8 txns, monetary $3,488",
+        "customer_count": 6285,
+        "avg_recency_days": 39.9,
+        "avg_frequency": 16.8,
+        "avg_monetary": 3490.95,
+        "top_category": "Apparel",
+        "top_category_lift": 0.017,
+        "loyalty_mix": {
+          "Bronze": 1.7,
+          "Gold": 58.0,
+          "Platinum": 8.5,
+          "Silver": 31.7
+        },
+        "response_likelihood": 0.3083,
+        "estimated_value": 6765161.83,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "High Value Engaged",
+        "descriptor": "6,285 customers, avg spend $3,491, top category Apparel"
+      },
+      {
+        "name": "Value Occasional",
+        "definition": "K-means RFM cluster: avg recency 57d, frequency 5.1 txns, monetary $881",
+        "customer_count": 16363,
+        "avg_recency_days": 57.3,
+        "avg_frequency": 5.1,
+        "avg_monetary": 882.07,
+        "top_category": "Beauty",
+        "top_category_lift": 0.2092,
+        "loyalty_mix": {
+          "Bronze": 86.2,
+          "Gold": 0.2,
+          "Silver": 13.6
+        },
+        "response_likelihood": 0.2088,
+        "estimated_value": 3013970.96,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Value Occasional",
+        "descriptor": "16,363 customers, avg spend $882, top category Beauty"
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "High Value Engaged",
+    "recommendation_reason": "Highest estimated value at $6,765,162 with 31% projected response rate",
+    "brief_suggestion": "The highest value segment (High Value Engaged) over indexes in Apparel. Consider adjusting the brief to emphasize Apparel for stronger segment alignment.",
+    "naming_source": "fallback"
+  },
+  "step2_segment_k7": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 7,
+    "segments": [
+      {
+        "name": "Moderate Occasional",
+        "definition": "K-means RFM cluster: avg recency 56d, frequency 8.3 txns, monetary $1,714",
+        "customer_count": 11937,
+        "avg_recency_days": 55.7,
+        "avg_frequency": 8.3,
+        "avg_monetary": 1712.89,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0245,
+        "loyalty_mix": {
+          "Bronze": 51.7,
+          "Gold": 3.3,
+          "Platinum": 0.0,
+          "Silver": 45.0
+        },
+        "response_likelihood": 0.2347,
+        "estimated_value": 4799698.19,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Moderate Occasional",
+        "descriptor": "11,937 customers, avg spend $1,713, top category Beauty"
+      },
+      {
+        "name": "Budget Infrequent",
+        "definition": "K-means RFM cluster: avg recency 61d, frequency 4.6 txns, monetary $761",
+        "customer_count": 13365,
+        "avg_recency_days": 61.0,
+        "avg_frequency": 4.6,
+        "avg_monetary": 759.77,
+        "top_category": "Beauty",
+        "top_category_lift": 0.2442,
+        "loyalty_mix": {
+          "Bronze": 90.8,
+          "Gold": 0.1,
+          "Silver": 9.1
+        },
+        "response_likelihood": 0.2034,
+        "estimated_value": 2064908.19,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Budget Infrequent",
+        "descriptor": "13,365 customers, avg spend $760, top category Beauty"
+      },
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 27d, frequency 25.0 txns, monetary $6,998",
+        "customer_count": 1284,
+        "avg_recency_days": 27.1,
+        "avg_frequency": 25.0,
+        "avg_monetary": 7002.33,
+        "top_category": "Accessories",
+        "top_category_lift": 0.7841,
+        "loyalty_mix": {
+          "Bronze": 0.1,
+          "Gold": 48.0,
+          "Platinum": 48.4,
+          "Silver": 3.5
+        },
+        "response_likelihood": 0.3389,
+        "estimated_value": 3046714.55,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Premium Loyalists",
+        "descriptor": "1,284 customers, avg spend $7,002, top category Accessories"
+      },
+      {
+        "name": "Economy Lapsed",
+        "definition": "K-means RFM cluster: avg recency 443d, frequency 2.9 txns, monetary $589",
+        "customer_count": 2930,
+        "avg_recency_days": 443.5,
+        "avg_frequency": 2.9,
+        "avg_monetary": 588.32,
+        "top_category": "Apparel",
+        "top_category_lift": 0.019,
+        "loyalty_mix": {
+          "Bronze": 96.1,
+          "Gold": 0.1,
+          "Silver": 3.8
+        },
+        "response_likelihood": 0.065,
+        "estimated_value": 112045.54,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Economy Lapsed",
+        "descriptor": "2,930 customers, avg spend $588, top category Apparel"
+      },
+      {
+        "name": "Mid Value Active",
+        "definition": "K-means RFM cluster: avg recency 52d, frequency 13.0 txns, monetary $2,835",
+        "customer_count": 7179,
+        "avg_recency_days": 52.4,
+        "avg_frequency": 13.0,
+        "avg_monetary": 2832.15,
+        "top_category": "Accessories",
+        "top_category_lift": 0.0625,
+        "loyalty_mix": {
+          "Bronze": 10.1,
+          "Gold": 31.5,
+          "Platinum": 1.2,
+          "Silver": 57.3
+        },
+        "response_likelihood": 0.2732,
+        "estimated_value": 5554756.5,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Mid Value Active",
+        "descriptor": "7,179 customers, avg spend $2,832, top category Accessories"
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 33d, frequency 19.8 txns, monetary $4,122",
+        "customer_count": 3969,
+        "avg_recency_days": 32.6,
+        "avg_frequency": 19.8,
+        "avg_monetary": 4126.33,
+        "top_category": "Shoes",
+        "top_category_lift": 0.0296,
+        "loyalty_mix": {
+          "Bronze": 0.3,
+          "Gold": 67.5,
+          "Platinum": 19.1,
+          "Silver": 13.1
+        },
+        "response_likelihood": 0.335,
+        "estimated_value": 5486819.92,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "High Value Engaged",
+        "descriptor": "3,969 customers, avg spend $4,126, top category Shoes"
+      },
+      {
+        "name": "Value Dormant",
+        "definition": "K-means RFM cluster: avg recency 216d, frequency 4.8 txns, monetary $951",
+        "customer_count": 9143,
+        "avg_recency_days": 216.4,
+        "avg_frequency": 4.8,
+        "avg_monetary": 951.53,
+        "top_category": "Beauty",
+        "top_category_lift": 0.043,
+        "loyalty_mix": {
+          "Bronze": 87.5,
+          "Gold": 0.3,
+          "Silver": 12.2
+        },
+        "response_likelihood": 0.1411,
+        "estimated_value": 1227273.15,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Value Dormant",
+        "descriptor": "9,143 customers, avg spend $952, top category Beauty"
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "Mid Value Active",
+    "recommendation_reason": "Highest estimated value at $5,554,756 with 27% projected response rate",
+    "brief_suggestion": "The highest value segment (Mid Value Active) over indexes in Accessories. Consider adjusting the brief to emphasize Accessories for stronger segment alignment.",
+    "naming_source": "fallback"
+  },
+  "step2_segment_k8": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 8,
+    "segments": [
+      {
+        "name": "Moderate Occasional",
+        "definition": "K-means RFM cluster: avg recency 50d, frequency 8.6 txns, monetary $1,758",
+        "customer_count": 10910,
+        "avg_recency_days": 49.9,
+        "avg_frequency": 8.6,
+        "avg_monetary": 1758.55,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0295,
+        "loyalty_mix": {
+          "Bronze": 48.2,
+          "Gold": 4.0,
+          "Platinum": 0.0,
+          "Silver": 47.8
+        },
+        "response_likelihood": 0.2395,
+        "estimated_value": 4594863.02,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Moderate Occasional",
+        "descriptor": "10,910 customers, avg spend $1,759, top category Beauty"
+      },
+      {
+        "name": "Value Dormant",
+        "definition": "K-means RFM cluster: avg recency 163d, frequency 5.2 txns, monetary $1,015",
+        "customer_count": 8760,
+        "avg_recency_days": 162.8,
+        "avg_frequency": 5.2,
+        "avg_monetary": 1015.21,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0713,
+        "loyalty_mix": {
+          "Bronze": 85.1,
+          "Gold": 0.4,
+          "Silver": 14.5
+        },
+        "response_likelihood": 0.1663,
+        "estimated_value": 1478534.75,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Value Dormant",
+        "descriptor": "8,760 customers, avg spend $1,015, top category Beauty"
+      },
+      {
+        "name": "Entry New",
+        "definition": "K-means RFM cluster: avg recency 502d, frequency 2.5 txns, monetary $493",
+        "customer_count": 1702,
+        "avg_recency_days": 502.4,
+        "avg_frequency": 2.5,
+        "avg_monetary": 492.83,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0356,
+        "loyalty_mix": {
+          "Bronze": 97.3,
+          "Silver": 2.7
+        },
+        "response_likelihood": 0.0618,
+        "estimated_value": 51872.95,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Entry New",
+        "descriptor": "1,702 customers, avg spend $493, top category Apparel"
+      },
+      {
+        "name": "Economy Infrequent",
+        "definition": "K-means RFM cluster: avg recency 48d, frequency 4.7 txns, monetary $776",
+        "customer_count": 11721,
+        "avg_recency_days": 48.0,
+        "avg_frequency": 4.7,
+        "avg_monetary": 776.2,
+        "top_category": "Beauty",
+        "top_category_lift": 0.2449,
+        "loyalty_mix": {
+          "Bronze": 90.0,
+          "Gold": 0.1,
+          "Silver": 9.9
+        },
+        "response_likelihood": 0.2095,
+        "estimated_value": 1905856.5,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Economy Infrequent",
+        "descriptor": "11,721 customers, avg spend $776, top category Beauty"
+      },
+      {
+        "name": "Premium Loyalists",
+        "definition": "K-means RFM cluster: avg recency 27d, frequency 25.0 txns, monetary $7,009",
+        "customer_count": 1277,
+        "avg_recency_days": 27.0,
+        "avg_frequency": 25.0,
+        "avg_monetary": 7012.31,
+        "top_category": "Accessories",
+        "top_category_lift": 0.7873,
+        "loyalty_mix": {
+          "Bronze": 0.1,
+          "Gold": 47.9,
+          "Platinum": 48.5,
+          "Silver": 3.5
+        },
+        "response_likelihood": 0.3389,
+        "estimated_value": 3034791.36,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Premium Loyalists",
+        "descriptor": "1,277 customers, avg spend $7,012, top category Accessories"
+      },
+      {
+        "name": "Budget Lapsed",
+        "definition": "K-means RFM cluster: avg recency 296d, frequency 4.0 txns, monetary $821",
+        "customer_count": 4665,
+        "avg_recency_days": 296.2,
+        "avg_frequency": 4.0,
+        "avg_monetary": 821.17,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0113,
+        "loyalty_mix": {
+          "Bronze": 91.5,
+          "Gold": 0.2,
+          "Silver": 8.3
+        },
+        "response_likelihood": 0.102,
+        "estimated_value": 390577.13,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Budget Lapsed",
+        "descriptor": "4,665 customers, avg spend $821, top category Apparel"
+      },
+      {
+        "name": "High Value Engaged",
+        "definition": "K-means RFM cluster: avg recency 32d, frequency 19.9 txns, monetary $4,129",
+        "customer_count": 3907,
+        "avg_recency_days": 32.5,
+        "avg_frequency": 19.9,
+        "avg_monetary": 4133.33,
+        "top_category": "Apparel",
+        "top_category_lift": 0.0279,
+        "loyalty_mix": {
+          "Bronze": 0.3,
+          "Gold": 67.6,
+          "Platinum": 19.5,
+          "Silver": 12.7
+        },
+        "response_likelihood": 0.3359,
+        "estimated_value": 5423685.33,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "High Value Engaged",
+        "descriptor": "3,907 customers, avg spend $4,133, top category Apparel"
+      },
+      {
+        "name": "Mid Value Active",
+        "definition": "K-means RFM cluster: avg recency 54d, frequency 13.1 txns, monetary $2,882",
+        "customer_count": 6865,
+        "avg_recency_days": 53.6,
+        "avg_frequency": 13.1,
+        "avg_monetary": 2880.54,
+        "top_category": "Accessories",
+        "top_category_lift": 0.0788,
+        "loyalty_mix": {
+          "Bronze": 9.5,
+          "Gold": 32.7,
+          "Platinum": 1.3,
+          "Silver": 56.4
+        },
+        "response_likelihood": 0.2735,
+        "estimated_value": 5408415.71,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Mid Value Active",
+        "descriptor": "6,865 customers, avg spend $2,881, top category Accessories"
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "High Value Engaged",
+    "recommendation_reason": "Highest estimated value at $5,423,685 with 34% projected response rate",
+    "brief_suggestion": "The highest value segment (High Value Engaged) over indexes in Apparel. Consider adjusting the brief to emphasize Apparel for stronger segment alignment.",
+    "naming_source": "fallback"
+  },
+  "step2_segment": {
+    "ok": true,
+    "brief": "Mother Day Beauty Event",
+    "n_clusters": 3,
+    "segments": [
+      {
+        "name": "VIP Loyalists",
+        "definition": "K-means RFM cluster: avg recency 39d, frequency 17.9 txns, monetary $4,035",
+        "customer_count": 9590,
+        "avg_recency_days": 39.0,
+        "avg_frequency": 17.9,
+        "avg_monetary": 4037.7,
+        "top_category": "Accessories",
+        "top_category_lift": 0.156,
+        "loyalty_mix": {
+          "Bronze": 2.6,
+          "Gold": 52.7,
+          "Platinum": 15.2,
+          "Silver": 29.4
+        },
+        "response_likelihood": 0.3174,
+        "estimated_value": 12289972.07,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Elite Power Shoppers",
+        "descriptor": "High-value loyalists averaging $4,038 per customer with 17.9 transactions and a recent 39-day purchase window, predominantly Gold and Platinum tier members who shop frequently and spend significantly."
+      },
+      {
+        "name": "Mid Tier Engaged",
+        "definition": "K-means RFM cluster: avg recency 71d, frequency 6.7 txns, monetary $1,308",
+        "customer_count": 31631,
+        "avg_recency_days": 70.4,
+        "avg_frequency": 6.7,
+        "avg_monetary": 1308.58,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0866,
+        "loyalty_mix": {
+          "Bronze": 68.7,
+          "Gold": 2.9,
+          "Platinum": 0.0,
+          "Silver": 28.4
+        },
+        "response_likelihood": 0.2161,
+        "estimated_value": 8943440.95,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Active Beauty Seekers",
+        "descriptor": "A large, moderately engaged segment of 31,631 customers averaging $1,309 per customer with 6.7 transactions, whose top category is Beauty with a positive lift of 0.087, making them a natural fit for beauty-focused campaigns."
+      },
+      {
+        "name": "Lapsed or New",
+        "definition": "K-means RFM cluster: avg recency 314d, frequency 3.8 txns, monetary $769",
+        "customer_count": 8586,
+        "avg_recency_days": 314.0,
+        "avg_frequency": 3.8,
+        "avg_monetary": 770.07,
+        "top_category": "Beauty",
+        "top_category_lift": 0.0315,
+        "loyalty_mix": {
+          "Bronze": 91.9,
+          "Gold": 0.2,
+          "Silver": 7.9
+        },
+        "response_likelihood": 0.0931,
+        "estimated_value": 615323.62,
+        "value_formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+        "display_name": "Dormant Reactivation Prospects",
+        "descriptor": "Low-engagement customers averaging 314 days since last purchase with only 3.8 transactions and $770 average spend, representing a re-engagement opportunity with the lowest estimated campaign value at $615,324."
+      }
+    ],
+    "total_clustered": 49807,
+    "recommended_segment": "Mid Tier Engaged",
+    "recommendation_reason": "The Mid Tier Engaged segment has Beauty as its top category with a lift of 0.087, making it the strongest natural fit for a Mother's Day Beauty Event. With 31,631 customers and an estimated campaign value of $8,943,441, it offers the best alignment between campaign category and segment purchasing behavior.",
+    "brief_suggestion": "While VIP Loyalists deliver the highest estimated value at $12,289,972, their top category is Accessories rather than Beauty; layering an Accessories gifting angle into the Mother's Day Beauty Event brief could unlock incremental spend from this high-value segment.",
+    "naming_source": "skill"
+  }
+}

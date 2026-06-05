@@ -722,13 +722,44 @@ export type SegmentResult = {
   naming_source?: "skill" | "fallback";
 };
 
+let _cachedSegments: Record<string, unknown> | null = null;
+
+async function getCachedSegments(): Promise<Record<string, unknown>> {
+  if (_cachedSegments) return _cachedSegments;
+  try {
+    const res = await fetch("/cached-segments.json");
+    if (res.ok) _cachedSegments = await res.json();
+  } catch {
+    // Silent
+  }
+  return _cachedSegments ?? {};
+}
+
 export async function runSegment(brief: string, nClusters = 3, opts: { timeoutMs?: number } = {}): Promise<SegmentResult> {
-  return callWithFallback<SegmentResult>(
-    "/skills/segment",
-    { brief, n_clusters: nClusters },
-    "step2_segment",
-    opts,
-  );
+  const { timeoutMs = 10_000 } = opts;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(`${API_BASE}/skills/segment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ brief, n_clusters: nClusters }),
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) return (await res.json()) as SegmentResult;
+    throw new Error(`${res.status}`);
+  } catch {
+    // Fall back to cached segments for the specific k
+    const cached = await getCachedSegments();
+    const fallback = cached[`step2_segment_k${nClusters}`] ?? cached["step2_segment"];
+    if (fallback) return fallback as SegmentResult;
+    // Last resort: try the generic cached-outputs.json
+    const outputs = await getCachedOutputs();
+    if (outputs["step2_segment"]) return outputs["step2_segment"] as SegmentResult;
+    throw new Error("Segmentation failed and no cached fallback available");
+  }
 }
 
 export type DamAsset = {

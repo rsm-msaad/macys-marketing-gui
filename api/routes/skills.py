@@ -87,7 +87,7 @@ def run_segment(body: SegmentBody) -> dict:
             brief_suggestion = skill_result.get("brief_suggestion")
         else:
             # Deterministic fallback
-            hp = Path(__file__).resolve().parent.parent / "ai_engine" / "skills" / "segment-namer" / "helpers.py"
+            hp = REPO_ROOT / "ai_engine" / "skills" / "segment-namer" / "helpers.py"
             spec = importlib.util.spec_from_file_location("seg_namer_helpers", hp)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)

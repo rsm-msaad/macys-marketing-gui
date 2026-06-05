@@ -22,15 +22,18 @@ const SEGMENT_COLORS = [
   { border: "border-cyan-500/30", bg: "bg-cyan-50/40", text: "text-cyan-600" },
 ];
 
-function formatPct(n: number): string {
-  return `${(n * 100).toFixed(0)}%`;
+function formatPct(n: number | undefined | null): string {
+  const v = typeof n === "number" && !Number.isNaN(n) ? n : 0;
+  return `${(v * 100).toFixed(0)}%`;
 }
 
-function formatDollars(n: number): string {
-  return `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+function formatDollars(n: number | undefined | null): string {
+  const v = typeof n === "number" && !Number.isNaN(n) ? n : 0;
+  return `$${v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
 
-function LoyaltyBar({ mix }: { mix: Record<string, number> }) {
+function LoyaltyBar({ mix }: { mix: Record<string, number> | undefined | null }) {
+  if (!mix || typeof mix !== "object") return null;
   const tiers = Object.entries(mix).sort(([, a], [, b]) => b - a);
   return (
     <div className="mt-1.5 flex items-center gap-1.5 text-xs text-charcoal/55">
