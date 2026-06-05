@@ -649,27 +649,32 @@ export function SegmentationContent({
         </div>
       )}
 
-      {/* Brief suggestion callout (follows the selected segment, not the recommended one) */}
+      {/* Brief suggestion (right after recommendation, before approval flow) */}
       {selectionBriefSuggestion && !briefApplied && (
-        <div className="rounded-md border border-amber-300/50 bg-amber-50/40 px-3 py-2">
-          <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
-            Brief alignment note
+        <div className="rounded-lg border-2 border-amber-400 bg-amber-50 p-3 shadow-sm">
+          <div className="flex items-start gap-2">
+            <span className="mt-0.5 text-lg">&#9888;</span>
+            <div className="flex-1">
+              <div className="text-sm font-semibold text-amber-800">
+                Category mismatch: update the brief?
+              </div>
+              <div className="mt-1 text-[12px] leading-relaxed text-amber-900/70">
+                {selectionBriefSuggestion}
+              </div>
+              <button
+                type="button"
+                onClick={handleApplyBriefSuggestion}
+                className="mt-2 rounded-md bg-amber-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-amber-700 transition-colors"
+              >
+                Update brief to {selectedSegment?.top_category}
+              </button>
+            </div>
           </div>
-          <div className="mt-0.5 text-[12px] text-charcoal/70">
-            {selectionBriefSuggestion}
-          </div>
-          <button
-            type="button"
-            onClick={handleApplyBriefSuggestion}
-            className="mt-2 inline-flex items-center gap-1 rounded-md border border-amber-400/50 bg-amber-100/60 px-2.5 py-1 text-xs font-medium text-amber-800 hover:bg-amber-200/60"
-          >
-            Apply suggestion
-          </button>
         </div>
       )}
       {briefApplied && (
-        <div className="rounded-md border border-sage/30 bg-sage/10 px-3 py-2 text-xs text-sage">
-          Brief updated successfully. Downstream steps will use the adjusted brief.
+        <div className="rounded-lg border border-sage/30 bg-sage/10 p-3 text-sm font-medium text-sage">
+          &#10003; Brief updated. Downstream steps will use the adjusted category.
         </div>
       )}
 
