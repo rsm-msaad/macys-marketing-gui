@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { ArrowRightCircle, BarChart3, BookOpen, Bot, Check, Circle, Cog, Database, Factory, LayoutDashboard, Lock, MessageCircle, RotateCcw, Settings, TrendingUp, User, X, Brain } from "lucide-react";
+import { ArrowRightCircle, BarChart3, BookOpen, Bot, Check, ChevronDown, Circle, Cog, Database, Factory, LayoutDashboard, Lock, MessageCircle, RotateCcw, Settings, TrendingUp, User, X, Brain } from "lucide-react";
 
 import { ActionPanel } from "@/components/ActionPanel";
 import { FloatingPersonaAvatar } from "@/components/FloatingPersonaAvatar";
@@ -876,21 +876,91 @@ const STEP_TYPE_INFO: Record<string, { icon: LucideIconComponent; title: string;
   FULLY_AUTOMATED: { icon: Factory, title: "Fully Automated", color: "#444444", desc: "Runs without human involvement. Deterministic code handles the entire step." },
 };
 
-const STEP_TOOLS: Record<number, string[]> = {
-  2: ["Segmentation Engine (automation)"],
-  3: ["SKU Recommender (automation)", "macys.db catalog"],
-  4: ["find_dam_assets (Python helper)"],
-  5: ["Layout + Copy Generator (LLM skill)"],
-  6: ["Compliance Pre-Check (agentic LLM)", "check_pricing_conflicts (MCP tool)", "Approval Brief Generator (agentic LLM)"],
-  7: ["generate_locale_variants (Python helper)"],
-  8: ["Activation Scheduler (automation)"],
-  9: ["Analytics Engine (automation)"],
-  10: ["Report Generator (LLM skill)"],
+/*
+ * Per step component explanations. Each step lists its components
+ * (Human, Automation, Skill, MCP tool) with a plain English explanation
+ * of what that component does at that specific step.
+ */
+const STEP_COMPONENTS: Record<number, { label: string; type: "human" | "automation" | "skill" | "mcp"; explanation: string }[]> = {
+  1: [
+    { label: "Human", type: "human", explanation: "The marketing lead sets the campaign strategy and fills in the brief. No AI here on purpose, because the business should own the strategy." },
+  ],
+  2: [
+    { label: "Automation", type: "automation", explanation: "Groups all 50,000 customers into segments by how they shop, how recently they bought, how often, and how much they spend, using a clustering algorithm. It then works out each segment's favourite product category and an estimated value. All math, no AI." },
+    { label: "Skill", type: "skill", explanation: "Reads those computed segments and writes their names and descriptions in plain language, and recommends which segment best fits this campaign. It does no math, it only interprets the numbers the automation produced." },
+    { label: "Human", type: "human", explanation: "You choose which segment to target and can apply a suggested change to the brief." },
+  ],
+  3: [
+    { label: "Automation", type: "automation", explanation: "Scores all 2,000 products on stock levels, profit margin, vendor commitments, and seasonality, gives a small boost to products in the chosen segment's top category, and ranks them." },
+    { label: "MCP tool", type: "mcp", explanation: "Checks each product's advertised price against the minimum allowed price rules and removes any that would break them." },
+    { label: "Human", type: "human", explanation: "Reviews the ranked products and picks the final list." },
+  ],
+  4: [
+    { label: "Automation", type: "automation", explanation: "Searches the asset library by matching tags to the brief and category, scores the results for relevance, and returns the best candidates." },
+    { label: "Human", type: "human", explanation: "The designer picks the images to use." },
+  ],
+  5: [
+    { label: "Skill", type: "skill", explanation: "Drafts the copy for each placement, the tagline, body, call to action, and visual direction, based on the brief, the segment, and the chosen assets. If the AI is unavailable it falls back to a template." },
+    { label: "Human", type: "human", explanation: "The designer edits and approves the copy." },
+  ],
+  6: [
+    { label: "Skill (6a)", type: "skill", explanation: "Reads the campaign copy and checks it against Macy's brand, disclaimer, and pricing rules pulled from the knowledge base, then flags any risks with a recommended action. It can take several reasoning steps and calls the pricing tool to verify prices." },
+    { label: "MCP tool", type: "mcp", explanation: "Verifies the advertised prices against the pricing rules." },
+    { label: "Skill (6b)", type: "skill", explanation: "Writes the summary that goes to the VP and legal for sign off, covering the goal, the audience, expected return, and any risks, grounded in the campaign context and past benchmarks." },
+    { label: "Skill (6c)", type: "skill", explanation: "Reads the reviewer's comment and works out what kind of change it is, who should handle it, and how urgent, so the work routes back to the right person automatically." },
+  ],
+  7: [
+    { label: "Automation", type: "automation", explanation: "Builds the regional and language versions of the campaign using fixed region, language, and pricing tables." },
+    { label: "MCP tool", type: "mcp", explanation: "Generates the locale variants." },
+  ],
+  8: [
+    { label: "Automation", type: "automation", explanation: "Builds the launch schedule across channels using timezone math and frequency limits." },
+  ],
+  9: [
+    { label: "Automation", type: "automation", explanation: "Calculates the campaign's results, attributes performance to channels, and forecasts using a regression on past data." },
+  ],
+  10: [
+    { label: "Skill", type: "skill", explanation: "Writes the executive summary from the full audit trail and all the step outputs, drafting the key metrics and recommendations for the analyst to refine." },
+  ],
 };
+
+const COMPONENT_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  human: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200" },
+  automation: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  skill: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
+  mcp: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
+};
+
+function ComponentChip({ comp, isOpen, onToggle }: {
+  comp: { label: string; type: string; explanation: string };
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const colors = COMPONENT_COLORS[comp.type] ?? COMPONENT_COLORS.human;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-all duration-200 ${colors.bg} ${colors.text} ${colors.border} ${isOpen ? "ring-1 ring-current ring-offset-1" : "hover:brightness-95"}`}
+      >
+        {comp.label}
+        <ChevronDown size={10} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+      {isOpen && (
+        <div className={`mt-1.5 rounded-lg border ${colors.border} ${colors.bg} p-3 text-xs leading-relaxed ${colors.text} animate-in fade-in-0 slide-in-from-top-1 duration-200`}>
+          {comp.explanation}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function StepTypeCard({ stepNumber, label }: { stepNumber: number; label: string }) {
   const info = STEP_TYPE_INFO[label] ?? STEP_TYPE_INFO.HUMAN_ONLY;
-  const tools = STEP_TOOLS[stepNumber] ?? [];
+  const components = STEP_COMPONENTS[stepNumber] ?? [];
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
   return (
     <div>
       <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Step Type</div>
@@ -899,17 +969,20 @@ function StepTypeCard({ stepNumber, label }: { stepNumber: number; label: string
         <span className="text-[11px] font-bold" style={{ color: info.color }}>{info.title}</span>
       </div>
       <p className="text-xs leading-relaxed text-charcoal/50 mb-3">{info.desc}</p>
-      {tools.length > 0 && (
+      {components.length > 0 && (
         <>
-          <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-1.5">Tools Used</div>
-          <div className="space-y-1">
-            {tools.map((t) => (
-              <div key={t} className="flex items-start gap-1.5">
-                <span className="mt-0.5 h-1 w-1 rounded-full bg-teal-500 flex-shrink-0" />
-                <span className="text-xs text-charcoal/55 leading-tight">{t}</span>
-              </div>
+          <div className="text-xs font-bold uppercase tracking-[0.15em] text-charcoal/40 mb-2">Components</div>
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {components.map((comp, i) => (
+              <ComponentChip
+                key={`${comp.label}-${i}`}
+                comp={comp}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+              />
             ))}
           </div>
+          <p className="text-[10px] text-charcoal/35 italic">Click a component to learn what it does at this step</p>
         </>
       )}
     </div>
