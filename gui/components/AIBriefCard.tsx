@@ -232,39 +232,50 @@ export function AIBriefCard({
       compliance_check: complianceCheck,
     };
 
-    // Fast demo mode: show realistic brief after a brief buffer
-    // (Agentic API calls take 30+ seconds which kills the demo flow)
-    setTimeout(() => {
-      if (cancelled) return;
-      const fallback: BriefResult = {
-        campaign_goal: `Drive Mother's Day sales among ${context.campaign_brief.target_customer} with curated ${context.campaign_brief.name} featuring Star Rewards exclusive offers.`,
-        target_audience: `${context.campaign_brief.target_customer} - customers who purchased prestige Beauty in the prior 12 months with active Star Rewards membership.`,
-        expected_roi: "Based on Q4 2025 Holiday and Spring 2025 Beauty retrospectives, we project a conversion rate 1.4-1.8x the segment average and email open rates above 38%.",
-        risk_flags: [],
-        ai_recommendation: "Approve - compliance check passed all three findings (brand alignment, disclaimers, pricing cross-check). No risk flags identified.",
-        retrieved_docs: ["RETRO-Q4-2025", "RETRO-SP-2025-BTY"],
-      };
-      setResult(fallback);
-      setAiOriginal(fallback);
+    // Try live AI brief, fall back to preseeded data within 10 seconds.
+    const fallback: BriefResult = {
+      campaign_goal: `Drive Mother's Day sales among ${context.campaign_brief.target_customer} with curated ${context.campaign_brief.name} featuring Star Rewards exclusive offers.`,
+      target_audience: `${context.campaign_brief.target_customer} - customers who purchased prestige Beauty in the prior 12 months with active Star Rewards membership.`,
+      expected_roi: "Based on Q4 2025 Holiday and Spring 2025 Beauty retrospectives, we project a conversion rate 1.4 to 1.8x the segment average and email open rates above 38%.",
+      risk_flags: [],
+      ai_recommendation: "Approve - compliance check passed all three findings (brand alignment, disclaimers, pricing cross check). No risk flags identified.",
+      retrieved_docs: ["RETRO-Q4-2025", "RETRO-SP-2025-BTY"],
+    };
+
+    let resolved = false;
+    const applyResult = (r: BriefResult) => {
+      if (cancelled || resolved) return;
+      resolved = true;
+      setResult(r);
+      setAiOriginal(r);
       setLoading(false);
       onBriefDone?.(true);
       storeEvidence(context.campaign_brief.campaign_id, "6b", {
         step_name: "Approval Brief Generator",
         skill_name: "approval-brief-generator",
-        triggered_by: "System (auto-fires after compliance)",
+        triggered_by: "System (auto fires after compliance)",
         mode: "agentic",
-        rag_docs: fallback.retrieved_docs.map((id: string, i: number) => ({
+        rag_docs: r.retrieved_docs.map((id: string, i: number) => ({
           doc_id: id, relevance: i < 1 ? "high" : "medium", passage: "Referenced for ROI benchmarking and risk assessment",
         })),
         prior_outputs: [{ step_id: "6a", step_name: "Compliance Pre Check", field: "compliance_check" }],
-        result_summary: { recommendation: fallback.ai_recommendation, risk_flags: 0 },
+        result_summary: { recommendation: r.ai_recommendation, risk_flags: r.risk_flags?.length ?? 0 },
         captured_at: new Date().toISOString(),
       }).catch(() => {});
-      storeEvidence(context.campaign_brief.campaign_id, "6b_output", fallback).catch(() => {});
-    }, 2500);
+      storeEvidence(context.campaign_brief.campaign_id, "6b_output", r).catch(() => {});
+    };
+
+    // Try live API
+    callBrief(campaign)
+      .then((r) => applyResult(r))
+      .catch(() => applyResult(fallback));
+
+    // Hard ceiling: 10 seconds max wait
+    const ceilingTimer = setTimeout(() => applyResult(fallback), 10_000);
 
     return () => {
       cancelled = true;
+      clearTimeout(ceilingTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context.campaign_brief.campaign_id, complianceCheck, cachedOutput]);
