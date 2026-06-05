@@ -694,6 +694,8 @@ export async function postChat(personaId: string, message: string): Promise<Chat
 // ----- Skills -----
 export type Segment = {
   name: string;
+  display_name?: string;
+  descriptor?: string;
   definition: string;
   customer_count: number;
   avg_recency_days: number;
@@ -702,19 +704,28 @@ export type Segment = {
   top_category: string | null;
   top_category_lift: number;
   loyalty_mix: Record<string, number>;
+  response_likelihood: number;
+  estimated_value: number;
+  value_formula: string;
+  response_method: string;
 };
 
 export type SegmentResult = {
   ok: boolean;
   brief: string;
+  n_clusters?: number;
   segments: Segment[];
   total_clustered: number;
+  recommended_segment?: string | null;
+  recommendation_reason?: string;
+  brief_suggestion?: string | null;
+  naming_source?: "skill" | "fallback";
 };
 
-export async function runSegment(brief: string): Promise<SegmentResult> {
+export async function runSegment(brief: string, nClusters = 3): Promise<SegmentResult> {
   return callWithFallback<SegmentResult>(
     "/skills/segment",
-    { brief },
+    { brief, n_clusters: nClusters },
     "step2_segment",
   );
 }

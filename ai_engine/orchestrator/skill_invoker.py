@@ -120,6 +120,10 @@ SKILL_PREFETCH_CONFIG: dict[str, dict[str, Any]] = {
         ],
         "mcp_calls": [],
     },
+    "segment-namer": {
+        "rag_queries": [],
+        "mcp_calls": [],
+    },
 }
 
 # Where each skill writes its result inside the workflow state.
@@ -131,6 +135,7 @@ SKILL_OUTPUT_FIELD: dict[str, str] = {
     "revision-router": "revision_routing",
     "localization-generator": "localized_variants",
     "activation-scheduler": "activation_schedule",
+    "segment-namer": "segment_naming",
 }
 
 # Status to set after the skill completes, so the routing table can
@@ -144,6 +149,7 @@ SKILL_STATUS_AFTER: dict[str, str] = {
     "revision-router": "revision_requested",
     "localization-generator": "in_localization",
     "activation-scheduler": "scheduled",
+    "segment-namer": "segment_named",
 }
 
 # MCP tool registry. Populated lazily on first access to avoid importing

@@ -1,69 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
+import { Clock, Info, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { runSegment, type Segment, type CampaignBrief } from "@/lib/api";
+import { runSegment, updateCampaign, type Segment, type SegmentResult, type CampaignBrief } from "@/lib/api";
 import { ActionFooter, ContextStack, StepVideoBackground, type StepContentProps } from "./shared";
 
-/**
- * Pick the segment whose top_category best matches the campaign brief.
- * Falls back to highest overall lift, then highest monetary value.
- */
-function pickRecommendedIndex(segments: Segment[], brief: CampaignBrief): number {
-  if (segments.length === 0) return 0;
-  const text = `${brief.name} ${brief.objective}`.toLowerCase();
+const CLUSTER_OPTIONS = [2, 3, 4, 5, 6, 7, 8] as const;
 
-  // Find segments whose top_category appears in the campaign text.
-  const matches: { idx: number; lift: number; monetary: number }[] = [];
-  for (let i = 0; i < segments.length; i++) {
-    const cat = segments[i].top_category;
-    if (cat && text.includes(cat.toLowerCase())) {
-      matches.push({ idx: i, lift: segments[i].top_category_lift, monetary: segments[i].avg_monetary });
-    }
-  }
-
-  if (matches.length > 0) {
-    // Pick the one with the highest lift for the matching category.
-    // Tie-break by monetary value.
-    matches.sort((a, b) => b.lift - a.lift || b.monetary - a.monetary);
-    return matches[0].idx;
-  }
-
-  // No category match: fall back to highest overall lift, then monetary.
-  let best = 0;
-  for (let i = 1; i < segments.length; i++) {
-    const curr = segments[i];
-    const prev = segments[best];
-    if (
-      curr.top_category_lift > prev.top_category_lift ||
-      (curr.top_category_lift === prev.top_category_lift && curr.avg_monetary > prev.avg_monetary)
-    ) {
-      best = i;
-    }
-  }
-  return best;
-}
-
-const SEGMENT_ICONS = [Users, Clock, Search];
+const SEGMENT_ICONS = [Users, Clock, Search, Sparkles, Users, Clock, Search, Sparkles];
 
 const SEGMENT_COLORS = [
   { border: "border-teal-600/30", bg: "bg-teal-50/40", text: "text-teal-600" },
-  {
-    border: "border-mustard/30",
-    bg: "bg-mustard/10",
-    text: "text-mustard",
-  },
-  {
-    border: "border-violet-500/30",
-    bg: "bg-violet-50/40",
-    text: "text-violet-600",
-  },
+  { border: "border-mustard/30", bg: "bg-mustard/10", text: "text-mustard" },
+  { border: "border-violet-500/30", bg: "bg-violet-50/40", text: "text-violet-600" },
+  { border: "border-blue-500/30", bg: "bg-blue-50/40", text: "text-blue-600" },
+  { border: "border-rose-500/30", bg: "bg-rose-50/40", text: "text-rose-600" },
+  { border: "border-emerald-500/30", bg: "bg-emerald-50/40", text: "text-emerald-600" },
+  { border: "border-orange-500/30", bg: "bg-orange-50/40", text: "text-orange-600" },
+  { border: "border-cyan-500/30", bg: "bg-cyan-50/40", text: "text-cyan-600" },
 ];
 
 function formatPct(n: number): string {
   return `${(n * 100).toFixed(0)}%`;
+}
+
+function formatDollars(n: number): string {
+  return `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
 
 function LoyaltyBar({ mix }: { mix: Record<string, number> }) {
@@ -76,6 +40,27 @@ function LoyaltyBar({ mix }: { mix: Record<string, number> }) {
         </span>
       ))}
     </div>
+  );
+}
+
+function ValueTooltip({ formula }: { formula: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-block">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="ml-1 inline-flex items-center text-charcoal/40 hover:text-charcoal/70"
+        title="How this value was estimated"
+      >
+        <Info className="h-3 w-3" />
+      </button>
+      {open && (
+        <span className="absolute bottom-full left-0 z-10 mb-1 w-56 rounded border border-charcoal/15 bg-white p-2 text-[10px] leading-snug text-charcoal/70 shadow-md">
+          {formula}
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -96,6 +81,7 @@ function SegmentCard({
 }) {
   const Icon = SEGMENT_ICONS[index % SEGMENT_ICONS.length];
   const color = SEGMENT_COLORS[index % SEGMENT_COLORS.length];
+  const title = segment.display_name || segment.name;
 
   return (
     <div
@@ -111,8 +97,13 @@ function SegmentCard({
         <Icon className={`mt-0.5 h-4 w-4 flex-shrink-0 ${selected ? color.text : "text-charcoal/45"}`} />
         <div className="min-w-0 flex-1">
           <div className="font-serif text-base font-semibold text-charcoal">
-            {segment.name}
+            {title}
           </div>
+          {segment.descriptor && (
+            <div className="mt-0.5 text-[11px] italic text-charcoal/55">
+              {segment.descriptor}
+            </div>
+          )}
           <div className="mt-0.5 text-[12px] text-charcoal/55">
             {segment.customer_count.toLocaleString()} customers
           </div>
@@ -129,10 +120,7 @@ function SegmentCard({
         )}
       </div>
 
-      <p className="mt-2 text-[12px] leading-relaxed text-charcoal/70">
-        {segment.definition}
-      </p>
-
+      {/* RFM profile */}
       <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
         <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
           <div className="text-[11px] font-semibold text-charcoal">
@@ -154,11 +142,29 @@ function SegmentCard({
         </div>
       </div>
 
+      {/* Top category */}
       {segment.top_category && (
         <div className="mt-1.5 text-xs text-charcoal/55">
           Top category: {segment.top_category} (+{(segment.top_category_lift * 100).toFixed(0)}% lift)
         </div>
       )}
+
+      {/* Response likelihood and estimated value */}
+      <div className="mt-2 grid grid-cols-2 gap-2 text-center">
+        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
+          <div className="text-[11px] font-semibold text-charcoal">
+            {formatPct(segment.response_likelihood)}
+          </div>
+          <div className="text-xs text-charcoal/50">Response rate</div>
+        </div>
+        <div className="rounded border border-charcoal/10 bg-white px-1.5 py-1">
+          <div className="text-[11px] font-semibold text-charcoal">
+            {formatDollars(segment.estimated_value)}
+            <ValueTooltip formula={segment.value_formula} />
+          </div>
+          <div className="text-xs text-charcoal/50">Est. value</div>
+        </div>
+      </div>
 
       <LoyaltyBar mix={segment.loyalty_mix} />
 
@@ -187,12 +193,15 @@ export function SegmentationContent({
     | undefined;
   const hasExistingSelection = existingOutput && "name" in existingOutput;
 
-  const [segments, setSegments] = useState<Segment[] | null>(null);
+  const [segmentResult, setSegmentResult] = useState<SegmentResult | null>(null);
+  const segments = segmentResult?.segments ?? null;
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRerun, setShowRerun] = useState(false);
   const [overrideComment, setOverrideComment] = useState("");
+  const [nClusters, setNClusters] = useState(3);
+  const [briefApplied, setBriefApplied] = useState(false);
 
   // Extract category from brief for context display
   const briefCategory = (() => {
@@ -203,15 +212,17 @@ export function SegmentationContent({
     return null;
   })();
 
-  async function handleBuildSegments() {
+  async function handleBuildSegments(clusters?: number) {
+    const k = clusters ?? nClusters;
     setRunning(true);
     setError(null);
-    setSegments(null);
+    setSegmentResult(null);
     setSelectedIdx(null);
+    setBriefApplied(false);
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
-      const result = await runSegment(brief);
-      setSegments(result.segments);
+      const result = await runSegment(brief, k);
+      setSegmentResult(result);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -219,12 +230,51 @@ export function SegmentationContent({
     }
   }
 
+  function handleClusterChange(k: number) {
+    setNClusters(k);
+    if (segments) {
+      // Segments already shown, recompute with new cluster count
+      handleBuildSegments(k);
+    }
+  }
+
+  async function handleApplyBriefSuggestion() {
+    if (!segmentResult?.brief_suggestion) return;
+    try {
+      await updateCampaign(context.campaign_brief.campaign_id, {
+        name: context.campaign_brief.name,
+        objective: context.campaign_brief.objective + " " + segmentResult.brief_suggestion,
+      });
+      setBriefApplied(true);
+    } catch {
+      // Silent, user can try again
+    }
+  }
+
+  // Find the recommended index from the backend response
+  function getRecommendedIdx(): number {
+    if (!segments || segments.length === 0) return 0;
+    if (segmentResult?.recommended_segment) {
+      const idx = segments.findIndex((s) => s.name === segmentResult.recommended_segment);
+      if (idx >= 0) return idx;
+    }
+    // Fallback: highest estimated_value
+    let best = 0;
+    for (let i = 1; i < segments.length; i++) {
+      if (segments[i].estimated_value > segments[best].estimated_value) {
+        best = i;
+      }
+    }
+    return best;
+  }
+
   // If already selected and not re-running, show the selection summary.
   if (hasExistingSelection && !showRerun && segments === null) {
-    const name = String(existingOutput.name ?? "VIP Loyalists");
+    const name = String(existingOutput.display_name ?? existingOutput.name ?? "VIP Loyalists");
     const count = Number(existingOutput.customer_count ?? 0);
     const why = String(
       existingOutput.why ??
+        existingOutput.descriptor ??
         existingOutput.definition ??
         "Selected by campaign manager.",
     );
@@ -270,7 +320,7 @@ export function SegmentationContent({
                 className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-white px-3 py-1.5 text-xs font-medium text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
               >
                 <RotateCcw className="h-3 w-3" />
-                Re-run segmentation
+                Re run segmentation
               </button>
             )}
           </div>
@@ -294,7 +344,7 @@ export function SegmentationContent({
             Reading from Step 1: Campaign Brief
           </div>
           <div className="mt-0.5 text-[11px] text-charcoal/65">
-            Category: <strong>{briefCategory}</strong> - segmentation will recommend the segment with highest {briefCategory} category lift.
+            Category: <strong>{briefCategory}</strong> — segmentation will recommend the segment with highest {briefCategory} category lift.
           </div>
         </div>
       )}
@@ -307,14 +357,38 @@ export function SegmentationContent({
           </span>
         </div>
         <p className="text-sm text-charcoal/70">
-          Runs k-means clustering on 50,000 customer RFM profiles. Deterministic - same data produces the same 3 segments every time.
+          Runs k means clustering on 50,000 customer RFM profiles. Deterministic: same data produces the same segments every time.
         </p>
+
+        {/* Cluster count selector */}
+        <div className="mt-3">
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-charcoal/50">
+            Number of clusters
+          </div>
+          <div className="flex gap-1.5">
+            {CLUSTER_OPTIONS.map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => handleClusterChange(k)}
+                disabled={running}
+                className={`rounded px-2.5 py-1 text-xs font-medium transition-all ${
+                  nClusters === k
+                    ? "bg-teal-600 text-white"
+                    : "border border-charcoal/15 bg-white text-charcoal/65 hover:border-charcoal/30 hover:text-charcoal"
+                } disabled:opacity-50`}
+              >
+                {k}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Before segments are built */}
         {!segments && !running && (
           <button
             type="button"
-            onClick={handleBuildSegments}
+            onClick={() => handleBuildSegments()}
             disabled={!canAct}
             className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
           >
@@ -337,7 +411,7 @@ export function SegmentationContent({
             {error}
             <button
               type="button"
-              onClick={handleBuildSegments}
+              onClick={() => handleBuildSegments()}
               className="ml-2 underline hover:no-underline"
             >
               Retry
@@ -345,14 +419,29 @@ export function SegmentationContent({
           </div>
         )}
 
-        {/* Segment cards - staggered entrance animation */}
+        {/* Naming source indicator */}
+        {segmentResult && (
+          <div className="mt-2 flex items-center gap-2">
+            {segmentResult.naming_source === "skill" ? (
+              <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-teal-700">
+                AI named
+              </span>
+            ) : (
+              <span className="rounded-full bg-charcoal/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-charcoal/55">
+                Rule based names
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Segment cards */}
         {segments && segments.length > 0 && (() => {
-          const recIdx = pickRecommendedIndex(segments, context.campaign_brief);
+          const recIdx = getRecommendedIdx();
           return (
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className={`mt-4 grid gap-3 ${segments.length <= 3 ? "md:grid-cols-3" : segments.length <= 4 ? "md:grid-cols-2 lg:grid-cols-4" : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"}`}>
               {segments.map((seg, i) => (
                 <motion.div
-                  key={seg.name}
+                  key={`${seg.name}-${i}`}
                   initial={{ opacity: 0, y: 40, scale: 0.85, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                   transition={{
@@ -376,9 +465,45 @@ export function SegmentationContent({
         })()}
       </div>
 
+      {/* Recommendation reason */}
+      {segmentResult?.recommendation_reason && segments && segments.length > 0 && (
+        <div className="rounded-md border border-teal-200/50 bg-teal-50/30 px-3 py-2">
+          <div className="text-xs font-semibold uppercase tracking-wider text-teal-600">
+            Recommendation
+          </div>
+          <div className="mt-0.5 text-[12px] text-charcoal/70">
+            {segmentResult.recommendation_reason}
+          </div>
+        </div>
+      )}
+
+      {/* Brief suggestion callout */}
+      {segmentResult?.brief_suggestion && !briefApplied && (
+        <div className="rounded-md border border-amber-300/50 bg-amber-50/40 px-3 py-2">
+          <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
+            Brief alignment note
+          </div>
+          <div className="mt-0.5 text-[12px] text-charcoal/70">
+            {segmentResult.brief_suggestion}
+          </div>
+          <button
+            type="button"
+            onClick={handleApplyBriefSuggestion}
+            className="mt-2 inline-flex items-center gap-1 rounded-md border border-amber-400/50 bg-amber-100/60 px-2.5 py-1 text-xs font-medium text-amber-800 hover:bg-amber-200/60"
+          >
+            Apply suggestion
+          </button>
+        </div>
+      )}
+      {briefApplied && (
+        <div className="rounded-md border border-sage/30 bg-sage/10 px-3 py-2 text-xs text-sage">
+          Brief updated successfully. Downstream steps will use the adjusted brief.
+        </div>
+      )}
+
       {/* Override comment when picking a non-recommended segment */}
       {selectedSegment && segments && (() => {
-        const recIdx = pickRecommendedIndex(segments, context.campaign_brief);
+        const recIdx = getRecommendedIdx();
         const isOverride = selectedIdx !== recIdx;
         return (
           <>
@@ -389,7 +514,7 @@ export function SegmentationContent({
                   Override reason (visible to manager)
                 </div>
                 <p className="mb-2 text-[11px] text-charcoal/55">
-                  You selected <strong>{selectedSegment.name}</strong> instead of the recommended <strong>{segments[recIdx].name}</strong>. Please explain why.
+                  You selected <strong>{selectedSegment.display_name || selectedSegment.name}</strong> instead of the recommended <strong>{segments[recIdx].display_name || segments[recIdx].name}</strong>. Please explain why.
                 </p>
                 <textarea
                   value={overrideComment}
@@ -404,13 +529,15 @@ export function SegmentationContent({
             <ActionFooter
               canAct={canAct}
               busy={busy || (isOverride && overrideComment.trim().length < 5)}
-              cta={`Approve: ${selectedSegment.name}`}
+              cta={`Approve: ${selectedSegment.display_name || selectedSegment.name}`}
               ctaKind="approve"
               hint={isOverride && overrideComment.trim().length < 5 ? "Add an override reason to continue" : undefined}
               stepNumber={2}
               onClick={() =>
                 onApprove("Approve Segment", {
                   name: selectedSegment.name,
+                  display_name: selectedSegment.display_name || selectedSegment.name,
+                  descriptor: selectedSegment.descriptor || "",
                   definition: selectedSegment.definition,
                   customer_count: selectedSegment.customer_count,
                   avg_recency_days: selectedSegment.avg_recency_days,
@@ -418,6 +545,8 @@ export function SegmentationContent({
                   avg_monetary: selectedSegment.avg_monetary,
                   top_category: selectedSegment.top_category,
                   top_category_lift: selectedSegment.top_category_lift,
+                  estimated_value: selectedSegment.estimated_value,
+                  response_likelihood: selectedSegment.response_likelihood,
                   override_reason: isOverride ? overrideComment.trim() : null,
                   recommended_segment: segments[recIdx].name,
                   was_override: isOverride,

@@ -18,6 +18,7 @@ router = APIRouter(prefix="/skills", tags=["skills"])
 
 class SegmentBody(BaseModel):
     brief: str = Field(default="Mother's Day Beauty Event")
+    n_clusters: int = Field(default=3, ge=2, le=8)
 
 
 class DamBody(BaseModel):
@@ -39,12 +40,68 @@ class AnalyzeBody(BaseModel):
 @router.post("/segment")
 def run_segment(body: SegmentBody) -> dict:
     try:
-        segments = SEGMENT.build_segments(body.brief)
+        segments = SEGMENT.build_segments(body.brief, n_clusters=body.n_clusters)
+
+        # Try LLM naming skill, fall back to deterministic
+        skill_result = None
+        try:
+            import sys
+            ai_root = str(Path(__file__).resolve().parent.parent / "ai_engine")
+            if ai_root not in sys.path:
+                sys.path.insert(0, ai_root)
+            from orchestrator.skill_invoker import invoke_skill
+
+            state = {
+                "campaign_id": "segment-naming",
+                "status": "segment_complete",
+                "campaign": {"brief": body.brief, "category": ""},
+                "segments": segments,
+            }
+            result = invoke_skill("segment-namer", state)
+            skill_result = result.get("segment_naming")
+        except Exception:
+            pass  # Skill unavailable, use fallback below
+
+        # Apply skill names or fallback
+        if skill_result and "segments" in skill_result:
+            name_map = {s["original_name"]: s for s in skill_result["segments"]}
+            for seg in segments:
+                if seg["name"] in name_map:
+                    seg["display_name"] = name_map[seg["name"]].get("display_name", seg["name"])
+                    seg["descriptor"] = name_map[seg["name"]].get("descriptor", "")
+                else:
+                    seg["display_name"] = seg["name"]
+                    seg["descriptor"] = ""
+            recommended = skill_result.get("recommended_segment")
+            recommendation_reason = skill_result.get("recommendation_reason", "")
+            brief_suggestion = skill_result.get("brief_suggestion")
+        else:
+            # Deterministic fallback
+            hp = Path(__file__).resolve().parent.parent / "ai_engine" / "skills" / "segment-namer" / "helpers.py"
+            spec = importlib.util.spec_from_file_location("seg_namer_helpers", hp)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            fb_names = mod.fallback_names(segments)
+            for seg, fb in zip(segments, fb_names):
+                seg["display_name"] = fb["display_name"]
+                seg["descriptor"] = fb["descriptor"]
+
+            fb_rec = mod.fallback_recommendation(segments, body.brief)
+            recommended = fb_rec["recommended_segment"]
+            recommendation_reason = fb_rec["recommendation_reason"]
+            brief_suggestion = fb_rec["brief_suggestion"]
+
         return {
             "ok": True,
             "brief": body.brief,
+            "n_clusters": body.n_clusters,
             "segments": segments,
             "total_clustered": sum(s["customer_count"] for s in segments),
+            "recommended_segment": recommended,
+            "recommendation_reason": recommendation_reason,
+            "brief_suggestion": brief_suggestion,
+            "naming_source": "skill" if skill_result else "fallback",
         }
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))

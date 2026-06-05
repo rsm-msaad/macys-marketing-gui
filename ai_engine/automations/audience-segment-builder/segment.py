@@ -287,6 +287,100 @@ def profile_cluster(
     }
 
 
+def estimate_segment_value(
+    segment: dict,
+    total_customers: int,
+) -> dict:
+    """Compute a deterministic value estimate for a segment.
+
+    Formula:
+        response_likelihood = normalized(recency_score + frequency_score) capped to 5% to 35%
+        estimated_value = customer_count * response_likelihood * avg_monetary
+
+    Recency score: lower recency (more recent) = higher score.
+    Frequency score: higher frequency = higher score.
+    Both are min-max normalized against reasonable bounds, then averaged and
+    mapped to a 5% to 35% campaign response range.
+
+    The 5% to 35% range is a reasoned assumption: direct mail campaigns
+    typically see 1% to 5% response; email to an engaged loyalty base can
+    reach 15% to 40%. We use the middle of that combined range.
+    """
+    recency = segment.get("avg_recency_days", 180)
+    frequency = segment.get("avg_frequency", 1)
+    count = segment.get("customer_count", 0)
+    avg_monetary = segment.get("avg_monetary", 0)
+
+    # Recency score: 0 days = 1.0, 365+ days = 0.0
+    recency_score = max(0.0, min(1.0, 1.0 - recency / 365.0))
+    # Frequency score: 1 txn = 0.0, 20+ txns = 1.0
+    frequency_score = max(0.0, min(1.0, (frequency - 1.0) / 19.0))
+    # Combined, mapped to 5% to 35% range
+    combined = (recency_score + frequency_score) / 2.0
+    response_likelihood = 0.05 + combined * 0.30  # 5% floor, 35% ceiling
+
+    estimated_value = count * response_likelihood * avg_monetary
+
+    return {
+        "response_likelihood": round(response_likelihood, 4),
+        "estimated_value": round(estimated_value, 2),
+        "formula": "customer_count * response_likelihood * avg_monetary",
+        "response_method": "Recency and frequency normalized, mapped to 5% to 35% campaign response range",
+    }
+
+
+def name_clusters_generic(centroids_orig: np.ndarray) -> list[str]:
+    """Generate meaningful names for any number of clusters from RFM centroids.
+
+    Uses a two-part label: value tier (from monetary rank) plus engagement
+    level (from recency and frequency). Always produces distinct names.
+    """
+    n = centroids_orig.shape[0]
+    monetary = centroids_orig[:, 2]
+    recency = centroids_orig[:, 0]
+    frequency = centroids_orig[:, 1]
+
+    # Rank by monetary (descending)
+    monetary_rank = np.argsort(np.argsort(-monetary))  # 0 = highest monetary
+
+    # Engagement: low recency + high frequency = engaged
+    engagement = (1.0 - recency / max(recency.max(), 1)) + (
+        frequency / max(frequency.max(), 1)
+    )
+
+    value_tiers = [
+        "Premium",
+        "High Value",
+        "Mid Value",
+        "Moderate",
+        "Value",
+        "Budget",
+        "Economy",
+        "Entry",
+    ]
+    engagement_labels = [
+        "Loyalists",
+        "Engaged",
+        "Active",
+        "Occasional",
+        "Infrequent",
+        "Dormant",
+        "Lapsed",
+        "New",
+    ]
+
+    names = []
+    for i in range(n):
+        rank = int(monetary_rank[i])
+        tier = value_tiers[min(rank, len(value_tiers) - 1)]
+        # Engagement ranking within this cluster
+        eng_rank = int(np.argsort(np.argsort(-engagement))[i])
+        eng = engagement_labels[min(eng_rank, len(engagement_labels) - 1)]
+        names.append(f"{tier} {eng}")
+
+    return names
+
+
 def _definition_from_centroid(name: str, centroid: np.ndarray) -> str:
     r, f, m = centroid
     return (
@@ -316,9 +410,11 @@ def build_segments(
         labels, centroids = cluster_rfm(
             rfm, n_clusters=n_clusters, random_state=random_state
         )
-        names = name_clusters(centroids) if n_clusters == 3 else [
-            f"Cluster {i + 1}" for i in range(n_clusters)
-        ]
+        names = (
+            name_clusters(centroids)
+            if n_clusters == 3
+            else name_clusters_generic(centroids)
+        )
 
         overall_share = _overall_category_share(conn)
 
@@ -336,6 +432,15 @@ def build_segments(
                     **profile,
                 }
             )
+
+        # After profile is built, add value estimate
+        total = sum(s["customer_count"] for s in segments) if segments else 1
+        for seg in segments:
+            val = estimate_segment_value(seg, total)
+            seg["response_likelihood"] = val["response_likelihood"]
+            seg["estimated_value"] = val["estimated_value"]
+            seg["value_formula"] = val["formula"]
+            seg["response_method"] = val["response_method"]
 
         priority = {
             "VIP Loyalists": 0,

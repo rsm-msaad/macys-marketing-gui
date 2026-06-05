@@ -231,6 +231,91 @@ def test_name_clusters_falls_back_when_pattern_breaks():
     assert "Low Value" in names[2]
 
 
+# ---------- estimate_segment_value ----------
+
+
+def test_estimate_segment_value_happy_path():
+    seg = {
+        "avg_recency_days": 0.0,
+        "avg_frequency": 20.0,
+        "customer_count": 100,
+        "avg_monetary": 500.0,
+    }
+    result = segment.estimate_segment_value(seg, total_customers=300)
+    # recency_score = 1.0, frequency_score = 1.0, combined = 1.0
+    # response_likelihood = 0.05 + 1.0 * 0.30 = 0.35
+    assert result["response_likelihood"] == pytest.approx(0.35, abs=0.001)
+    # estimated_value = 100 * 0.35 * 500 = 17500
+    assert result["estimated_value"] == pytest.approx(17500.0, abs=0.01)
+    assert "formula" in result
+    assert "response_method" in result
+
+
+def test_estimate_segment_value_floor_for_worst_case():
+    """Lapsed customer with high recency and low frequency hits floor."""
+    seg = {
+        "avg_recency_days": 400.0,
+        "avg_frequency": 1.0,
+        "customer_count": 50,
+        "avg_monetary": 100.0,
+    }
+    result = segment.estimate_segment_value(seg, total_customers=200)
+    # recency_score = max(0, 1 - 400/365) = 0.0, frequency_score = 0.0
+    # response_likelihood = 0.05 (floor)
+    assert result["response_likelihood"] == pytest.approx(0.05, abs=0.001)
+    assert result["estimated_value"] == pytest.approx(50 * 0.05 * 100, abs=0.01)
+
+
+def test_estimate_segment_value_defaults_on_empty_segment():
+    result = segment.estimate_segment_value({}, total_customers=1)
+    # Defaults: recency=180, frequency=1, count=0, monetary=0
+    assert result["estimated_value"] == 0.0
+    assert 0.05 <= result["response_likelihood"] <= 0.35
+
+
+# ---------- name_clusters_generic ----------
+
+
+def test_name_clusters_generic_returns_correct_count():
+    centroids = np.array([
+        [10.0, 20.0, 5000.0],
+        [200.0, 5.0, 800.0],
+        [400.0, 2.0, 200.0],
+        [600.0, 1.0, 50.0],
+    ])
+    names = segment.name_clusters_generic(centroids)
+    assert len(names) == 4
+    # All names should be distinct
+    assert len(set(names)) == 4
+
+
+def test_name_clusters_generic_two_clusters():
+    centroids = np.array([
+        [10.0, 15.0, 3000.0],
+        [300.0, 2.0, 100.0],
+    ])
+    names = segment.name_clusters_generic(centroids)
+    assert len(names) == 2
+    assert len(set(names)) == 2
+    # Highest monetary cluster should get "Premium" tier
+    assert "Premium" in names[0]
+
+
+def test_name_clusters_generic_names_contain_tier_and_engagement():
+    centroids = np.array([
+        [50.0, 10.0, 2000.0],
+        [200.0, 3.0, 500.0],
+        [500.0, 1.0, 100.0],
+        [100.0, 8.0, 1500.0],
+        [300.0, 2.0, 300.0],
+    ])
+    names = segment.name_clusters_generic(centroids)
+    assert len(names) == 5
+    # Each name should have a tier part and an engagement part (2-3 words)
+    for name in names:
+        assert len(name.split()) >= 2
+
+
 # ---------- build_segments: full pipeline contract ----------
 
 
@@ -249,6 +334,10 @@ REQUIRED_FIELDS = {
     "top_category",
     "top_category_lift",
     "loyalty_mix",
+    "response_likelihood",
+    "estimated_value",
+    "value_formula",
+    "response_method",
 }
 
 
@@ -331,6 +420,30 @@ def test_build_segments_lapsed_segment_top_category_is_home(seeded_db: Path):
     assert lapsed["top_category_lift"] > 5.0  # 100% vs ~10% is a very large lift
     assert lapsed["loyalty_mix"] == {"Bronze": 100.0}
     assert lapsed["customer_count"] == 3
+
+
+def test_build_segments_value_estimate_fields_present(seeded_db: Path):
+    """Every segment dict must contain the new value estimate fields."""
+    segments = segment.build_segments("brief", db_path=seeded_db)
+    for seg in segments:
+        assert "response_likelihood" in seg
+        assert "estimated_value" in seg
+        assert "value_formula" in seg
+        assert "response_method" in seg
+        assert 0.05 <= seg["response_likelihood"] <= 0.35
+        assert seg["estimated_value"] >= 0.0
+
+
+def test_build_segments_with_custom_k(seeded_db: Path):
+    """build_segments with n_clusters=2 uses name_clusters_generic."""
+    segments = segment.build_segments("brief", db_path=seeded_db, n_clusters=2)
+    assert len(segments) == 2
+    # Names should not be the k=3 friendly names
+    names = [s["name"] for s in segments]
+    assert "VIP Loyalists" not in names
+    # Each name should have a tier part and an engagement part (2-3 words)
+    for name in names:
+        assert len(name.split()) >= 2
 
 
 def test_build_segments_missing_db_raises(tmp_path: Path):
