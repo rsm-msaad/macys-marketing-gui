@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Info, MessageSquare, Play, Search, Sparkles, Users, RotateCcw } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Clock, Info, MessageSquare, Play, Search, Sparkles, Users, RotateCcw, X } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { API_BASE, runSegment, updateCampaign, type Segment, type SegmentResult, type CampaignBrief } from "@/lib/api";
@@ -79,34 +80,39 @@ function SegmentDetailOverlay({ segment, color, onClose }: {
   const mix = segment.loyalty_mix;
   const tiers = mix ? Object.entries(mix).sort(([, a], [, b]) => b - a) : [];
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div
-        className={`relative mx-4 w-full max-w-md rounded-xl border ${color.border} bg-white p-5 shadow-2xl`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
-        <button onClick={onClose} className="absolute right-3 top-3 text-charcoal/40 hover:text-charcoal text-lg leading-none">&times;</button>
+  const content = (
+    <div className="fixed inset-0 z-[100] flex flex-col bg-white" style={{ isolation: "isolate" }}>
+      {/* Header bar */}
+      <div className={`flex items-center justify-between border-b px-5 py-3 ${color.bg}`}>
+        <div>
+          <div className={`font-serif text-lg font-bold ${color.text}`}>{title}</div>
+          <div className="text-xs text-charcoal/55">{segment.customer_count.toLocaleString()} customers</div>
+        </div>
+        <button onClick={onClose} className="rounded-full p-1.5 hover:bg-charcoal/10 transition-colors">
+          <X className="h-5 w-5 text-charcoal/50" />
+        </button>
+      </div>
 
-        {/* Title */}
-        <div className={`font-serif text-xl font-bold ${color.text}`}>{title}</div>
-        <div className="text-sm text-charcoal/60">{segment.customer_count.toLocaleString()} customers</div>
+      {/* Scrollable body */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+        {/* Descriptor */}
         {segment.descriptor && (
-          <div className="mt-1 text-xs italic text-charcoal/50">{segment.descriptor}</div>
+          <p className="text-sm italic text-charcoal/60">{segment.descriptor}</p>
         )}
 
         {/* Category */}
-        <div className="mt-3">
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">Top Category</div>
           {hasStrongCat ? (
-            <div className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${color.border} ${color.bg} ${color.text}`}>
+            <div className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold ${color.border} ${color.bg} ${color.text}`}>
               {segment.top_category} +{liftPct}% lift
             </div>
           ) : (
-            <div className="inline-flex items-center rounded-full border border-charcoal/10 bg-charcoal/5 px-3 py-1 text-xs text-charcoal/50">
+            <div className="inline-flex items-center rounded-full border border-charcoal/10 bg-charcoal/5 px-3 py-1 text-sm text-charcoal/50">
               No strong category preference
             </div>
           )}
-          <p className="mt-1 text-[11px] leading-relaxed text-charcoal/50">
+          <p className="mt-1.5 text-xs leading-relaxed text-charcoal/50">
             {hasStrongCat
               ? `This segment buys ${liftPct}% more ${segment.top_category} than the overall customer base. Lift is calculated as (segment category share minus overall share) divided by overall share. Above 10% indicates a meaningful preference.`
               : `No product category stands out for this segment. The difference between this segment's category mix and the overall average is less than 10%.`
@@ -115,43 +121,43 @@ function SegmentDetailOverlay({ segment, color, onClose }: {
         </div>
 
         {/* RFM */}
-        <div className="mt-4">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">RFM Profile</div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
-              <div className="text-lg font-bold text-charcoal">{segment.avg_recency_days}d</div>
-              <div className="text-[10px] font-semibold text-charcoal/50">Recency</div>
-              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Days since last purchase. Lower is better.</div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-2">RFM Profile</div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-xl border border-charcoal/10 bg-cream/30 p-3 text-center">
+              <div className="text-2xl font-bold text-charcoal">{segment.avg_recency_days}d</div>
+              <div className="text-xs font-semibold text-charcoal/50 mt-0.5">Recency</div>
+              <div className="mt-1 text-[11px] leading-snug text-charcoal/40">Days since last purchase. Lower means more recently active.</div>
             </div>
-            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
-              <div className="text-lg font-bold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
-              <div className="text-[10px] font-semibold text-charcoal/50">Frequency</div>
-              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Avg purchases per customer. Higher is better.</div>
+            <div className="rounded-xl border border-charcoal/10 bg-cream/30 p-3 text-center">
+              <div className="text-2xl font-bold text-charcoal">{segment.avg_frequency.toFixed(1)}x</div>
+              <div className="text-xs font-semibold text-charcoal/50 mt-0.5">Frequency</div>
+              <div className="mt-1 text-[11px] leading-snug text-charcoal/40">Avg purchases per customer. Higher means they buy more often.</div>
             </div>
-            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
-              <div className="text-lg font-bold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
-              <div className="text-[10px] font-semibold text-charcoal/50">Monetary</div>
-              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">Avg total spend per customer.</div>
+            <div className="rounded-xl border border-charcoal/10 bg-cream/30 p-3 text-center">
+              <div className="text-2xl font-bold text-charcoal">${segment.avg_monetary.toFixed(0)}</div>
+              <div className="text-xs font-semibold text-charcoal/50 mt-0.5">Monetary</div>
+              <div className="mt-1 text-[11px] leading-snug text-charcoal/40">Avg total spend per customer across all purchases.</div>
             </div>
           </div>
         </div>
 
         {/* Value estimate */}
-        <div className="mt-4">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">Campaign Value Estimate</div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
-              <div className="text-lg font-bold text-charcoal">{formatPct(segment.response_likelihood)}</div>
-              <div className="text-[10px] font-semibold text-charcoal/50">Response Rate</div>
-              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">
-                Estimated from recency ({segment.avg_recency_days}d) and frequency ({segment.avg_frequency.toFixed(1)}x), mapped to a 5% to 35% range based on typical campaign response rates.
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-2">Campaign Value Estimate</div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-charcoal/10 bg-cream/30 p-3 text-center">
+              <div className="text-2xl font-bold text-charcoal">{formatPct(segment.response_likelihood)}</div>
+              <div className="text-xs font-semibold text-charcoal/50 mt-0.5">Response Rate</div>
+              <div className="mt-1.5 text-[11px] leading-snug text-charcoal/40">
+                Estimated from recency ({segment.avg_recency_days} days, lower is better) and frequency ({segment.avg_frequency.toFixed(1)} transactions, higher is better), normalized and mapped to a 5% to 35% range based on typical campaign response rates.
               </div>
             </div>
-            <div className="rounded-lg border border-charcoal/10 bg-cream/30 p-2 text-center">
-              <div className="text-lg font-bold text-charcoal">{formatDollars(segment.estimated_value)}</div>
-              <div className="text-[10px] font-semibold text-charcoal/50">Estimated Value</div>
-              <div className="mt-1 text-[10px] leading-snug text-charcoal/40">
-                {segment.customer_count.toLocaleString()} customers &times; {formatPct(segment.response_likelihood)} response &times; ${segment.avg_monetary.toFixed(0)} spend
+            <div className="rounded-xl border border-charcoal/10 bg-cream/30 p-3 text-center">
+              <div className="text-2xl font-bold text-charcoal">{formatDollars(segment.estimated_value)}</div>
+              <div className="text-xs font-semibold text-charcoal/50 mt-0.5">Estimated Value</div>
+              <div className="mt-1.5 text-[11px] leading-snug text-charcoal/40">
+                {segment.customer_count.toLocaleString()} customers &times; {formatPct(segment.response_likelihood)} response rate &times; ${segment.avg_monetary.toFixed(0)} avg spend
               </div>
             </div>
           </div>
@@ -159,24 +165,27 @@ function SegmentDetailOverlay({ segment, color, onClose }: {
 
         {/* Loyalty mix */}
         {tiers.length > 0 && (
-          <div className="mt-4">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-1.5">Star Rewards Loyalty Mix</div>
-            <div className="flex flex-wrap gap-2">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-charcoal/40 mb-2">Star Rewards Loyalty Mix</div>
+            <div className="flex flex-wrap gap-3">
               {tiers.map(([tier, pct]) => (
-                <div key={tier} className="rounded-lg border border-charcoal/10 bg-cream/30 px-3 py-1.5 text-center">
-                  <div className="text-sm font-bold text-charcoal">{typeof pct === "number" ? `${pct.toFixed(0)}%` : "0%"}</div>
-                  <div className="text-[10px] text-charcoal/50">{tier}</div>
+                <div key={tier} className="rounded-xl border border-charcoal/10 bg-cream/30 px-4 py-2 text-center">
+                  <div className="text-xl font-bold text-charcoal">{typeof pct === "number" ? `${pct.toFixed(0)}%` : "0%"}</div>
+                  <div className="text-xs text-charcoal/50">{tier}</div>
                 </div>
               ))}
             </div>
-            <p className="mt-1 text-[10px] text-charcoal/40">
-              Loyalty tiers show what share of this segment holds each Star Rewards level.
+            <p className="mt-1.5 text-xs text-charcoal/40">
+              Star Rewards is Macy's loyalty program. These tiers show what share of this segment holds each membership level. Higher tiers (Platinum, Gold) indicate more engaged, higher spending customers.
             </p>
           </div>
         )}
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(content, document.body);
 }
 
 function SegmentCard({
