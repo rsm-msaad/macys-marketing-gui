@@ -43,35 +43,36 @@ def run_segment(body: SegmentBody) -> dict:
     try:
         segments = SEGMENT.build_segments(body.brief, n_clusters=body.n_clusters)
 
-        # Try LLM naming skill with a tight timeout (12s) so a slow LLM
-        # or quota error never hangs the demo. Falls back to deterministic
-        # naming on any failure.
-        import concurrent.futures
+        # Segment naming: use deterministic fallback by default for instant
+        # response (<1s). The LLM naming skill exists but adds 10+ seconds
+        # of latency which breaks the demo flow. Set USE_LLM_SEGMENT_NAMING=1
+        # in the environment to enable the LLM path (for screenshots, etc.).
+        import os
 
-        SKILL_TIMEOUT_S = 12
         skill_result = None
-        try:
-            import sys
-            ai_root = str(Path(__file__).resolve().parent.parent / "ai_engine")
-            if ai_root not in sys.path:
-                sys.path.insert(0, ai_root)
-            from orchestrator.skill_invoker import invoke_skill
+        if os.environ.get("USE_LLM_SEGMENT_NAMING") == "1":
+            import concurrent.futures
 
-            state = {
-                "campaign_id": "segment-naming",
-                "status": "segment_complete",
-                "campaign": {"brief": body.brief, "category": ""},
-                "segments": segments,
-            }
+            try:
+                import sys
+                ai_root = str(Path(__file__).resolve().parent.parent / "ai_engine")
+                if ai_root not in sys.path:
+                    sys.path.insert(0, ai_root)
+                from orchestrator.skill_invoker import invoke_skill
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(invoke_skill, "segment-namer", state)
-                result = future.result(timeout=SKILL_TIMEOUT_S)
-            skill_result = result.get("segment_naming")
-        except concurrent.futures.TimeoutError:
-            pass  # LLM too slow, use deterministic fallback
-        except Exception:
-            pass  # Skill unavailable (quota, network, etc.), use fallback
+                state = {
+                    "campaign_id": "segment-naming",
+                    "status": "segment_complete",
+                    "campaign": {"brief": body.brief, "category": ""},
+                    "segments": segments,
+                }
+
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                    future = pool.submit(invoke_skill, "segment-namer", state)
+                    result = future.result(timeout=8)
+                skill_result = result.get("segment_naming")
+            except Exception:
+                pass  # Any failure falls through to deterministic naming
 
         # Apply skill names or fallback
         if skill_result and "segments" in skill_result:
