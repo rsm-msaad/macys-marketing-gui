@@ -30,7 +30,7 @@ STEPS = [
         "name": "Segmentation",
         "owner": "Campaign Manager",
         "owner_persona_id": "campaign-manager",
-        "label": "HUMAN_PLUS_AUTOMATION",
+        "label": "HUMAN_PLUS_SKILL",
     },
     {
         "number": 3,

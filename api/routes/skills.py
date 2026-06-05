@@ -42,7 +42,12 @@ def run_segment(body: SegmentBody) -> dict:
     try:
         segments = SEGMENT.build_segments(body.brief, n_clusters=body.n_clusters)
 
-        # Try LLM naming skill, fall back to deterministic
+        # Try LLM naming skill with a tight timeout (12s) so a slow LLM
+        # or quota error never hangs the demo. Falls back to deterministic
+        # naming on any failure.
+        import concurrent.futures
+
+        SKILL_TIMEOUT_S = 12
         skill_result = None
         try:
             import sys
@@ -57,10 +62,15 @@ def run_segment(body: SegmentBody) -> dict:
                 "campaign": {"brief": body.brief, "category": ""},
                 "segments": segments,
             }
-            result = invoke_skill("segment-namer", state)
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(invoke_skill, "segment-namer", state)
+                result = future.result(timeout=SKILL_TIMEOUT_S)
             skill_result = result.get("segment_naming")
+        except concurrent.futures.TimeoutError:
+            pass  # LLM too slow, use deterministic fallback
         except Exception:
-            pass  # Skill unavailable, use fallback below
+            pass  # Skill unavailable (quota, network, etc.), use fallback
 
         # Apply skill names or fallback
         if skill_result and "segments" in skill_result:

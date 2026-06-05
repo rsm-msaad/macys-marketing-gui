@@ -722,11 +722,12 @@ export type SegmentResult = {
   naming_source?: "skill" | "fallback";
 };
 
-export async function runSegment(brief: string, nClusters = 3): Promise<SegmentResult> {
+export async function runSegment(brief: string, nClusters = 3, opts: { timeoutMs?: number } = {}): Promise<SegmentResult> {
   return callWithFallback<SegmentResult>(
     "/skills/segment",
     { brief, n_clusters: nClusters },
     "step2_segment",
+    opts,
   );
 }
 

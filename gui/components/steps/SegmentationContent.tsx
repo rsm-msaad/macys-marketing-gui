@@ -221,7 +221,7 @@ export function SegmentationContent({
     setBriefApplied(false);
     try {
       const brief = context.campaign_brief.objective || context.campaign_brief.name;
-      const result = await runSegment(brief, k);
+      const result = await runSegment(brief, k, { timeoutMs: 20_000 });
       setSegmentResult(result);
     } catch (e) {
       setError((e as Error).message);
